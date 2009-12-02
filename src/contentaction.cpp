@@ -33,6 +33,17 @@ static galleryinterface *gallery = 0;
 ContentAction::ContentAction()
 {
     d = new ContentActionPrivate();
+    d->valid = false;
+}
+
+ContentAction::ContentAction(const QString& uri, const QStringList& classes,
+                             const QString& action)
+{
+    d = new ContentActionPrivate();
+    d->uri = uri;
+    d->classes = classes;
+    d->action = action;
+    d->valid = true;
 }
 
 ContentAction::ContentAction(const ContentAction& other)
@@ -47,33 +58,57 @@ ContentAction::~ContentAction()
     d = 0;
 }
 
-void ContentAction::trigger()
+ContentAction& ContentAction::operator=(const ContentAction& other)
 {
-    // A big switch with d->service
-    if (d->service == "com.nokia.galleryserviceinterface.showImage") {
-        if (gallery == 0) gallery = new galleryinterface();
-        gallery->showImage(d->uri, QStringList());
+    *d = *other.d;
+}
+
+void ContentAction::trigger() const
+{
+    if (!d->valid) {
+        qWarning() << "triggered an invalid action, not doing anything.";
+        return;
     }
-    // etc.
+
+    if (d->action == "com.nokia.galleryserviceinterface.showImage") {
+        if (gallery == 0)
+            gallery = new galleryinterface("foo.bar");
+        if (gallery->isValid())
+            gallery->showImage(d->uri, QStringList());
+        else
+            qWarning() << "galleryinterface is invalid";
+    }
 }
 
 void ContentAction::setAsDefault()
 {
+    if (!d->valid) {
+        qWarning() << "called setAsDefault() on an invalid action";
+        return;
+    }
 }
 
-bool ContentAction::isDefault()
+bool ContentAction::isDefault() const
 {
+    if (!d->valid)
+        return false;
     return false;
 }
 
-bool ContentAction::canBeDefault()
+bool ContentAction::canBeDefault() const
 {
+    if (!d->valid)
+        return false;
     return false;
 }
 
 ContentAction ContentAction::defaultAction(const QString& uri)
 {
-    return defaultAction(QStringList() << uri);
+    QList<ContentAction> acts = actions(uri);
+    if (acts.isEmpty())
+        return ContentAction();
+    else
+        return acts[0];
 }
 
 ContentAction ContentAction::defaultAction(const QStringList& uris)
@@ -83,7 +118,15 @@ ContentAction ContentAction::defaultAction(const QStringList& uris)
 
 QList<ContentAction> ContentAction::actions(const QString& uri)
 {
-    return QList<ContentAction>();
+    QList<ContentAction> result;
+    QStringList classes = classesOf(uri);
+    foreach (const QString& klass, classes) {
+        QStringList actions = actionsForClass(klass);
+        foreach (const QString& action, actions) {
+            result << ContentAction(uri, classes, action);
+        }
+    }
+    return result;
 }
 
 QList<ContentAction> ContentAction::actions(const QStringList& uris)
@@ -133,7 +176,7 @@ QStringList ContentAction::classesOf(const QString& uri)
     return result;
 }
 
-QStringList actionsForClass(const QString& klass)
+QStringList ContentAction::actionsForClass(const QString& klass)
 {
     // Hard-coded association between nepomuk classes and actions (=
     // service fw interface + method)

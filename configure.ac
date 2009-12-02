@@ -19,6 +19,9 @@ PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12.0])
 PKG_CHECK_MODULES([TRACKER], [tracker-client-0.7])
 PKG_CHECK_MODULES([DUI], [Dui])
 
+AC_CHECK_FILE([/usr/include/gallery/service/galleryinterface.h], [],
+              AC_MSG_ERROR([please install maemo-services-dev]))
+
 # tools for documentation
 AX_FEATURE_DISABLEABLE([doc], [BUILD_DOCS], [disable building of documentation])
 AX_DISABLE_FEATURE_ON_PROG([doxygen], [BUILD_DOCS], [DOXYGEN], [doxygen])

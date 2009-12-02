@@ -28,9 +28,10 @@
 
 struct ContentActionPrivate
 {
+    bool valid;
     QString uri;
     QStringList classes;
-    QString service; // <service fw interface>.<method>
+    QString action; // <service fw interface>.<method>
 };
 
 class ContentAction
@@ -39,11 +40,12 @@ public:
     ContentAction();
     ContentAction(const ContentAction& other);
     ~ContentAction();
+    ContentAction& operator=(const ContentAction& other);
 
-    void trigger();
+    void trigger() const;
     void setAsDefault();
-    bool isDefault();
-    bool canBeDefault();
+    bool isDefault() const;
+    bool canBeDefault() const;
 
     static ContentAction defaultAction(const QString& uri);
     static ContentAction defaultAction(const QStringList& uris);
@@ -55,6 +57,8 @@ public:
     static QStringList actionsForClass(const QString& klass);
 
 private:
+    ContentAction(const QString& uri, const QStringList& classes,
+                  const QString& action);
 
     ContentActionPrivate* d;
 };
