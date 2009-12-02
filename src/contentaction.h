@@ -26,23 +26,13 @@
 #include <QString>
 #include <QStringList>
 
-struct ContentActionPrivate
-{
-    bool valid;
-    QString uri;
-    QStringList classes;
-    QString action; // <service fw interface>.<method>
-};
+struct ContentActionPrivate;
 
 class ContentAction
 {
 public:
-    ContentAction();
-    ContentAction(const ContentAction& other);
-    ~ContentAction();
-    ContentAction& operator=(const ContentAction& other);
-
     void trigger() const;
+
     void setAsDefault();
     bool isDefault() const;
     bool canBeDefault() const;
@@ -56,11 +46,24 @@ public:
     static QStringList classesOf(const QString& uri);
     static QStringList actionsForClass(const QString& klass);
 
+    ContentAction();
+    ContentAction(const ContentAction& other);
+    ~ContentAction();
+    ContentAction& operator=(const ContentAction& other);
+
 private:
-    ContentAction(const QString& uri, const QStringList& classes,
+    ContentAction(const QStringList& uris, const QStringList& classes,
                   const QString& action);
 
     ContentActionPrivate* d;
+};
+
+struct ContentActionPrivate
+{
+    bool valid;
+    QStringList uris;
+    QStringList classes;
+    QString action; // <service fw interface>.<method>
 };
 
 #endif

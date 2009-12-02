@@ -36,11 +36,11 @@ ContentAction::ContentAction()
     d->valid = false;
 }
 
-ContentAction::ContentAction(const QString& uri, const QStringList& classes,
+ContentAction::ContentAction(const QStringList& uris, const QStringList& classes,
                              const QString& action)
 {
     d = new ContentActionPrivate();
-    d->uri = uri;
+    d->uris = uris;
     d->classes = classes;
     d->action = action;
     d->valid = true;
@@ -73,10 +73,11 @@ void ContentAction::trigger() const
     if (d->action == "com.nokia.galleryserviceinterface.showImage") {
         if (gallery == 0)
             gallery = new galleryinterface("foo.bar");
-        if (gallery->isValid())
-            gallery->showImage(d->uri, QStringList());
-        else
+        if (!gallery->isValid()) {
             qWarning() << "galleryinterface is invalid";
+            return;
+        }
+        gallery->showImage("", d->uris);
     }
 }
 
@@ -123,7 +124,7 @@ QList<ContentAction> ContentAction::actions(const QString& uri)
     foreach (const QString& klass, classes) {
         QStringList actions = actionsForClass(klass);
         foreach (const QString& action, actions) {
-            result << ContentAction(uri, classes, action);
+            result << ContentAction(QStringList() << uri, classes, action);
         }
     }
     return result;
@@ -131,8 +132,38 @@ QList<ContentAction> ContentAction::actions(const QString& uri)
 
 QList<ContentAction> ContentAction::actions(const QStringList& uris)
 {
-    // E.g. call actions(uri) several times and take the intersection
-    return QList<ContentAction>();
+    QStringList commonActions;
+    QStringList commonClasses;
+    bool first = true;
+
+    foreach (const QString& uri, uris) {
+        QStringList classes = classesOf(uri);
+        QStringList acts;
+
+        foreach (const QString& klass, classes)
+            acts.append(actionsForClass(klass));
+
+        if (first) {
+            commonClasses = classes;
+            commonActions = acts;
+            first = false;
+        } else {
+            if (classes != commonClasses)
+                commonClasses.clear();
+            // Remove all actions not applicable to this uri.
+            QStringList intersection;
+            foreach (const QString& act, commonActions) {
+                if (acts.contains(act))
+                    intersection << act;
+            }
+            commonActions = intersection;
+        }
+    }
+
+    QList<ContentAction> result;
+    foreach (const QString& act, commonActions)
+        result << ContentAction(uris, commonClasses, act);
+    return result;
 }
 
 static bool isValidIRI(const QString& uri)
@@ -166,7 +197,8 @@ QStringList ContentAction::classesOf(const QString& uri)
         g_error_free(error);
         return result;
     }
-    for (guint i = 0; i < resArray->len; ++i) {
+    // XXX: return in correct order!
+    for (gint i = resArray->len - 1; i >= 0; --i) {
         char **row = (char **)g_ptr_array_index(resArray, i);
         // NOTE: we assume Tracker returns utf8
         result << QString::fromUtf8(row[0]);
