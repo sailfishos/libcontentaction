@@ -1,0 +1,35 @@
+Source: libcontentaction
+Section: libs
+Priority: optional
+Maintainer: Marius Vollmer <marius.vollmer@nokia.com>
+Build-Depends: debhelper (>= 5),
+               libqt4-dev,
+               libglib2.0-dev (>= 2.12.0),
+               libtracker-client-0.7-dev,
+               libdui-dev,
+               maemo-services-dev,
+               doxygen (>= 1.5.9),
+               pkg-config,
+               asciidoc (>= 8.2.7)
+Standards-Version: 3.8.0
+
+Package: libcontentaction0
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Library for associating content with actions
+
+Package: libcontentaction0-dbg
+Priority: extra
+Architecture: any
+Depends: libcontentaction0 (= ${binary:Version})
+Description: Library for associating content with actions
+ .
+ This package contains the debug symbols.
+
+Package: libcontentaction-dev
+Section: libdevel
+Architecture: any
+Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-0.7-dev
+Description: Library for associating content with actions
+ .
+ This package contains the development files.

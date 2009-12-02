@@ -1,0 +1,9 @@
+libdir=${pcfiledir}/src
+includedir=@abs_srcdir@/src
+
+Name: contentaction
+Description: libcontentaction
+Version: uninstalled
+Requires: QtCore
+Libs: -L${libdir} -L${libdir}/.libs -lcontentaction
+Cflags: -I${includedir}

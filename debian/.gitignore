@@ -1,0 +1,12 @@
+build-stamp
+libcontentaction0
+libcontentaction0-dbg
+libcontentaction-dev
+tmp
+*.debhelper.log
+files
+*.substvars
+*.postinst.debhelper
+*.postrm.debhelper
+*.prerm.debhelper
+*.preinst.debhelper
