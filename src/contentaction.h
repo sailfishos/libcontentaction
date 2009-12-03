@@ -54,6 +54,7 @@ public:
 private:
     ContentAction(const QStringList& uris, const QStringList& classes,
                   const QString& action);
+    static QString defaultActionForClass(const QString& klass);
 
     ContentActionPrivate* d;
 };

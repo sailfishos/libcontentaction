@@ -109,7 +109,15 @@ bool ContentAction::canBeDefault() const
 {
     if (!d->valid)
         return false;
-    return false;
+
+    // If the action concerns multiple uris, but they are not of the
+    // same type, this action cannot be set as a default action.
+    if (d->classes.isEmpty()) {
+        return false;
+    }
+
+    // For now, all actions are applicable as default actions.
+    return true;
 }
 
 ContentAction ContentAction::defaultAction(const QString& uri)
@@ -123,7 +131,13 @@ ContentAction ContentAction::defaultAction(const QString& uri)
 
 ContentAction ContentAction::defaultAction(const QStringList& uris)
 {
-    return ContentAction();
+    /// XXX: is there always a default action? Is the most relevant
+    /// action always the default action?
+    QList<ContentAction> acts = actions(uris);
+    if (acts.isEmpty())
+        return ContentAction();
+    else
+        return acts[0];
 }
 
 /// Returns the set of applicable actions for a given \ə uri. The nepomuk
@@ -250,5 +264,18 @@ QStringList ContentAction::actionsForClass(const QString& klass)
     else if (klass.endsWith("nfo#Audio")) {
         result << "";
     }
+    QString defAction = defaultActionForClass(klass);
+    if (result.contains(defAction)) {
+        result.removeAll(defAction);
+        result.prepend(defAction);
+    }
+    // TODO: Read the per-class default action from GConf and shift it
+    // up in the list.
     return result;
+}
+
+/// Reads the per-class default action from GConf
+QString ContentAction::defaultActionForClass(const QString& klass)
+{
+    return "";
 }
