@@ -30,6 +30,8 @@
 static TrackerClient *Tracker = 0;
 static galleryinterface *gallery = 0;
 
+#define LCA_WARNING qWarning() << "libcontentaction:"
+
 ContentAction::ContentAction()
 {
     d = new ContentActionPrivate();
@@ -61,20 +63,21 @@ ContentAction::~ContentAction()
 ContentAction& ContentAction::operator=(const ContentAction& other)
 {
     *d = *other.d;
+    return *this;
 }
 
 void ContentAction::trigger() const
 {
     if (!d->valid) {
-        qWarning() << "triggered an invalid action, not doing anything.";
+        LCA_WARNING << "triggered an invalid action, not doing anything.";
         return;
     }
 
     if (d->action == "com.nokia.galleryserviceinterface.showImage") {
         if (gallery == 0)
-            gallery = new galleryinterface("foo.bar");
+            gallery = new galleryinterface("foo.bar"); // XXX
         if (!gallery->isValid()) {
-            qWarning() << "galleryinterface is invalid";
+            LCA_WARNING << "galleryinterface is invalid";
             return;
         }
         gallery->showImage("", d->uris);
@@ -84,7 +87,13 @@ void ContentAction::trigger() const
 void ContentAction::setAsDefault()
 {
     if (!d->valid) {
-        qWarning() << "called setAsDefault() on an invalid action";
+        LCA_WARNING << "called setAsDefault() on an invalid action";
+        return;
+    }
+    // If the action concerns multiple uris, but they are not of the
+    // same type, we cannot set a default action.
+    if (d->classes.isEmpty()) {
+        LCA_WARNING << "cannot set a default action for multiple uris of different types";
         return;
     }
 }
@@ -117,6 +126,10 @@ ContentAction ContentAction::defaultAction(const QStringList& uris)
     return ContentAction();
 }
 
+/// Returns the set of applicable actions for a given \ə uri. The nepomuk
+/// classes of the uri are read from Tracker, and the actions are
+/// determined with hard-coded association rules between nepomuk
+/// classes and actions.
 QList<ContentAction> ContentAction::actions(const QString& uri)
 {
     QList<ContentAction> result;
@@ -130,6 +143,8 @@ QList<ContentAction> ContentAction::actions(const QString& uri)
     return result;
 }
 
+/// Returns the set of actions applicable to all \a uris. The set is
+/// an intersection of actions applicable to the individual uris.
 QList<ContentAction> ContentAction::actions(const QStringList& uris)
 {
     QStringList commonActions;
@@ -177,13 +192,13 @@ QStringList ContentAction::classesOf(const QString& uri)
     QStringList result;
 
     if (!isValidIRI(uri)) {
-        qWarning() << "invalid characters in uri:" << uri;
+        LCA_WARNING << "invalid characters in uri:" << uri;
         return result;
     }
     if (!Tracker) {
         Tracker = tracker_connect(TRUE, 0);
         if (!Tracker) {
-            qWarning() << "failed to connect to Tracker";
+            LCA_WARNING << "failed to connect to Tracker";
             return result;
         }
     }
@@ -193,7 +208,7 @@ QStringList ContentAction::classesOf(const QString& uri)
                                                          query.toLocal8Bit().data(),
                                                          &error);
     if (error) {
-        qWarning() << "query returned an error:" << error->message;
+        LCA_WARNING << "query returned an error:" << error->message;
         g_error_free(error);
         return result;
     }
