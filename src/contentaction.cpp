@@ -75,7 +75,7 @@ void ContentAction::trigger() const
 
     if (d->action == "com.nokia.galleryserviceinterface.showImage") {
         if (gallery == 0)
-            gallery = new galleryinterface("foo.bar"); // XXX
+            gallery = new galleryinterface(); // XXX
         if (!gallery->isValid()) {
             LCA_WARNING << "galleryinterface is invalid";
             return;
@@ -118,6 +118,16 @@ bool ContentAction::canBeDefault() const
 
     // For now, all actions are applicable as default actions.
     return true;
+}
+
+bool ContentAction::isValid() const
+{
+    return d->valid;
+}
+
+QString ContentAction::name() const
+{
+    return d->action;
 }
 
 ContentAction ContentAction::defaultAction(const QString& uri)
@@ -269,8 +279,6 @@ QStringList ContentAction::actionsForClass(const QString& klass)
         result.removeAll(defAction);
         result.prepend(defAction);
     }
-    // TODO: Read the per-class default action from GConf and shift it
-    // up in the list.
     return result;
 }
 

@@ -18,3 +18,12 @@ lib_LTLIBRARIES = libcontentaction.la
 
 libcontentaction_la_SOURCES = \
 	contentaction.h contentaction.cpp
+
+bin_PROGRAMS = lca-tool
+
+lca_tool_SOURCES = \
+	lca-tool.cpp
+
+lca_tool_LDADD = \
+	libcontentaction.la \
+	$(QtCore_LIBS)

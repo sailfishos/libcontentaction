@@ -37,6 +37,9 @@ public:
     bool isDefault() const;
     bool canBeDefault() const;
 
+    bool isValid() const;
+    QString name() const;
+
     static ContentAction defaultAction(const QString& uri);
     static ContentAction defaultAction(const QStringList& uris);
 
@@ -45,6 +48,7 @@ public:
 
     static QStringList classesOf(const QString& uri);
     static QStringList actionsForClass(const QString& klass);
+
 
     ContentAction();
     ContentAction(const ContentAction& other);
