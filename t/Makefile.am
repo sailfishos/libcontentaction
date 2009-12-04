@@ -10,6 +10,3 @@ LIBS += \
 
 EXTRA_DIST = \
 	data.web
-
-noinst_PROGRAMS = test-classesof
-test_classesof_SOURCES = test-classesof.cpp
