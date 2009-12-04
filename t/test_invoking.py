@@ -22,7 +22,7 @@ import sys
 import os
 import unittest
 from commands import getstatusoutput
-from ContextKit.cltool import CLTool
+from cltool import CLTool
 
 class Actions(unittest.TestCase):
     def testInvokeForImage(self):
