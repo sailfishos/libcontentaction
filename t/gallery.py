@@ -1,6 +1,7 @@
 #!/usr/bin/python2.5
 import dbus, dbus.service, dbus.mainloop.glib
 import gobject
+from sys import stdout
 
 class Gallery(dbus.service.Object):
     def __init__(self, path):
@@ -11,8 +12,11 @@ class Gallery(dbus.service.Object):
                          in_signature='sas', out_signature='b')
     def showImage(self, uri, uris):
         print 'showImage ; %s ; %s' % (uri, ','.join(uris))
+        stdout.flush()
         return True
 
+print "started"
+stdout.flush()
 dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 gallery = Gallery('/')
 gobject.MainLoop().run()
