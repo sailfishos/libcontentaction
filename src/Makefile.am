@@ -1,4 +1,4 @@
-AM_CXXFLAGS = \
+AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
 	$(TRACKER_CFLAGS) \
 	$(DUI_CFLAGS) \
@@ -24,8 +24,9 @@ libcontentaction_la_SOURCES = \
 
 bin_PROGRAMS = lca-tool
 
-lca_tool_CXXFLAGS = \
-	$(AM_CXXFLAGS)
+# Force different object file names by using per-target flags.
+lca_tool_CPPFLAGS = \
+	$(AM_CPPFLAGS)
 
 lca_tool_SOURCES = \
 	lca-tool.cpp \
