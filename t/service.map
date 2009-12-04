@@ -1,0 +1,3 @@
+self.mapping = {
+  'com.nokia.galleryserviceinterface': 'just.a.gallery',
+}
