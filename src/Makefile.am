@@ -2,13 +2,15 @@ AM_CXXFLAGS = \
 	$(QtCore_CFLAGS) \
 	$(TRACKER_CFLAGS) \
 	$(DUI_CFLAGS) \
-	-I/usr/include/gallery/service
+	-I/usr/include/gallery/service \
+	-I/usr/include/music-suite/service
 
 LIBS += \
 	$(QtCore_LIBS) \
 	$(TRACKER_LIBS) \
 	$(DUI_LIBS) \
-	-lgalleryinterface
+	-lgalleryinterface \
+	-lmusicsuitepublicinterface
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \

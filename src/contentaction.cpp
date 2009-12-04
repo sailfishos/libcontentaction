@@ -24,12 +24,14 @@
 
 #include <libtracker-client/tracker.h>
 #include <galleryinterface.h>
+#include <musicsuiteservicepublicif.h>
 
 #include <QDebug>
 
 // initialized on the first request
 static TrackerClient *Tracker = 0;
 static galleryinterface *gallery = 0;
+static MusicSuiteServicePublicIf *musicSuite = 0;
 
 #define LCA_WARNING qWarning() << "libcontentaction:"
 
@@ -76,12 +78,22 @@ void ContentAction::trigger() const
 
     if (d->action == "com.nokia.galleryserviceinterface.showImage") {
         if (gallery == 0)
-            gallery = new galleryinterface(); // XXX
+            gallery = new galleryinterface();
         if (!gallery->isValid()) {
-            LCA_WARNING << "galleryinterface is invalid";
+            LCA_WARNING << "gallery interface is invalid";
             return;
         }
         gallery->showImage("", d->uris);
+    }
+    else if (d->action == "com.nokia.MusicSuiteServicePublicIf.play") {
+        if (musicSuite == 0)
+            musicSuite = new MusicSuiteServicePublicIf();
+        if (!musicSuite->isValid()) {
+            LCA_WARNING << "music suite interface is invalid";
+            return;
+        }
+        foreach (const QString& uri, d->uris)
+            musicSuite->play(uri);
     }
 }
 
@@ -255,7 +267,7 @@ QStringList actionsForClass(const QString& klass)
     QStringList result;
 
     if (klass.endsWith("nmm#MusicPiece")) {
-        result << "";
+        result << "com.nokia.MusicSuiteServicePublicIf.play";
     }
     else if (klass.endsWith("nmm#MusicAlbum")) {
         result << "";
