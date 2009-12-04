@@ -46,10 +46,6 @@ public:
     static QList<ContentAction> actions(const QString& uri);
     static QList<ContentAction> actions(const QStringList& uris);
 
-    static QStringList classesOf(const QString& uri);
-    static QStringList actionsForClass(const QString& klass);
-
-
     ContentAction();
     ContentAction(const ContentAction& other);
     ~ContentAction();
@@ -58,7 +54,6 @@ public:
 private:
     ContentAction(const QStringList& uris, const QStringList& classes,
                   const QString& action);
-    static QString defaultActionForClass(const QString& klass);
 
     ContentActionPrivate* d;
 };

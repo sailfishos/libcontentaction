@@ -17,13 +17,15 @@ inc_HEADERS = \
 lib_LTLIBRARIES = libcontentaction.la
 
 libcontentaction_la_SOURCES = \
-	contentaction.h contentaction.cpp
+	contentaction.h contentaction.cpp \
+	internal.h
 
 bin_PROGRAMS = lca-tool
 
-lca_tool_SOURCES = \
-	lca-tool.cpp
+lca_tool_CXXFLAGS = \
+	$(AM_CXXFLAGS)
 
-lca_tool_LDADD = \
-	libcontentaction.la \
-	$(QtCore_LIBS)
+lca_tool_SOURCES = \
+	lca-tool.cpp \
+	contentaction.h contentaction.cpp \
+	internal.h

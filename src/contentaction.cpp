@@ -20,6 +20,7 @@
  */
 
 #include "contentaction.h"
+#include "internal.h"
 
 #include <libtracker-client/tracker.h>
 #include <galleryinterface.h>
@@ -211,7 +212,7 @@ static bool isValidIRI(const QString& uri)
     return validRE.exactMatch(uri);
 }
 
-QStringList ContentAction::classesOf(const QString& uri)
+QStringList classesOf(const QString& uri)
 {
     QStringList result;
 
@@ -247,7 +248,7 @@ QStringList ContentAction::classesOf(const QString& uri)
     return result;
 }
 
-QStringList ContentAction::actionsForClass(const QString& klass)
+QStringList actionsForClass(const QString& klass)
 {
     // Hard-coded association between nepomuk classes and actions (=
     // service fw interface + method)
@@ -283,7 +284,7 @@ QStringList ContentAction::actionsForClass(const QString& klass)
 }
 
 /// Reads the per-class default action from GConf
-QString ContentAction::defaultActionForClass(const QString& klass)
+QString defaultActionForClass(const QString& klass)
 {
     return "";
 }

@@ -1,62 +1,100 @@
 #include "contentaction.h"
+#include "internal.h"
 
 #include <unistd.h>
+#include <QCoreApplication>
 #include <QTextStream>
 
-void usage(char* prog)
+enum Action {
+    PrintHelp,
+    PrintActions,
+    Invoke,
+    InvokeDefault,
+    PrintClasses,
+};
+
+void usage(char *prog)
 {
-    QTextStream out(stdout);
-    out << "Usage: " << prog << "[--print|-p] URI.." << endl
-        << "       " << prog << "--invoke|-i interface.method URI.." << endl
-        << "       " << prog << "--invokedefault|-d URI.." << endl;
+    QTextStream err(stderr);
+    err << "Usage: " << prog << " [OPTIONS] URI [URIS...]\n"
+        "  -h|--help                     print this text\n"
+        "  -p|--print                    print the applicable actions\n"
+        "  -i|--invoke=INTERFACE.METHOD  invoke the specified action\n"
+        "  -d|--invokedefault            invoke the default action\n"
+        "  -c|--classes                  print the classes of the URIs\n";
+    exit(1);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    if (argc == 1) {
+    QTextStream err(stderr), out(stdout);
+    if (argc == 1)
         usage(argv[0]);
-        return 1;
-    }
+
     QStringList args;
-    for (int i = 1; i < argc; ++i) {
-        args << argv[i];
-    }
+    for (int i = 1; i < argc; ++i)
+        args << QString(argv[i]);
 
-    int todo = 0;
-    QString actionName = "";
-    if (args.size() > 0 && (args[0] == "--invoke" || args[0] == "-i")) {
-        if (argc < 3) {
+    Action todo = PrintHelp;
+    QString actionName;
+    while (!args.isEmpty()) {
+        QString arg = args.takeFirst();
+        if (!arg.startsWith("-"))             // end of options
+            break;
+
+        if (arg == "-h" || arg == "--help")
             usage(argv[0]);
-            return 1;
+        if (arg == "-p" || arg == "--print") {
+            todo = PrintActions;
+            break;
         }
-        args.takeFirst();
-        actionName = args.takeFirst();
-        todo = 1;
+        if (arg == "-i" || arg == "--invoke") {
+            todo = Invoke;
+            if (args.isEmpty()) {
+                err << "an action must be given when using " << arg << endl;
+                exit(2);
+            }
+            actionName = args.takeFirst();
+            break;
+        }
+        if (arg == "-d" || arg == "--invokedefault") {
+            todo = InvokeDefault;
+            break;
+        }
+        if (arg == "-c" || arg == "--classes") {
+            todo = PrintClasses;
+            break;
+        }
     }
 
-    if (args.size() > 0 && (args[0] == "--invokedefault" || args[0] == "-d")) {
-        args.takeFirst();
-        todo = 2;
+    if (args.isEmpty()) {
+        err << "no URIs given\n";
+        exit(2);
     }
 
-    if (args.size() > 0 && (args[0] == "--print" || args[0] == "-p"))
-        args.takeFirst();
-
-    QTextStream out(stdout);
-    if (todo == 0 || todo == 1) {
+    switch (todo) {
+    case PrintHelp:
+        usage(argv[0]);
+        break;
+    case PrintActions:
+    case Invoke: {
         QList<ContentAction> actions = ContentAction::actions(args);
         foreach (const ContentAction& action, actions) {
-            if (todo == 0) // Print
+            if (todo == PrintActions)
                 out << action.name() << endl;
-            else if (todo == 1 && actionName == action.name()) // Invoke
+            else if (todo == Invoke && actionName == action.name())
                 action.trigger();
         }
+        break;
     }
-    else {
-        // Default action
+    case InvokeDefault: {
         ContentAction defAction = ContentAction::defaultAction(args);
         defAction.trigger();
     }
-
+    case PrintClasses: {
+        foreach (const QString& cls, classesOf(args[0]))
+            out << cls << endl;
+    }
+    }
     return 0;
 }
