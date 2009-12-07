@@ -163,7 +163,7 @@ ContentAction ContentAction::defaultAction(const QStringList& uris)
         return acts[0];
 }
 
-/// Returns the set of applicable actions for a given \ə uri. The nepomuk
+/// Returns the set of applicable actions for a given \a uri. The nepomuk
 /// classes of the uri are read from Tracker, and the actions are
 /// determined with hard-coded association rules between nepomuk
 /// classes and actions.
@@ -239,7 +239,14 @@ QStringList classesOf(const QString& uri)
             return result;
         }
     }
-    QString query = QString("SELECT ?s WHERE { <%1> a ?s . }").arg(uri);
+    QString query = QString("SELECT ?sub ?super WHERE {<%1> a ?sub . "
+                            "OPTIONAL {?sub rdfs:subClassOf ?super . "
+                            "OPTIONAL {?between rdfs:subClassOf ?super . "
+                            "?sub rdfs:subClassOf ?between .} "
+                            "FILTER(! bound(?between)) } }").arg(uri);
+    // In the result, sub is a class of uri and super is an immediate
+    // superclass of sub.
+
     GError *error = NULL;
     GPtrArray *resArray = tracker_resources_sparql_query(Tracker,
                                                          query.toLocal8Bit().data(),
@@ -249,14 +256,44 @@ QStringList classesOf(const QString& uri)
         g_error_free(error);
         return result;
     }
-    // XXX: return in correct order!
-    for (gint i = resArray->len - 1; i >= 0; --i) {
+
+    QHash<QString, QStringList> classes; // class -> its immediate superclasses
+    QSet<QString> supers; // classes which have at least one subclass
+    for (guint i = 0; i < resArray->len; ++i) {
         char **row = (char **)g_ptr_array_index(resArray, i);
         // NOTE: we assume Tracker returns utf8
-        result << QString::fromUtf8(row[0]);
+        QString sub = QString::fromUtf8(row[0]);
+        QString super = QString::fromUtf8(row[1]);
+
+        if (!classes.contains(sub))
+            classes.insert(sub, QStringList());
+        if (super != "")
+            classes[sub] << super;
+
+        supers << super;
+
         g_strfreev(row);
     }
     g_ptr_array_free(resArray, TRUE);
+
+    // Starting from the most immediate classes of the uri, iterate
+    // the superclasses according to superclass levels. (The most
+    // immediate first, then all their superclasses, etc.)
+    QSet<QString> done;
+    QSet<QString> currentLevel = classes.keys().toSet() - supers;
+    QSet<QString> nextLevel;
+    while (currentLevel.size() > 0) {
+        foreach(const QString& c, currentLevel) {
+            if (!done.contains(c)) {
+                done << c;
+                result << c;
+                foreach(const QString& super, classes[c])
+                    nextLevel << super;
+            }
+        }
+        currentLevel = nextLevel;
+        nextLevel.clear();
+    }
     return result;
 }
 
