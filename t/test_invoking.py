@@ -25,27 +25,27 @@ from commands import getstatusoutput
 from cltool import CLTool
 
 class Actions(unittest.TestCase):
-    def testInvokeForImage(self):
+    def setUp(self):
         # start a fake gallery service
-        gallery = CLTool("./gallery.py")
-        self.assert_(gallery.expect("started"))
+        self.gallery = CLTool("./gallery.py")
+        self.assert_(self.gallery.expect("started"))
 
+    def tearDown(self):
+        self.gallery.kill()
+
+    def testInvokeForImage(self):
         (status, output) = getstatusoutput("lca-tool --invokedefault an.image")
         self.assert_(status == 0)
 
         # assert that the gallery was invoked
-        self.assert_(gallery.expect("showImage ;  ; an.image"))
+        self.assert_(self.gallery.expect("showImage ;  ; an.image"))
 
-    # def testInvokeForTwoImages(self):
-    #     # start a fake gallery service
-    #     gallery = CLTool("./gallery.py")
-    #     self.assert_(gallery.expect("started"))
+    def testInvokeForTwoImages(self):
+        (status, output) = getstatusoutput("lca-tool --invokedefault an.image b.image")
+        self.assert_(status == 0)
 
-    #     (status, output) = getstatusoutput("lca-tool --invokedefault an.image b.image")
-    #     self.assert_(status == 0)
-
-    #     # assert that the gallery was invoked
-    #     self.assert_(gallery.expect("showImage ;  ; an.image,b.image"))
+        # assert that the gallery was invoked
+        self.assert_(self.gallery.expect("showImage ;  ; an.image,b.image"))
 
     def testInvokeForInvalid(self):
         lcatool = CLTool("lca-tool", "--invokedefault", "invalid.uri")

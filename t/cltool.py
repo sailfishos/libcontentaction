@@ -51,7 +51,7 @@ class Reader(Thread):
             if not self.running:
                 break
         rc = self.cltool.process.wait()
-        if rc < 0:
+        if rc < 0 and not self.cltool.killed:
             self.cltool.comment("TERMINATED WITH SIGNAL %d" % -rc)
             self.cltool.printio()
         elif rc > 0:
@@ -73,6 +73,7 @@ class CLTool:
         self.last_expect = 0
         self.reader.start()
         self.last_output = "" # can be used externally to get the last input read during expect()
+        self.killed = False
         atexit.register(self.atexit)
 
     def atexit(self):
@@ -179,6 +180,10 @@ class CLTool:
         """Close the standard input of the child."""
         self.comment("EOF ON STDIN")
         self.process.stdin.close()
+
+    def kill(self):
+        os.kill(self.process.pid, signal.SIGTERM)
+        self.killed = True
 
     def wait(self):
         """Close standard input and wait for the reader"""
