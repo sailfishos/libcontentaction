@@ -69,6 +69,8 @@ ContentAction& ContentAction::operator=(const ContentAction& other)
     return *this;
 }
 
+/// Triggers the action represented by this ContentAction object,
+/// using the uri's contained by the ContentAction object.
 void ContentAction::trigger() const
 {
     if (!d->valid) {
@@ -97,6 +99,13 @@ void ContentAction::trigger() const
     }
 }
 
+/// Sets the action represented by this ContentAction to be the
+/// default for a Nepomuk class. If there is only one uri, the class
+/// for which the default is set is the lowest class in the class
+/// hierarchy having a default action. If there are multiple uri's,
+/// the default action can be set only if they represent objects of
+/// the same type. In this case, the Nepomuk class is decided the same
+/// way as in the case of one uri. Note: Not yet implemented.
 void ContentAction::setAsDefault()
 {
     if (!d->valid) {
@@ -109,8 +118,11 @@ void ContentAction::setAsDefault()
         LCA_WARNING << "cannot set a default action for multiple uris of different types";
         return;
     }
+    // TODO: Implement
 }
 
+/// Returns true if the current ContentAction object is the default
+/// action for the set of uri's it refers to. Note: not yet implemented.
 bool ContentAction::isDefault() const
 {
     if (!d->valid)
@@ -118,6 +130,7 @@ bool ContentAction::isDefault() const
     return false;
 }
 
+/// Semantics TBD.
 bool ContentAction::canBeDefault() const
 {
     if (!d->valid)
@@ -133,16 +146,22 @@ bool ContentAction::canBeDefault() const
     return true;
 }
 
+/// Returns true if the ContentAction object represents an action
+/// which can be triggered.
 bool ContentAction::isValid() const
 {
     return d->valid;
 }
 
+/// Returns the name of the action, i.e., [service fw interface].[function]
 QString ContentAction::name() const
 {
     return d->action;
 }
 
+/// Returns the default action for a given list of uri's. If there are
+/// no applicable actions, an invalid ContentAction object is
+/// returned.
 ContentAction ContentAction::defaultAction(const QString& uri)
 {
     QList<ContentAction> acts = actions(uri);
@@ -152,6 +171,10 @@ ContentAction ContentAction::defaultAction(const QString& uri)
         return acts[0];
 }
 
+/// Returns the default action for a given list of uri's. If the uri's
+/// represent object of different types (e.g., one is an image, other
+/// is an audio file), a default action cannot be constructed and an
+/// invalid ContentAction object is returned.
 ContentAction ContentAction::defaultAction(const QStringList& uris)
 {
     /// XXX: is there always a default action? Is the most relevant
@@ -218,12 +241,17 @@ QList<ContentAction> ContentAction::actions(const QStringList& uris)
     return result;
 }
 
+/// Returns true if the \a uri is a valid uri.
 static bool isValidIRI(const QString& uri)
 {
     static const QRegExp validRE("[^<>\"{}|^`\\\\]*");
     return validRE.exactMatch(uri);
 }
 
+/// Returns the Nepomuk classes of a given \a uri. The classes are
+/// returned in the following order: first the immediate superclasses
+/// of the uri in arbitrary order, then their superclasses in
+/// arbitrary order, etc.
 QStringList classesOf(const QString& uri)
 {
     QStringList result;
@@ -279,13 +307,13 @@ QStringList classesOf(const QString& uri)
     // Starting from the most immediate classes of the uri, iterate
     // the superclasses according to superclass levels. (The most
     // immediate first, then all their superclasses, etc.)
-    QSet<QString> done;
     QSet<QString> currentLevel = classes.keys().toSet() - supers;
     QSet<QString> nextLevel;
     while (currentLevel.size() > 0) {
         foreach(const QString& c, currentLevel) {
-            if (!done.contains(c)) {
-                done << c;
+            // Note: result.contains(c) is inefficient, but likely the
+            // number of classes is very small.
+            if (!result.contains(c)) {
                 result << c;
                 foreach(const QString& super, classes[c])
                     nextLevel << super;
@@ -297,10 +325,12 @@ QStringList classesOf(const QString& uri)
     return result;
 }
 
+/// Returns the hard-coded list of action names for the given Nepomuk
+/// class \a klass. The default action, read by
+/// defaultActionFromClass, is shifted to be the top-most action of
+/// the list.
 QStringList actionsForClass(const QString& klass)
 {
-    // Hard-coded association between nepomuk classes and actions (=
-    // service fw interface + method)
     QStringList result;
 
     if (klass.endsWith("nmm#MusicPiece")) {
@@ -332,7 +362,7 @@ QStringList actionsForClass(const QString& klass)
     return result;
 }
 
-/// Reads the per-class default action from GConf
+/// Returns the per-class default action. For now, not implemented.
 QString defaultActionForClass(const QString& klass)
 {
     return "";

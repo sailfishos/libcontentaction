@@ -23,6 +23,9 @@ debian/*.preinst.debhelper
 t/env.py
 t/env.sh
 
+doc/doxygen.log
+doc/html/
+
 /*.pc
 /aclocal.m4
 /autom4te.cache

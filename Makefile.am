@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src t
+SUBDIRS = src t doc
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = contentaction-0.1.pc

@@ -41,6 +41,7 @@ AC_CONFIG_FILES([
         t/Makefile
         t/env.sh
         t/env.py
+        doc/Makefile
 ])
 
 AC_OUTPUT
