@@ -1,23 +1,18 @@
+if BUILD_DOCS
 all-local: doxygen
+endif
 
 DOXYCFG = $(srcdir)/doxy.cfg
 
 doxygen: html/index.html
 
-html/index.html: ../src/*.cpp ../src/*.h
-	@if test x$(srcdir) = x. ; then \
-		echo srcdir=$(srcdir) $(DOXYGEN) $(DOXYCFG); \
-		srcdir=$(srcdir) $(DOXYGEN) $(DOXYCFG); \
-	else \
-		echo This is a VPATH build, so not building doxygen; \
-	fi
+html/index.html: $(srcdir)/../src/*.cpp $(srcdir)/../src/*.h
+	srcdir=$(srcdir) $(DOXYGEN) $(DOXYCFG);
 
-EXTRA_DIST = $(DOXYCFG) html
+EXTRA_DIST = $(DOXYCFG)
 
-distclean-local:
+clean-local:
 	rm -f doxygen.log
-
-maintainer-clean-local:
 	rm -rf html
 
 .PHONY: doxygen
