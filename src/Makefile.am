@@ -1,3 +1,6 @@
+EXTRA_DIST = \
+	Exports
+
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
 	$(TRACKER_CFLAGS) \
@@ -18,9 +21,14 @@ inc_HEADERS = \
 
 lib_LTLIBRARIES = libcontentaction.la
 
+libcontentaction_la_DEPENDENCIES = \
+	Exports
+
 libcontentaction_la_SOURCES = \
 	contentaction.h contentaction.cpp \
 	internal.h
+libcontentaction_la_LDFLAGS = \
+	-Wl,--version-script=$(srcdir)/Exports
 
 bin_PROGRAMS = lca-tool
 
