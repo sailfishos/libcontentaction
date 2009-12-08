@@ -22,12 +22,6 @@
 #ifndef CONTENTACTION_H
 #define CONTENTACTION_H
 
-#include <QList>
-#include <QString>
-#include <QStringList>
-
-struct ContentActionPrivate;
-
 /*!
   \mainpage Libcontentaction
 
