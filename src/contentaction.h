@@ -101,8 +101,16 @@ struct ContentActionPrivate;
   returns an invalid ContentAction.
 
 */
+#include <QList>
+#include <QString>
+#include <QStringList>
 
-class ContentAction
+namespace ContentAction
+{
+
+struct ActionPrivate;
+
+class Action
 {
 public:
     void trigger() const;
@@ -114,30 +122,32 @@ public:
     bool isValid() const;
     QString name() const;
 
-    static ContentAction defaultAction(const QString& uri);
-    static ContentAction defaultAction(const QStringList& uris);
+    static Action defaultAction(const QString& uri);
+    static Action defaultAction(const QStringList& uris);
 
-    static QList<ContentAction> actions(const QString& uri);
-    static QList<ContentAction> actions(const QStringList& uris);
+    static QList<Action> actions(const QString& uri);
+    static QList<Action> actions(const QStringList& uris);
 
-    ContentAction();
-    ContentAction(const ContentAction& other);
-    ~ContentAction();
-    ContentAction& operator=(const ContentAction& other);
+    Action();
+    Action(const Action& other);
+    ~Action();
+    Action& operator=(const Action& other);
 
 private:
-    ContentAction(const QStringList& uris, const QStringList& classes,
+    Action(const QStringList& uris, const QStringList& classes,
                   const QString& action);
 
-    ContentActionPrivate* d; /// Pimpl pointer
+    ActionPrivate* d; /// Pimpl pointer
 };
 
-struct ContentActionPrivate
+struct ActionPrivate
 {
     bool valid; ///< whether or not the action can be triggered
     QStringList uris; ///< the target uri's of the action
     QStringList classes; ///< the classes of the uri's (if they are of the same type)
     QString action; ///< [service fw interface].[method]
 };
+
+}
 
 #endif

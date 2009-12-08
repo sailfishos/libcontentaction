@@ -24,13 +24,17 @@
 #include <unistd.h>
 #include <QTextStream>
 
-enum Action {
+using ContentAction::Action;
+using ContentAction::classesOf;
+
+enum ActionToDo {
     PrintHelp,
     PrintActions,
     Invoke,
     InvokeDefault,
     PrintClasses,
 };
+
 
 void usage(char *prog)
 {
@@ -62,7 +66,7 @@ int main(int argc, char **argv)
     for (int i = 1; i < argc; ++i)
         args << QString(argv[i]);
 
-    Action todo = PrintHelp;
+    ActionToDo todo = PrintHelp;
     QString actionName;
     while (!args.isEmpty()) {
         QString arg = args.takeFirst();
@@ -108,8 +112,8 @@ int main(int argc, char **argv)
         break;
     case PrintActions:
     case Invoke: {
-        QList<ContentAction> actions = ContentAction::actions(args);
-        foreach (const ContentAction& action, actions) {
+        QList<Action> actions = Action::actions(args);
+        foreach (const Action& action, actions) {
             if (todo == PrintActions) {
                 out << action.name() << endl;
             } else if (todo == Invoke && actionName == action.name()) {
@@ -124,7 +128,7 @@ int main(int argc, char **argv)
         break;
     }
     case InvokeDefault: {
-        ContentAction defAction = ContentAction::defaultAction(args);
+        Action defAction = Action::defaultAction(args);
         if (!defAction.isValid()) {
             err << "no default action for the given URIs\n";
             return 4;

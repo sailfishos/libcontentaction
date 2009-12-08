@@ -28,6 +28,8 @@
 
 #include <QDebug>
 
+namespace ContentAction {
+
 // initialized on the first request
 static TrackerClient *Tracker = 0;
 static galleryinterface *gallery = 0;
@@ -35,43 +37,43 @@ static MusicSuiteServicePublicIf *musicSuite = 0;
 
 #define LCA_WARNING qWarning() << "libcontentaction:"
 
-ContentAction::ContentAction()
+Action::Action()
 {
-    d = new ContentActionPrivate();
+    d = new ActionPrivate();
     d->valid = false;
 }
 
-ContentAction::ContentAction(const QStringList& uris, const QStringList& classes,
+Action::Action(const QStringList& uris, const QStringList& classes,
                              const QString& action)
 {
-    d = new ContentActionPrivate();
+    d = new ActionPrivate();
     d->uris = uris;
     d->classes = classes;
     d->action = action;
     d->valid = true;
 }
 
-ContentAction::ContentAction(const ContentAction& other)
+Action::Action(const Action& other)
 {
-    d = new ContentActionPrivate();
+    d = new ActionPrivate();
     *d = *other.d;
 }
 
-ContentAction::~ContentAction()
+Action::~Action()
 {
     delete d;
     d = 0;
 }
 
-ContentAction& ContentAction::operator=(const ContentAction& other)
+Action& Action::operator=(const Action& other)
 {
     *d = *other.d;
     return *this;
 }
 
-/// Triggers the action represented by this ContentAction object,
-/// using the uri's contained by the ContentAction object.
-void ContentAction::trigger() const
+/// Triggers the action represented by this Action object,
+/// using the uri's contained by the Action object.
+void Action::trigger() const
 {
     if (!d->valid) {
         LCA_WARNING << "triggered an invalid action, not doing anything.";
@@ -99,14 +101,14 @@ void ContentAction::trigger() const
     }
 }
 
-/// Sets the action represented by this ContentAction to be the
+/// Sets the action represented by this Action to be the
 /// default for a Nepomuk class. If there is only one uri, the class
 /// for which the default is set is the lowest class in the class
 /// hierarchy having a default action. If there are multiple uri's,
 /// the default action can be set only if they represent objects of
 /// the same type. In this case, the Nepomuk class is decided the same
 /// way as in the case of one uri. Note: Not yet implemented.
-void ContentAction::setAsDefault()
+void Action::setAsDefault()
 {
     if (!d->valid) {
         LCA_WARNING << "called setAsDefault() on an invalid action";
@@ -121,9 +123,9 @@ void ContentAction::setAsDefault()
     // TODO: Implement
 }
 
-/// Returns true if the current ContentAction object is the default
+/// Returns true if the current Action object is the default
 /// action for the set of uri's it refers to. Note: not yet implemented.
-bool ContentAction::isDefault() const
+bool Action::isDefault() const
 {
     if (!d->valid)
         return false;
@@ -131,7 +133,7 @@ bool ContentAction::isDefault() const
 }
 
 /// Semantics TBD.
-bool ContentAction::canBeDefault() const
+bool Action::canBeDefault() const
 {
     if (!d->valid)
         return false;
@@ -146,27 +148,27 @@ bool ContentAction::canBeDefault() const
     return true;
 }
 
-/// Returns true if the ContentAction object represents an action
+/// Returns true if the Action object represents an action
 /// which can be triggered.
-bool ContentAction::isValid() const
+bool Action::isValid() const
 {
     return d->valid;
 }
 
 /// Returns the name of the action, i.e., [service fw interface].[function]
-QString ContentAction::name() const
+QString Action::name() const
 {
     return d->action;
 }
 
 /// Returns the default action for a given list of uri's. If there are
-/// no applicable actions, an invalid ContentAction object is
+/// no applicable actions, an invalid Action object is
 /// returned.
-ContentAction ContentAction::defaultAction(const QString& uri)
+Action Action::defaultAction(const QString& uri)
 {
-    QList<ContentAction> acts = actions(uri);
+    QList<Action> acts = actions(uri);
     if (acts.isEmpty())
-        return ContentAction();
+        return Action();
     else
         return acts[0];
 }
@@ -174,14 +176,14 @@ ContentAction ContentAction::defaultAction(const QString& uri)
 /// Returns the default action for a given list of uri's. If the uri's
 /// represent object of different types (e.g., one is an image, other
 /// is an audio file), a default action cannot be constructed and an
-/// invalid ContentAction object is returned.
-ContentAction ContentAction::defaultAction(const QStringList& uris)
+/// invalid Action object is returned.
+Action Action::defaultAction(const QStringList& uris)
 {
     /// XXX: is there always a default action? Is the most relevant
     /// action always the default action?
-    QList<ContentAction> acts = actions(uris);
+    QList<Action> acts = actions(uris);
     if (acts.isEmpty())
-        return ContentAction();
+        return Action();
     else
         return acts[0];
 }
@@ -190,14 +192,14 @@ ContentAction ContentAction::defaultAction(const QStringList& uris)
 /// classes of the uri are read from Tracker, and the actions are
 /// determined with hard-coded association rules between nepomuk
 /// classes and actions.
-QList<ContentAction> ContentAction::actions(const QString& uri)
+QList<Action> Action::actions(const QString& uri)
 {
-    QList<ContentAction> result;
+    QList<Action> result;
     QStringList classes = classesOf(uri);
     foreach (const QString& klass, classes) {
         QStringList actions = actionsForClass(klass);
         foreach (const QString& action, actions) {
-            result << ContentAction(QStringList() << uri, classes, action);
+            result << Action(QStringList() << uri, classes, action);
         }
     }
     return result;
@@ -205,7 +207,7 @@ QList<ContentAction> ContentAction::actions(const QString& uri)
 
 /// Returns the set of actions applicable to all \a uris. The set is
 /// an intersection of actions applicable to the individual uris.
-QList<ContentAction> ContentAction::actions(const QStringList& uris)
+QList<Action> Action::actions(const QStringList& uris)
 {
     QStringList commonActions;
     QStringList commonClasses;
@@ -235,9 +237,9 @@ QList<ContentAction> ContentAction::actions(const QStringList& uris)
         }
     }
 
-    QList<ContentAction> result;
+    QList<Action> result;
     foreach (const QString& act, commonActions)
-        result << ContentAction(uris, commonClasses, act);
+        result << Action(uris, commonClasses, act);
     return result;
 }
 
@@ -367,3 +369,5 @@ QString defaultActionForClass(const QString& klass)
 {
     return "";
 }
+
+} // end namespace
