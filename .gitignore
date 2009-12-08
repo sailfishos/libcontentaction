@@ -10,6 +10,7 @@ debian/build-stamp
 debian/libcontentaction0
 debian/libcontentaction0-dbg
 debian/libcontentaction-dev
+debian/libcontentaction-tests
 debian/tmp
 debian/*.debhelper.log
 debian/files
@@ -19,7 +20,8 @@ debian/*.postrm.debhelper
 debian/*.prerm.debhelper
 debian/*.preinst.debhelper
 
-t/test-classesof
+t/env.py
+t/env.sh
 
 /*.pc
 /aclocal.m4

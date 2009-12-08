@@ -18,6 +18,9 @@
 ## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ## 02110-1301 USA
 
+try: import env
+except: pass
+
 import sys
 import os
 import unittest
@@ -27,7 +30,7 @@ from cltool import CLTool
 class Actions(unittest.TestCase):
     def setUp(self):
         # start a fake gallery service
-        self.gallery = CLTool("./gallery.py")
+        self.gallery = CLTool("gallery.py")
         self.assert_(self.gallery.expect("started"))
 
     def tearDown(self):
@@ -36,24 +39,22 @@ class Actions(unittest.TestCase):
     def testInvokeForImage(self):
         (status, output) = getstatusoutput("lca-tool --invokedefault an.image")
         self.assert_(status == 0)
-
         # assert that the gallery was invoked
         self.assert_(self.gallery.expect("showImage ;  ; an.image"))
 
     def testInvokeForTwoImages(self):
         (status, output) = getstatusoutput("lca-tool --invokedefault an.image b.image")
         self.assert_(status == 0)
-
         # assert that the gallery was invoked
         self.assert_(self.gallery.expect("showImage ;  ; an.image,b.image"))
 
     def testInvokeForInvalid(self):
-        lcatool = CLTool("lca-tool", "--invokedefault", "invalid.uri")
-        self.assert_(lcatool.expect("triggered an invalid action, not doing anything."))
+        (status, output) = getstatusoutput("lca-tool --invokedefault invalid.uri")
+        self.assert_(status >> 8 == 4)
 
     def testInvokeForDifferentClasses(self):
-        lcatool = CLTool("lca-tool", "--invokedefault", "an.image", "a.contact")
-        self.assert_(lcatool.expect("triggered an invalid action, not doing anything."))
+        (status, output) = getstatusoutput("lca-tool --invokedefault an.image a.contact")
+        self.assert_(status >> 8 == 4)
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Actions)

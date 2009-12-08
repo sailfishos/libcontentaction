@@ -9,8 +9,7 @@ Build-Depends: debhelper (>= 5),
                libdui-dev,
                maemo-services-dev,
                doxygen (>= 1.5.9),
-               pkg-config,
-               asciidoc (>= 8.2.7)
+               pkg-config
 Standards-Version: 3.8.0
 
 Package: libcontentaction0
@@ -33,3 +32,14 @@ Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-0.7-dev
 Description: Library for associating content with actions
  .
  This package contains the development files.
+
+Package: libcontentaction-tests
+Section: devel
+Architecture: all
+Depends: libcontentaction0 (>= ${binary:Version}),
+         ci-testing,
+         python-dbus,
+         python-gobject
+XB-Maemo-CI-Packages: libcontentaction0
+XB-Maemo-CI-Stage: staging, acceptance
+Description: libcontentaction tests

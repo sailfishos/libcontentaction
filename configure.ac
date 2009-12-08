@@ -35,10 +35,12 @@ AM_CONDITIONAL([COVERAGE], [test "$missing_deps_COVERAGE" = ""])
 
 AC_CONFIG_FILES([
         Makefile
-        src/Makefile
-        t/Makefile
         contentaction-0.1.pc
         contentaction-0.1-uninstalled.pc
+        src/Makefile
+        t/Makefile
+        t/env.sh
+        t/env.py
 ])
 
 AC_OUTPUT
