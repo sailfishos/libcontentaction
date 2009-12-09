@@ -39,7 +39,7 @@ static galleryinterface *Gallery = 0;
 static MusicSuiteServicePublicIf *MusicSuite = 0;
 
 #define LCA_WARNING qWarning() << "libcontentaction:"
-#define GCONF_KEY_PREFIX "/apps/contentaction"
+#define GCONF_KEY_PREFIX "/apps/contentaction/"
 
 Action::Action()
 {
@@ -105,13 +105,13 @@ void Action::trigger() const
     }
 }
 
-/// Sets the action represented by this Action to be the
-/// default for a Nepomuk class. If there is only one uri, the class
-/// for which the default is set is the lowest class in the class
-/// hierarchy having a default action. If there are multiple uri's,
-/// the default action can be set only if they represent objects of
-/// the same type. In this case, the Nepomuk class is decided the same
-/// way as in the case of one uri. Note: Not yet implemented.
+/// Sets the action represented by this Action to be the default for a
+/// Nepomuk class. If there is only one uri, the class for which the
+/// default is set is the lowest class in the class hierarchy. If
+/// there are multiple uri's, the default action can be set only if
+/// they represent objects of the same type. In this case, the Nepomuk
+/// class is decided the same way as in the case of one uri. Note: Not
+/// yet implemented.
 void Action::setAsDefault()
 {
     if (!d->valid) {
@@ -124,7 +124,9 @@ void Action::setAsDefault()
         LCA_WARNING << "cannot set a default action for multiple uris of different types";
         return;
     }
-    // TODO: Implement
+    // Set this action to be the default action for the most specific
+    // class
+    setDefaultAction(d->classes[0], d->action);
 }
 
 /// Returns true if the current Action object is the default
@@ -133,7 +135,7 @@ bool Action::isDefault() const
 {
     if (!d->valid)
         return false;
-    return false;
+    return false; // TODO: implement
 }
 
 /// Semantics TBD.
@@ -165,16 +167,26 @@ QString Action::name() const
     return d->action;
 }
 
-/// Returns the default action for a given list of uri's. If there are
+/// Returns the default action for a given uri. If there are
 /// no applicable actions, an invalid Action object is
 /// returned.
 Action Action::defaultAction(const QString& uri)
 {
-    QList<Action> acts = actions(uri);
-    if (acts.isEmpty())
-        return Action();
-    else
-        return acts[0];
+    // Walk through the class list of the uri, if we find a default
+    // action for a class, return it and stop.
+    QStringList classes = classesOf(uri);
+    QString action = defaultActionForClasses(classes);
+    if (action != "") {
+        return Action(QStringList() << uri, classes, action);
+    }
+    // No default actions were found from GConf. Fall back to the most
+    // relevant action.
+    foreach (const QString& klass, classes) {
+        QStringList actions = actionsForClass(klass);
+        if (actions.size() > 0)
+            return Action(QStringList() << uri, classes, actions[0]);
+    }
+    return Action();
 }
 
 /// Returns the default action for a given list of uri's. If the uri's
@@ -183,13 +195,33 @@ Action Action::defaultAction(const QString& uri)
 /// invalid Action object is returned.
 Action Action::defaultAction(const QStringList& uris)
 {
-    /// XXX: is there always a default action? Is the most relevant
-    /// action always the default action?
-    QList<Action> acts = actions(uris);
-    if (acts.isEmpty())
-        return Action();
-    else
-        return acts[0];
+    bool first = true;
+    QStringList commonClasses;
+    foreach (const QString& uri, uris) {
+        QStringList classes = classesOf(uri);
+
+        if (first) {
+            commonClasses = classes;
+            first = false;
+        } else {
+            if (classes != commonClasses) {
+                commonClasses.clear();
+                break;
+            }
+        }
+    }
+    QString action = defaultActionForClasses(commonClasses);
+    if (action != "") {
+        return Action(uris, commonClasses, action);
+    }
+    // No default actions were found from GConf. Fall back to the most
+    // relevant action.
+    foreach (const QString& klass, commonClasses) {
+        QStringList actions = actionsForClass(klass);
+        if (actions.size() > 0)
+            return Action(uris, commonClasses, actions[0]);
+    }
+    return Action();
 }
 
 /// Returns the set of applicable actions for a given \a uri. The nepomuk
@@ -214,6 +246,8 @@ QList<Action> Action::actions(const QString& uri)
 QList<Action> Action::actions(const QStringList& uris)
 {
     QStringList commonActions;
+    // Empty list if the uri's are not of the same type; otherwise the
+    // class list of them.
     QStringList commonClasses;
     bool first = true;
 
@@ -332,9 +366,7 @@ QStringList classesOf(const QString& uri)
 }
 
 /// Returns the hard-coded list of action names for the given Nepomuk
-/// class \a klass. The default action, read by
-/// defaultActionFromClass, is shifted to be the top-most action of
-/// the list.
+/// class \a klass.
 QStringList actionsForClass(const QString& klass)
 {
     QStringList result;
@@ -359,11 +391,6 @@ QStringList actionsForClass(const QString& klass)
     }
     else if (klass.endsWith("nfo#Audio")) {
         result << "";
-    }
-    QString defAction = defaultAction(klass);
-    if (result.contains(defAction)) {
-        result.removeAll(defAction);
-        result.prepend(defAction);
     }
     return result;
 }
@@ -432,5 +459,15 @@ bool setDefaultAction(const QString& klass, const QString& action)
     return true;
 }
 
+QString defaultActionForClasses(const QStringList& classes)
+{
+    foreach (const QString& klass, classes) {
+        QString action = defaultAction(klass);
+        if (action != "") {
+            return action;
+        }
+    }
+    return "";
+}
 
 } // end namespace

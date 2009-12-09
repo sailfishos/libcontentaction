@@ -28,17 +28,37 @@ from commands import getstatusoutput
 from cltool import CLTool
 
 class Defaults(unittest.TestCase):
-    def testNoDefault(self):
-        (status, output) = getstatusoutput("lca-tool --default http://fake.ontology/fke#NotAFile")
+    def tearDown(self):
+        getstatusoutput("gconftool-2 --recursive-unset /apps/contentaction")
+
+    def testNoDefaultForClass(self):
+        (status, output) = getstatusoutput("lca-tool --classdefault http://fake.ontology/fke#NotAFile")
         self.assert_(status >>8 == 5)
 
-    def testSetAndGetDefault(self):
-        (status, output) = getstatusoutput("lca-tool --setdefault fake.action http://fake.ontology/fke#AudioFile")
+    def testSetAndGetDefaultForClass(self):
+        (status, output) = getstatusoutput("lca-tool --setclassdefault fake.action http://fake.ontology/fke#AudioFile")
         self.assert_(status == 0)
 
-        (status, output) = getstatusoutput("lca-tool --default http://fake.ontology/fke#AudioFile")
+        (status, output) = getstatusoutput("lca-tool --classdefault http://fake.ontology/fke#AudioFile")
         self.assert_(status == 0)
         self.assert_(output.find("fake.action\n") != -1)
+
+    def testNonImmediateDefault(self):
+        # set a default for a non-immediate superclass
+        (status, output) = getstatusoutput("lca-tool --setclassdefault nonimmediate.default http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Visual")
+        (status, output) = getstatusoutput("lca-tool --default an.image")
+        self.assert_(status == 0)
+        self.assert_(output.find("nonimmediate.default\n") != -1)
+
+    def testImmediateDefault(self):
+        # set a default for a non-immediate superclass
+        (status, output) = getstatusoutput("lca-tool --setclassdefault nonimmediate.default http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Visual")
+        # and also for an immediate superclass
+        (status, output) = getstatusoutput("lca-tool --setclassdefault better.default http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image")
+
+        (status, output) = getstatusoutput("lca-tool --default an.image")
+        self.assert_(status == 0)
+        self.assert_(output.find("better.default\n") != -1)
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Defaults)

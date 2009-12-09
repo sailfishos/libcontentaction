@@ -35,22 +35,26 @@ enum ActionToDo {
     Invoke,
     InvokeDefault,
     PrintClasses,
-    PrintDefaultAction,
-    SetDefaultAction
+    PrintDefault,
+    SetDefault,
+    PrintClassDefault,
+    SetClassDefault
 };
-
 
 void usage(char *prog)
 {
     QTextStream err(stderr);
-    err << "Usage: " << prog << " [OPTIONS] URI [URIS...]\n"
-        "  -h|--help                         print this text\n"
-        "  -p|--print                        print the applicable actions\n"
-        "  -i|--invoke INTERFACE.METHOD      invoke the specified action\n"
-        "  -d|--invokedefault                invoke the default action\n"
-        "  -c|--classes                      print the classes of the URIs\n"
-        "  -a|--default                      print the default action for a Nepomuk class\n"
-        "  -s|--setdefault INTERFACE.METHOD  set a default action for a Nepomuk class\n"
+    err << "Usage: " << prog << " [OPTIONS] [URIS...]\n"
+        "  -h|--help                          print this text\n"
+        "  -p|--print                         print the applicable actions\n"
+        "  -i|--invoke ACTION                 invoke the specified action\n"
+        "  -I|--invokedefault                 invoke the default action\n"
+        "  -c|--classes                       print the classes of the URIs\n"
+        "  -d|--default                       print the default action\n"
+        "  -s|--setdefault ACTION             set the default action for the given URIs\n"
+        "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
+        "  -S|--setclassdefault ACTION CLASS  set a default action for a Nepomuk class\n"
+        "where ACTION is: INTERFACE.METHOD of the maemo service framework\n"
         "Return values:\n"
         "  0   success\n"
         "  1   no arguments given\n"
@@ -58,7 +62,8 @@ void usage(char *prog)
         "  3   tried to invoke an action not applicable for the given URIs\n"
         "  4   no default action exists for the given URIs\n"
         "  5   no default action exists for the given Nepomuk class\n"
-        "  6   setting a default action for the given Nepomuk class failed\n";
+        "  6   setting a default action for the given Nepomuk class failed\n"
+        "  7   an action cannot be set as default action for the given URIs\n";
 }
 
 int main(int argc, char **argv)
@@ -98,7 +103,7 @@ int main(int argc, char **argv)
             actionName = args.takeFirst();
             break;
         }
-        if (arg == "-d" || arg == "--invokedefault") {
+        if (arg == "-I" || arg == "--invokedefault") {
             todo = InvokeDefault;
             break;
         }
@@ -106,12 +111,12 @@ int main(int argc, char **argv)
             todo = PrintClasses;
             break;
         }
-        if (arg == "-a" || arg == "--default") {
-            todo = PrintDefaultAction;
+        if (arg == "-D" || arg == "--classdefault") {
+            todo = PrintClassDefault;
             break;
         }
-        if (arg == "-s" || arg == "--setdefault") {
-            todo = SetDefaultAction;
+        if (arg == "-S" || arg == "--setclassdefault") {
+            todo = SetClassDefault;
             if (args.isEmpty()) {
                 err << "an action must be given when using " << arg << endl;
                 return 2;
@@ -119,11 +124,25 @@ int main(int argc, char **argv)
             actionName = args.takeFirst();
             break;
         }
-
+        if (arg == "-d" || arg == "--default") {
+            todo = PrintDefault;
+            break;
+        }
+        if (arg == "-s" || arg == "--setdefault") {
+            todo = SetDefault;
+            if (args.isEmpty()) {
+                err << "an action must be given when using " << arg << endl;
+                return 2;
+            }
+            actionName = args.takeFirst();
+            break;
+        }
+        err << "Unknown option" << arg << endl;
+        return 2;
     }
 
     if (args.isEmpty()) {
-        err << "no URIs given\n";
+        err << "option needs more arguments\n";
         return 2;
     }
 
@@ -133,13 +152,18 @@ int main(int argc, char **argv)
         return 1;
         break;
     case PrintActions:
+    case SetDefault:
     case Invoke: {
         QList<Action> actions = Action::actions(args);
-        foreach (const Action& action, actions) {
+        foreach (Action action, actions) {
             if (todo == PrintActions) {
                 out << action.name() << endl;
             } else if (todo == Invoke && actionName == action.name()) {
                 action.trigger();
+                return 0;
+            }
+            else if (todo == SetDefault && actionName == action.name()) {
+                action.setAsDefault();
                 return 0;
             }
         }
@@ -147,22 +171,31 @@ int main(int argc, char **argv)
             err << "action '" << actionName << "'is not applicable\n";
             return 3;
         }
+        else if (todo == SetDefault) {
+            err << "action '" << actionName << "'cannot be set as default\n";
+            return 7;
+        }
         break;
     }
+    case PrintDefault:
     case InvokeDefault: {
         Action defAction = Action::defaultAction(args);
         if (!defAction.isValid()) {
             err << "no default action for the given URIs\n";
             return 4;
         }
-        defAction.trigger();
+        if (todo == InvokeDefault)
+            defAction.trigger();
+        else if (todo == PrintDefault)
+            out << defAction.name() << endl;
+        break;
     }
     case PrintClasses: {
         foreach (const QString& cls, classesOf(args[0]))
             out << cls << endl;
         break;
     }
-    case PrintDefaultAction: {
+    case PrintClassDefault: {
         QString defAction = defaultAction(args[0]);
         if (defAction != "")
             out << defaultAction(args[0]) << endl;
@@ -172,7 +205,7 @@ int main(int argc, char **argv)
         }
         break;
     }
-    case SetDefaultAction: {
+    case SetClassDefault: {
         if (!setDefaultAction(args[0], actionName)) {
             err << "failed to set default action " << actionName
                 << " for a class " << args[0] << endl;
