@@ -8,7 +8,11 @@ citest_SCRIPTS = \
 	cltool.py \
 	gallery.py \
 	servicemapper.py \
-	$(TESTS)
+	start-sandbox.sh \
+	test-actions.sh \
+	test-classes.sh \
+	test_invoking.py \
+	stop-sandbox.sh
 
 citest_DATA = \
 	tests.xml \
@@ -16,6 +20,21 @@ citest_DATA = \
 	data.contact \
 	data.web \
 	data.image
+
+check_PROGRAMS = \
+	linktest
+linktest_SOURCES = \
+	linktest.cpp
+linktest_CPPFLAGS = \
+	$(QtCore_CFLAGS) \
+	-I$(top_srcdir)/src
+linktest_LDADD = \
+	../src/libcontentaction.la
+
+../src/libcontentaction.la: FORCE
+	$(MAKE) -C ../src libcontentaction.la
+
+.PHONY: FORCE
 
 EXTRA_DIST = \
 	$(citest_DATA) \
@@ -25,6 +44,7 @@ EXTRA_DIST = \
 # change, we fail.
 TESTS = \
 	start-sandbox.sh \
+	linktest \
 	test-actions.sh \
 	test-classes.sh \
 	test-invoking.py \
