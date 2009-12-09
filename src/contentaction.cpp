@@ -26,12 +26,15 @@
 #include <galleryinterface.h>
 #include <musicsuiteservicepublicif.h>
 
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
 #include <QDebug>
 
 namespace ContentAction {
 
 // initialized on the first request
 static TrackerClient *Tracker = 0;
+static GConfClient *gconf;
 static galleryinterface *gallery = 0;
 static MusicSuiteServicePublicIf *musicSuite = 0;
 
@@ -356,7 +359,7 @@ QStringList actionsForClass(const QString& klass)
     else if (klass.endsWith("nfo#Audio")) {
         result << "";
     }
-    QString defAction = defaultActionForClass(klass);
+    QString defAction = defaultAction(klass);
     if (result.contains(defAction)) {
         result.removeAll(defAction);
         result.prepend(defAction);
@@ -364,10 +367,69 @@ QStringList actionsForClass(const QString& klass)
     return result;
 }
 
-/// Returns the per-class default action. For now, not implemented.
-QString defaultActionForClass(const QString& klass)
+/// Returns the per-class default action. If there is no default
+/// action for that class, returns an empty string.
+QString defaultAction(const QString& klass)
 {
-    return "";
+    if (gconf == 0) {
+        g_type_init(); // XXX: needed?
+        gconf = gconf_client_get_default();
+    }
+
+    // Query the value from GConf
+    char* escaped = gconf_escape_key(klass.toLocal8Bit().constData(), -1);
+    QString key = QString("/apps/contentaction/") + QString(escaped);
+
+    GError* error = NULL;
+    GConfValue* value = gconf_client_get(gconf, key.toLocal8Bit().constData(), &error);
+
+    g_free(escaped);
+
+    if (error) {
+        LCA_WARNING << "Error getting data from GConf:" << error->message;
+        g_error_free(error);
+        return "";
+    }
+
+    if (value == 0) {
+        // The key doesn't exist; no default action for the class
+        return "";
+    }
+
+    const char* valueString = gconf_value_get_string(value); // shouldn't be freed
+
+    QString action = "";
+    if (valueString) {
+        action = QString(valueString);
+    }
+
+    gconf_value_free(value);
+    return action;
 }
+
+bool setDefaultAction(const QString& klass, const QString& action)
+{
+    if (gconf == 0) {
+        g_type_init(); // XXX: needed?
+        gconf = gconf_client_get_default();
+    }
+
+    // Set the class - action pair to GConf
+    char* escaped = gconf_escape_key(klass.toLocal8Bit().constData(), -1);
+    QString key = QString("/apps/contentaction/") + QString(escaped);
+
+    GError* error = NULL;
+
+    gconf_client_set_string(gconf, key.toLocal8Bit().constData(), action.toLocal8Bit().constData(), &error);
+    g_free(escaped);
+
+    if (error) {
+        LCA_WARNING << "Error setting data to GConf";
+        g_error_free(error);
+        return false;
+    }
+    return true;
+}
+
 
 } // end namespace

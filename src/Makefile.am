@@ -2,6 +2,7 @@ AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
 	$(TRACKER_CFLAGS) \
 	$(DUI_CFLAGS) \
+	$(GCONF_CFLAGS) \
 	-I/usr/include/gallery/service \
 	-I/usr/include/music-suite/service
 
@@ -9,6 +10,7 @@ LIBS += \
 	$(QtCore_LIBS) \
 	$(TRACKER_LIBS) \
 	$(DUI_LIBS) \
+	$(GCONF_LIBS) \
 	-lgalleryinterface \
 	-lmusicsuitepublicinterface
 

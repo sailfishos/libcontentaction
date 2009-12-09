@@ -26,6 +26,8 @@
 
 using ContentAction::Action;
 using ContentAction::classesOf;
+using ContentAction::defaultAction;
+using ContentAction::setDefaultAction;
 
 enum ActionToDo {
     PrintHelp,
@@ -33,6 +35,8 @@ enum ActionToDo {
     Invoke,
     InvokeDefault,
     PrintClasses,
+    PrintDefaultAction,
+    SetDefaultAction
 };
 
 
@@ -40,17 +44,21 @@ void usage(char *prog)
 {
     QTextStream err(stderr);
     err << "Usage: " << prog << " [OPTIONS] URI [URIS...]\n"
-        "  -h|--help                     print this text\n"
-        "  -p|--print                    print the applicable actions\n"
-        "  -i|--invoke=INTERFACE.METHOD  invoke the specified action\n"
-        "  -d|--invokedefault            invoke the default action\n"
-        "  -c|--classes                  print the classes of the URIs\n"
+        "  -h|--help                         print this text\n"
+        "  -p|--print                        print the applicable actions\n"
+        "  -i|--invoke INTERFACE.METHOD      invoke the specified action\n"
+        "  -d|--invokedefault                invoke the default action\n"
+        "  -c|--classes                      print the classes of the URIs\n"
+        "  -a|--default                      print the default action for a Nepomuk class\n"
+        "  -s|--setdefault INTERFACE.METHOD  set a default action for a Nepomuk class\n"
         "Return values:\n"
         "  0   success\n"
         "  1   no arguments given\n"
         "  2   problem with command arguments\n"
         "  3   tried to invoke an action not applicable for the given URIs\n"
-        "  4   no default action exists for the given URIs\n";
+        "  4   no default action exists for the given URIs\n"
+        "  5   no default action exists for the given Nepomuk class\n"
+        "  6   setting a default action for the given Nepomuk class failed\n";
 }
 
 int main(int argc, char **argv)
@@ -98,6 +106,20 @@ int main(int argc, char **argv)
             todo = PrintClasses;
             break;
         }
+        if (arg == "-a" || arg == "--default") {
+            todo = PrintDefaultAction;
+            break;
+        }
+        if (arg == "-s" || arg == "--setdefault") {
+            todo = SetDefaultAction;
+            if (args.isEmpty()) {
+                err << "an action must be given when using " << arg << endl;
+                return 2;
+            }
+            actionName = args.takeFirst();
+            break;
+        }
+
     }
 
     if (args.isEmpty()) {
@@ -138,6 +160,25 @@ int main(int argc, char **argv)
     case PrintClasses: {
         foreach (const QString& cls, classesOf(args[0]))
             out << cls << endl;
+        break;
+    }
+    case PrintDefaultAction: {
+        QString defAction = defaultAction(args[0]);
+        if (defAction != "")
+            out << defaultAction(args[0]) << endl;
+        else {
+            err << "no default action for: " << args[0] << endl;
+            return 5;
+        }
+        break;
+    }
+    case SetDefaultAction: {
+        if (!setDefaultAction(args[0], actionName)) {
+            err << "failed to set default action " << actionName
+                << " for a class " << args[0] << endl;
+            return 6;
+        }
+        break;
     }
     }
     return 0;

@@ -7,6 +7,7 @@ Build-Depends: debhelper (>= 5),
                libglib2.0-dev (>= 2.12.0),
                libtracker-client-0.7-dev,
                libdui-dev,
+               libgconf2-dev,
                maemo-services-dev,
                doxygen (>= 1.5.9),
                pkg-config

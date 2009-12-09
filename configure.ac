@@ -18,6 +18,7 @@ PKG_CHECK_MODULES([QtCore], [QtCore])
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12.0])
 PKG_CHECK_MODULES([TRACKER], [tracker-client-0.7])
 PKG_CHECK_MODULES([DUI], [Dui])
+PKG_CHECK_MODULES([GCONF], [gconf-2.0])
 
 AC_CHECK_FILE([/usr/include/gallery/service/galleryinterface.h], [],
               AC_MSG_ERROR([please install maemo-services-dev]))
