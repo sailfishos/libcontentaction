@@ -127,6 +127,7 @@ void Action::setAsDefault()
     // Set this action to be the default action for the most specific
     // class
     setDefaultAction(d->classes[0], d->action);
+    // FIXME: decide what to do if there are many "most specific" classes.
 }
 
 /// Returns true if the current Action object is the default
