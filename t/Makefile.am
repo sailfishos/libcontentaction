@@ -50,7 +50,5 @@ TESTS = \
 	test-invoking.py \
 	stop-sandbox.sh
 
-TESTS_ENVIRONMENT = eval `cat env.sh`
-
 clean-local:
 	rm -f *.pyc;

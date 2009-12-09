@@ -24,9 +24,17 @@ case "$1" in
                 kill -9 `ps axw | awk '/duiservicemapper/ { print $1; }'` || true;
                 $srcdir/servicemapper.py &
                 echo "$!" > /tmp/servicemapper.py.pid;
+
+		if ! ps axw | grep -v grep | grep /usr/lib/gconf2/gconfd-2; then
+			/usr/lib/gconf2/gconfd-2 &
+			echo "$!" > /tmp/gconfd-2.pid;
+		fi
                 ;;
         --stop)
                 exec >/tmp/lca-sandbox.log 2>&1
+		# kill the gconfd if we started it
+                kill -9 `cat /tmp/gconfd-2.pid` || true;
+                rm -f /tmp/gconfd-2.pid || true;
                 # kill our servicemapper
                 kill -9 `cat /tmp/servicemapper.py.pid` || true;
                 rm -f /tmp/servicemapper.py.pid || true;
