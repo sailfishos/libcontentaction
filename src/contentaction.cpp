@@ -135,7 +135,9 @@ bool Action::isDefault() const
 {
     if (!d->valid)
         return false;
-    return false; // TODO: implement
+
+    Action def = defaultAction(d->uris);
+    return (def.d->action == d->action);
 }
 
 /// Semantics TBD.
