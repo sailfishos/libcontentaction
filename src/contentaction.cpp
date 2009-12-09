@@ -34,11 +34,12 @@ namespace ContentAction {
 
 // initialized on the first request
 static TrackerClient *Tracker = 0;
-static GConfClient *gconf;
-static galleryinterface *gallery = 0;
-static MusicSuiteServicePublicIf *musicSuite = 0;
+static GConfClient *Gconf;
+static galleryinterface *Gallery = 0;
+static MusicSuiteServicePublicIf *MusicSuite = 0;
 
 #define LCA_WARNING qWarning() << "libcontentaction:"
+#define GCONF_KEY_PREFIX "/apps/contentaction"
 
 Action::Action()
 {
@@ -84,23 +85,23 @@ void Action::trigger() const
     }
 
     if (d->action == "com.nokia.galleryserviceinterface.showImage") {
-        if (gallery == 0)
-            gallery = new galleryinterface();
-        if (!gallery->isValid()) {
+        if (Gallery == 0)
+            Gallery = new galleryinterface();
+        if (!Gallery->isValid()) {
             LCA_WARNING << "gallery interface is invalid";
             return;
         }
-        gallery->showImage("", d->uris);
+        Gallery->showImage("", d->uris);
     }
     else if (d->action == "com.nokia.MusicSuiteServicePublicIf.play") {
-        if (musicSuite == 0)
-            musicSuite = new MusicSuiteServicePublicIf();
-        if (!musicSuite->isValid()) {
+        if (MusicSuite == 0)
+            MusicSuite = new MusicSuiteServicePublicIf();
+        if (!MusicSuite->isValid()) {
             LCA_WARNING << "music suite interface is invalid";
             return;
         }
         foreach (const QString& uri, d->uris)
-            musicSuite->play(uri);
+            MusicSuite->play(uri);
     }
 }
 
@@ -371,17 +372,17 @@ QStringList actionsForClass(const QString& klass)
 /// action for that class, returns an empty string.
 QString defaultAction(const QString& klass)
 {
-    if (gconf == 0) {
+    if (Gconf == 0) {
         g_type_init(); // XXX: needed?
-        gconf = gconf_client_get_default();
+        Gconf = gconf_client_get_default();
     }
 
     // Query the value from GConf
     char* escaped = gconf_escape_key(klass.toLocal8Bit().constData(), -1);
-    QString key = QString("/apps/contentaction/") + QString(escaped);
+    QString key = QString(GCONF_KEY_PREFIX) + QString::fromAscii(escaped);
 
     GError* error = NULL;
-    GConfValue* value = gconf_client_get(gconf, key.toLocal8Bit().constData(), &error);
+    GConfValue* value = gconf_client_get(Gconf, key.toLocal8Bit().constData(), &error);
 
     g_free(escaped);
 
@@ -409,22 +410,22 @@ QString defaultAction(const QString& klass)
 
 bool setDefaultAction(const QString& klass, const QString& action)
 {
-    if (gconf == 0) {
+    if (Gconf == 0) {
         g_type_init(); // XXX: needed?
-        gconf = gconf_client_get_default();
+        Gconf = gconf_client_get_default();
     }
 
     // Set the class - action pair to GConf
     char* escaped = gconf_escape_key(klass.toLocal8Bit().constData(), -1);
-    QString key = QString("/apps/contentaction/") + QString(escaped);
+    QString key = QString(GCONF_KEY_PREFIX) + QString::fromAscii(escaped);
 
     GError* error = NULL;
 
-    gconf_client_set_string(gconf, key.toLocal8Bit().constData(), action.toLocal8Bit().constData(), &error);
+    gconf_client_set_string(Gconf, key.toLocal8Bit().constData(), action.toLocal8Bit().constData(), &error);
     g_free(escaped);
 
     if (error) {
-        LCA_WARNING << "Error setting data to GConf";
+        LCA_WARNING << "Error setting data to GConf:" << error->message;
         g_error_free(error);
         return false;
     }
