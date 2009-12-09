@@ -11,7 +11,7 @@ citest_SCRIPTS = \
 	start-sandbox.sh \
 	test-actions.sh \
 	test-classes.sh \
-	test_invoking.py \
+	test-invoking.py \
 	stop-sandbox.sh
 
 citest_DATA = \
