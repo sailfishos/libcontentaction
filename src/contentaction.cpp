@@ -167,9 +167,12 @@ QString Action::name() const
     return d->action;
 }
 
-/// Returns the default action for a given uri. If there are
-/// no applicable actions, an invalid Action object is
-/// returned.
+/// Returns the default action for a given uri. A default action is
+/// determined by walking up the class hierarchy of the \a uri, and
+/// taking the first default action defined for a class. If no default
+/// action is set, returns the most relevant action, i.e., the first
+/// action returned by actions(). If there are no applicable actions,
+/// an invalid Action object is returned.
 Action Action::defaultAction(const QString& uri)
 {
     // Walk through the class list of the uri, if we find a default
@@ -459,6 +462,9 @@ bool setDefaultAction(const QString& klass, const QString& action)
     return true;
 }
 
+/// Walks up the inheritance hierarchy, checking the default actions
+/// for each class. Returns the first action found, or an empty string
+/// if none were found.
 QString defaultActionForClasses(const QStringList& classes)
 {
     foreach (const QString& klass, classes) {

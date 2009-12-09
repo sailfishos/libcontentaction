@@ -60,6 +60,38 @@ class Defaults(unittest.TestCase):
         self.assert_(status == 0)
         self.assert_(output.find("better.default\n") != -1)
 
+    def testDefaultForManyUris(self):
+        (status, output) = getstatusoutput("lca-tool --setclassdefault better.default http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image")
+
+        (status, output) = getstatusoutput("lca-tool --default an.image b.image")
+        self.assert_(status == 0)
+        self.assert_(output.find("better.default\n") != -1)
+
+    def testSettingDefault(self):
+        # only an applicable action can be set as default, so set the only applicable action
+        (status, output) = getstatusoutput("lca-tool --setdefault com.nokia.galleryserviceinterface.showImage an.image")
+        self.assert_(status == 0)
+
+        # the default action should be set for the most specific subclass
+        (status, output) = getstatusoutput("lca-tool --classdefault http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image")
+        self.assert_(status == 0)
+        self.assert_(output.find("com.nokia.galleryserviceinterface.showImage\n") != -1)
+
+    def testSettingDefaultForManyUris(self):
+        # only an applicable action can be set as default, so set the only applicable action
+        (status, output) = getstatusoutput("lca-tool --setdefault com.nokia.galleryserviceinterface.showImage an.image b.image")
+        self.assert_(status == 0)
+
+        # the default action should be set for the most specific subclass
+        (status, output) = getstatusoutput("lca-tool --classdefault http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image")
+        self.assert_(status == 0)
+        self.assert_(output.find("com.nokia.galleryserviceinterface.showImage\n") != -1)
+
+    def testSettingDefaultForIncompatibleUris(self):
+        # only an applicable action can be set as default, so set the only applicable action
+        (status, output) = getstatusoutput("lca-tool --setdefault com.nokia.galleryserviceinterface.showImage an.image a.contact")
+        self.assert_(status >> 8 == 7)
+
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Defaults)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
