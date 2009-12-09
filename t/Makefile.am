@@ -27,7 +27,7 @@ TESTS = \
 	start-sandbox.sh \
 	test-actions.sh \
 	test-classes.sh \
-	test_invoking.py \
+	test-invoking.py \
 	stop-sandbox.sh
 
 TESTS_ENVIRONMENT = eval `cat env.sh`

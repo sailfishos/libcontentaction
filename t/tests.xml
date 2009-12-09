@@ -23,11 +23,11 @@
           PATH=.:$PATH ./test-classes.sh
         </step>
       </case>
-      <case name="test_invoking" description="A test of questionable value.">
+      <case name="test-invoking" description="A test of questionable value.">
         <step expected_result="0">
           . /tmp/session_bus_address.user; \
           cd /usr/share/libcontentaction-tests; \
-          PATH=.:$PATH ./test_invoking.py
+          PATH=.:$PATH ./test-invoking.py
         </step>
       </case>
 
