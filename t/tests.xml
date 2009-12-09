@@ -29,6 +29,12 @@
           cd /usr/share/libcontentaction-tests; \
           PATH=.:$PATH ./test-invoking.py
         </step>
+      <case name="test-defaults" description="A test of questionable value.">
+        <step expected_result="0">
+          . /tmp/session_bus_address.user; \
+          cd /usr/share/libcontentaction-tests; \
+          PATH=.:$PATH ./test-defaults.py
+        </step>
       </case>
 
       <environments>

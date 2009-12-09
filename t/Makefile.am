@@ -12,6 +12,7 @@ citest_SCRIPTS = \
 	test-actions.sh \
 	test-classes.sh \
 	test-invoking.py \
+	test-defaults.py \
 	stop-sandbox.sh
 
 citest_DATA = \
@@ -48,6 +49,7 @@ TESTS = \
 	test-actions.sh \
 	test-classes.sh \
 	test-invoking.py \
+	test-defaults.py \
 	stop-sandbox.sh
 
 clean-local:
