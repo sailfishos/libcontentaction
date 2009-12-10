@@ -34,13 +34,21 @@ Description: Library for associating content with actions
  .
  This package contains the development files.
 
+Package: libcontentaction-doc
+Section: doc
+Architecture: all
+Description: Library for associating content with actions
+ .
+ This package contains the documentation.
+
 Package: libcontentaction-tests
 Section: devel
 Architecture: all
 Depends: libcontentaction0 (>= ${binary:Version}),
          ci-testing,
          python-dbus,
-         python-gobject
+         python-gobject,
+         python (>= 2.5)
 XB-Maemo-CI-Packages: libcontentaction0
 XB-Maemo-CI-Stage: staging, acceptance
 Description: libcontentaction tests

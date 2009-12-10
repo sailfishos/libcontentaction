@@ -28,6 +28,11 @@ install: build
 	dh_clean -k
 	dh_installdirs
 	$(MAKE) DESTDIR=`pwd`/debian/tmp/ install
+
+	mkdir -p `pwd`/debian/tmp/usr/share/doc/libcontentaction-doc
+	rm -rf `pwd`/debian/tmp/usr/share/doc/libcontentaction-doc/html
+	cp -a doc/html `pwd`/debian/tmp/usr/share/doc/libcontentaction-doc
+
 	dh_install --sourcedir=`pwd`/debian/tmp/
 
 binary-indep: build install

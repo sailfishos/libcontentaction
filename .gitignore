@@ -10,6 +10,7 @@ debian/build-stamp
 debian/libcontentaction0
 debian/libcontentaction0-dbg
 debian/libcontentaction-dev
+debian/libcontentaction-doc
 debian/libcontentaction-tests
 debian/tmp
 debian/*.debhelper.log
