@@ -39,7 +39,7 @@ static galleryinterface *Gallery = 0;
 static MusicSuiteServicePublicIf *MusicSuite = 0;
 
 #define LCA_WARNING qWarning() << "libcontentaction:"
-#define GCONF_KEY_PREFIX "/apps/contentaction/"
+#define GCONF_KEY_PREFIX "/Dui/contentaction/"
 
 Action::Action()
 {

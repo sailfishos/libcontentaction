@@ -29,7 +29,7 @@ from cltool import CLTool
 
 class Defaults(unittest.TestCase):
     def tearDown(self):
-        getstatusoutput("gconftool-2 --recursive-unset /apps/contentaction")
+        getstatusoutput("gconftool-2 --recursive-unset /Dui/contentaction")
 
     def testNoDefaultForClass(self):
         (status, output) = getstatusoutput("lca-tool --classdefault http://fake.ontology/fke#NotAFile")
