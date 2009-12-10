@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 	$(DUI_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	-I/usr/include/gallery/service \
-	-I/usr/include/music-suite/service
+	-I/usr/include/music-suite/service \
+	$(QtGui_CFLAGS) # temporary; see configure.ac
 
 LIBS += \
 	$(QtCore_LIBS) \
@@ -15,7 +16,8 @@ LIBS += \
 	$(DUI_LIBS) \
 	$(GCONF_LIBS) \
 	-lgalleryinterface \
-	-lmusicsuitepublicinterface
+	-lmusicsuitepublicinterface \
+	$(QtGui_LIBS) # temporary; see configure.ac
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \
