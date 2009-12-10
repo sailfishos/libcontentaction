@@ -1,4 +1,4 @@
-libcontentaction (0.0.1~unreleased) unstable; urgency=low
+libcontentaction (0.0.1) unstable; urgency=low
 
   * Initial release.
   * Implemented: SWP#CntFr-384
