@@ -44,6 +44,11 @@
         <hardware>true</hardware>
       </environments>
 
+      <get>
+	<file>/tmp/lca-sandbox-start.log</file>
+	<file>/tmp/lca-sandbox-stop.log</file>
+      </get>
+
       <post_steps>
         <step expected_result="0">
           cd /usr/share/libcontentaction-tests; \
