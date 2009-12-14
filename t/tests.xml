@@ -4,6 +4,7 @@
     <set name="libcontentaction" description="Tests for libcontentaction">
       <pre_steps>
 	<step expected_result="0">
+          . /tmp/session_bus_address.user; \
           cd /usr/share/libcontentaction-tests; \
           ./sandbox.sh --start
         </step>
