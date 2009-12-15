@@ -14,21 +14,21 @@ srcdir=.
 case "$1" in
         --start)
                 exec >/tmp/lca-sandbox-start.log 2>&1
-                echo "Starting" 1>&2
-                echo "Importing data to tracker" 1>&2
+                echo "Starting"
+                echo "Importing data to tracker"
                 # import our test data to tracker
                 tracker-control -r;
                 tracker-stats;
                 for d in $srcdir/data.*; do
                         tracker-import "$d";
                 done
-                echo "Killing servicemapper" 1>&2
+                echo "Killing servicemapper"
                 # replace servicemapper with ours
                 kill -9 `ps axw | awk '/duiservicemapper/ { print $1; }'` || true;
                 $srcdir/servicemapper.py &
                 echo "$!" > /tmp/servicemapper.py.pid;
 
-                echo "Launching gconfd-2" 1>&2
+                echo "Launching gconfd-2"
 		if ! ps axw | grep -v grep | grep /usr/lib/gconf2/gconfd-2; then
 			/usr/lib/gconf2/gconfd-2 &
 			echo "$!" > /tmp/gconfd-2.pid;
