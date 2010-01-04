@@ -97,6 +97,7 @@
 */
 #include <QList>
 #include <QString>
+#include <QUrl>
 #include <QStringList>
 
 namespace ContentAction
@@ -117,10 +118,14 @@ public:
     QString name() const;
 
     static Action defaultAction(const QString& uri);
+    static Action defaultAction(const QUrl& uri);
     static Action defaultAction(const QStringList& uris);
+    static Action defaultAction(const QList<QUrl>& uris);
 
     static QList<Action> actions(const QString& uri);
+    static QList<Action> actions(const QUrl& uri);
     static QList<Action> actions(const QStringList& uris);
+    static QList<Action> actions(const QList<QUrl>& uris);
 
     Action();
     Action(const Action& other);
@@ -129,7 +134,7 @@ public:
 
 private:
     Action(const QStringList& uris, const QStringList& classes,
-                  const QString& action);
+           const QString& action);
 
     ActionPrivate* d; /// Pimpl pointer
 };
