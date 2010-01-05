@@ -30,6 +30,8 @@
 #include <gconf/gconf-client.h>
 #include <QDir>
 #include <QFile>
+#include <QPair>
+#include <QHash>
 #include <QDebug>
 
 namespace ContentAction {
@@ -187,6 +189,8 @@ Action Action::defaultAction(const QString& uri)
 {
     // Walk through the class list of the uri, if we find a default
     // action for a class, return it and stop.
+    // TODO: implement
+    /*
     QStringList classes = classesOf(uri);
     QString action = defaultActionForClasses(classes);
     if (action != "") {
@@ -198,7 +202,7 @@ Action Action::defaultAction(const QString& uri)
         QStringList actions = actionsForClass(klass);
         if (actions.size() > 0)
             return Action(QStringList() << uri, classes, actions[0]);
-    }
+            }*/
     return Action();
 }
 
@@ -217,7 +221,7 @@ Action Action::defaultAction(const QList<QUrl>& uris)
 /// invalid Action object is returned.
 Action Action::defaultAction(const QStringList& uris)
 {
-    bool first = true;
+/*    bool first = true;
     QStringList commonClasses;
     foreach (const QString& uri, uris) {
         QStringList classes = classesOf(uri);
@@ -242,7 +246,7 @@ Action Action::defaultAction(const QStringList& uris)
         QStringList actions = actionsForClass(klass);
         if (actions.size() > 0)
             return Action(uris, commonClasses, actions[0]);
-    }
+            }*/ //TODO: implement
     return Action();
 }
 
@@ -251,20 +255,31 @@ QList<Action> Action::actions(const QUrl& uri)
     return actions(uri.toEncoded());
 }
 
-/// Returns the set of applicable actions for a given \a uri. The nepomuk
-/// classes of the uri are read from Tracker, and the actions are
-/// determined with hard-coded association rules between nepomuk
-/// classes and actions.
+/// Returns the set of applicable actions for a given \a uri. The
+/// nepomuk classes of the uri are read from Tracker. For each class,
+/// the set of applicable actions and corresponding weights is read
+/// from a configuration file.
 QList<Action> Action::actions(const QString& uri)
 {
     QList<Action> result;
+    QList<QPair<int, QString> > allActions;
     QStringList classes = classesOf(uri);
+
+    // Gather together the list of actions for all the classes of
+    // the uri, then sort according to weight.
     foreach (const QString& klass, classes) {
-        QStringList actions = actionsForClass(klass);
-        foreach (const QString& action, actions) {
-            result << Action(QStringList() << uri, classes, action);
-        }
+        QList<QPair<int, QString> > actions = actionsForClass(klass);
+        for (int i = 0; i < actions.size(); ++i)
+            allActions << actions[i];
     }
+    // Note: it's required that one action occurs only once in the
+    // class hierarchy. E.g., it's not allowed to associate an action
+    // both with nmm#Image and nmm#Photo.
+    qSort(allActions);
+    for (int i = 0; i < allActions.size(); ++i)
+        // The order is reversed here
+        result.prepend(Action(QStringList() << uri, classes, allActions[i].second));
+
     return result;
 }
 
@@ -278,22 +293,26 @@ QList<Action> Action::actions(const QList<QUrl>& uris)
 }
 
 /// Returns the set of actions applicable to all \a uris. The set is
-/// an intersection of actions applicable to the individual uris.
+/// an intersection of actions applicable to the individual uris. The
+/// order of the actions is the order in which they appear in the
+/// action list of the first uri.
 QList<Action> Action::actions(const QStringList& uris)
 {
-    QStringList commonActions;
+    QList<Action> commonActions;
+    bool first = true;
     // Empty list if the uri's are not of the same type; otherwise the
     // class list of them.
     QStringList commonClasses;
-    bool first = true;
 
     foreach (const QString& uri, uris) {
         QStringList classes = classesOf(uri);
-        QStringList acts;
 
-        foreach (const QString& klass, classes)
-            acts.append(actionsForClass(klass));
-
+        // Use Action::actions to get the list of applicable actions
+        // for this single uri. Note that the resulting Action objects
+        // have the "uri" and "classes" fields set for the individual
+        // uri, so we need to correct that later. Also, the order is
+        // now fixed.
+        QList<Action> acts = actions(uri);
         if (first) {
             commonClasses = classes;
             commonActions = acts;
@@ -301,19 +320,26 @@ QList<Action> Action::actions(const QStringList& uris)
         } else {
             if (classes != commonClasses)
                 commonClasses.clear();
+
             // Remove all actions not applicable to this uri.
-            QStringList intersection;
-            foreach (const QString& act, commonActions) {
-                if (acts.contains(act))
-                    intersection << act;
+            QSet<QString> actionNames;
+            foreach (const Action& act, acts)
+                actionNames.insert(act.name());
+
+            QList<Action> intersection;
+            foreach (const Action& commonAct, commonActions) {
+                if (actionNames.contains(commonAct.name()))
+                    intersection << commonAct;
             }
             commonActions = intersection;
         }
     }
 
     QList<Action> result;
-    foreach (const QString& act, commonActions)
-        result << Action(uris, commonClasses, act);
+    // Correct the URI's and classes of the intersected actions
+    foreach (const Action& act, commonActions)
+        result << Action(uris, commonClasses, act.name());
+
     return result;
 }
 
@@ -324,10 +350,8 @@ static bool isValidIRI(const QString& uri)
     return validRE.exactMatch(uri);
 }
 
-/// Returns the Nepomuk classes of a given \a uri. The classes are
-/// returned in the following order: first the immediate superclasses
-/// of the uri in arbitrary order, then their superclasses in
-/// arbitrary order, etc.
+/// Returns the Nepomuk classes of a given \a uri. The order is
+/// arbitrary.
 QStringList classesOf(const QString& uri)
 {
     QStringList result;
@@ -344,11 +368,7 @@ QStringList classesOf(const QString& uri)
         }
     }
     // uri is expected to be percent-encoded UTF-8 here
-    QString query = QString("SELECT ?sub ?super WHERE {<%1> a ?sub . "
-                            "OPTIONAL {?sub rdfs:subClassOf ?super . "
-                            "OPTIONAL {?between rdfs:subClassOf ?super . "
-                            "?sub rdfs:subClassOf ?between .} "
-                            "FILTER(! bound(?between)) } }").arg(uri);
+    QString query = QString("SELECT ?klass WHERE {<%1> a ?klass . }").arg(uri);
     // In the result, sub is a class of uri and super is an immediate
     // superclass of sub.
 
@@ -362,73 +382,15 @@ QStringList classesOf(const QString& uri)
         return result;
     }
 
-    QHash<QString, QStringList> classes; // class -> its immediate superclasses
-    QSet<QString> supers; // classes which have at least one subclass
     for (guint i = 0; i < resArray->len; ++i) {
         char **row = (char **)g_ptr_array_index(resArray, i);
         // NOTE: we assume Tracker returns utf8
-        QString sub = QString::fromUtf8(row[0]);
-        QString super = QString::fromUtf8(row[1]);
-
-        if (!classes.contains(sub))
-            classes.insert(sub, QStringList());
-        if (super != "")
-            classes[sub] << super;
-
-        supers << super;
-
+        QString klass = QString::fromUtf8(row[0]);
+        result << klass;
         g_strfreev(row);
     }
     g_ptr_array_free(resArray, TRUE);
 
-    // Starting from the most immediate classes of the uri, iterate
-    // the superclasses according to superclass levels. (The most
-    // immediate first, then all their superclasses, etc.)
-    QSet<QString> currentLevel = classes.keys().toSet() - supers;
-    QSet<QString> nextLevel;
-    while (currentLevel.size() > 0) {
-        foreach(const QString& c, currentLevel) {
-            // Note: result.contains(c) is inefficient, but likely the
-            // number of classes is very small.
-            if (!result.contains(c)) {
-                result << c;
-                foreach(const QString& super, classes[c])
-                    nextLevel << super;
-            }
-        }
-        currentLevel = nextLevel;
-        nextLevel.clear();
-    }
-    return result;
-}
-
-/// Returns the hard-coded list of action names for the given Nepomuk
-/// class \a klass.
-QStringList actionsForClass(const QString& klass)
-{
-    QStringList result;
-
-    if (klass.endsWith("nmm#MusicPiece")) {
-        result << "com.nokia.MusicSuiteServicePublicIf.play";
-    }
-    else if (klass.endsWith("nmm#MusicAlbum")) {
-        result << "";
-    }
-    else if (klass.endsWith("nmm#Video")) {
-        result << "";
-    }
-    else if (klass.endsWith("nmm#Playlist")) {
-        result << "";
-    }
-    else if (klass.endsWith("nmm#ImageList")) {
-        result << "";
-    }
-    else if (klass.endsWith("nfo#Image")) {
-        result << "com.nokia.galleryserviceinterface.showImage";
-    }
-    else if (klass.endsWith("nfo#Audio")) {
-        result << "";
-    }
     return result;
 }
 
@@ -521,48 +483,57 @@ QString actionPath()
 }
 
 /// Reads the configuration files for "Nepomuk class - action -
-/// weight" association
-void readActions()
+/// weight" association. Returns the list of applicable actions.
+QList<QPair<int, QString> > actionsForClass(const QString& klass)
 {
-    QHash<QString, QList<QPair<int, QString> > > actionsForClasses;
-    QString path = actionPath();
-    QDir dir(path);
-    QStringList confFiles = dir.entryList(QDir::Files);
-    foreach (const QString& confFile, confFiles) {
-        QFile file(path + "/" + confFile);
+    static QHash<QString, QList<QPair<int, QString> > > actionsForClasses;
+    static bool read = false;
 
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qWarning() << "Configuration file" << file.fileName() << "cannot be opened";
-            continue;
-        }
+    if (!read) {
+        read = true;
+        QString path = actionPath();
+        QDir dir(path);
+        QStringList confFiles = dir.entryList(QDir::Files);
+        foreach (const QString& confFile, confFiles) {
+            QFile file(path + "/" + confFile);
 
-        QTextStream in(&file);
-        while (!in.atEnd()) {
-            QStringList line = in.readLine().split(" ");
-            // Format of the line: class action weight
-            if (line.size() < 3) {
-                qWarning() << "Too short line in configuration file" << file.fileName() << ": " << line;
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                qWarning() << "Configuration file" << file.fileName() << "cannot be opened";
                 continue;
             }
-            bool conversionOk = false;
-            int weight = line[2].toInt(&conversionOk);
-            if (!conversionOk) {
-                qWarning() << "Invalid weight in configuration file" << file.fileName() << ": " << line[2];
-                continue;
-            }
-            QPair<int, QString> action(weight, line[1]);
-            if (actionsForClasses.contains(line[0])) {
-                actionsForClasses[line[0]].append(action);
-            }
-            else {
-                actionsForClasses.insert(line[0], QList<QPair<int, QString> >() << action);
+
+            QTextStream in(&file);
+            while (!in.atEnd()) {
+                QStringList line = in.readLine().split(" ");
+                // Format of the line: class action weight
+                if (line.size() < 3) {
+                    qWarning() << "Too short line in configuration file" << file.fileName() << ": " << line;
+                    continue;
+                }
+                bool conversionOk = false;
+                int weight = line[2].toInt(&conversionOk);
+                if (!conversionOk) {
+                    qWarning() << "Invalid weight in configuration file" << file.fileName() << ": " << line[2];
+                    continue;
+                }
+                QPair<int, QString> action(weight, line[1]);
+                if (actionsForClasses.contains(line[0])) {
+                    actionsForClasses[line[0]].append(action);
+                }
+                else {
+                    actionsForClasses.insert(line[0], QList<QPair<int, QString> >() << action);
+                }
             }
         }
         foreach (const QString& klass, actionsForClasses.keys())
             qSort(actionsForClasses[klass]);
 
-        qDebug() << actionsForClasses;
+    qDebug() << actionsForClasses;
     }
+
+    if (actionsForClasses.contains(klass))
+        return actionsForClasses[klass];
+    return QList<QPair<int, QString> >();
 }
 
 
