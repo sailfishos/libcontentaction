@@ -28,6 +28,8 @@
 
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
+#include <QDir>
+#include <QFile>
 #include <QDebug>
 
 namespace ContentAction {
@@ -507,5 +509,61 @@ QString defaultActionForClasses(const QStringList& classes)
     }
     return "";
 }
+
+/// Returns the path where the action configuration files should be
+/// read from.
+QString actionPath()
+{
+    const char *path = getenv("CONTENTACTION_ACTIONS");
+    if (! path)
+        path = DEFAULT_ACTIONS;
+    return QString(path);
+}
+
+/// Reads the configuration files for "Nepomuk class - action -
+/// weight" association
+void readActions()
+{
+    QHash<QString, QList<QPair<int, QString> > > actionsForClasses;
+    QString path = actionPath();
+    QDir dir(path);
+    QStringList confFiles = dir.entryList(QDir::Files);
+    foreach (const QString& confFile, confFiles) {
+        QFile file(path + "/" + confFile);
+
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qWarning() << "Configuration file" << file.fileName() << "cannot be opened";
+            continue;
+        }
+
+        QTextStream in(&file);
+        while (!in.atEnd()) {
+            QStringList line = in.readLine().split(" ");
+            // Format of the line: class action weight
+            if (line.size() < 3) {
+                qWarning() << "Too short line in configuration file" << file.fileName() << ": " << line;
+                continue;
+            }
+            bool conversionOk = false;
+            int weight = line[2].toInt(&conversionOk);
+            if (!conversionOk) {
+                qWarning() << "Invalid weight in configuration file" << file.fileName() << ": " << line[2];
+                continue;
+            }
+            QPair<int, QString> action(weight, line[1]);
+            if (actionsForClasses.contains(line[0])) {
+                actionsForClasses[line[0]].append(action);
+            }
+            else {
+                actionsForClasses.insert(line[0], QList<QPair<int, QString> >() << action);
+            }
+        }
+        foreach (const QString& klass, actionsForClasses.keys())
+            qSort(actionsForClasses[klass]);
+
+        qDebug() << actionsForClasses;
+    }
+}
+
 
 } // end namespace

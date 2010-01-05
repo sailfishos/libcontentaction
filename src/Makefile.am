@@ -8,7 +8,8 @@ AM_CPPFLAGS = \
 	$(GCONF_CFLAGS) \
 	-I/usr/include/gallery/service \
 	-I/usr/include/music-suite/service \
-	$(QtGui_CFLAGS) # temporary; see configure.ac
+	$(QtGui_CFLAGS) \
+	'-DDEFAULT_ACTIONS="@datadir@/contentaction/actions"'
 
 LIBS += \
 	$(QtCore_LIBS) \
