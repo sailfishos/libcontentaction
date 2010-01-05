@@ -1,0 +1,4 @@
+- Unify the service fw interfaces
+- Make "actions for nepomuk class" configurable
+- Replace the "superclass levels" idea with a more sane idea for sorting the actions, e.g., action weights.
+- Support localization.
