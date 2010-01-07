@@ -517,6 +517,13 @@ QList<QPair<int, QString> > actionsForClass(const QString& klass)
         read = true;
         QString path = actionPath();
         QDir dir(path);
+
+        if (!dir.exists() || !dir.isReadable()) {
+            qWarning() << "libcontentaction: cannot read actions from" << path;
+            return QList<QPair<int, QString> >();
+        }
+
+        dir.setNameFilters(QStringList("*.actions"));
         QStringList confFiles = dir.entryList(QDir::Files);
         foreach (const QString& confFile, confFiles) {
             QFile file(path + "/" + confFile);

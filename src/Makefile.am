@@ -9,7 +9,7 @@ AM_CPPFLAGS = \
 	-I/usr/include/gallery/service \
 	-I/usr/include/music-suite/service \
 	$(QtGui_CFLAGS) \
-	'-DDEFAULT_ACTIONS="@datadir@/contentaction/actions"'
+	'-DDEFAULT_ACTIONS="@sysconfdir@/contentaction/actions"'
 
 LIBS += \
 	$(QtCore_LIBS) \
