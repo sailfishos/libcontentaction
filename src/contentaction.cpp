@@ -34,11 +34,13 @@
 #include <QHash>
 #include <QDebug>
 
+#include <algorithm>
+
 namespace ContentAction {
 
 // initialized on the first request
 static TrackerClient *Tracker = 0;
-static GConfClient *Gconf;
+static GConfClient *Gconf = 0;
 static galleryinterface *Gallery = 0;
 static MusicSuiteServicePublicIf *MusicSuite = 0;
 
@@ -190,7 +192,6 @@ Action Action::defaultAction(const QString& uri)
     // Walk through the class list of the uri, if we find a default
     // action for a class, return it and stop.
     // TODO: implement
-    /*
     QStringList classes = classesOf(uri);
     QString action = defaultActionForClasses(classes);
     if (action != "") {
@@ -198,11 +199,9 @@ Action Action::defaultAction(const QString& uri)
     }
     // No default actions were found from GConf. Fall back to the most
     // relevant action.
-    foreach (const QString& klass, classes) {
-        QStringList actions = actionsForClass(klass);
-        if (actions.size() > 0)
-            return Action(QStringList() << uri, classes, actions[0]);
-            }*/
+    QList<Action> acts = actions(uri);
+    if (acts.size() > 0)
+        return acts[0];
     return Action();
 }
 
@@ -221,7 +220,7 @@ Action Action::defaultAction(const QList<QUrl>& uris)
 /// invalid Action object is returned.
 Action Action::defaultAction(const QStringList& uris)
 {
-/*    bool first = true;
+    bool first = true;
     QStringList commonClasses;
     foreach (const QString& uri, uris) {
         QStringList classes = classesOf(uri);
@@ -242,11 +241,9 @@ Action Action::defaultAction(const QStringList& uris)
     }
     // No default actions were found from GConf. Fall back to the most
     // relevant action.
-    foreach (const QString& klass, commonClasses) {
-        QStringList actions = actionsForClass(klass);
-        if (actions.size() > 0)
-            return Action(uris, commonClasses, actions[0]);
-            }*/ //TODO: implement
+    QList<Action> acts = actions(uris);
+    if (acts.size() > 0)
+        return acts[0];
     return Action();
 }
 
@@ -350,8 +347,10 @@ static bool isValidIRI(const QString& uri)
     return validRE.exactMatch(uri);
 }
 
-/// Returns the Nepomuk classes of a given \a uri. The order is
-/// arbitrary.
+/// Returns the Nepomuk classes of a given \a uri. This only returns
+/// the "semantic class path" containing nie:InformationElement, and
+/// ignores the class path containing nie:DataObject. The classes are
+/// returned in the order from most immediate to least immediate.
 QStringList classesOf(const QString& uri)
 {
     QStringList result;
@@ -368,7 +367,9 @@ QStringList classesOf(const QString& uri)
         }
     }
     // uri is expected to be percent-encoded UTF-8 here
-    QString query = QString("SELECT ?klass WHERE {<%1> a ?klass . }").arg(uri);
+    QString query = QString("SELECT ?sub ?super WHERE {<%1> a ?sub . "
+                            "OPTIONAL {?sub rdfs:subClassOf ?super . "
+                            "} }").arg(uri);
     // In the result, sub is a class of uri and super is an immediate
     // superclass of sub.
 
@@ -382,15 +383,38 @@ QStringList classesOf(const QString& uri)
         return result;
     }
 
+    // Read the "semantic class path" starting from nie:InformationElement
+    QHash<QString, QStringList> classes; // class -> its immediate subclasses
+    QString infoElement = ""; // The long name for nie:InformationElement
     for (guint i = 0; i < resArray->len; ++i) {
         char **row = (char **)g_ptr_array_index(resArray, i);
         // NOTE: we assume Tracker returns utf8
-        QString klass = QString::fromUtf8(row[0]);
-        result << klass;
+        QString sub = QString::fromUtf8(row[0]);
+        QString super = QString::fromUtf8(row[1]);
+
+        if (sub.contains("InformationElement")) infoElement = sub;
+
+        if (super != "") {
+            if (!classes.contains(super))
+                classes.insert(super, QStringList());
+            classes[super] << sub;
+        }
         g_strfreev(row);
     }
     g_ptr_array_free(resArray, TRUE);
 
+    if (infoElement.isEmpty())
+        return result;
+
+    // Extract the classes in the order
+    QStringList temp;
+    temp << infoElement;
+    int ix = 0;
+    while (ix < temp.size())
+        temp.append(classes.value(temp[ix++], QStringList()));
+
+    // Then reverse the list; unfortunately Qt doesn't have rbegin
+    std::reverse_copy(temp.begin(), temp.end(), std::back_inserter(result));
     return result;
 }
 
