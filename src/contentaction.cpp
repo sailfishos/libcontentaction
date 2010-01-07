@@ -501,69 +501,72 @@ QString defaultActionForClasses(const QStringList& classes)
 QString actionPath()
 {
     const char *path = getenv("CONTENTACTION_ACTIONS");
-    if (! path)
+    if (!path)
         path = DEFAULT_ACTIONS;
     return QString(path);
 }
 
-/// Reads the configuration files for "Nepomuk class - action -
-/// weight" association. Returns the list of applicable actions.
-QList<QPair<int, QString> > actionsForClass(const QString& klass)
+/// Reads the configuration files for "Nepomuk class - action - weight"
+/// association.
+static const QHash<QString, QList<QPair<int, QString> > >& actionsForClasses()
 {
-    static QHash<QString, QList<QPair<int, QString> > > actionsForClasses;
+    static QHash<QString, QList<QPair<int, QString> > > assoc;
     static bool read = false;
 
-    if (!read) {
-        read = true;
-        QString path = actionPath();
-        QDir dir(path);
+    if (read)
+        return assoc;
+    read = true;
 
-        if (!dir.exists() || !dir.isReadable()) {
-            qWarning() << "libcontentaction: cannot read actions from" << path;
-            return QList<QPair<int, QString> >();
+    QDir dir(actionPath());
+    if (!dir.isReadable()) {
+        LCA_WARNING << "cannot read actions from" << dir.path();
+        return assoc;
+    }
+    dir.setNameFilters(QStringList("*.actions"));
+    QStringList confFiles = dir.entryList(QDir::Files);
+    foreach (const QString& confFile, confFiles) {
+        QFile file(dir.filePath(confFile));
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            LCA_WARNING << "failed to open" << file.fileName();
+            continue;
         }
 
-        dir.setNameFilters(QStringList("*.actions"));
-        QStringList confFiles = dir.entryList(QDir::Files);
-        foreach (const QString& confFile, confFiles) {
-            QFile file(path + "/" + confFile);
-
-            if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                qWarning() << "Configuration file" << file.fileName() << "cannot be opened";
+        QTextStream in(&file);
+        int lno = 0;
+        while (!in.atEnd()) {
+            static const QRegExp splitRE("[\\t ]+");
+            QString line = in.readLine();
+            QStringList parts = line.split(splitRE);
+            lno++;
+            // Format of the line: class action weight
+            if (parts.size() < 3) {
+                LCA_WARNING << "too short line in" << file.fileName()
+                            << "line" << lno << ": " << line;
                 continue;
             }
-
-            QTextStream in(&file);
-            while (!in.atEnd()) {
-                QStringList line = in.readLine().split(" ");
-                // Format of the line: class action weight
-                if (line.size() < 3) {
-                    qWarning() << "Too short line in configuration file" << file.fileName() << ": " << line;
-                    continue;
-                }
-                bool conversionOk = false;
-                int weight = line[2].toInt(&conversionOk);
-                if (!conversionOk) {
-                    qWarning() << "Invalid weight in configuration file" << file.fileName() << ": " << line[2];
-                    continue;
-                }
-                QPair<int, QString> action(weight, line[1]);
-                if (actionsForClasses.contains(line[0])) {
-                    actionsForClasses[line[0]].append(action);
-                }
-                else {
-                    actionsForClasses.insert(line[0], QList<QPair<int, QString> >() << action);
-                }
+            bool conversionOk = false;
+            int weight = parts[2].toInt(&conversionOk);
+            if (!conversionOk) {
+                LCA_WARNING << "weight not an integer in" << file.fileName()
+                            << "line" << lno << ": " << parts[2];
+                continue;
             }
+            QPair<int, QString> action(weight, parts[1]);
+            if (!assoc.contains(parts[0]))
+                assoc[parts[0]] = QList<QPair<int, QString> >();
+            assoc[parts[0]].append(action);
         }
-        foreach (const QString& klass, actionsForClasses.keys())
-            qSort(actionsForClasses[klass]);
-
-    qDebug() << actionsForClasses;
+        foreach (const QString& klass, assoc.keys())
+            qSort(assoc[klass]);
     }
+    return assoc;
+}
 
-    if (actionsForClasses.contains(klass))
-        return actionsForClasses[klass];
+/// Returns the list of applicable actions for \a klass.
+QList<QPair<int, QString> > actionsForClass(const QString& klass)
+{
+    if (actionsForClasses().contains(klass))
+        return actionsForClasses()[klass];
     return QList<QPair<int, QString> >();
 }
 
