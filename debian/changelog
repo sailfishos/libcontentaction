@@ -1,8 +1,9 @@
-libcontentaction (0.0.3~unreleased) unstable; urgency=low
+libcontentaction (0.0.3) unstable; urgency=low
 
-  *
+  * Class -> action association made configurable.
+  * Exported symbols corrected.
 
- -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Mon, 14 Dec 2009 14:32:43 +0200
+ -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Tue, 12 Jan 2010 10:54:25 +0200
 
 libcontentaction (0.0.2) unstable; urgency=low
 
