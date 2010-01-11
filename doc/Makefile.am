@@ -6,7 +6,7 @@ DOXYCFG = $(srcdir)/doxy.cfg
 
 doxygen: html/index.html
 
-html/index.html: $(srcdir)/../src/*.cpp $(srcdir)/../src/*.h
+html/index.html: $(srcdir)/../src/*.cpp $(srcdir)/../src/*.h $(DOXYCFG)
 	srcdir=$(srcdir) $(DOXYGEN) $(DOXYCFG);
 
 EXTRA_DIST = $(DOXYCFG)
