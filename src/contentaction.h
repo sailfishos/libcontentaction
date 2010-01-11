@@ -119,8 +119,6 @@ struct ActionPrivate;
 class Action
 {
 public:
-    void trigger() const;
-
     void setAsDefault();
     bool isDefault() const;
     bool canBeDefault() const;
@@ -142,6 +140,9 @@ public:
     Action(const Action& other);
     ~Action();
     Action& operator=(const Action& other);
+
+public slots:
+    void trigger() const;
 
 private:
     Action(const QStringList& uris, const QStringList& classes,
