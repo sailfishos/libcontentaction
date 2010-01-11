@@ -15,6 +15,7 @@ AC_PROG_LIBTOOL
 # check for libraries
 PKG_CHECK_MODULES([QtTest], [QtTest])
 PKG_CHECK_MODULES([QtCore], [QtCore])
+PKG_CHECK_MODULES([QtXml], [QtXml])
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12.0])
 PKG_CHECK_MODULES([TRACKER], [tracker-client-0.7])
 PKG_CHECK_MODULES([DUI], [Dui])

@@ -3,6 +3,7 @@ EXTRA_DIST = \
 
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
+	$(QtXml_CFLAGS) \
 	$(TRACKER_CFLAGS) \
 	$(DUI_CFLAGS) \
 	$(GCONF_CFLAGS) \
@@ -13,6 +14,7 @@ AM_CPPFLAGS = \
 
 LIBS += \
 	$(QtCore_LIBS) \
+	$(QtXml_LIBS) \
 	$(TRACKER_LIBS) \
 	$(DUI_LIBS) \
 	$(GCONF_LIBS) \
@@ -30,8 +32,11 @@ libcontentaction_la_DEPENDENCIES = \
 	Exports
 
 libcontentaction_la_SOURCES = \
-	contentaction.h contentaction.cpp \
-	internal.h
+	internal.h \
+	contentaction.h \
+	contentaction.cpp \
+	config.cpp
+
 libcontentaction_la_LDFLAGS = \
 	-Wl,--version-script=$(srcdir)/Exports
 
@@ -43,5 +48,4 @@ lca_tool_CPPFLAGS = \
 
 lca_tool_SOURCES = \
 	lca-tool.cpp \
-	contentaction.h contentaction.cpp \
-	internal.h
+	$(libcontentaction_la_SOURCES)

@@ -30,17 +30,34 @@
 
   \section Overview
 
-  Libcontentaction reads the Nepomuk classes of the uri's from
-  Tracker. For each class, there is a set of applicable actions. Each
-  action is a maemo service framework interface + function name pair.
+  Libcontentaction reads the Nepomuk classes of the uri's from Tracker. For
+  each class, there is a set of applicable actions. Each action is represented
+  by a "<Maemo service framework interface>.<method>" string.
 
   Libcontentaction can retrive the set of applicable actions and a
   default action for a given set of uris, and return the ContentAction
   objects representing those actions. A ContentAction object can
   be used for triggering the corresponding action.
 
-  For now, the association rules between Nepomuk classes and
-  applicable actions are hard-coded.
+  The association rules between Nepomuk classes and applicable actions are
+  specified via .xml files in `/etc/contentaction/actions.d' (this location
+  might be overridden using the $CONTENTACTION_ACTIONS environment variable).
+  The format is illustrated by the next example:
+
+  \code
+  <?xml version="1.0"?>
+  <actions>
+    <class name="http://www.tracker-project.org/temp/nmm#MusicPiece">
+      <action name="com.example.musicplayer.play"
+              weight="100"/>
+    </class>
+    <class name="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image">
+      <action name="com.example.pictureviewer.showImage"
+              weight="100"/>
+      <action name="your.service.print" weight="200"/>
+    </class>
+  </actions>
+  \endcode
 
   \section future Future plans
 
@@ -50,8 +67,7 @@
   without containing hard-coded logic about how to call each service
   framework function.
 
-  Also, the association between Nepomuk classes and applicable actions
-  can be made configurable.
+  Localization of action names is still under discussion.
 
 */
 
@@ -71,9 +87,9 @@
   uris). The return value is a list of ContentAction objects sorted in
   the order of relevance.
 
-  Each Nepomuk class is associated with a set of applicable
-  actions. The set of applicable actions for one uri is computed by
-  concatenating the action lists for all its classes.
+  Each Nepomuk class is associated with a set of applicable actions. The list
+  of applicable actions for one uri is computed by concatenating the action
+  lists for all its classes and then sorting by their weights.
 
   For multiple uri's, the set of applicable actions is the
   intersection of applicable actions for each uri. The actions appear

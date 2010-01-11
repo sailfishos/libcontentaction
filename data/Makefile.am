@@ -1,2 +1,2 @@
-actionsdir = $(sysconfdir)/contentaction/actions
-dist_actions_DATA = core.actions
+actionsdir = $(sysconfdir)/contentaction/actions.d
+dist_actions_DATA = core.xml

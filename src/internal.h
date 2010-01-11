@@ -1,14 +1,24 @@
 #ifndef INTERNAL_H
 #define INTERNAL_H
 
-namespace ContentAction
-{
+#include <QHash>
+#include <QList>
+#include <QPair>
+
+namespace ContentAction {
+
+#define LCA_WARNING qWarning() << "libcontentaction:"
+
+typedef QHash<QString, QList<QPair<int, QString> > > Associations;
+
+const Associations& actionsForClasses();
 QStringList classesOf(const QString& uri);
 QList<QPair<int, QString> > actionsForClass(const QString& klass);
 QString defaultActionForClass(const QString& klass);
 bool setDefaultAction(const QString& klass, const QString& action);
 QString defaultAction(const QString& klass);
 QString defaultActionForClasses(const QStringList& classes);
+
 }
 
 #endif
