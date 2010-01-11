@@ -53,7 +53,7 @@ Action::Action()
 }
 
 Action::Action(const QStringList& uris, const QStringList& classes,
-               const QString& action)
+                             const QString& action)
 {
     d = new ActionPrivate();
     d->uris = uris;
@@ -175,11 +175,6 @@ QString Action::name() const
     return d->action;
 }
 
-Action Action::defaultAction(const QUrl& uri)
-{
-    return defaultAction(uri.toEncoded());
-}
-
 /// Returns the default action for a given uri. A default action is
 /// determined by walking up the class hierarchy of the \a uri, and
 /// taking the first default action defined for a class. If no default
@@ -202,15 +197,6 @@ Action Action::defaultAction(const QString& uri)
     if (acts.size() > 0)
         return acts[0];
     return Action();
-}
-
-Action Action::defaultAction(const QList<QUrl>& uris)
-{
-    QStringList sl;
-    foreach (const QUrl& uri, uris) {
-        sl << uri.toEncoded();
-    }
-    return defaultAction(sl);
 }
 
 /// Returns the default action for a given list of uri's. If the uri's
@@ -246,15 +232,10 @@ Action Action::defaultAction(const QStringList& uris)
     return Action();
 }
 
-QList<Action> Action::actions(const QUrl& uri)
-{
-    return actions(uri.toEncoded());
-}
-
-/// Returns the set of applicable actions for a given \a uri. The
-/// nepomuk classes of the uri are read from Tracker. For each class,
-/// the set of applicable actions and corresponding weights is read
-/// from a configuration file.
+/// Returns the set of applicable actions for a given \a uri. The nepomuk
+/// classes of the uri are read from Tracker. For each class, the set of
+/// applicable actions and corresponding weights is read from a configuration
+/// file.
 QList<Action> Action::actions(const QString& uri)
 {
     QList<Action> result;
@@ -277,15 +258,6 @@ QList<Action> Action::actions(const QString& uri)
         result.prepend(Action(QStringList() << uri, classes, allActions[i].second));
 
     return result;
-}
-
-QList<Action> Action::actions(const QList<QUrl>& uris)
-{
-    QStringList sl;
-    foreach (const QUrl& uri, uris) {
-        sl << uri.toEncoded();
-    }
-    return actions(sl);
 }
 
 /// Returns the set of actions applicable to all \a uris. The set is
@@ -365,7 +337,6 @@ QStringList classesOf(const QString& uri)
             return result;
         }
     }
-    // uri is expected to be percent-encoded UTF-8 here
     QString query = QString("SELECT ?sub ?super WHERE {<%1> a ?sub . "
                             "OPTIONAL {?sub rdfs:subClassOf ?super . "
                             "} }").arg(uri);
@@ -374,7 +345,7 @@ QStringList classesOf(const QString& uri)
 
     GError *error = NULL;
     GPtrArray *resArray = tracker_resources_sparql_query(Tracker,
-                                                         query.toLatin1().data(),
+                                                         query.toLocal8Bit().data(),
                                                          &error);
     if (error) {
         LCA_WARNING << "query returned an error:" << error->message;
