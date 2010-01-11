@@ -5,6 +5,9 @@
       <pre_steps>
 	<step expected_result="0">
           . /tmp/session_bus_address.user; \
+	  echo "[General]" > /home/user/.config/tracker/tracker-store.cfg; \
+	  echo "Verbosity=3" >> /home/user/.config/tracker/tracker-store.cfg; \
+	  echo "LowMemoryMode=false" >> /home/user/.config/tracker/tracker-store.cfg; \
           cd /usr/share/libcontentaction-tests; \
           ./sandbox.sh --start
         </step>
@@ -47,6 +50,7 @@
       <get>
 	<file>/tmp/lca-sandbox-start.log</file>
 	<file>/tmp/lca-sandbox-stop.log</file>
+	<file>/home/user/.local/share/tracker/tracker-store.log</file>
       </get>
 
       <post_steps>
