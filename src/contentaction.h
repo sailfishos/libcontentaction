@@ -25,8 +25,8 @@
 /*!
   \mainpage Libcontentaction
 
-  \brief Libcontentaction is a library for associating uri's to the
-  set of applicable ContentAction objects and triggering the actions.
+  \brief Libcontentaction is a library for associating uri's to the set of
+  applicable ContentAction::Action objects and triggering the actions.
 
   \section Overview
 
@@ -34,10 +34,10 @@
   each class, there is a set of applicable actions. Each action is represented
   by a "<Maemo service framework interface>.<method>" string.
 
-  Libcontentaction can retrive the set of applicable actions and a
-  default action for a given set of uris, and return the ContentAction
-  objects representing those actions. A ContentAction object can
-  be used for triggering the corresponding action.
+  Libcontentaction can retrive the set of applicable actions and a default
+  action for a given set of uris, and return the ContentAction::Action objects
+  representing those actions. An ContentAction::Action object can be used for
+  triggering the corresponding action.
 
   The association rules between Nepomuk classes and applicable actions are
   specified via .xml files in `/etc/contentaction/actions.d' (this location
@@ -72,43 +72,38 @@
 */
 
 /*!
-  \class ContentAction
+  \class ContentAction::Action
 
-  \brief ContentAction represents an applicable action for a uri or a
+  \brief ContentAction::Action represents an applicable action for a uri or a
   set of uri's.
 
-  The ContentAction object contains two parts: the uri or a set of
-  uri's it refers to, and an action, represented by maemo service
-  framework interface + function.
+  The ContentAction::Action object contains two parts: the uri or a set of
+  uri's it refers to, and an action, represented by maemo service framework
+  interface + function.
 
-  The applicable ContentAction objects for a given uri or a set of
-  uri's can be retrieved by using the static member functions
-  actions(const QString& uri) and actions(const QStringList&
-  uris). The return value is a list of ContentAction objects sorted in
-  the order of relevance.
+  The applicable ContentAction::Action objects for a given uri or a set of
+  uri's can be retrieved by using the static member functions actions(const
+  QString& uri) and actions(const QStringList& uris). The return value is a
+  list of ContentAction::Action objects sorted in the order of relevance.
 
   Each Nepomuk class is associated with a set of applicable actions. The list
   of applicable actions for one uri is computed by concatenating the action
   lists for all its classes and then sorting by their weights.
 
-  For multiple uri's, the set of applicable actions is the
-  intersection of applicable actions for each uri. The actions appear
-  in the same order as they appear in the action list of the first
-  uri.
+  For multiple uri's, the set of applicable actions is the intersection of
+  applicable actions for each uri. The actions appear in the same order as
+  they appear in the action list of the first uri.
 
-  The ContentAction can be triggered by using the member function
-  ContentAction::trigger().
+  The ContentAction::Action can be triggered by using the member function
+  trigger().
 
-  It is also possible to retrive the default actions for a given uri
-  or a set of uris via member functions defaultAction(const QString& uri)
-  and defaultAction(const QStringList& uris).
+  It is also possible to retrive the default actions for a given uri or a set
+  of uris via member functions defaultAction(const QString& uri) and
+  defaultAction(const QStringList& uris).
 
-  For now, the default action is always the most relevant action (also
-  the first action) returned by the actions() function.
-
-  When the list of uri's contains uri's of different classes, no
-  default action can be constructed, and the defaultAction function
-  returns an invalid ContentAction.
+  When the list of uri's contains uri's of different classes, no default
+  action can be constructed, and the defaultAction function returns an invalid
+  ContentAction::Action.
 
 */
 #include <QList>
