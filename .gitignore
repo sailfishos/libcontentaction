@@ -23,6 +23,7 @@ debian/*.preinst.debhelper
 
 t/env.py
 t/env.sh
+t/linktest
 
 doc/doxygen.log
 doc/html/
