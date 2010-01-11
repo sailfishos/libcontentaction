@@ -427,11 +427,11 @@ QString defaultAction(const QString& klass)
     }
 
     // Query the value from GConf
-    char* escaped = gconf_escape_key(klass.toLocal8Bit().constData(), -1);
+    char* escaped = gconf_escape_key(klass.toUtf8().constData(), -1);
     QString key = QString(GCONF_KEY_PREFIX) + QString::fromAscii(escaped);
 
     GError* error = NULL;
-    GConfValue* value = gconf_client_get(Gconf, key.toLocal8Bit().constData(), &error);
+    GConfValue* value = gconf_client_get(Gconf, key.toAscii().constData(), &error);
 
     g_free(escaped);
 
@@ -450,7 +450,7 @@ QString defaultAction(const QString& klass)
 
     QString action = "";
     if (valueString) {
-        action = QString(valueString);
+        action = QString::fromUtf8(valueString);
     }
 
     gconf_value_free(value);
@@ -465,12 +465,13 @@ bool setDefaultAction(const QString& klass, const QString& action)
     }
 
     // Set the class - action pair to GConf
-    char* escaped = gconf_escape_key(klass.toLocal8Bit().constData(), -1);
+    char* escaped = gconf_escape_key(klass.toUtf8().constData(), -1);
     QString key = QString(GCONF_KEY_PREFIX) + QString::fromAscii(escaped);
 
     GError* error = NULL;
 
-    gconf_client_set_string(Gconf, key.toLocal8Bit().constData(), action.toLocal8Bit().constData(), &error);
+    gconf_client_set_string(Gconf, key.toAscii().constData(),
+                            action.toUtf8().constData(), &error);
     g_free(escaped);
 
     if (error) {
