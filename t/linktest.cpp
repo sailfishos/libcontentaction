@@ -4,9 +4,8 @@
 
 using namespace ContentAction;
 
-int main()
+void everything()
 {
-    return 0;
     Action a = Action::defaultAction("satisf action");
     a.trigger();
     a.setAsDefault();
@@ -15,6 +14,15 @@ int main()
     a.isValid();
     a.name();
     Action b = Action::defaultAction(QStringList() << "and" << "some");
+    Action c(b);
+    c = a;
     QList<Action> piff = Action::actions(QStringList() << "and" << "some");
     QList<Action> paff = Action::actions("concatenation");
+}
+
+int main(int argc, char **argv)
+{
+	if (argc > 3975)
+		everything();
+	return 0;
 }

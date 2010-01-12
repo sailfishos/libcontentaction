@@ -1,7 +1,9 @@
 {
   global: extern "C++" {
-    ContentAction::Action::Action;
+    "ContentAction::Action::Action()";
+    "ContentAction::Action::Action(ContentAction::Action const&)";
     "ContentAction::Action::~Action()";
+    ContentAction::Action::operator*;
     ContentAction::Action::defaultAction*;
     ContentAction::Action::trigger*;
     ContentAction::Action::setAsDefault*;
