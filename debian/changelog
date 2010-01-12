@@ -1,3 +1,9 @@
+libcontentaction (0.0.4~unreleased) unstable; urgency=low
+
+  *
+
+ -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Tue, 12 Jan 2010 15:58:43 +0200
+
 libcontentaction (0.0.3) unstable; urgency=low
 
   * Class -> action association made configurable.
