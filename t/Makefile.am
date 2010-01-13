@@ -8,11 +8,13 @@ citest_SCRIPTS = \
 	cltool.py \
 	gallery.py \
 	servicemapper.py \
-	start-sandbox.sh \
 	test-actions.sh \
 	test-classes.sh \
 	test-invoking.py \
-	test-defaults.py \
+	test-defaults.py
+
+noinst_SCRIPTS = \
+	start-sandbox.sh \
 	stop-sandbox.sh
 
 citest_DATA = \
@@ -39,7 +41,8 @@ linktest_LDADD = \
 
 EXTRA_DIST = \
 	$(citest_DATA) \
-	$(citest_SCRIPTS)
+	$(citest_SCRIPTS) \
+	$(noinst_SCRIPTS)
 
 # NOTE: we depend on automake executing $(TESTS) in order.  Should this
 # change, we fail.
