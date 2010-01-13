@@ -18,11 +18,14 @@
 ## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ## 02110-1301 USA
 
+import sys
+import os
+# Otherwise env.py won't be found when running tests inside a VPATH build dir
+sys.path.insert(0, os.getcwd())
+
 try: import env
 except: pass
 
-import sys
-import os
 import unittest
 from commands import getstatusoutput
 from cltool import CLTool
