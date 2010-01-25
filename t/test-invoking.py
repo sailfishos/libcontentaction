@@ -43,13 +43,13 @@ class Actions(unittest.TestCase):
         (status, output) = getstatusoutput("lca-tool --invokedefault an.image")
         self.assert_(status == 0)
         # assert that the gallery was invoked
-        self.assert_(self.gallery.expect("showImage ;  ; an.image"))
+        self.assert_(self.gallery.expect("showImage ; an.image"))
 
     def testInvokeForTwoImages(self):
         (status, output) = getstatusoutput("lca-tool --invokedefault an.image b.image")
         self.assert_(status == 0)
         # assert that the gallery was invoked
-        self.assert_(self.gallery.expect("showImage ;  ; an.image,b.image"))
+        self.assert_(self.gallery.expect("showImage ; an.image,b.image"))
 
     def testInvokeForInvalid(self):
         (status, output) = getstatusoutput("lca-tool --invokedefault invalid.uri")

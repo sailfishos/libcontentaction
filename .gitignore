@@ -5,6 +5,8 @@ m4/ltversion.m4
 m4/lt~obsolete.m4
 
 src/lca-tool
+src/mocs.cpp
+src/moc_*.cpp
 
 debian/build-stamp
 debian/libcontentaction0

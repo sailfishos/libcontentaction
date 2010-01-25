@@ -21,10 +21,9 @@
 
 #include "contentaction.h"
 #include "internal.h"
+#include "service.h"
 
 #include <libtracker-client/tracker.h>
-#include <galleryinterface.h>
-#include <musicsuiteservicepublicif.h>
 
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
@@ -32,6 +31,7 @@
 #include <QFile>
 #include <QPair>
 #include <QHash>
+#include <QDBusInterface>
 #include <QDebug>
 
 #include <algorithm>
@@ -41,8 +41,7 @@ namespace ContentAction {
 // initialized on the first request
 static TrackerClient *Tracker = 0;
 static GConfClient *Gconf = 0;
-static galleryinterface *Gallery = 0;
-static MusicSuiteServicePublicIf *MusicSuite = 0;
+static ServiceResolver resolver;
 
 #define GCONF_KEY_PREFIX "/Dui/contentaction/"
 
@@ -129,24 +128,26 @@ QString Action::TrackerPrivate::name() const
 
 void Action::TrackerPrivate::trigger() const
 {
-    if (action == "com.nokia.galleryserviceinterface.showImage") {
-        if (Gallery == 0)
-            Gallery = new galleryinterface();
-        if (!Gallery->isValid()) {
-            LCA_WARNING << "gallery interface is invalid";
-            return;
-        }
-        Gallery->showImage("", uris);
+    // Get the service fw interface from the action name
+    int dotIx = action.lastIndexOf(".");
+    if (dotIx < 1) {
+        LCA_WARNING << "invalid action name" << action << ", cannot be triggered";
+        return;
     }
-    else if (action == "com.nokia.MusicSuiteServicePublicIf.play") {
-        if (MusicSuite == 0)
-            MusicSuite = new MusicSuiteServicePublicIf();
-        if (!MusicSuite->isValid()) {
-            LCA_WARNING << "music suite interface is invalid";
-            return;
-        }
-        foreach (const QString& uri, uris)
-            MusicSuite->play(uri);
+
+    QString interface = action.left(dotIx);
+    QString method = action.right(action.size() - dotIx - 1);
+    QDBusInterface* proxy = resolver.implementor(interface);
+    if (!proxy->isValid()) {
+        LCA_WARNING << "cannot connect to service implementor";
+        return;
+    }
+
+    // Call the implementor blockingly. The argument is the string list of uri's.
+    QDBusMessage reply = proxy->call(method, uris);
+    if (reply.type() != QDBusMessage::ReplyMessage) {
+        LCA_WARNING << "invalid reply from service implementor" << reply.errorName();
+        return;
     }
 }
 

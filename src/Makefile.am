@@ -4,23 +4,19 @@ EXTRA_DIST = \
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
 	$(QtXml_CFLAGS) \
+	$(QtDBus_CFLAGS) \
 	$(TRACKER_CFLAGS) \
 	$(DUI_CFLAGS) \
 	$(GCONF_CFLAGS) \
-	-I/usr/include/gallery/service \
-	-I/usr/include/music-suite/service \
-	$(QtGui_CFLAGS) \
 	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction/actions.d\"
 
 LIBS += \
 	$(QtCore_LIBS) \
 	$(QtXml_LIBS) \
+	$(QtDBus_LIBS) \
 	$(TRACKER_LIBS) \
 	$(DUI_LIBS) \
-	$(GCONF_LIBS) \
-	-lgalleryinterface \
-	-lmusicsuitepublicinterface \
-	$(QtGui_LIBS) # temporary; see configure.ac
+	$(GCONF_LIBS)
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \
@@ -36,7 +32,13 @@ libcontentaction_la_SOURCES = \
 	contentaction.h \
 	contentaction.cpp \
 	config.cpp \
-	highlighter.cpp
+	highlighter.cpp \
+	service.h \
+	service.cpp
+
+QT_TOMOC = service.h
+
+nodist_libcontentaction_la_SOURCES = mocs.cpp
 
 libcontentaction_la_LDFLAGS = \
 	-Wl,--version-script=$(srcdir)/Exports
@@ -50,3 +52,7 @@ lca_tool_CPPFLAGS = \
 lca_tool_SOURCES = \
 	lca-tool.cpp \
 	$(libcontentaction_la_SOURCES)
+
+nodist_lca_tool_SOURCES = mocs.cpp
+
+include $(top_srcdir)/am/qt.am

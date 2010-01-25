@@ -9,9 +9,9 @@ class Gallery(dbus.service.Object):
         self.iam = dbus.service.BusName('just.a.gallery', dbus.SessionBus())
 
     @dbus.service.method(dbus_interface='com.nokia.galleryserviceinterface',
-                         in_signature='sas', out_signature='b')
-    def showImage(self, uri, uris):
-        print 'showImage ; %s ; %s' % (uri, ','.join(uris))
+                         in_signature='as', out_signature='b')
+    def showImage(self, uris):
+        print 'showImage ; %s' % (','.join(uris))
         stdout.flush()
         return True
 
