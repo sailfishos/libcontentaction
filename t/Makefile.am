@@ -34,6 +34,20 @@ linktest_CPPFLAGS = \
 linktest_LDADD = \
 	../src/libcontentaction.la
 
+noinst_PROGRAMS = servicetest
+
+servicetest_SOURCES = \
+	servicelistener.cpp \
+	servicelistenerdummy.h
+servicetest_CPPFLAGS = \
+	$(QtCore_CFLAGS) \
+	-I$(top_srcdir)/src
+servicetest_LDADD = \
+	../src/libcontentaction.la
+
+QT_TOMOC = servicelistenerdummy.h
+nodist_servicetest_SOURCES = mocs.cpp
+
 ../src/libcontentaction.la: FORCE
 	$(MAKE) -C ../src libcontentaction.la
 
@@ -57,3 +71,5 @@ TESTS = \
 
 clean-local:
 	rm -f *.pyc;
+
+include $(top_srcdir)/am/qt.am
