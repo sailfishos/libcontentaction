@@ -26,7 +26,7 @@
 
 using ContentAction::Action;
 using ContentAction::classesOf;
-using ContentAction::defaultAction;
+using ContentAction::defaultActionFromGConf;
 using ContentAction::setDefaultAction;
 
 enum ActionToDo {
@@ -137,7 +137,7 @@ int main(int argc, char **argv)
             actionName = args.takeFirst();
             break;
         }
-        err << "Unknown option" << arg << endl;
+        err << "Unknown option " << arg << endl;
         return 2;
     }
 
@@ -196,9 +196,9 @@ int main(int argc, char **argv)
         break;
     }
     case PrintClassDefault: {
-        QString defAction = defaultAction(args[0]);
+        QString defAction = defaultActionFromGConf(args[0]);
         if (defAction != "")
-            out << defaultAction(args[0]) << endl;
+            out << defAction << endl;
         else {
             err << "no default action for: " << args[0] << endl;
             return 5;

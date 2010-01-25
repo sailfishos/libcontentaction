@@ -59,6 +59,40 @@
   </actions>
   \endcode
 
+  \section Free-text highlighter
+
+  Passing a string to highlight() can be used to discover interesting parts of
+  the text.  It returns Match objects identifying the position of the match
+  and the possible actions.
+
+  \note
+
+  These actions have different semantics than ordinary Actions.  When
+  triggered, they call the service method with a single string argument
+  containing the matched text (as UTF-8).  These are very likely _not_ valid
+  Tracker URIs (subjects)!
+
+  \subsection Configuring highlighting
+
+  Service implementors who wish to provide new `highlightable' parts should
+  drop a .xml file in the `/etc/contentaction/actions.d' directory.  The
+  schema is similar to the example above, except that instead of <class>
+  elements, one should specify <highlight> elements, containing the regexp to
+  match for, and the applicable actions as their children.  Example:
+
+  \code
+  <?xml version="1.0"?>
+  <actions>
+    <highlight regexp="[^ @]+@([^ .]+)(\.[^ .]+)*">
+      <action name="com.example.mua.composeMailTo"/>
+    </highlight>
+    <highlight regexp="\+?\d+([- ]\d+)*">
+      <action name="com.example.phone.call"/>
+      <action name="com.example.addressbook.add"/>
+    </highlight>
+  </actions>
+  \endcode
+
   \section future Future plans
 
   The applicable service framework functions should have a unified
@@ -113,7 +147,7 @@
 namespace ContentAction
 {
 
-struct ActionPrivate;
+struct Match;
 
 class Action
 {
@@ -131,6 +165,13 @@ public:
     static QList<Action> actions(const QString& uri);
     static QList<Action> actions(const QStringList& uris);
 
+    static QList<Match> highlight(const QString& text);
+
+    struct DefaultPrivate;
+    struct TrackerPrivate;
+    struct HighlightPrivate;
+
+    Action(DefaultPrivate *priv);
     Action();
     Action(const Action& other);
     ~Action();
@@ -140,18 +181,61 @@ public slots:
     void trigger() const;
 
 private:
-    Action(const QStringList& uris, const QStringList& classes,
-                  const QString& action);
+    static Action trackerAction(const QStringList& uris,
+                                const QStringList& classes,
+                                const QString& action);
+    static Action highlightAction(const QString& text,
+                                  const QString& action);
+    DefaultPrivate* d; /// Pimpl pointer
 
-    ActionPrivate* d; /// Pimpl pointer
+    friend QList<Match> highlight(const QString&);
 };
 
-struct ActionPrivate
-{
-    bool valid; ///< whether or not the action can be triggered
+struct Action::DefaultPrivate {
+    virtual ~DefaultPrivate();
+    virtual void setAsDefault();
+    virtual bool isDefault() const;
+    virtual bool canBeDefault() const;
+    virtual bool isValid() const;
+    virtual QString name() const;
+    virtual void trigger() const;
+    virtual DefaultPrivate *clone() const;
+};
+
+struct Action::TrackerPrivate: Action::DefaultPrivate {
+    TrackerPrivate(const QStringList& uris,
+                   const QStringList& classes,
+                   const QString& action);
+    virtual ~TrackerPrivate();
+    virtual void setAsDefault();
+    virtual bool isDefault() const;
+    virtual bool canBeDefault() const;
+    virtual bool isValid() const;
+    virtual QString name() const;
+    virtual void trigger() const;
+    virtual DefaultPrivate *clone() const;
+
     QStringList uris; ///< the target uri's of the action
-    QStringList classes; ///< the classes of the uri's (if they are of the same type)
+    QStringList classes; ///< the classes of the uri's (if they are of the
+                         ///< same type)
     QString action; ///< [service fw interface].[method]
+};
+
+struct Action::HighlightPrivate: Action::DefaultPrivate {
+    HighlightPrivate(const QString& match, const QString& action);
+    virtual ~HighlightPrivate();
+    virtual bool isValid() const;
+    virtual QString name() const;
+    virtual void trigger() const;
+    virtual DefaultPrivate *clone() const;
+
+    QString match;
+    QString action;
+};
+
+struct Match {
+    QList<Action> actions; ///< list of applicable actions
+    int start, end; ///< [start, end) determines the matching substring
 };
 
 }

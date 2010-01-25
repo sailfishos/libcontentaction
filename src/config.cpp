@@ -25,8 +25,16 @@
 #include <QDebug>
 #include <QXmlDefaultHandler>
 #include <QDir>
+#include <QStringList>
+#include <QMultiHash>
 
-namespace ContentAction {
+namespace {
+
+using ContentAction::Associations;
+using ContentAction::HighlighterMap;
+
+static Associations ActionsForClasses_cfg; // class - action - weight triples
+static HighlighterMap Highlighter_cfg; // regexp -> actions
 
 /// Returns the path where the action configuration files should be read from.
 /// It may be overridden via the $CONTENTACTION_ACTIONS environment variable.
@@ -39,9 +47,7 @@ static QString actionPath()
 }
 
 struct ConfigReader: public QXmlDefaultHandler {
-    ConfigReader(Associations &_assoc) :
-        state(inLimbo), assoc(_assoc)
-        {}
+    ConfigReader() : state(inLimbo) { }
     bool startElement(const QString& ns, const QString& name,
                       const QString& qname, const QXmlAttributes &atts);
     bool endElement(const QString& nsuri, const QString& name,
@@ -57,12 +63,12 @@ struct ConfigReader: public QXmlDefaultHandler {
     }
 
     enum {
-        inLimbo, inActions, inClass,
+        inLimbo, inActions, inClass, inHighlight,
     } state;
 
     QString error;
-    Associations &assoc;
     QString currentClass;
+    QString currentRegexp;
 };
 
 #define fail(msg)                               \
@@ -72,8 +78,8 @@ struct ConfigReader: public QXmlDefaultHandler {
     } while (0)
 
 bool ConfigReader::startElement(const QString& ns, const QString& name,
-                                   const QString& qname,
-                                   const QXmlAttributes &atts)
+                                const QString& qname,
+                                const QXmlAttributes &atts)
 {
     switch (state) {
     case inLimbo:
@@ -82,14 +88,20 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
         state = inActions;
         break;
     case inActions:
-        if (qname != "class")
-            fail("expected tag: class");
-        state = inClass;
-        currentClass = atts.value("name").trimmed();
-        if (currentClass.isEmpty())
-            fail("expected nonempty class name");
+        if (qname == "class") {
+            state = inClass;
+            currentClass = atts.value("name").trimmed();
+            if (currentClass.isEmpty())
+                fail("expected nonempty class name");
+        } else if (qname == "highlight") {
+            state = inHighlight;
+            currentRegexp = atts.value("regexp");
+            if (currentRegexp.isEmpty())
+                fail("expected a nonempty regexp");
+        } else
+            fail("expected tag: class or highlight");
         break;
-    case inClass:
+    case inClass: {
         if (qname != "action")
             fail("expected tag: action");
         QString action = atts.value("name").trimmed();
@@ -99,10 +111,24 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
         int weight = atts.value("weight").trimmed().toInt(&isOk);
         if (!isOk)
             fail("expected integer weight");
-        if (!assoc.contains(currentClass))
-            assoc[currentClass] = QList<QPair<int, QString> >();
-        assoc[currentClass].append(QPair<int, QString>(weight, action));
+        if (!ActionsForClasses_cfg.contains(currentClass))
+            ActionsForClasses_cfg[currentClass] = QList<QPair<int, QString> >();
+        ActionsForClasses_cfg[currentClass].append(
+            QPair<int, QString>(weight, action));
         break;
+    }
+    case inHighlight: {
+        if (qname != "action")
+            fail("expected tag: action");
+        QString action = atts.value("name").trimmed();
+        if (action.isEmpty())
+            fail("expected nonempy action name");
+        if (!Highlighter_cfg.contains(currentRegexp))
+            Highlighter_cfg.insert(currentRegexp, QStringList());
+        if (!Highlighter_cfg[currentRegexp].contains(action))
+            Highlighter_cfg[currentRegexp].append(action);
+        break;
+    }
     }
     return true;
 }
@@ -111,13 +137,16 @@ bool ConfigReader::endElement(const QString& nsuri, const QString& name,
                                  const QString& qname)
 {
     switch (state) {
+    case inActions:
+        if (qname == "actions")
+            state = inLimbo;
     case inClass:
         if (qname == "class")
             state = inActions;
         break;
-    case inActions:
-        if (qname == "actions")
-            state = inLimbo;
+    case inHighlight:
+        if (qname == "highlight")
+            state = inActions;
     default:
         break;
     }
@@ -126,28 +155,25 @@ bool ConfigReader::endElement(const QString& nsuri, const QString& name,
 
 #undef fail
 
-/// Reads the configuration files for "Nepomuk class - action - weight"
-/// association.
-const Associations& actionsForClasses()
+static void readConfig()
 {
-    static Associations assoc;
     static bool read = false;
 
     if (read)
-        return assoc;
+        return;
     read = true;
 
     QDir dir(actionPath());
     if (!dir.isReadable()) {
         LCA_WARNING << "cannot read actions from" << dir.path();
-        return assoc;
+        return;
     }
     dir.setNameFilters(QStringList("*.xml"));
     QStringList confFiles = dir.entryList(QDir::Files);
     foreach (const QString& confFile, confFiles) {
         QFile file(dir.filePath(confFile));
 
-        ConfigReader handler(assoc);
+        ConfigReader handler;
         QXmlSimpleReader reader;
         reader.setContentHandler(&handler);
         reader.setErrorHandler(&handler);
@@ -155,10 +181,25 @@ const Associations& actionsForClasses()
             LCA_WARNING << "failed to parse" << file.fileName();
             continue;
         }
-        foreach (const QString& klass, assoc.keys())
-            qSort(assoc[klass]);
     }
-    return assoc;
+    foreach (const QString& klass, ActionsForClasses_cfg.keys())
+        qSort(ActionsForClasses_cfg[klass]);
 }
 
-} // end namespace
+} // end anon namespace
+
+/// Returns the "Nepomuk class - action - weight" associations read from the
+/// configuration files.
+const Associations& ContentAction::actionsForClasses()
+{
+    readConfig();
+    return ActionsForClasses_cfg;
+}
+
+/// Returns the highlighter configuration map of (regexp, actions) read from
+/// the configuration files.
+const HighlighterMap& ContentAction::highlighterConfig()
+{
+    readConfig();
+    return Highlighter_cfg;
+}

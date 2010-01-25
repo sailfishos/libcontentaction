@@ -10,7 +10,7 @@ AM_CPPFLAGS = \
 	-I/usr/include/gallery/service \
 	-I/usr/include/music-suite/service \
 	$(QtGui_CFLAGS) \
-	'-DDEFAULT_ACTIONS="@sysconfdir@/contentaction/actions.d"'
+	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction/actions.d\"
 
 LIBS += \
 	$(QtCore_LIBS) \
@@ -35,7 +35,8 @@ libcontentaction_la_SOURCES = \
 	internal.h \
 	contentaction.h \
 	contentaction.cpp \
-	config.cpp
+	config.cpp \
+	highlighter.cpp
 
 libcontentaction_la_LDFLAGS = \
 	-Wl,--version-script=$(srcdir)/Exports

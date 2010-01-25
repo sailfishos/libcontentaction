@@ -12,6 +12,7 @@
     ContentAction::Action::isValid*;
     ContentAction::Action::name*;
     ContentAction::Action::actions*;
+    ContentAction::Action::highlight*;
   };
   local:
     *;

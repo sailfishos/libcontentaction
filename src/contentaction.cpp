@@ -46,26 +46,164 @@ static MusicSuiteServicePublicIf *MusicSuite = 0;
 
 #define GCONF_KEY_PREFIX "/Dui/contentaction/"
 
-Action::Action()
+Action::DefaultPrivate::~DefaultPrivate() { }
+void Action::DefaultPrivate::setAsDefault()
 {
-    d = new ActionPrivate();
-    d->valid = false;
+    LCA_WARNING << "called setAsDefault() on an invalid action";
+}
+bool Action::DefaultPrivate::isDefault() const
+{
+    return false;
+}
+bool Action::DefaultPrivate::canBeDefault() const
+{
+    return false;
+}
+bool Action::DefaultPrivate::isValid() const
+{
+    return false;
+}
+QString Action::DefaultPrivate::name() const
+{
+    return QString("Invalid action");
+}
+void Action::DefaultPrivate::trigger() const
+{
+    LCA_WARNING << "triggered an invalid action, not doing anything.";
+}
+Action::DefaultPrivate *Action::DefaultPrivate::clone() const
+{
+    return new DefaultPrivate();
 }
 
-Action::Action(const QStringList& uris, const QStringList& classes,
+Action::TrackerPrivate::TrackerPrivate(const QStringList& uris,
+                               const QStringList& classes,
+                               const QString& action) :
+    uris(uris), classes(classes), action(action)
+{ }
+
+Action::TrackerPrivate::~TrackerPrivate() { }
+
+void Action::TrackerPrivate::setAsDefault()
+{
+    // If the action concerns multiple uris, but they are not of the
+    // same type, we cannot set a default action.
+    if (classes.isEmpty()) {
+        LCA_WARNING << "cannot set a default action for "
+            "multiple uris of different types";
+        return;
+    }
+    // Set this action to be the default action for the most specific
+    // class
+    setDefaultAction(classes[0], action);
+    // FIXME: decide what to do if there are many "most specific" classes.
+}
+
+bool Action::TrackerPrivate::isDefault() const
+{
+    Action def = Action::defaultAction(uris);
+    TrackerPrivate *tp = reinterpret_cast<TrackerPrivate *>(def.d);
+    return (tp->action == action);
+}
+
+bool Action::TrackerPrivate::canBeDefault() const
+{
+    // If the action concerns multiple uris, but they are not of the
+    // same type, this action cannot be set as a default action.
+    if (classes.isEmpty()) {
+        return false;
+    }
+    // For now, all actions are applicable as default actions.
+    return true;
+}
+
+bool Action::TrackerPrivate::isValid() const
+{
+    return true;
+}
+
+QString Action::TrackerPrivate::name() const
+{
+    return action;
+}
+
+void Action::TrackerPrivate::trigger() const
+{
+    if (action == "com.nokia.galleryserviceinterface.showImage") {
+        if (Gallery == 0)
+            Gallery = new galleryinterface();
+        if (!Gallery->isValid()) {
+            LCA_WARNING << "gallery interface is invalid";
+            return;
+        }
+        Gallery->showImage("", uris);
+    }
+    else if (action == "com.nokia.MusicSuiteServicePublicIf.play") {
+        if (MusicSuite == 0)
+            MusicSuite = new MusicSuiteServicePublicIf();
+        if (!MusicSuite->isValid()) {
+            LCA_WARNING << "music suite interface is invalid";
+            return;
+        }
+        foreach (const QString& uri, uris)
+            MusicSuite->play(uri);
+    }
+}
+
+Action::DefaultPrivate *Action::TrackerPrivate::clone() const
+{
+    return new Action::TrackerPrivate(uris, classes, action);
+}
+
+Action::HighlightPrivate::HighlightPrivate(const QString& match, const QString& action) :
+    match(match), action(action)
+{ }
+
+Action::HighlightPrivate::~HighlightPrivate()
+{ }
+
+bool Action::HighlightPrivate::isValid() const
+{
+    return true;
+}
+
+QString Action::HighlightPrivate::name() const
+{
+    return action;
+}
+
+void Action::HighlightPrivate::trigger() const
+{
+    LCA_WARNING << "FIXME triggering text highlight action";
+}
+
+Action::DefaultPrivate *Action::HighlightPrivate::clone() const
+{
+    return new HighlightPrivate(match, action);
+}
+
+Action::Action() : d(new DefaultPrivate())
+{ }
+
+Action::Action(DefaultPrivate *priv) : d(priv)
+{ }
+
+Action Action::trackerAction(const QStringList& uris,
+                             const QStringList& classes,
                              const QString& action)
 {
-    d = new ActionPrivate();
-    d->uris = uris;
-    d->classes = classes;
-    d->action = action;
-    d->valid = true;
+    return Action(new TrackerPrivate(uris, classes, action));
+}
+
+Action Action::highlightAction(const QString& match,
+                               const QString& action)
+{
+    return Action(new HighlightPrivate(match, action));
 }
 
 Action::Action(const Action& other)
 {
-    d = new ActionPrivate();
-    *d = *other.d;
+    d = other.d->clone();
 }
 
 Action::~Action()
@@ -76,7 +214,10 @@ Action::~Action()
 
 Action& Action::operator=(const Action& other)
 {
-    *d = *other.d;
+    DefaultPrivate *ourd = d;
+    DefaultPrivate *np = other.d->clone();
+    d = np;
+    delete ourd;
     return *this;
 }
 
@@ -84,30 +225,7 @@ Action& Action::operator=(const Action& other)
 /// using the uri's contained by the Action object.
 void Action::trigger() const
 {
-    if (!d->valid) {
-        LCA_WARNING << "triggered an invalid action, not doing anything.";
-        return;
-    }
-
-    if (d->action == "com.nokia.galleryserviceinterface.showImage") {
-        if (Gallery == 0)
-            Gallery = new galleryinterface();
-        if (!Gallery->isValid()) {
-            LCA_WARNING << "gallery interface is invalid";
-            return;
-        }
-        Gallery->showImage("", d->uris);
-    }
-    else if (d->action == "com.nokia.MusicSuiteServicePublicIf.play") {
-        if (MusicSuite == 0)
-            MusicSuite = new MusicSuiteServicePublicIf();
-        if (!MusicSuite->isValid()) {
-            LCA_WARNING << "music suite interface is invalid";
-            return;
-        }
-        foreach (const QString& uri, d->uris)
-            MusicSuite->play(uri);
-    }
+    d->trigger();
 }
 
 /// Sets the action represented by this Action to be the default for a
@@ -115,64 +233,36 @@ void Action::trigger() const
 /// default is set is the lowest class in the class hierarchy. If
 /// there are multiple uri's, the default action can be set only if
 /// they represent objects of the same type. In this case, the Nepomuk
-/// class is decided the same way as in the case of one uri. Note: Not
-/// yet implemented.
+/// class is decided the same way as in the case of one uri.
 void Action::setAsDefault()
 {
-    if (!d->valid) {
-        LCA_WARNING << "called setAsDefault() on an invalid action";
-        return;
-    }
-    // If the action concerns multiple uris, but they are not of the
-    // same type, we cannot set a default action.
-    if (d->classes.isEmpty()) {
-        LCA_WARNING << "cannot set a default action for multiple uris of different types";
-        return;
-    }
-    // Set this action to be the default action for the most specific
-    // class
-    setDefaultAction(d->classes[0], d->action);
-    // FIXME: decide what to do if there are many "most specific" classes.
+    d->setAsDefault();
 }
 
 /// Returns true if the current Action object is the default
-/// action for the set of uri's it refers to. Note: not yet implemented.
+/// action for the set of uri's it refers to.
 bool Action::isDefault() const
 {
-    if (!d->valid)
-        return false;
-
-    Action def = defaultAction(d->uris);
-    return (def.d->action == d->action);
+    return d->isDefault();
 }
 
 /// Semantics TBD.
 bool Action::canBeDefault() const
 {
-    if (!d->valid)
-        return false;
-
-    // If the action concerns multiple uris, but they are not of the
-    // same type, this action cannot be set as a default action.
-    if (d->classes.isEmpty()) {
-        return false;
-    }
-
-    // For now, all actions are applicable as default actions.
-    return true;
+    return d->canBeDefault();
 }
 
 /// Returns true if the Action object represents an action
 /// which can be triggered.
 bool Action::isValid() const
 {
-    return d->valid;
+    return d->isValid();
 }
 
 /// Returns the name of the action, i.e., [service fw interface].[function]
 QString Action::name() const
 {
-    return d->action;
+    return d->name();
 }
 
 /// Returns the default action for a given uri. A default action is
@@ -189,7 +279,7 @@ Action Action::defaultAction(const QString& uri)
     QStringList classes = classesOf(uri);
     QString action = defaultActionForClasses(classes);
     if (action != "") {
-        return Action(QStringList() << uri, classes, action);
+        return trackerAction(QStringList() << uri, classes, action);
     }
     // No default actions were found from GConf. Fall back to the most
     // relevant action.
@@ -222,7 +312,7 @@ Action Action::defaultAction(const QStringList& uris)
     }
     QString action = defaultActionForClasses(commonClasses);
     if (action != "") {
-        return Action(uris, commonClasses, action);
+        return trackerAction(uris, commonClasses, action);
     }
     // No default actions were found from GConf. Fall back to the most
     // relevant action.
@@ -255,7 +345,8 @@ QList<Action> Action::actions(const QString& uri)
     qSort(allActions);
     for (int i = 0; i < allActions.size(); ++i)
         // The order is reversed here
-        result.prepend(Action(QStringList() << uri, classes, allActions[i].second));
+        result.prepend(trackerAction(QStringList() << uri,
+                                     classes, allActions[i].second));
 
     return result;
 }
@@ -306,7 +397,7 @@ QList<Action> Action::actions(const QStringList& uris)
     QList<Action> result;
     // Correct the URI's and classes of the intersected actions
     foreach (const Action& act, commonActions)
-        result << Action(uris, commonClasses, act.name());
+        result << trackerAction(uris, commonClasses, act.name());
 
     return result;
 }
@@ -390,7 +481,7 @@ QStringList classesOf(const QString& uri)
 
 /// Returns the per-class default action. If there is no default
 /// action for that class, returns an empty string.
-QString defaultAction(const QString& klass)
+QString defaultActionFromGConf(const QString& klass)
 {
     if (Gconf == 0) {
         g_type_init(); // XXX: needed?
@@ -459,7 +550,7 @@ bool setDefaultAction(const QString& klass, const QString& action)
 QString defaultActionForClasses(const QStringList& classes)
 {
     foreach (const QString& klass, classes) {
-        QString action = defaultAction(klass);
+        QString action = defaultActionFromGConf(klass);
         if (action != "") {
             return action;
         }
