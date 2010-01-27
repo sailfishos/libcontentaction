@@ -1,3 +1,9 @@
+AM_CPPFLAGS = \
+	$(QtCore_CFLAGS) \
+	-I$(top_srcdir)/src
+LIBS += \
+	../src/libcontentaction.la
+
 BUILT_SOURCES = \
 	env.sh \
 	env.py
@@ -15,7 +21,8 @@ citest_SCRIPTS = \
 
 noinst_SCRIPTS = \
 	start-sandbox.sh \
-	stop-sandbox.sh
+	stop-sandbox.sh \
+	test-highlight.sh
 
 citest_DATA = \
 	tests.xml \
@@ -25,7 +32,11 @@ citest_DATA = \
 	data.image
 
 check_PROGRAMS = \
-	linktest
+	linktest \
+	hl1
+
+hl1_SOURCES = \
+	hl1.cpp
 linktest_SOURCES = \
 	linktest.cpp
 linktest_CPPFLAGS = \
@@ -42,7 +53,8 @@ linktest_LDADD = \
 EXTRA_DIST = \
 	$(citest_DATA) \
 	$(citest_SCRIPTS) \
-	$(noinst_SCRIPTS)
+	$(noinst_SCRIPTS) \
+	hlinput.txt
 
 # NOTE: we depend on automake executing $(TESTS) in order.  Should this
 # change, we fail.
@@ -53,6 +65,7 @@ TESTS = \
 	test-classes.sh \
 	test-invoking.py \
 	test-defaults.py \
+	test-highlight.sh \
 	stop-sandbox.sh
 
 clean-local:
