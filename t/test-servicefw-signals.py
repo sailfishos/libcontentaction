@@ -70,6 +70,32 @@ class ServiceFWSignals(unittest.TestCase):
         # and the new implementor as well
         self.assert_(self.gallery2.expect("showImage ; an.image", timeout=7))
 
+    def testImplementorGone(self):
+        # start a program which repeatedly queries the default action and
+        # invokes it
+        invoker = CLTool("servicetest")
+
+        # assert that the old implementor was invoked
+        self.assert_(self.gallery.expect("showImage ; an.image"))
+
+        # change the mapping inside our mock service mapper
+        p = Popen('qdbus com.nokia.DuiServiceFw / org.maemo.contentaction.testing.changeMapping "just.another.gallery" "com.nokia.galleryserviceinterface"', shell=True)
+        sts = os.waitpid(p.pid, 0)[1]
+        self.assert_(sts == 0)
+
+        # then command our mock service mapper to send a signal that the
+        # implementor is no longer available
+        p = Popen('qdbus com.nokia.DuiServiceFw / org.maemo.contentaction.testing.emitServiceUnavailable "just.a.gallery"', shell=True)
+        sts = os.waitpid(p.pid, 0)[1]
+        self.assert_(sts == 0)
+
+        # now, the implementor should be "just.another.gallery", because the
+        # mapping was changed and the previous preferred implementor is no
+        # longer available
+
+        # and the new implementor as well
+        self.assert_(self.gallery2.expect("showImage ; an.image", timeout=7))
+
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(ServiceFWSignals)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
