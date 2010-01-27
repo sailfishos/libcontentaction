@@ -35,6 +35,7 @@ class ServiceResolver : public QObject
     Q_OBJECT
 public:
     ServiceResolver();
+    ~ServiceResolver();
     QDBusInterface* implementor(const QString& interface);
 
 private slots:

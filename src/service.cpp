@@ -40,9 +40,21 @@ ServiceResolver::ServiceResolver()
             this, SLOT(onServiceUnavailable(QString)));
 }
 
+ServiceResolver::~ServiceResolver()
+{
+    foreach (QDBusInterface* proxy, proxies)
+        delete proxy;
+    proxies.clear();
+}
+
 /// A slot connected to the serviceAvailable signal from Dui service mapper.
 void ServiceResolver::onServiceAvailable(QString implementor, QString interface)
 {
+    // Now a service become available for an interface, but we cannot know
+    // wheter it is now the *preferred* implementor or not. We cannot do
+    // anything else but clear our understanging about who's the preferred
+    // implementor of the interface.
+
     // Remove the old implementor (and its proxy)
     if (resolved.contains(interface)) {
         QString oldImplementor = resolved.take(interface);
@@ -52,7 +64,6 @@ void ServiceResolver::onServiceAvailable(QString implementor, QString interface)
             // can be deleted.
             delete proxies.take(oldImplementor);
     }
-    resolved.insert(interface, implementor);
 }
 
 /// A slot connected to the serviceUnavailable signal from Dui service mapper.
