@@ -27,6 +27,13 @@ case "$1" in
                 kill -9 `ps axw | awk '/duiservicemapper/ { print $1; }'` || true;
                 $srcdir/servicemapper.py &
                 echo "$!" > /tmp/servicemapper.py.pid;
+                # wait until our service mapper has started
+                i=0;
+                while [ $i -le 10 ] && ! qdbus | grep "com.nokia.DuiServiceFw"
+                do
+                        i=$(($i+1));
+                        sleep 1;
+                done
 
                 echo "Launching gconfd-2"
 		if ! ps axw | grep -v grep | grep /usr/lib/gconf2/gconfd-2; then
