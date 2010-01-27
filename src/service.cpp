@@ -40,20 +40,26 @@ ServiceResolver::ServiceResolver()
             this, SLOT(onServiceUnavailable(QString)));
 }
 
+/// A slot connected to the serviceAvailable signal from Dui service mapper.
 void ServiceResolver::onServiceAvailable(QString implementor, QString interface)
 {
-    qDebug() << "service available" << interface << implementor;
-    // We don't know whether the service that became available is now the
-    // preferred implementor of some service. So now we don't know anything
-    // any more.
-    resolved.clear();
-    proxies.clear();
+    // Remove the old implementor (and its proxy)
+    if (resolved.contains(interface)) {
+        QString oldImplementor = resolved.take(interface);
+
+        if (resolved.keys(oldImplementor).isEmpty())
+            // The old implementor implemented only this interface; the proxy
+            // can be deleted.
+            delete proxies.take(oldImplementor);
+    }
+    resolved.insert(interface, implementor);
 }
 
+/// A slot connected to the serviceUnavailable signal from Dui service mapper.
 void ServiceResolver::onServiceUnavailable(QString implementor)
 {
-    qDebug() << "service available" << implementor;
     // FIXME: was the interpretation correct; the paremeter is the implementor?
+    // Check which interfaces now become unusable
     QList<QString> interfaces = resolved.keys(implementor);
     foreach (const QString interface, interfaces)
         resolved.remove(interface);
@@ -61,6 +67,9 @@ void ServiceResolver::onServiceUnavailable(QString implementor)
         delete proxies.take(implementor);
 }
 
+/// Returns the name of the current implementor of an interface. If an error
+/// occurs (e.g., we cannot connect to the Dui service mapper), returns an
+/// empty string.
 QString ServiceResolver::implementorName(const QString& interface)
 {
     if (resolved.contains(interface))
@@ -82,9 +91,10 @@ QString ServiceResolver::implementorName(const QString& interface)
     return service;
 }
 
+/// Returns the proxy object for the current implementor of the given
+/// interface.
 QDBusInterface* ServiceResolver::implementor(const QString& interface)
 {
-    /* NOTE: this is an over-simplistic implementation to be refined later. */
     QString name = implementorName(interface);
     if (!proxies.contains(name)) {
         proxies.insert(name, new QDBusInterface(name, "/", interface, QDBusConnection::sessionBus()));
