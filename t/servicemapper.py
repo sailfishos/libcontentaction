@@ -21,7 +21,7 @@ class ServiceMapper(dbus.service.Object):
 
     @dbus.service.method(dbus_interface='com.nokia.DuiServiceFwIf',
                          in_signature='ss', out_signature='')
-    def emitServiceAvailable(self, interface, implementor):
+    def emitServiceAvailable(self, implementor, interface):
         self.serviceAvailable(interface, implementor)
 
     @dbus.service.method(dbus_interface='com.nokia.DuiServiceFwIf',
