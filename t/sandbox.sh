@@ -28,11 +28,11 @@ case "$1" in
                 $srcdir/servicemapper.py &
                 echo "$!" > /tmp/servicemapper.py.pid;
                 # wait until our service mapper has started
-                i=0;
-                while [ $i -le 10 ] && ! qdbus | grep "com.nokia.DuiServiceFw"
-                do
-                        i=$(($i+1));
-                        sleep 1;
+                for i in `seq 10`; do
+                        if qdbus | grep "com.nokia.DuiServiceFw"; then
+			        break;
+		        fi
+                sleep 1;
                 done
 
                 echo "Launching gconfd-2"
