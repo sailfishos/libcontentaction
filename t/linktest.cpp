@@ -18,6 +18,8 @@ void everything()
     c = a;
     QList<Action> piff = Action::actions(QStringList() << "and" << "some");
     QList<Action> paff = Action::actions("concatenation");
+
+    Action::highlight("foo bar baz");
 }
 
 int main(int argc, char **argv)
