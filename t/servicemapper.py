@@ -19,20 +19,25 @@ class ServiceMapper(dbus.service.Object):
     def serviceName(self, interface):
         return self.mapping.get(interface, '')
 
-    @dbus.service.method(dbus_interface='com.nokia.DuiServiceFwIf',
+    @dbus.service.method(dbus_interface='org.maemo.contentaction.testing',
+                         in_signature='ss', out_signature='')
+    def changeMapping(self, implementor, interface):
+        self.mapping[interface] = implementor
+
+    @dbus.service.method(dbus_interface='org.maemo.contentaction.testing',
                          in_signature='ss', out_signature='')
     def emitServiceAvailable(self, implementor, interface):
-        self.serviceAvailable(interface, implementor)
+        self.serviceAvailable(implementor, interface)
 
-    @dbus.service.method(dbus_interface='com.nokia.DuiServiceFwIf',
+    @dbus.service.method(dbus_interface='org.maemo.contentaction.testing',
                          in_signature='s', out_signature='')
     def emitServiceUnavailable(self, implementor):
         self.serviceUnavailable(implementor)
 
     @dbus.service.signal(dbus_interface='com.nokia.DuiServiceFwIf',
                          signature='ss')
-    def serviceAvailable(self, interface, implementor):
-        print "emit service available", interface, implementor
+    def serviceAvailable(self, implementor, interface):
+        print "emit service available", implementor, interface
 
     @dbus.service.signal(dbus_interface='com.nokia.DuiServiceFwIf',
                          signature='s')

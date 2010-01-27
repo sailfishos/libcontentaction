@@ -7,10 +7,10 @@ int main(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
 
-    // Every 10 seconds, try to invoke the default action for an uri.
+    // Every 3 seconds, try to invoke the default action for an uri.
     QTimer timer;
     timer.setSingleShot(false);
-    timer.setInterval(10000);
+    timer.setInterval(3000);
 
     Dummy dummy;
     QObject::connect(&timer, SIGNAL(timeout()), &dummy, SLOT(timeout()));
