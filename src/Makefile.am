@@ -6,7 +6,6 @@ AM_CPPFLAGS = \
 	$(QtXml_CFLAGS) \
 	$(QtDBus_CFLAGS) \
 	$(TRACKER_CFLAGS) \
-	$(DUI_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction/actions.d\"
 
@@ -15,7 +14,6 @@ LIBS += \
 	$(QtXml_LIBS) \
 	$(QtDBus_LIBS) \
 	$(TRACKER_LIBS) \
-	$(DUI_LIBS) \
 	$(GCONF_LIBS)
 
 incdir = $(includedir)/contentaction
