@@ -11,7 +11,8 @@ citest_SCRIPTS = \
 	test-actions.sh \
 	test-classes.sh \
 	test-invoking.py \
-	test-defaults.py
+	test-defaults.py \
+	test-servicefw-signals.py
 
 noinst_SCRIPTS = \
 	start-sandbox.sh \
@@ -67,6 +68,7 @@ TESTS = \
 	test-classes.sh \
 	test-invoking.py \
 	test-defaults.py \
+	test-servicefw-signals.py \
 	stop-sandbox.sh
 
 clean-local:
