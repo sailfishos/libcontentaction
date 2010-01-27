@@ -11,13 +11,4 @@
             weight="100"/>
   </class>
 
-  <highlight regexp="[^ @]+@([^ .]+)(\.[^ .]+)*">
-    <action name="com.example.mua.composeMailTo"/>
-  </highlight>
-
-  <highlight regexp="\+?\d+([- ]\d+)*">
-    <action name="com.example.phone.call"/>
-    <action name="com.example.addressbook.add"/>
-  </highlight>
-
 </actions>
