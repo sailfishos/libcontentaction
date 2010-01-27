@@ -45,7 +45,7 @@
         <step expected_result="0">
           . /tmp/session_bus_address.user; \
           cd /usr/share/libcontentaction-tests; \
-          PATH=.:$PATH ./test-servicefw-signals.py
+          PATH=.:/usr/lib/libcontentaction-tests:$PATH ./test-servicefw-signals.py
         </step>
       </case>
 

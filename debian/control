@@ -43,7 +43,7 @@ Description: Library for associating content with actions
 
 Package: libcontentaction-tests
 Section: devel
-Architecture: all
+Architecture: any
 Depends: libcontentaction0 (>= ${binary:Version}),
          ci-testing,
          python-dbus,

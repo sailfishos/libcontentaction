@@ -35,7 +35,8 @@ linktest_CPPFLAGS = \
 linktest_LDADD = \
 	../src/libcontentaction.la
 
-noinst_PROGRAMS = servicetest
+testhelperdir = $(libdir)/libcontentaction-tests
+testhelper_PROGRAMS = servicetest
 
 servicetest_SOURCES = \
 	servicelistener.cpp \
