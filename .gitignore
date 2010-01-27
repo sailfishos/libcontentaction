@@ -26,6 +26,7 @@ debian/*.preinst.debhelper
 t/env.py
 t/env.sh
 t/linktest
+t/mocs.cpp
 t/moc_*.cpp
 t/servicetest
 
