@@ -50,11 +50,12 @@ class ServiceFWSignals(unittest.TestCase):
 
     def testImplementorChanges(self):
         # start a program which repeatedly queries the default action and
-        # invokes it
-        progdir = "."
-        if "builddir" in os.environ:
-            progdir = os.environ["builddir"]
-        invoker = CLTool(progdir + "/servicetest")
+        # invokes it; the program can either be found from PATH (test
+        # automation) or be in the build dir
+        try:
+            invoker = CLTool("servicetest")
+        except:
+            invoker = CLTool(os.getcwd() + "/" + "servicetest")
 
         # assert that the old implementor was invoked
         self.assert_(self.gallery.expect("showImage ; an.image"))
@@ -75,11 +76,12 @@ class ServiceFWSignals(unittest.TestCase):
 
     def testImplementorGone(self):
         # start a program which repeatedly queries the default action and
-        # invokes it
-        progdir = "."
-        if "builddir" in os.environ:
-            progdir = os.environ["builddir"]
-        invoker = CLTool(progdir + "/servicetest")
+        # invokes it; the program can either be found from PATH (test
+        # automation) or be in the build dir
+        try:
+            invoker = CLTool("servicetest")
+        except:
+            invoker = CLTool(os.getcwd() + "/" + "servicetest")
 
         # assert that the old implementor was invoked
         self.assert_(self.gallery.expect("showImage ; an.image"))
