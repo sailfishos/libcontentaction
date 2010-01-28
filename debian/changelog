@@ -1,8 +1,10 @@
-libcontentaction (0.0.4~unreleased) unstable; urgency=low
+libcontentaction (0.0.4) unstable; urgency=low
 
-  *
+  * Using dui service mapper and service implementors directly, without generated .so's.
+  * API additions for searching for actions for textual elements.
+  * Implemented: SWP#CntFr-414, SWP#CntFr-412
 
- -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Tue, 12 Jan 2010 15:58:43 +0200
+ -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Thu, 28 Jan 2010 13:49:17 +0200
 
 libcontentaction (0.0.3) unstable; urgency=low
 
