@@ -34,9 +34,10 @@ libcontentaction_la_SOURCES = \
 	service.h \
 	service.cpp
 
-QT_TOMOC = service.h
+moc_service_h.cpp: service.h
+	$(MOC) -o "$@" "$<"
 
-nodist_libcontentaction_la_SOURCES = mocs.cpp
+nodist_libcontentaction_la_SOURCES = moc_service_h.cpp
 
 libcontentaction_la_LDFLAGS = \
 	-Wl,--version-script=$(srcdir)/Exports
@@ -51,6 +52,6 @@ lca_tool_SOURCES = \
 	lca-tool.cpp \
 	$(libcontentaction_la_SOURCES)
 
-nodist_lca_tool_SOURCES = mocs.cpp
+nodist_lca_tool_SOURCES = moc_service_h.cpp
 
-include $(top_srcdir)/am/qt.am
+CLEANFILES = moc_service_h.cpp

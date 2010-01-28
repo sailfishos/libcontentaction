@@ -39,16 +39,18 @@ testhelperdir = $(libdir)/libcontentaction-tests
 testhelper_PROGRAMS = servicetest
 
 servicetest_SOURCES = \
-	servicelistener.cpp \
-	servicelistenerdummy.h
+	servicelistener.cpp
+
+BUILT_SOURCES += servicelistener.moc
+
+servicelistener.moc: servicelistener.cpp
+	$(MOC) -o "$@" "$<"
+
 servicetest_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
 	-I$(top_srcdir)/src
 servicetest_LDADD = \
 	../src/libcontentaction.la
-
-QT_TOMOC = servicelistenerdummy.h
-nodist_servicetest_SOURCES = mocs.cpp
 
 ../src/libcontentaction.la: FORCE
 	$(MAKE) -C ../src libcontentaction.la
@@ -75,4 +77,4 @@ TESTS = \
 clean-local:
 	rm -f *.pyc;
 
-include $(top_srcdir)/am/qt.am
+CLEANFILES = servicelistener.moc
