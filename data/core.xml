@@ -11,4 +11,8 @@
             weight="100"/>
   </class>
 
+  <class name="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Video">
+    <action name="com.nokia.VideoSuiteServiceIf.play"
+	    weight="100"/>
+  </class>
 </actions>
