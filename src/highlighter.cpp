@@ -53,4 +53,10 @@ QList<Match> Action::highlight(const QString& text)
     return result;
 }
 
+bool Match::operator<(const Match& other) const
+{
+    return (this->start < other.start) ||
+        ((this->start == other.start) && (this->end < other.end));
+}
+
 } // end namespace

@@ -236,6 +236,8 @@ struct Action::HighlightPrivate: Action::DefaultPrivate {
 struct Match {
     QList<Action> actions; ///< list of applicable actions
     int start, end; ///< [start, end) determines the matching substring
+
+    bool operator<(const Match& other) const;
 };
 
 }

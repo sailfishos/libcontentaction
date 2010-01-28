@@ -1,3 +1,9 @@
+AM_CPPFLAGS = \
+	$(QtCore_CFLAGS) \
+	-I$(top_srcdir)/src
+LIBS += \
+	../src/libcontentaction.la
+
 BUILT_SOURCES = \
 	env.sh \
 	env.py
@@ -16,7 +22,8 @@ citest_SCRIPTS = \
 
 noinst_SCRIPTS = \
 	start-sandbox.sh \
-	stop-sandbox.sh
+	stop-sandbox.sh \
+	test-highlight.sh
 
 citest_DATA = \
 	tests.xml \
@@ -26,12 +33,13 @@ citest_DATA = \
 	data.image
 
 check_PROGRAMS = \
-	linktest
+	linktest \
+	hl1
+
+hl1_SOURCES = \
+	hl1.cpp
 linktest_SOURCES = \
 	linktest.cpp
-linktest_CPPFLAGS = \
-	$(QtCore_CFLAGS) \
-	-I$(top_srcdir)/src
 linktest_LDADD = \
 	../src/libcontentaction.la
 
@@ -46,9 +54,6 @@ BUILT_SOURCES += servicelistener.moc
 servicelistener.moc: servicelistener.cpp
 	$(MOC) -o "$@" "$<"
 
-servicetest_CPPFLAGS = \
-	$(QtCore_CFLAGS) \
-	-I$(top_srcdir)/src
 servicetest_LDADD = \
 	../src/libcontentaction.la
 
@@ -60,7 +65,8 @@ servicetest_LDADD = \
 EXTRA_DIST = \
 	$(citest_DATA) \
 	$(citest_SCRIPTS) \
-	$(noinst_SCRIPTS)
+	$(noinst_SCRIPTS) \
+	hlinput.txt
 
 # NOTE: we depend on automake executing $(TESTS) in order.  Should this
 # change, we fail.
@@ -72,6 +78,7 @@ TESTS = \
 	test-invoking.py \
 	test-defaults.py \
 	test-servicefw-signals.py \
+	test-highlight.sh \
 	stop-sandbox.sh
 
 clean-local:
