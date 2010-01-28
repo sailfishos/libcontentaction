@@ -20,15 +20,7 @@ PKG_CHECK_MODULES([QtXml], [QtXml])
 PKG_CHECK_MODULES([QtDBus], [QtDBus])
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12.0])
 PKG_CHECK_MODULES([TRACKER], [tracker-client-0.7])
-PKG_CHECK_MODULES([DUI], [Dui])
 PKG_CHECK_MODULES([GCONF], [gconf-2.0])
-# a temporary fix: since maemo-services-dev 0.3.4, generated
-# interfaces include DuiApplication, it includes QApplication, and
-# Dui.pc doesn't state Requires: QtGui
-PKG_CHECK_MODULES([QtGui], [QtGui])
-
-AC_CHECK_FILE([/usr/include/gallery/service/galleryinterface.h], [],
-              AC_MSG_ERROR([please install maemo-services-dev]))
 
 # tools for documentation
 AX_FEATURE_DISABLEABLE([doc], [BUILD_DOCS], [disable building of documentation])
