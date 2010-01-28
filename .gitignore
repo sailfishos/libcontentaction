@@ -55,3 +55,4 @@ Makefile.in
 *.lo
 *.o
 *.pyc
+*.moc
