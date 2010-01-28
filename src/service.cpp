@@ -24,6 +24,7 @@
 
 #include <QDBusInterface>
 #include <QDBusMessage>
+#include <QStringList>
 #include <QDebug>
 
 namespace ContentAction
@@ -45,6 +46,7 @@ ServiceResolver::~ServiceResolver()
     foreach (QDBusInterface* proxy, proxies)
         delete proxy;
     proxies.clear();
+    delete mapperProxy;
 }
 
 /// A slot connected to the serviceAvailable signal from Dui service mapper.
@@ -69,10 +71,9 @@ void ServiceResolver::onServiceAvailable(QString implementor, QString interface)
 /// A slot connected to the serviceUnavailable signal from Dui service mapper.
 void ServiceResolver::onServiceUnavailable(QString implementor)
 {
-    // FIXME: was the interpretation correct; the paremeter is the implementor?
     // Check which interfaces now become unusable
-    QList<QString> interfaces = resolved.keys(implementor);
-    foreach (const QString interface, interfaces)
+    QStringList interfaces = resolved.keys(implementor);
+    foreach (const QString& interface, interfaces)
         resolved.remove(interface);
     if (proxies.contains(implementor))
         delete proxies.take(implementor);

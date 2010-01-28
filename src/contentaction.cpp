@@ -135,18 +135,21 @@ void Action::TrackerPrivate::trigger() const
         return;
     }
 
+    // Action, e.g., "com.nokia.video-interface.play"
     QString interface = action.left(dotIx);
     QString method = action.right(action.size() - dotIx - 1);
     QDBusInterface* proxy = resolver.implementor(interface);
     if (!proxy->isValid()) {
-        LCA_WARNING << "cannot connect to service implementor";
+        LCA_WARNING << "cannot connect to service implementor" << proxy->service();
         return;
     }
 
     // Call the implementor blockingly. The argument is the string list of uri's.
     QDBusMessage reply = proxy->call(method, uris);
     if (reply.type() != QDBusMessage::ReplyMessage) {
-        LCA_WARNING << "invalid reply from service implementor" << reply.errorName();
+        LCA_WARNING << "invalid reply from service implementor" << reply.errorName()
+                    << "when trying to call" << proxy->service()
+                    << proxy->interface() << "." <<  method;
         return;
     }
 }

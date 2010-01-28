@@ -23,7 +23,6 @@ import os
 # Otherwise env.py won't be found when running tests inside a VPATH build dir
 sys.path.insert(0, os.getcwd())
 from subprocess import Popen
-from time import sleep
 
 try: import env
 except: pass
@@ -55,7 +54,7 @@ class ServiceFWSignals(unittest.TestCase):
         try:
             invoker = CLTool("servicetest")
         except:
-            invoker = CLTool(os.getcwd() + "/" + "servicetest")
+            invoker = CLTool("./servicetest")
 
         # assert that the old implementor was invoked
         self.assert_(self.gallery.expect("showImage ; an.image"))
@@ -81,7 +80,7 @@ class ServiceFWSignals(unittest.TestCase):
         try:
             invoker = CLTool("servicetest")
         except:
-            invoker = CLTool(os.getcwd() + "/" + "servicetest")
+            invoker = CLTool("./servicetest")
 
         # assert that the old implementor was invoked
         self.assert_(self.gallery.expect("showImage ; an.image"))
