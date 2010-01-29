@@ -42,11 +42,12 @@ Description: Library for associating content with actions
 Package: libcontentaction-tests
 Section: devel
 Architecture: any
-Depends: libcontentaction0 (>= ${binary:Version}),
+Depends: ${shlibs:Depends},
+         libcontentaction0 (>= ${binary:Version}),
          ci-testing,
          python-dbus,
          python-gobject,
-         python (>= 2.5)
+         python2.5
 XB-Maemo-CI-Packages: libcontentaction0
 XB-Maemo-CI-Stage: staging, acceptance
 Description: libcontentaction tests
