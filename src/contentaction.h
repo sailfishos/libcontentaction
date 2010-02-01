@@ -170,6 +170,7 @@ public:
     struct DefaultPrivate;
     struct TrackerPrivate;
     struct HighlightPrivate;
+    struct MimePrivate;
 
     Action(DefaultPrivate *priv);
     Action();
@@ -231,6 +232,18 @@ struct Action::HighlightPrivate: Action::DefaultPrivate {
 
     QString match;
     QString action;
+};
+
+struct Action::MimePrivate: Action::DefaultPrivate {
+    MimePrivate(const QString& fileName, const QString& mimeType = QString());
+    virtual ~MimePrivate();
+    virtual bool isValid() const;
+    virtual QString name() const;
+    virtual void trigger() const;
+    virtual DefaultPrivate *clone() const;
+
+    QString fileName;
+    QString mimeType;
 };
 
 struct Match {

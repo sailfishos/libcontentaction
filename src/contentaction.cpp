@@ -186,6 +186,33 @@ Action::DefaultPrivate *Action::HighlightPrivate::clone() const
     return new HighlightPrivate(match, action);
 }
 
+Action::MimePrivate::MimePrivate(const QString& fileName, const QString& mimeType)
+ : fileName(fileName), mimeType(mimeType)
+{ }
+
+Action::MimePrivate::~MimePrivate()
+{ }
+
+bool Action::MimePrivate::isValid() const
+{
+    return true;
+}
+
+QString Action::MimePrivate::name() const
+{
+    return "Open"; // FIXME
+}
+
+void Action::MimePrivate::trigger() const
+{
+    // TODO
+}
+
+Action::DefaultPrivate *Action::MimePrivate::clone() const
+{
+    return new MimePrivate(fileName, mimeType);
+}
+
 Action::Action() : d(new DefaultPrivate())
 { }
 
