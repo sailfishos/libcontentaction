@@ -189,8 +189,8 @@ Action::DefaultPrivate *Action::HighlightPrivate::clone() const
     return new HighlightPrivate(match, action);
 }
 
-Action::MimePrivate::MimePrivate(const QString& fileName, GAppInfo* appInfo)
-    : fileName(fileName), appInfo(appInfo)
+Action::MimePrivate::MimePrivate(const QUrl& fileUri, GAppInfo* appInfo)
+    : fileUri(fileUri), appInfo(appInfo)
 { }
 
 Action::MimePrivate::~MimePrivate()
@@ -206,17 +206,28 @@ bool Action::MimePrivate::isValid() const
 
 QString Action::MimePrivate::name() const
 {
-    return "Open"; // FIXME
+    const char* appName = g_app_info_get_name(appInfo);
+    return QString(appName);
 }
 
+/// Launches the application with gio.
 void Action::MimePrivate::trigger() const
 {
-    // TODO
+    GError* error = 0;
+    GList* uris = NULL;
+    QByteArray uri = fileUri.toEncoded();
+    uris = g_list_append(uris, uri.data());
+
+    g_app_info_launch(appInfo, uris, NULL, &error);
+    if (error != NULL) {
+        LCA_WARNING << "cannot trigger: " << error->message;
+        g_error_free(error);
+    }
 }
 
 Action::DefaultPrivate *Action::MimePrivate::clone() const
 {
-    return new MimePrivate(fileName, g_app_info_dup(appInfo));
+    return new MimePrivate(fileUri, g_app_info_dup(appInfo));
 }
 
 Action::Action() : d(new DefaultPrivate())
@@ -238,9 +249,9 @@ Action Action::highlightAction(const QString& match,
     return Action(new HighlightPrivate(match, action));
 }
 
-Action Action::mimeAction(const QString& fileName, GAppInfo* appInfo)
+Action Action::mimeAction(const QUrl& fileUri, GAppInfo* appInfo)
 {
-    return Action(new MimePrivate(fileName, appInfo));
+    return Action(new MimePrivate(fileUri, appInfo));
 }
 
 Action::Action(const Action& other)
@@ -365,15 +376,17 @@ Action Action::defaultAction(const QStringList& uris)
 }
 
 /// Returns the default action for a given \a file, based on its content type.
-Action Action::defaultActionForFile(const QString& fileName)
+Action Action::defaultActionForFile(const QUrl& fileUri)
 {
-    const char* contentType = contentTypeForFile(fileName);
+    QByteArray uri = fileUri.toEncoded();
+    char* contentType = contentTypeForFile(uri.constData());
     if (contentType == NULL)
         return Action();
     GAppInfo* appInfo = g_app_info_get_default_for_type(contentType, FALSE);
+    g_free(contentType);
     if (appInfo == NULL)
         return Action();
-    return mimeAction(fileName, appInfo);
+    return mimeAction(fileUri, appInfo);
 }
 
 /// Returns the set of applicable actions for a given \a uri. The nepomuk
@@ -458,21 +471,22 @@ QList<Action> Action::actions(const QStringList& uris)
 
 /// Returns the set of applicable actions for a given \a file, based on its
 /// content type.
-QList<Action> Action::actionsForFile(const QString& fileName)
+QList<Action> Action::actionsForFile(const QUrl& fileUri)
 {
     QList<Action> result;
-    const char* contentType = contentTypeForFile(fileName);
+    QByteArray uri = fileUri.toEncoded();
+    char* contentType = contentTypeForFile(uri.constData());
     if (contentType == NULL)
         return result;
 
     GList* appInfoList = g_app_info_get_all_for_type(contentType);
+    g_free(contentType);
     while (appInfoList != NULL) {
-        result << mimeAction(fileName, g_app_info_dup((GAppInfo*)&appInfoList->data)); // FIXME: dup?
+        result << mimeAction(fileUri, g_app_info_dup((GAppInfo*)&appInfoList->data)); // FIXME: dup?
+        g_object_unref(appInfoList);
         appInfoList = g_list_next(appInfoList);
     }
-
     g_list_free(appInfoList);
-
     return result;
 }
 
@@ -642,11 +656,11 @@ QList<QPair<int, QString> > actionsForClass(const QString& klass)
 
 /// Returns the content type of the given file, or an empty string if it cannot
 /// be retrieved.
-const char* contentTypeForFile(const QString& fileName)
+char* contentTypeForFile(const char* fileUri)
 {
+    g_type_init();
     GError *error = 0;
-    QByteArray fileNameArray = fileName.toLatin1();
-    GFile *file = g_file_new_for_path(fileNameArray.data());
+    GFile *file = g_file_new_for_uri(fileUri);
 
     GFileInfo *fileInfo = g_file_query_info(file,
                                             "standard::*",
@@ -658,9 +672,10 @@ const char* contentTypeForFile(const QString& fileName)
         g_object_unref(file);
         return NULL;
     }
-    const char *contentType = g_file_info_get_content_type(fileInfo);
+    char *contentType = g_strdup(g_file_info_get_content_type(fileInfo));
     g_object_unref(fileInfo);
     g_object_unref(file);
+    qDebug() << "Got content type" << contentType;
     return contentType;
 }
 

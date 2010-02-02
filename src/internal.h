@@ -22,7 +22,7 @@ QString defaultActionForClasses(const QStringList& classes);
 
 const HighlighterMap& highlighterConfig();
 
-const char* contentTypeForFile(const QString& file);
+char* contentTypeForFile(const char* fileUri);
 }
 
 #endif

@@ -143,6 +143,7 @@
 #include <QList>
 #include <QString>
 #include <QStringList>
+#include <QUrl>
 
 struct _GAppInfo;
 
@@ -163,11 +164,11 @@ public:
 
     static Action defaultAction(const QString& uri);
     static Action defaultAction(const QStringList& uris);
-    static Action defaultActionForFile(const QString& fileName);
+    static Action defaultActionForFile(const QUrl& fileUri);
 
     static QList<Action> actions(const QString& uri);
     static QList<Action> actions(const QStringList& uris);
-    static QList<Action> actionsForFile(const QString& fileName);
+    static QList<Action> actionsForFile(const QUrl& fileUri);
 
     static QList<Match> highlight(const QString& text);
 
@@ -191,7 +192,7 @@ private:
                                 const QString& action);
     static Action highlightAction(const QString& text,
                                   const QString& action);
-    static Action mimeAction(const QString& fileName,
+    static Action mimeAction(const QUrl& fileUri,
                              struct _GAppInfo* appInfo);
     DefaultPrivate* d; /// Pimpl pointer
 
@@ -241,14 +242,14 @@ struct Action::HighlightPrivate: Action::DefaultPrivate {
 };
 
 struct Action::MimePrivate: Action::DefaultPrivate {
-    MimePrivate(const QString& fileName, struct _GAppInfo* app);
+    MimePrivate(const QUrl& fileUri, struct _GAppInfo* app);
     virtual ~MimePrivate();
     virtual bool isValid() const;
     virtual QString name() const;
     virtual void trigger() const;
     virtual DefaultPrivate *clone() const;
 
-    QString fileName;
+    QUrl fileUri;
     struct _GAppInfo* appInfo;
 };
 
