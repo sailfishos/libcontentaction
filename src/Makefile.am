@@ -18,7 +18,8 @@ LIBS += \
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \
-	contentaction.h
+	contentaction.h \
+	contentaction_internal.h
 
 lib_LTLIBRARIES = libcontentaction.la
 
@@ -27,6 +28,7 @@ libcontentaction_la_DEPENDENCIES = \
 
 libcontentaction_la_SOURCES = \
 	internal.h \
+	contentaction_internal.h \
 	contentaction.h \
 	contentaction.cpp \
 	config.cpp \

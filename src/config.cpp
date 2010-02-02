@@ -19,6 +19,7 @@
  *
  */
 #include "internal.h"
+#include "contentaction_internal.h"
 
 #include <stdlib.h>
 
@@ -31,7 +32,7 @@
 namespace {
 
 using ContentAction::Associations;
-using ContentAction::HighlighterMap;
+using ContentAction::Internal::HighlighterMap;
 
 static Associations ActionsForClasses_cfg; // class - action - weight triples
 static HighlighterMap Highlighter_cfg; // regexp -> actions
@@ -198,7 +199,7 @@ const Associations& ContentAction::actionsForClasses()
 
 /// Returns the highlighter configuration map of (regexp, actions) read from
 /// the configuration files.
-const HighlighterMap& ContentAction::highlighterConfig()
+const HighlighterMap& ContentAction::Internal::highlighterConfig()
 {
     readConfig();
     return Highlighter_cfg;

@@ -10,7 +10,6 @@ namespace ContentAction {
 #define LCA_WARNING qWarning() << "libcontentaction:"
 
 typedef QHash<QString, QList<QPair<int, QString> > > Associations;
-typedef QHash<QString, QStringList> HighlighterMap;
 
 const Associations& actionsForClasses();
 QStringList classesOf(const QString& uri);
@@ -20,7 +19,6 @@ bool setDefaultAction(const QString& klass, const QString& action);
 QString defaultActionFromGConf(const QString& klass);
 QString defaultActionForClasses(const QStringList& classes);
 
-const HighlighterMap& highlighterConfig();
 }
 
 #endif

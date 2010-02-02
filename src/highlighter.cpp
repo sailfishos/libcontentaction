@@ -19,6 +19,7 @@
  *
  */
 #include "contentaction.h"
+#include "contentaction_internal.h"
 #include "internal.h"
 
 #include <stdlib.h>
@@ -27,6 +28,8 @@
 #include <QRegExp>
 
 namespace ContentAction {
+
+using namespace ContentAction::Internal;
 
 /// Highlights fragments of \a text which have applicable actions.  Returns a
 /// list of Match objects.
