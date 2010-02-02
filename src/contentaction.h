@@ -144,7 +144,7 @@
 #include <QString>
 #include <QStringList>
 
-#include <gio/gio.h> // FIXME
+struct _GAppInfo;
 
 namespace ContentAction
 {
@@ -192,7 +192,7 @@ private:
     static Action highlightAction(const QString& text,
                                   const QString& action);
     static Action mimeAction(const QString& fileName,
-                             GAppInfo* appInfo);
+                             struct _GAppInfo* appInfo);
     DefaultPrivate* d; /// Pimpl pointer
 
     friend QList<Match> highlight(const QString&);
@@ -241,7 +241,7 @@ struct Action::HighlightPrivate: Action::DefaultPrivate {
 };
 
 struct Action::MimePrivate: Action::DefaultPrivate {
-    MimePrivate(const QString& fileName, GAppInfo* app);
+    MimePrivate(const QString& fileName, struct _GAppInfo* app);
     virtual ~MimePrivate();
     virtual bool isValid() const;
     virtual QString name() const;
@@ -249,7 +249,7 @@ struct Action::MimePrivate: Action::DefaultPrivate {
     virtual DefaultPrivate *clone() const;
 
     QString fileName;
-    GAppInfo* appInfo; // FIXME
+    struct _GAppInfo* appInfo;
 };
 
 struct Match {
