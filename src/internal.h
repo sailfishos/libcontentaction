@@ -21,6 +21,8 @@ QString defaultActionFromGConf(const QString& klass);
 QString defaultActionForClasses(const QStringList& classes);
 
 const HighlighterMap& highlighterConfig();
+
+const char* contentTypeForFile(const QString& file);
 }
 
 #endif

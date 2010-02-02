@@ -27,6 +27,9 @@
 
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
+#include <gio/gio.h>
+#include <glib.h>
+
 #include <QDir>
 #include <QFile>
 #include <QPair>
@@ -186,12 +189,15 @@ Action::DefaultPrivate *Action::HighlightPrivate::clone() const
     return new HighlightPrivate(match, action);
 }
 
-Action::MimePrivate::MimePrivate(const QString& fileName, const QString& mimeType)
- : fileName(fileName), mimeType(mimeType)
+Action::MimePrivate::MimePrivate(const QString& fileName, GAppInfo* appInfo)
+    : fileName(fileName), appInfo(appInfo)
 { }
 
 Action::MimePrivate::~MimePrivate()
-{ }
+{
+    g_object_unref(appInfo);
+    appInfo = NULL;
+}
 
 bool Action::MimePrivate::isValid() const
 {
@@ -210,7 +216,7 @@ void Action::MimePrivate::trigger() const
 
 Action::DefaultPrivate *Action::MimePrivate::clone() const
 {
-    return new MimePrivate(fileName, mimeType);
+    return new MimePrivate(fileName, g_app_info_dup(appInfo));
 }
 
 Action::Action() : d(new DefaultPrivate())
@@ -230,6 +236,11 @@ Action Action::highlightAction(const QString& match,
                                const QString& action)
 {
     return Action(new HighlightPrivate(match, action));
+}
+
+Action Action::mimeAction(const QString& fileName, GAppInfo* appInfo)
+{
+    return Action(new MimePrivate(fileName, appInfo));
 }
 
 Action::Action(const Action& other)
@@ -353,6 +364,18 @@ Action Action::defaultAction(const QStringList& uris)
     return Action();
 }
 
+/// Returns the default action for a given \a file, based on its content type.
+Action Action::defaultActionForFile(const QString& fileName)
+{
+    const char* contentType = contentTypeForFile(fileName);
+    if (contentType == NULL)
+        return Action();
+    GAppInfo* appInfo = g_app_info_get_default_for_type(contentType, FALSE);
+    if (appInfo == NULL)
+        return Action();
+    return mimeAction(fileName, appInfo);
+}
+
 /// Returns the set of applicable actions for a given \a uri. The nepomuk
 /// classes of the uri are read from Tracker. For each class, the set of
 /// applicable actions and corresponding weights is read from a configuration
@@ -429,6 +452,26 @@ QList<Action> Action::actions(const QStringList& uris)
     // Correct the URI's and classes of the intersected actions
     foreach (const Action& act, commonActions)
         result << trackerAction(uris, commonClasses, act.name());
+
+    return result;
+}
+
+/// Returns the set of applicable actions for a given \a file, based on its
+/// content type.
+QList<Action> Action::actionsForFile(const QString& fileName)
+{
+    QList<Action> result;
+    const char* contentType = contentTypeForFile(fileName);
+    if (contentType == NULL)
+        return result;
+
+    GList* appInfoList = g_app_info_get_all_for_type(contentType);
+    while (appInfoList != NULL) {
+        result << mimeAction(fileName, g_app_info_dup((GAppInfo*)&appInfoList->data)); // FIXME: dup?
+        appInfoList = g_list_next(appInfoList);
+    }
+
+    g_list_free(appInfoList);
 
     return result;
 }
@@ -597,5 +640,28 @@ QList<QPair<int, QString> > actionsForClass(const QString& klass)
     return QList<QPair<int, QString> >();
 }
 
+/// Returns the content type of the given file, or an empty string if it cannot
+/// be retrieved.
+const char* contentTypeForFile(const QString& fileName)
+{
+    GError *error = 0;
+    QByteArray fileNameArray = fileName.toLatin1();
+    GFile *file = g_file_new_for_path(fileNameArray.data());
+
+    GFileInfo *fileInfo = g_file_query_info(file,
+                                            "standard::*",
+                                            G_FILE_QUERY_INFO_NONE,
+                                            NULL,
+                                            &error);
+    if (error != 0) {
+        g_error_free(error);
+        g_object_unref(file);
+        return NULL;
+    }
+    const char *contentType = g_file_info_get_content_type(fileInfo);
+    g_object_unref(fileInfo);
+    g_object_unref(file);
+    return contentType;
+}
 
 } // end namespace
