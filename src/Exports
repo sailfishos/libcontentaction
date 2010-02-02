@@ -17,6 +17,7 @@
     ContentAction::Match::operator*;
 
     ContentAction::Internal::highlighterConfig*;
+    ContentAction::Internal::highlightAction*;
   };
   local:
     *;

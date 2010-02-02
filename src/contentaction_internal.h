@@ -37,6 +37,9 @@ typedef QHash<QString, QStringList> HighlighterMap;
 
 const HighlighterMap& highlighterConfig();
 
+Action highlightAction(const QString& text,
+                       const QString& action);
+
 } // end namespace
 } // end namespace
 

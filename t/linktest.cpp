@@ -24,6 +24,7 @@ void everything()
     Action::highlight("foo bar baz");
     const HighlighterMap& m = highlighterConfig();
     Q_UNUSED(m);
+    a = highlightAction("foo", "bar");
 }
 
 int main(int argc, char **argv)
