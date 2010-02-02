@@ -38,7 +38,8 @@ enum ActionToDo {
     PrintDefault,
     SetDefault,
     PrintClassDefault,
-    SetClassDefault
+    SetClassDefault,
+    PrintForFile
 };
 
 void usage(char *prog)
@@ -54,6 +55,7 @@ void usage(char *prog)
         "  -s|--setdefault ACTION             set the default action for the given URIs\n"
         "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
         "  -S|--setclassdefault ACTION CLASS  set a default action for a Nepomuk class\n"
+        "  -f|--printforfile FILE             print the applicable actions for a file\n"
         "where ACTION is: INTERFACE.METHOD of the maemo service framework\n"
         "Return values:\n"
         "  0   success\n"
@@ -137,6 +139,10 @@ int main(int argc, char **argv)
             actionName = args.takeFirst();
             break;
         }
+        if (arg == "-f" || arg == "--printForfile") {
+            todo = PrintForFile;
+            break;
+        }
         err << "Unknown option " << arg << endl;
         return 2;
     }
@@ -212,6 +218,12 @@ int main(int argc, char **argv)
             return 6;
         }
         break;
+    }
+    case PrintForFile: {
+        QList<Action> actions = Action::actionsForFile(QUrl(args[0]));
+        foreach (Action action, actions) {
+            out << action.name() << endl;
+        }
     }
     }
     return 0;
