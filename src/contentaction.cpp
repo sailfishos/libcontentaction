@@ -218,11 +218,12 @@ void Action::MimePrivate::trigger() const
     QByteArray uri = fileUri.toEncoded();
     uris = g_list_append(uris, uri.data());
 
-    g_app_info_launch(appInfo, uris, NULL, &error);
+    g_app_info_launch_uris(appInfo, uris, NULL, &error);
     if (error != NULL) {
         LCA_WARNING << "cannot trigger: " << error->message;
         g_error_free(error);
     }
+    g_list_free(uris);
 }
 
 Action::DefaultPrivate *Action::MimePrivate::clone() const
