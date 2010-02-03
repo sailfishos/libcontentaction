@@ -39,7 +39,8 @@ enum ActionToDo {
     SetDefault,
     PrintClassDefault,
     SetClassDefault,
-    PrintForFile
+    PrintForFile,
+    InvokeForFile
 };
 
 void usage(char *prog)
@@ -56,7 +57,9 @@ void usage(char *prog)
         "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
         "  -S|--setclassdefault ACTION CLASS  set a default action for a Nepomuk class\n"
         "  -f|--printforfile FILE             print the applicable actions for a file\n"
+        "  -F|--invokeforfile FILEACTION FILE invoke an action for a file\n"
         "where ACTION is: INTERFACE.METHOD of the maemo service framework\n"
+        "  FILEACTION is: the name of the application\n"
         "Return values:\n"
         "  0   success\n"
         "  1   no arguments given\n"
@@ -143,6 +146,15 @@ int main(int argc, char **argv)
             todo = PrintForFile;
             break;
         }
+        if (arg == "-F" || arg == "--invokeForfile") {
+            todo = InvokeForFile;
+            if (args.isEmpty()) {
+                err << "an action must be given when using " << arg << endl;
+                return 2;
+            }
+            actionName = args.takeFirst();
+            break;
+        }
         err << "Unknown option " << arg << endl;
         return 2;
     }
@@ -219,10 +231,20 @@ int main(int argc, char **argv)
         }
         break;
     }
-    case PrintForFile: {
+    case PrintForFile:
+    case InvokeForFile: {
         QList<Action> actions = Action::actionsForFile(QUrl(args[0]));
         foreach (Action action, actions) {
-            out << action.name() << endl;
+            if (todo == PrintForFile) {
+                out << action.name() << endl;
+            } else if (todo == InvokeForFile && actionName == action.name()) {
+                action.trigger();
+                return 0;
+            }
+        }
+        if (todo == InvokeForFile) {
+            err << "action '" << actionName << "'is not applicable\n";
+            return 3;
         }
     }
     }
