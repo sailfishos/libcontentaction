@@ -481,10 +481,11 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri)
 
     GList* appInfoList = g_app_info_get_all_for_type(contentType);
     g_free(contentType);
-    while (appInfoList != NULL) {
-        result << mimeAction(fileUri, g_app_info_dup((GAppInfo*)&appInfoList->data)); // FIXME: dup?
-        g_object_unref(appInfoList);
-        appInfoList = g_list_next(appInfoList);
+    GList* cur = appInfoList;
+    while (cur != NULL) {
+        result << mimeAction(fileUri, g_app_info_dup((GAppInfo*)cur->data));
+        g_object_unref(cur->data);
+        cur = g_list_next(cur);
     }
     g_list_free(appInfoList);
     return result;
@@ -675,7 +676,6 @@ char* contentTypeForFile(const char* fileUri)
     char *contentType = g_strdup(g_file_info_get_content_type(fileInfo));
     g_object_unref(fileInfo);
     g_object_unref(file);
-    qDebug() << "Got content type" << contentType;
     return contentType;
 }
 
