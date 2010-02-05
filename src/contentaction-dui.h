@@ -19,26 +19,24 @@
  *
  */
 
-#ifndef CONTENTACTION_INTERNAL_H
-#define CONTENTACTION_INTERNAL_H
+#ifndef CONTENTACTION_DUI_H
+#define CONTENTACTION_DUI_H
 
-/*
- * WARNING: These functions may change or go away without any notice.
- * We expose these for our sister libraries.
- */
-#include <QHash>
-#include <QStringList>
+/*!
+  \section DUI "integration"
+
+  The text-highlighter part of libcontentaction can be used to implement
+  DuiLabelHighlighter functionality.
+
+  \sa ContentAction::Dui::highlightLabel()
+*/
+
+class DuiLabel;
 
 namespace ContentAction {
-namespace Internal {
+namespace Dui {
 
-// regexp -> actions
-typedef QHash<QString, QStringList> HighlighterMap;
-
-const HighlighterMap& highlighterConfig();
-
-Action highlightAction(const QString& text,
-                       const QString& action);
+void highlightLabel(DuiLabel *label);
 
 } // end namespace
 } // end namespace

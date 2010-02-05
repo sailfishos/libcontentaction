@@ -192,6 +192,5 @@ struct Match {
     bool operator<(const Match& other) const;
 };
 
-}
-
+} // end namespace
 #endif

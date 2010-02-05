@@ -2,10 +2,10 @@
 #define INTERNAL_H
 
 #include "contentaction.h"
-#include "contentaction_internal.h"
 #include <QHash>
 #include <QList>
 #include <QPair>
+#include <QStringList>
 
 #define LCA_WARNING qWarning() << "libcontentaction:"
 
@@ -71,6 +71,14 @@ QString defaultActionForClasses(const QStringList& classes);
 Action trackerAction(const QStringList& uris,
                      const QStringList& classes,
                      const QString& action);
+
+Action highlightAction(const QString& text,
+                       const QString& action);
+
+// regexp -> actions
+typedef QHash<QString, QStringList> HighlighterMap;
+
+const HighlighterMap& highlighterConfig();
 
 }
 }

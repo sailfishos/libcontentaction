@@ -19,7 +19,6 @@
  *
  */
 #include "internal.h"
-#include "contentaction_internal.h"
 
 #include <stdlib.h>
 

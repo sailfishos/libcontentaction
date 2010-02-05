@@ -1,7 +1,7 @@
 // The purpose of this is to verify symbol exports.  If it compiles and links
 // successfully, then exports should be fine.
 #include "contentaction.h"
-#include "contentaction_internal.h"
+#include "internal.h"
 
 using namespace ContentAction;
 using namespace ContentAction::Internal;
