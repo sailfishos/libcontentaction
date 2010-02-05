@@ -24,10 +24,8 @@
 #include <unistd.h>
 #include <QTextStream>
 
-using ContentAction::Action;
-using ContentAction::classesOf;
-using ContentAction::defaultActionFromGConf;
-using ContentAction::setDefaultAction;
+using namespace ContentAction;
+using namespace ContentAction::Internal;
 
 enum ActionToDo {
     PrintHelp,

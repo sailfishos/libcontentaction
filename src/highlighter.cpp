@@ -28,6 +28,8 @@
 
 namespace ContentAction {
 
+using namespace ContentAction::Internal;
+
 /// Highlights fragments of \a text which have applicable actions.  Returns a
 /// list of Match objects.
 QList<Match> Action::highlight(const QString& text)
@@ -44,7 +46,7 @@ QList<Match> Action::highlight(const QString& text)
             m.start = pos;
             m.end = pos + l;
             foreach (const QString& act, cfg[sre]) {
-                m.actions << Action::highlightAction(re.cap(), act);
+                m.actions << highlightAction(re.cap(), act);
             }
             result << m;
             pos += l;

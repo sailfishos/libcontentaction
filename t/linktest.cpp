@@ -1,8 +1,10 @@
 // The purpose of this is to verify symbol exports.  If it compiles and links
 // successfully, then exports should be fine.
 #include "contentaction.h"
+#include "internal.h"
 
 using namespace ContentAction;
+using namespace ContentAction::Internal;
 
 void everything()
 {
@@ -20,6 +22,9 @@ void everything()
     QList<Action> paff = Action::actions("concatenation");
 
     Action::highlight("foo bar baz");
+    const HighlighterMap& m = highlighterConfig();
+    Q_UNUSED(m);
+    a = highlightAction("foo", "bar");
 }
 
 int main(int argc, char **argv)

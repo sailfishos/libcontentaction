@@ -1,3 +1,4 @@
+DISTCHECK_CONFIGURE_FLAGS = --with-dui
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = src t doc data
 

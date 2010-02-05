@@ -30,8 +30,7 @@
 
 namespace {
 
-using ContentAction::Associations;
-using ContentAction::HighlighterMap;
+using namespace ContentAction::Internal;
 
 static Associations ActionsForClasses_cfg; // class - action - weight triples
 static HighlighterMap Highlighter_cfg; // regexp -> actions
@@ -190,7 +189,7 @@ static void readConfig()
 
 /// Returns the "Nepomuk class - action - weight" associations read from the
 /// configuration files.
-const Associations& ContentAction::actionsForClasses()
+const Associations& ContentAction::Internal::actionsForClasses()
 {
     readConfig();
     return ActionsForClasses_cfg;
@@ -198,7 +197,7 @@ const Associations& ContentAction::actionsForClasses()
 
 /// Returns the highlighter configuration map of (regexp, actions) read from
 /// the configuration files.
-const HighlighterMap& ContentAction::highlighterConfig()
+const HighlighterMap& ContentAction::Internal::highlighterConfig()
 {
     readConfig();
     return Highlighter_cfg;

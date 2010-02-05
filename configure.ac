@@ -8,10 +8,19 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AC_LANG([C++])
 AC_PROG_CXX
-CXXFLAGS="$CXXFLAGS -Wall"
+CXXFLAGS="$CXXFLAGS -Wall -Werror"
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 AC_PROG_QT_MOC
+
+# Optional Dui support
+AC_ARG_WITH([dui],
+            [AS_HELP_STRING([--with-dui],
+                            [build parts requiring Dui])],
+            [], [with_dui=no])
+AM_CONDITIONAL([WITH_DUI], [test "x$with_dui" != xno])
+AS_IF([test "x$with_dui" != xno],
+      [PKG_CHECK_MODULES([DUI], [Dui >= 0.18])])
 
 # check for libraries
 PKG_CHECK_MODULES([QtTest], [QtTest])

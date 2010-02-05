@@ -19,38 +19,26 @@
  *
  */
 
-#ifndef SERVICE_H
-#define SERVICE_H
+#ifndef CONTENTACTION_DUI_H
+#define CONTENTACTION_DUI_H
 
-#include <QString>
-#include <QHash>
+/*!
+  \section DUI "integration"
 
-class QDBusInterface;
+  The text-highlighter part of libcontentaction can be used to implement
+  DuiLabelHighlighter functionality.
 
-namespace ContentAction
-{
+  \sa ContentAction::Dui::highlightLabel()
+*/
 
-class ServiceResolver : public QObject
-{
-    Q_OBJECT
-public:
-    ServiceResolver();
-    ~ServiceResolver();
-    QDBusInterface* implementor(const QString& interface);
-    QDBusInterface* implementorForAction(const QString& action, QString& method);
+class DuiLabel;
 
-private slots:
-    void onServiceAvailable(QString, QString);
-    void onServiceUnavailable(QString);
+namespace ContentAction {
+namespace Dui {
 
-private:
-    QString implementorName(const QString&);
+void highlightLabel(DuiLabel *label);
 
-    QHash<QString, QString> resolved;
-    QHash<QString, QDBusInterface*> proxies;
-    QDBusInterface* mapperProxy;
-};
-
-}
+} // end namespace
+} // end namespace
 
 #endif

@@ -41,6 +41,8 @@
 
 namespace ContentAction {
 
+using namespace ContentAction::Internal;
+
 // initialized on the first request
 static TrackerClient *Tracker = 0;
 static GConfClient *Gconf = 0;
@@ -78,15 +80,15 @@ Action::DefaultPrivate *Action::DefaultPrivate::clone() const
     return new DefaultPrivate();
 }
 
-Action::TrackerPrivate::TrackerPrivate(const QStringList& uris,
+TrackerPrivate::TrackerPrivate(const QStringList& uris,
                                const QStringList& classes,
                                const QString& action) :
     uris(uris), classes(classes), action(action)
 { }
 
-Action::TrackerPrivate::~TrackerPrivate() { }
+TrackerPrivate::~TrackerPrivate() { }
 
-void Action::TrackerPrivate::setAsDefault()
+void TrackerPrivate::setAsDefault()
 {
     // If the action concerns multiple uris, but they are not of the
     // same type, we cannot set a default action.
@@ -101,14 +103,14 @@ void Action::TrackerPrivate::setAsDefault()
     // FIXME: decide what to do if there are many "most specific" classes.
 }
 
-bool Action::TrackerPrivate::isDefault() const
+bool TrackerPrivate::isDefault() const
 {
     Action def = Action::defaultAction(uris);
     TrackerPrivate *tp = reinterpret_cast<TrackerPrivate *>(def.d);
     return (tp->action == action);
 }
 
-bool Action::TrackerPrivate::canBeDefault() const
+bool TrackerPrivate::canBeDefault() const
 {
     // If the action concerns multiple uris, but they are not of the
     // same type, this action cannot be set as a default action.
@@ -119,99 +121,92 @@ bool Action::TrackerPrivate::canBeDefault() const
     return true;
 }
 
-bool Action::TrackerPrivate::isValid() const
+bool TrackerPrivate::isValid() const
 {
     return true;
 }
 
-QString Action::TrackerPrivate::name() const
+QString TrackerPrivate::name() const
 {
     return action;
 }
 
-void Action::TrackerPrivate::trigger() const
+void TrackerPrivate::trigger() const
 {
-    // Get the service fw interface from the action name
-    int dotIx = action.lastIndexOf(".");
-    if (dotIx < 1) {
-        LCA_WARNING << "invalid action name" << action << ", cannot be triggered";
+    QString method;
+    QDBusInterface *proxy = resolver.implementorForAction(action, method);
+    if (!proxy)
         return;
-    }
-
-    // Action, e.g., "com.nokia.video-interface.play"
-    QString interface = action.left(dotIx);
-    QString method = action.right(action.size() - dotIx - 1);
-    QDBusInterface* proxy = resolver.implementor(interface);
-    if (!proxy->isValid()) {
-        LCA_WARNING << "cannot connect to service implementor" << proxy->service();
-        return;
-    }
-
-    // Call the implementor blockingly. The argument is the string list of uri's.
     QDBusMessage reply = proxy->call(method, uris);
-    if (reply.type() != QDBusMessage::ReplyMessage) {
-        LCA_WARNING << "invalid reply from service implementor" << reply.errorName()
-                    << "when trying to call" << proxy->service()
-                    << proxy->interface() << "." <<  method;
-        return;
-    }
+    if (reply.type() != QDBusMessage::ReplyMessage)
+        LCA_WARNING << "error reply from service implementor" << reply.errorName()
+                    << "when trying to call" << action
+                    << "on" << proxy->service();
 }
 
-Action::DefaultPrivate *Action::TrackerPrivate::clone() const
+Action::DefaultPrivate *TrackerPrivate::clone() const
 {
-    return new Action::TrackerPrivate(uris, classes, action);
+    return new TrackerPrivate(uris, classes, action);
 }
 
-Action::HighlightPrivate::HighlightPrivate(const QString& match, const QString& action) :
+HighlightPrivate::HighlightPrivate(const QString& match, const QString& action) :
     match(match), action(action)
 { }
 
-Action::HighlightPrivate::~HighlightPrivate()
+HighlightPrivate::~HighlightPrivate()
 { }
 
-bool Action::HighlightPrivate::isValid() const
+bool HighlightPrivate::isValid() const
 {
     return true;
 }
 
-QString Action::HighlightPrivate::name() const
+QString HighlightPrivate::name() const
 {
     return action;
 }
 
-void Action::HighlightPrivate::trigger() const
+void HighlightPrivate::trigger() const
 {
-    LCA_WARNING << "FIXME triggering text highlight action";
+    QString method;
+    QDBusInterface *proxy = resolver.implementorForAction(action, method);
+    if (!proxy)
+        return;
+    QDBusMessage reply = proxy->call(method, match);
+    if (reply.type() != QDBusMessage::ReplyMessage)
+        LCA_WARNING << "error reply from service implementor" << reply.errorName()
+                    << "when trying to call" << action
+                    << "on" << proxy->service();
 }
 
-Action::DefaultPrivate *Action::HighlightPrivate::clone() const
+Action::DefaultPrivate *HighlightPrivate::clone() const
 {
     return new HighlightPrivate(match, action);
 }
 
-Action::MimePrivate::MimePrivate(const QUrl& fileUri, GAppInfo* appInfo)
+MimePrivate::MimePrivate(const QUrl& fileUri, GAppInfo* appInfo)
     : fileUri(fileUri), appInfo(appInfo)
 { }
 
-Action::MimePrivate::~MimePrivate()
+MimePrivate::~MimePrivate()
 {
     g_object_unref(appInfo);
     appInfo = NULL;
 }
 
-bool Action::MimePrivate::isValid() const
+bool MimePrivate::isValid() const
 {
     return true;
 }
 
-QString Action::MimePrivate::name() const
+QString MimePrivate::name() const
 {
     const char* appName = g_app_info_get_name(appInfo);
     return QString(appName);
 }
 
 /// Launches the application with gio.
-void Action::MimePrivate::trigger() const
+void MimePrivate::trigger() const
 {
     GError* error = 0;
     GList* uris = NULL;
@@ -226,7 +221,7 @@ void Action::MimePrivate::trigger() const
     g_list_free(uris);
 }
 
-Action::DefaultPrivate *Action::MimePrivate::clone() const
+Action::DefaultPrivate *MimePrivate::clone() const
 {
     return new MimePrivate(fileUri, g_app_info_dup(appInfo));
 }
@@ -237,20 +232,20 @@ Action::Action() : d(new DefaultPrivate())
 Action::Action(DefaultPrivate *priv) : d(priv)
 { }
 
-Action Action::trackerAction(const QStringList& uris,
-                             const QStringList& classes,
-                             const QString& action)
+Action Internal::trackerAction(const QStringList& uris,
+                               const QStringList& classes,
+                               const QString& action)
 {
     return Action(new TrackerPrivate(uris, classes, action));
 }
 
-Action Action::highlightAction(const QString& match,
-                               const QString& action)
+Action Internal::highlightAction(const QString& match,
+                                 const QString& action)
 {
     return Action(new HighlightPrivate(match, action));
 }
 
-Action Action::mimeAction(const QUrl& fileUri, GAppInfo* appInfo)
+Action Internal::mimeAction(const QUrl& fileUri, GAppInfo* appInfo)
 {
     return Action(new MimePrivate(fileUri, appInfo));
 }
@@ -503,7 +498,7 @@ static bool isValidIRI(const QString& uri)
 /// the "semantic class path" containing nie:InformationElement, and
 /// ignores the class path containing nie:DataObject. The classes are
 /// returned in the order from most immediate to least immediate.
-QStringList classesOf(const QString& uri)
+QStringList Internal::classesOf(const QString& uri)
 {
     QStringList result;
 
@@ -512,7 +507,7 @@ QStringList classesOf(const QString& uri)
         return result;
     }
     if (!Tracker) {
-        Tracker = tracker_connect(TRUE, 0);
+        Tracker = tracker_client_new(TRACKER_CLIENT_ENABLE_WARNINGS, 0);
         if (!Tracker) {
             LCA_WARNING << "failed to connect to Tracker";
             return result;
@@ -571,7 +566,7 @@ QStringList classesOf(const QString& uri)
 
 /// Returns the per-class default action. If there is no default
 /// action for that class, returns an empty string.
-QString defaultActionFromGConf(const QString& klass)
+QString Internal::defaultActionFromGConf(const QString& klass)
 {
     if (Gconf == 0) {
         g_type_init(); // XXX: needed?
@@ -609,7 +604,7 @@ QString defaultActionFromGConf(const QString& klass)
     return action;
 }
 
-bool setDefaultAction(const QString& klass, const QString& action)
+bool Internal::setDefaultAction(const QString& klass, const QString& action)
 {
     if (Gconf == 0) {
         g_type_init(); // XXX: needed?
@@ -637,7 +632,7 @@ bool setDefaultAction(const QString& klass, const QString& action)
 /// Walks up the inheritance hierarchy, checking the default actions
 /// for each class. Returns the first action found, or an empty string
 /// if none were found.
-QString defaultActionForClasses(const QStringList& classes)
+QString Internal::defaultActionForClasses(const QStringList& classes)
 {
     foreach (const QString& klass, classes) {
         QString action = defaultActionFromGConf(klass);
@@ -649,7 +644,7 @@ QString defaultActionForClasses(const QStringList& classes)
 }
 
 /// Returns the list of applicable actions for \a klass.
-QList<QPair<int, QString> > actionsForClass(const QString& klass)
+QList<QPair<int, QString> > Internal::actionsForClass(const QString& klass)
 {
     if (actionsForClasses().contains(klass))
         return actionsForClasses()[klass];
@@ -658,7 +653,7 @@ QList<QPair<int, QString> > actionsForClass(const QString& klass)
 
 /// Returns the content type of the given file, or an empty string if it cannot
 /// be retrieved.
-char* contentTypeForFile(const char* fileUri)
+char* Internal::contentTypeForFile(const char* fileUri)
 {
     g_type_init();
     GError *error = 0;

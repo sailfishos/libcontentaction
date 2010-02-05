@@ -173,9 +173,6 @@ public:
     static QList<Match> highlight(const QString& text);
 
     struct DefaultPrivate;
-    struct TrackerPrivate;
-    struct HighlightPrivate;
-    struct MimePrivate;
 
     Action(DefaultPrivate *priv);
     Action();
@@ -187,70 +184,10 @@ public slots:
     void trigger() const;
 
 private:
-    static Action trackerAction(const QStringList& uris,
-                                const QStringList& classes,
-                                const QString& action);
-    static Action highlightAction(const QString& text,
-                                  const QString& action);
-    static Action mimeAction(const QUrl& fileUri,
-                             struct _GAppInfo* appInfo);
     DefaultPrivate* d; /// Pimpl pointer
 
-    friend QList<Match> highlight(const QString&);
-};
-
-struct Action::DefaultPrivate {
-    virtual ~DefaultPrivate();
-    virtual void setAsDefault();
-    virtual bool isDefault() const;
-    virtual bool canBeDefault() const;
-    virtual bool isValid() const;
-    virtual QString name() const;
-    virtual void trigger() const;
-    virtual DefaultPrivate *clone() const;
-};
-
-struct Action::TrackerPrivate: Action::DefaultPrivate {
-    TrackerPrivate(const QStringList& uris,
-                   const QStringList& classes,
-                   const QString& action);
-    virtual ~TrackerPrivate();
-    virtual void setAsDefault();
-    virtual bool isDefault() const;
-    virtual bool canBeDefault() const;
-    virtual bool isValid() const;
-    virtual QString name() const;
-    virtual void trigger() const;
-    virtual DefaultPrivate *clone() const;
-
-    QStringList uris; ///< the target uri's of the action
-    QStringList classes; ///< the classes of the uri's (if they are of the
-                         ///< same type)
-    QString action; ///< [service fw interface].[method]
-};
-
-struct Action::HighlightPrivate: Action::DefaultPrivate {
-    HighlightPrivate(const QString& match, const QString& action);
-    virtual ~HighlightPrivate();
-    virtual bool isValid() const;
-    virtual QString name() const;
-    virtual void trigger() const;
-    virtual DefaultPrivate *clone() const;
-
-    QString match;
-    QString action;
-};
-
-struct Action::MimePrivate: Action::DefaultPrivate {
-    MimePrivate(const QUrl& fileUri, struct _GAppInfo* app);
-    virtual ~MimePrivate();
-    virtual bool isValid() const;
-    virtual QString name() const;
-    virtual void trigger() const;
-    virtual DefaultPrivate *clone() const;
-
-    QUrl fileUri;
-    struct _GAppInfo* appInfo;
+    // TODO: get rid of this
+    friend class TrackerPrivate;
 };
 
 struct Match {
@@ -260,6 +197,5 @@ struct Match {
     bool operator<(const Match& other) const;
 };
 
-}
-
+} // end namespace
 #endif
