@@ -130,30 +130,15 @@ QString TrackerPrivate::name() const
 
 void TrackerPrivate::trigger() const
 {
-    // Get the service fw interface from the action name
-    int dotIx = action.lastIndexOf(".");
-    if (dotIx < 1) {
-        LCA_WARNING << "invalid action name" << action << ", cannot be triggered";
+    QString method;
+    QDBusInterface *proxy = resolver.implementorForAction(action, method);
+    if (!proxy)
         return;
-    }
-
-    // Action, e.g., "com.nokia.video-interface.play"
-    QString interface = action.left(dotIx);
-    QString method = action.right(action.size() - dotIx - 1);
-    QDBusInterface* proxy = resolver.implementor(interface);
-    if (!proxy->isValid()) {
-        LCA_WARNING << "cannot connect to service implementor" << proxy->service();
-        return;
-    }
-
-    // Call the implementor blockingly. The argument is the string list of uri's.
     QDBusMessage reply = proxy->call(method, uris);
-    if (reply.type() != QDBusMessage::ReplyMessage) {
-        LCA_WARNING << "invalid reply from service implementor" << reply.errorName()
-                    << "when trying to call" << proxy->service()
-                    << proxy->interface() << "." <<  method;
-        return;
-    }
+    if (reply.type() != QDBusMessage::ReplyMessage)
+        LCA_WARNING << "error reply from service implementor" << reply.errorName()
+                    << "when trying to call" << action
+                    << "on" << proxy->service();
 }
 
 Action::DefaultPrivate *TrackerPrivate::clone() const
@@ -180,7 +165,15 @@ QString HighlightPrivate::name() const
 
 void HighlightPrivate::trigger() const
 {
-    LCA_WARNING << "FIXME triggering text highlight action";
+    QString method;
+    QDBusInterface *proxy = resolver.implementorForAction(action, method);
+    if (!proxy)
+        return;
+    QDBusMessage reply = proxy->call(method, match);
+    if (reply.type() != QDBusMessage::ReplyMessage)
+        LCA_WARNING << "error reply from service implementor" << reply.errorName()
+                    << "when trying to call" << action
+                    << "on" << proxy->service();
 }
 
 Action::DefaultPrivate *HighlightPrivate::clone() const
@@ -428,7 +421,7 @@ QStringList Internal::classesOf(const QString& uri)
         return result;
     }
     if (!Tracker) {
-        Tracker = tracker_connect(TRUE, 0);
+        Tracker = tracker_client_new(TRACKER_CLIENT_ENABLE_WARNINGS, 0);
         if (!Tracker) {
             LCA_WARNING << "failed to connect to Tracker";
             return result;

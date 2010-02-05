@@ -114,4 +114,21 @@ QDBusInterface* ServiceResolver::implementor(const QString& interface)
     return proxies[name];
 }
 
+// Splits action to interface.method and looks up the proxy for the interface.
+// Returns the method name in \a method.
+QDBusInterface *ServiceResolver::implementorForAction(const QString& action,
+                                                      QString& method)
+{
+    // Get the service fw interface from the action name
+    int dotIx = action.lastIndexOf(".");
+    if (dotIx < 1) {
+        LCA_WARNING << "invalid action name" << action;
+        return 0;
+    }
+    // Action, e.g., "com.nokia.video-interface.play"
+    QString interface = action.left(dotIx);
+    method = action.right(action.size() - dotIx - 1);
+    return implementor(interface);
+}
+
 }

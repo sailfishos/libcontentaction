@@ -37,6 +37,7 @@ public:
     ServiceResolver();
     ~ServiceResolver();
     QDBusInterface* implementor(const QString& interface);
+    QDBusInterface* implementorForAction(const QString& action, QString& method);
 
 private slots:
     void onServiceAvailable(QString, QString);
