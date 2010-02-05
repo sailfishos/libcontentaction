@@ -29,6 +29,8 @@ t/linktest
 t/mocs.cpp
 t/moc_*.cpp
 t/servicetest
+t/hldemo
+t/hl1
 
 doc/doxygen.log
 doc/html/
@@ -56,3 +58,4 @@ Makefile.in
 *.o
 *.pyc
 *.moc
+TAGS
