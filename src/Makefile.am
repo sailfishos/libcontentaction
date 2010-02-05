@@ -9,7 +9,8 @@ SUFFIXES = .cpp .h .moc.cpp
 	$(MOC) -o "$@" "$<"
 
 EXTRA_DIST = \
-	Exports
+	Exports \
+	Exports.dui
 
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
