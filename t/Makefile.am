@@ -1,8 +1,12 @@
+CLEANFILES =
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
 	-I$(top_srcdir)/src
 LIBS += \
 	../src/libcontentaction.la
+
+.cpp.moc:
+	$(MOC) -o "$@" "$<"
 
 BUILT_SOURCES = \
 	env.sh \
@@ -36,6 +40,22 @@ check_PROGRAMS = \
 	linktest \
 	hl1
 
+if WITH_DUI
+
+noinst_PROGRAMS = hldemo
+hldemo_SOURCES = hldemo.cpp
+hldemo_CPPFLAGS = \
+	$(DUI_CFLAGS) \
+	-I$(top_srcdir)/src
+hldemo_LDADD = \
+	$(DUI_LIBS) \
+	../src/libcontentaction.la \
+	../src/libcontentaction-dui.la
+BUILT_SOURCES += hldemo.moc
+CLEANFILES += hldemo.moc
+
+endif
+
 hl1_SOURCES = \
 	hl1.cpp
 linktest_SOURCES = \
@@ -50,9 +70,6 @@ servicetest_SOURCES = \
 	servicelistener.cpp
 
 BUILT_SOURCES += servicelistener.moc
-
-servicelistener.moc: servicelistener.cpp
-	$(MOC) -o "$@" "$<"
 
 servicetest_LDADD = \
 	../src/libcontentaction.la
@@ -84,4 +101,4 @@ TESTS = \
 clean-local:
 	rm -f *.pyc;
 
-CLEANFILES = servicelistener.moc
+CLEANFILES += servicelistener.moc
