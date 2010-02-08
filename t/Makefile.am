@@ -1,3 +1,4 @@
+SUBDIRS = applications
 CLEANFILES =
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
@@ -35,7 +36,8 @@ citest_DATA = \
 	service.map \
 	data.contact \
 	data.web \
-	data.image
+	data.image \
+	plaintext
 
 check_PROGRAMS = \
 	linktest \

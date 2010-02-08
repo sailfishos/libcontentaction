@@ -38,8 +38,6 @@ if 'MIME_TEST_DIR' in os.environ:
 class Mimes(unittest.TestCase):
     def testActionsForPlain(self):
         filename = "file://" + testfiles_dir + "/plaintext"
-        print "querying fo file", filename
-        print "reading data from", os.environ['XDG_DATA_DIRS']
         (status, output) = getstatusoutput("lca-tool --printforfile "+filename)
         self.assert_(status == 0)
         self.assert_(output.find("cattofile") != -1)
