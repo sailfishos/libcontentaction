@@ -378,7 +378,7 @@ Action Action::defaultActionForFile(const QUrl& fileUri)
     char* contentType = contentTypeForFile(uri.constData());
     if (contentType == NULL)
         return Action();
-    GAppInfo* appInfo = g_app_info_get_default_for_type(contentType, FALSE);
+    GAppInfo* appInfo = g_app_info_get_default_for_type(contentType, TRUE);
     g_free(contentType);
     if (appInfo == NULL)
         return Action();
