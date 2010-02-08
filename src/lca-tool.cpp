@@ -140,11 +140,11 @@ int main(int argc, char **argv)
             actionName = args.takeFirst();
             break;
         }
-        if (arg == "-f" || arg == "--printForfile") {
+        if (arg == "-f" || arg == "--printforfile") {
             todo = PrintForFile;
             break;
         }
-        if (arg == "-F" || arg == "--invokeForfile") {
+        if (arg == "-F" || arg == "--invokeforfile") {
             todo = InvokeForFile;
             if (args.isEmpty()) {
                 err << "an action must be given when using " << arg << endl;
