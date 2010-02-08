@@ -27,6 +27,9 @@
 
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
+#include <gio/gio.h>
+#include <glib.h>
+
 #include <QDir>
 #include <QFile>
 #include <QPair>
@@ -181,6 +184,48 @@ Action::DefaultPrivate *HighlightPrivate::clone() const
     return new HighlightPrivate(match, action);
 }
 
+MimePrivate::MimePrivate(const QUrl& fileUri, GAppInfo* appInfo)
+    : fileUri(fileUri), appInfo(appInfo)
+{ }
+
+MimePrivate::~MimePrivate()
+{
+    g_object_unref(appInfo);
+    appInfo = NULL;
+}
+
+bool MimePrivate::isValid() const
+{
+    return true;
+}
+
+QString MimePrivate::name() const
+{
+    const char* appName = g_app_info_get_name(appInfo);
+    return QString(appName);
+}
+
+/// Launches the application with gio.
+void MimePrivate::trigger() const
+{
+    GError* error = 0;
+    GList* uris = NULL;
+    QByteArray uri = fileUri.toEncoded();
+    uris = g_list_append(uris, uri.data());
+
+    g_app_info_launch_uris(appInfo, uris, NULL, &error);
+    if (error != NULL) {
+        LCA_WARNING << "cannot trigger: " << error->message;
+        g_error_free(error);
+    }
+    g_list_free(uris);
+}
+
+Action::DefaultPrivate *MimePrivate::clone() const
+{
+    return new MimePrivate(fileUri, g_app_info_dup(appInfo));
+}
+
 Action::Action() : d(new DefaultPrivate())
 { }
 
@@ -198,6 +243,11 @@ Action Internal::highlightAction(const QString& match,
                                  const QString& action)
 {
     return Action(new HighlightPrivate(match, action));
+}
+
+Action Internal::mimeAction(const QUrl& fileUri, GAppInfo* appInfo)
+{
+    return Action(new MimePrivate(fileUri, appInfo));
 }
 
 Action::Action(const Action& other)
@@ -321,6 +371,20 @@ Action Action::defaultAction(const QStringList& uris)
     return Action();
 }
 
+/// Returns the default action for a given \a file, based on its content type.
+Action Action::defaultActionForFile(const QUrl& fileUri)
+{
+    QByteArray uri = fileUri.toEncoded();
+    char* contentType = contentTypeForFile(uri.constData());
+    if (contentType == NULL)
+        return Action();
+    GAppInfo* appInfo = g_app_info_get_default_for_type(contentType, TRUE);
+    g_free(contentType);
+    if (appInfo == NULL)
+        return Action();
+    return mimeAction(fileUri, appInfo);
+}
+
 /// Returns the set of applicable actions for a given \a uri. The nepomuk
 /// classes of the uri are read from Tracker. For each class, the set of
 /// applicable actions and corresponding weights is read from a configuration
@@ -398,6 +462,28 @@ QList<Action> Action::actions(const QStringList& uris)
     foreach (const Action& act, commonActions)
         result << trackerAction(uris, commonClasses, act.name());
 
+    return result;
+}
+
+/// Returns the set of applicable actions for a given \a file, based on its
+/// content type.
+QList<Action> Action::actionsForFile(const QUrl& fileUri)
+{
+    QList<Action> result;
+    QByteArray uri = fileUri.toEncoded();
+    char* contentType = contentTypeForFile(uri.constData());
+    if (contentType == NULL)
+        return result;
+
+    GList* appInfoList = g_app_info_get_all_for_type(contentType);
+    g_free(contentType);
+    GList* cur = appInfoList;
+    while (cur != NULL) {
+        result << mimeAction(fileUri, g_app_info_dup((GAppInfo*)cur->data));
+        g_object_unref(cur->data);
+        cur = g_list_next(cur);
+    }
+    g_list_free(appInfoList);
     return result;
 }
 
@@ -565,5 +651,28 @@ QList<QPair<int, QString> > Internal::actionsForClass(const QString& klass)
     return QList<QPair<int, QString> >();
 }
 
+/// Returns the content type of the given file, or an empty string if it cannot
+/// be retrieved.
+char* Internal::contentTypeForFile(const char* fileUri)
+{
+    g_type_init();
+    GError *error = 0;
+    GFile *file = g_file_new_for_uri(fileUri);
+
+    GFileInfo *fileInfo = g_file_query_info(file,
+                                            "standard::*",
+                                            G_FILE_QUERY_INFO_NONE,
+                                            NULL,
+                                            &error);
+    if (error != 0) {
+        g_error_free(error);
+        g_object_unref(file);
+        return NULL;
+    }
+    char *contentType = g_strdup(g_file_info_get_content_type(fileInfo));
+    g_object_unref(fileInfo);
+    g_object_unref(file);
+    return contentType;
+}
 
 } // end namespace

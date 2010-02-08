@@ -18,6 +18,7 @@ AM_CPPFLAGS = \
 	$(QtDBus_CFLAGS) \
 	$(TRACKER_CFLAGS) \
 	$(GCONF_CFLAGS) \
+	$(GIO_CFLAGS) \
 	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction/actions.d\"
 
 LIBS += \
@@ -25,7 +26,8 @@ LIBS += \
 	$(QtXml_LIBS) \
 	$(QtDBus_LIBS) \
 	$(TRACKER_LIBS) \
-	$(GCONF_LIBS)
+	$(GCONF_LIBS) \
+	$(GIO_LIBS)
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \

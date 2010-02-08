@@ -36,7 +36,9 @@ enum ActionToDo {
     PrintDefault,
     SetDefault,
     PrintClassDefault,
-    SetClassDefault
+    SetClassDefault,
+    PrintForFile,
+    InvokeForFile
 };
 
 void usage(char *prog)
@@ -52,7 +54,10 @@ void usage(char *prog)
         "  -s|--setdefault ACTION             set the default action for the given URIs\n"
         "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
         "  -S|--setclassdefault ACTION CLASS  set a default action for a Nepomuk class\n"
+        "  -f|--printforfile FILE             print the applicable actions for a file\n"
+        "  -F|--invokeforfile FILEACTION FILE invoke an action for a file\n"
         "where ACTION is: INTERFACE.METHOD of the maemo service framework\n"
+        "  FILEACTION is: the name of the application\n"
         "Return values:\n"
         "  0   success\n"
         "  1   no arguments given\n"
@@ -135,6 +140,19 @@ int main(int argc, char **argv)
             actionName = args.takeFirst();
             break;
         }
+        if (arg == "-f" || arg == "--printforfile") {
+            todo = PrintForFile;
+            break;
+        }
+        if (arg == "-F" || arg == "--invokeforfile") {
+            todo = InvokeForFile;
+            if (args.isEmpty()) {
+                err << "an action must be given when using " << arg << endl;
+                return 2;
+            }
+            actionName = args.takeFirst();
+            break;
+        }
         err << "Unknown option " << arg << endl;
         return 2;
     }
@@ -210,6 +228,22 @@ int main(int argc, char **argv)
             return 6;
         }
         break;
+    }
+    case PrintForFile:
+    case InvokeForFile: {
+        QList<Action> actions = Action::actionsForFile(QUrl(args[0]));
+        foreach (Action action, actions) {
+            if (todo == PrintForFile) {
+                out << action.name() << endl;
+            } else if (todo == InvokeForFile && actionName == action.name()) {
+                action.trigger();
+                return 0;
+            }
+        }
+        if (todo == InvokeForFile) {
+            err << "action '" << actionName << "'is not applicable\n";
+            return 3;
+        }
     }
     }
     return 0;

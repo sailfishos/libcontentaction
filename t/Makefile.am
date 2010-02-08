@@ -1,3 +1,4 @@
+SUBDIRS = applications
 CLEANFILES =
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
@@ -22,6 +23,7 @@ citest_SCRIPTS = \
 	test-classes.sh \
 	test-invoking.py \
 	test-defaults.py \
+	test-mimes.py \
 	test-servicefw-signals.py
 
 noinst_SCRIPTS = \
@@ -34,7 +36,8 @@ citest_DATA = \
 	service.map \
 	data.contact \
 	data.web \
-	data.image
+	data.image \
+	plaintext
 
 check_PROGRAMS = \
 	linktest \
@@ -83,7 +86,9 @@ EXTRA_DIST = \
 	$(citest_DATA) \
 	$(citest_SCRIPTS) \
 	$(noinst_SCRIPTS) \
-	hlinput.txt
+	hlinput.txt \
+	plaintext \
+	applications
 
 # NOTE: we depend on automake executing $(TESTS) in order.  Should this
 # change, we fail.
@@ -96,6 +101,7 @@ TESTS = \
 	test-defaults.py \
 	test-servicefw-signals.py \
 	test-highlight.sh \
+	test-mimes.py \
 	stop-sandbox.sh
 
 clean-local:

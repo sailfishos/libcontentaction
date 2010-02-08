@@ -56,6 +56,18 @@ struct HighlightPrivate: public Action::DefaultPrivate
     QString action;
 };
 
+struct MimePrivate: Action::DefaultPrivate {
+    MimePrivate(const QUrl& fileUri, struct _GAppInfo* app);
+    virtual ~MimePrivate();
+    virtual bool isValid() const;
+    virtual QString name() const;
+    virtual void trigger() const;
+    virtual DefaultPrivate *clone() const;
+
+    QUrl fileUri;
+    struct _GAppInfo* appInfo;
+};
+
 namespace Internal {
 
 typedef QHash<QString, QList<QPair<int, QString> > > Associations;
@@ -75,11 +87,15 @@ Action trackerAction(const QStringList& uris,
 Action highlightAction(const QString& text,
                        const QString& action);
 
+Action mimeAction(const QUrl& fileUri,
+                  struct _GAppInfo* appInfo);
+
 // regexp -> actions
 typedef QHash<QString, QStringList> HighlighterMap;
 
 const HighlighterMap& highlighterConfig();
 
+char* contentTypeForFile(const char* fileUri);
 }
 }
 #endif

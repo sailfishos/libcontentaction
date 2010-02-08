@@ -16,9 +16,16 @@ case "$1" in
                 exec >/tmp/lca-sandbox-start.log 2>&1
                 echo "Starting"
                 echo "Importing data to tracker"
-                # import our test data to tracker
+                # reset tracker
                 tracker-control -r;
-                tracker-stats;
+                # try to wait until tracker has started
+                for i in `seq 60`; do
+                        if tracker-stats; then
+			        break;
+		        fi
+			sleep 1;
+                done
+                # import our test data to tracker
                 for d in $srcdir/data.*; do
                         tracker-import "$d";
                 done
@@ -32,7 +39,7 @@ case "$1" in
                         if qdbus | grep "com.nokia.DuiServiceFw"; then
 			        break;
 		        fi
-                sleep 1;
+			sleep 1;
                 done
 
                 echo "Launching gconfd-2"

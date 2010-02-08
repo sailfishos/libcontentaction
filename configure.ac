@@ -30,6 +30,7 @@ PKG_CHECK_MODULES([QtDBus], [QtDBus])
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12.0])
 PKG_CHECK_MODULES([TRACKER], [tracker-client-0.7])
 PKG_CHECK_MODULES([GCONF], [gconf-2.0])
+PKG_CHECK_MODULES([GIO], [gio-2.0])
 
 # tools for documentation
 AX_FEATURE_DISABLEABLE([doc], [BUILD_DOCS], [disable building of documentation])
@@ -50,6 +51,7 @@ AC_CONFIG_FILES([
         t/Makefile
         t/env.sh
         t/env.py
+        t/applications/Makefile
         doc/Makefile
         data/Makefile
 ])

@@ -143,6 +143,9 @@
 #include <QList>
 #include <QString>
 #include <QStringList>
+#include <QUrl>
+
+struct _GAppInfo;
 
 namespace ContentAction
 {
@@ -161,9 +164,11 @@ public:
 
     static Action defaultAction(const QString& uri);
     static Action defaultAction(const QStringList& uris);
+    static Action defaultActionForFile(const QUrl& fileUri);
 
     static QList<Action> actions(const QString& uri);
     static QList<Action> actions(const QStringList& uris);
+    static QList<Action> actionsForFile(const QUrl& fileUri);
 
     static QList<Match> highlight(const QString& text);
 
