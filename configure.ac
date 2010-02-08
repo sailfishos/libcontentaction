@@ -46,7 +46,9 @@ AM_CONDITIONAL([COVERAGE], [test "$missing_deps_COVERAGE" = ""])
 AC_CONFIG_FILES([
         Makefile
         contentaction-0.1.pc
+        contentaction-dui-0.1.pc
         contentaction-0.1-uninstalled.pc
+        contentaction-dui-0.1-uninstalled.pc
         src/Makefile
         t/Makefile
         t/env.sh
