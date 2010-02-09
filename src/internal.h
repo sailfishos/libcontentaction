@@ -2,6 +2,8 @@
 #define INTERNAL_H
 
 #include "contentaction.h"
+#include "service.h"
+
 #include <QHash>
 #include <QList>
 #include <QPair>
@@ -67,6 +69,8 @@ struct MimePrivate: Action::DefaultPrivate {
     QUrl fileUri;
     struct _GAppInfo* appInfo;
 };
+
+extern ServiceResolver resolver;
 
 namespace Internal {
 

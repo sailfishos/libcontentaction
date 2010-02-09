@@ -87,8 +87,7 @@ EXTRA_DIST = \
 	$(citest_SCRIPTS) \
 	$(noinst_SCRIPTS) \
 	hlinput.txt \
-	plaintext \
-	applications
+	plaintext
 
 # NOTE: we depend on automake executing $(TESTS) in order.  Should this
 # change, we fail.

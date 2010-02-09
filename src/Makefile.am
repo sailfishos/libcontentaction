@@ -73,7 +73,9 @@ libcontentaction_la_SOURCES = \
 	config.cpp \
 	highlighter.cpp \
 	service.h \
-	service.cpp
+	service.cpp \
+	mime.cpp \
+	tracker.cpp
 
 BUILT_SOURCES += service.moc.cpp
 CLEANFILES += service.moc.cpp

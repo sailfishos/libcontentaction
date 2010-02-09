@@ -1,5 +1,5 @@
 citestappdir = $(datarootdir)/libcontentaction-tests/applications
-citestapp_DATA = \
+dist_citestapp_DATA = \
 	mimeinfo.cache \
 	nothing.desktop \
 	cattofile.desktop

@@ -21,14 +21,48 @@
 #include "contentaction.h"
 #include "internal.h"
 
-#include <stdlib.h>
-
 #include <QDebug>
 #include <QRegExp>
+#include <QDBusInterface>
 
 namespace ContentAction {
 
 using namespace ContentAction::Internal;
+
+HighlightPrivate::HighlightPrivate(const QString& match, const QString& action) :
+    match(match), action(action)
+{ }
+
+HighlightPrivate::~HighlightPrivate()
+{ }
+
+bool HighlightPrivate::isValid() const
+{
+    return true;
+}
+
+QString HighlightPrivate::name() const
+{
+    return action;
+}
+
+void HighlightPrivate::trigger() const
+{
+    QString method;
+    QDBusInterface *proxy = resolver.implementorForAction(action, method);
+    if (!proxy)
+        return;
+    QDBusMessage reply = proxy->call(method, match);
+    if (reply.type() != QDBusMessage::ReplyMessage)
+        LCA_WARNING << "error reply from service implementor" << reply.errorName()
+                    << "when trying to call" << action
+                    << "on" << proxy->service();
+}
+
+Action::DefaultPrivate *HighlightPrivate::clone() const
+{
+    return new HighlightPrivate(match, action);
+}
 
 /// Highlights fragments of \a text which have applicable actions.  Returns a
 /// list of Match objects.
@@ -59,6 +93,13 @@ bool Match::operator<(const Match& other) const
 {
     return (this->start < other.start) ||
         ((this->start == other.start) && (this->end < other.end));
+}
+
+
+Action Internal::highlightAction(const QString& match,
+                                 const QString& action)
+{
+    return Action(new HighlightPrivate(match, action));
 }
 
 } // end namespace
