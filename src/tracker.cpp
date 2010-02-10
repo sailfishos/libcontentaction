@@ -47,6 +47,26 @@ static GConfClient *Gconf = 0;
 
 #define GCONF_KEY_PREFIX "/Dui/contentaction/"
 
+struct TrackerPrivate: public Action::DefaultPrivate
+{
+    TrackerPrivate(const QStringList& uris,
+                   const QStringList& classes,
+                   const QString& action);
+    virtual ~TrackerPrivate();
+    virtual void setAsDefault();
+    virtual bool isDefault() const;
+    virtual bool canBeDefault() const;
+    virtual bool isValid() const;
+    virtual QString name() const;
+    virtual void trigger() const;
+    virtual DefaultPrivate *clone() const;
+
+    QStringList uris; ///< the target uri's of the action
+    QStringList classes; ///< the classes of the uri's (if they are of the
+                         ///< same type)
+    QString action; ///< [service fw interface].[method]
+};
+
 TrackerPrivate::TrackerPrivate(const QStringList& uris,
                                const QStringList& classes,
                                const QString& action) :

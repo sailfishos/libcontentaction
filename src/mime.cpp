@@ -32,6 +32,18 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
+struct MimePrivate: public Action::DefaultPrivate {
+    MimePrivate(const QUrl& fileUri, struct _GAppInfo* app);
+    virtual ~MimePrivate();
+    virtual bool isValid() const;
+    virtual QString name() const;
+    virtual void trigger() const;
+    virtual DefaultPrivate *clone() const;
+
+    QUrl fileUri;
+    struct _GAppInfo* appInfo;
+};
+
 MimePrivate::MimePrivate(const QUrl& fileUri, GAppInfo* appInfo)
     : fileUri(fileUri), appInfo(appInfo)
 { }
@@ -74,7 +86,36 @@ Action::DefaultPrivate *MimePrivate::clone() const
     return new MimePrivate(fileUri, g_app_info_dup(appInfo));
 }
 
-Action Internal::mimeAction(const QUrl& fileUri, GAppInfo* appInfo)
+/// Returns the content type of the given file, or an empty string if it cannot
+/// be retrieved.
+static QString contentTypeForFile(const QUrl& fileUri)
+{
+    g_type_init();
+    QByteArray filename = fileUri.toEncoded();
+    GFile *file = g_file_new_for_uri(filename.constData());
+
+    GError *error = 0;
+    GFileInfo *fileInfo;
+    fileInfo = g_file_query_info(file,
+                                 G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+                                 G_FILE_QUERY_INFO_NONE,
+                                 NULL,
+                                 &error);
+    if (error != 0) {
+        g_error_free(error);
+        g_object_unref(file);
+        return QString();
+    }
+    QString ret = QString::fromAscii(g_file_info_get_content_type(fileInfo));
+    g_object_unref(fileInfo);
+    g_object_unref(file);
+    return ret;
+}
+
+// Returns an Action, which when triggered launches the application described
+// by appInfo, passing fileUri as argument (either directly using GIO or via
+// D-Bus).
+static Action mimeAction(const QUrl& fileUri, GAppInfo *appInfo)
 {
     return Action(new MimePrivate(fileUri, appInfo));
 }
@@ -82,62 +123,32 @@ Action Internal::mimeAction(const QUrl& fileUri, GAppInfo* appInfo)
 /// Returns the default action for a given \a file, based on its content type.
 Action Action::defaultActionForFile(const QUrl& fileUri)
 {
-    QByteArray uri = fileUri.toEncoded();
-    char* contentType = contentTypeForFile(uri.constData());
-    if (contentType == NULL)
+    QString contentType = contentTypeForFile(fileUri);
+    if (contentType.isEmpty())
         return Action();
-    GAppInfo* appInfo = g_app_info_get_default_for_type(contentType, TRUE);
-    g_free(contentType);
+    GAppInfo *appInfo = g_app_info_get_default_for_type(
+        contentType.toAscii().constData(), TRUE);
     if (appInfo == NULL)
         return Action();
     return mimeAction(fileUri, appInfo);
 }
-
 
 /// Returns the set of applicable actions for a given \a file, based on its
 /// content type.
 QList<Action> Action::actionsForFile(const QUrl& fileUri)
 {
     QList<Action> result;
-    QByteArray uri = fileUri.toEncoded();
-    char* contentType = contentTypeForFile(uri.constData());
-    if (contentType == NULL)
+
+    QString contentType = contentTypeForFile(fileUri);
+    if (contentType.isEmpty())
         return result;
 
-    GList* appInfoList = g_app_info_get_all_for_type(contentType);
-    g_free(contentType);
-    GList* cur = appInfoList;
-    while (cur != NULL) {
-        result << mimeAction(fileUri, g_app_info_dup((GAppInfo*)cur->data));
-        g_object_unref(cur->data);
-        cur = g_list_next(cur);
-    }
-    g_list_free(appInfoList);
+    GList* infoList;
+    infoList = g_app_info_get_all_for_type(contentType.toAscii().constData());
+    for (GList *cur = infoList; cur; cur = cur->next)
+        result << mimeAction(fileUri, G_APP_INFO(cur->data));
+    g_list_free(infoList);
     return result;
-}
-
-/// Returns the content type of the given file, or an empty string if it cannot
-/// be retrieved.
-char* Internal::contentTypeForFile(const char* fileUri)
-{
-    g_type_init();
-    GError *error = 0;
-    GFile *file = g_file_new_for_uri(fileUri);
-
-    GFileInfo *fileInfo = g_file_query_info(file,
-                                            "standard::*",
-                                            G_FILE_QUERY_INFO_NONE,
-                                            NULL,
-                                            &error);
-    if (error != 0) {
-        g_error_free(error);
-        g_object_unref(file);
-        return NULL;
-    }
-    char *contentType = g_strdup(g_file_info_get_content_type(fileInfo));
-    g_object_unref(fileInfo);
-    g_object_unref(file);
-    return contentType;
 }
 
 } // end namespace

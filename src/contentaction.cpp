@@ -31,31 +31,39 @@ using namespace ContentAction::Internal;
 
 ServiceResolver resolver;
 
-Action::DefaultPrivate::~DefaultPrivate() { }
+Action::DefaultPrivate::~DefaultPrivate()
+{ }
+
 void Action::DefaultPrivate::setAsDefault()
 {
     LCA_WARNING << "called setAsDefault() on an invalid action";
 }
+
 bool Action::DefaultPrivate::isDefault() const
 {
     return false;
 }
+
 bool Action::DefaultPrivate::canBeDefault() const
 {
     return false;
 }
+
 bool Action::DefaultPrivate::isValid() const
 {
     return false;
 }
+
 QString Action::DefaultPrivate::name() const
 {
     return QString("Invalid action");
 }
+
 void Action::DefaultPrivate::trigger() const
 {
     LCA_WARNING << "triggered an invalid action, not doing anything.";
 }
+
 Action::DefaultPrivate *Action::DefaultPrivate::clone() const
 {
     return new DefaultPrivate();

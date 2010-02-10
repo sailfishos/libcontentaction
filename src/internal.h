@@ -25,51 +25,7 @@ struct Action::DefaultPrivate
     virtual DefaultPrivate *clone() const;
 };
 
-struct TrackerPrivate: public Action::DefaultPrivate
-{
-    TrackerPrivate(const QStringList& uris,
-                   const QStringList& classes,
-                   const QString& action);
-    virtual ~TrackerPrivate();
-    virtual void setAsDefault();
-    virtual bool isDefault() const;
-    virtual bool canBeDefault() const;
-    virtual bool isValid() const;
-    virtual QString name() const;
-    virtual void trigger() const;
-    virtual DefaultPrivate *clone() const;
-
-    QStringList uris; ///< the target uri's of the action
-    QStringList classes; ///< the classes of the uri's (if they are of the
-                         ///< same type)
-    QString action; ///< [service fw interface].[method]
-};
-
-struct HighlightPrivate: public Action::DefaultPrivate
-{
-    HighlightPrivate(const QString& match, const QString& action);
-    virtual ~HighlightPrivate();
-    virtual bool isValid() const;
-    virtual QString name() const;
-    virtual void trigger() const;
-    virtual DefaultPrivate *clone() const;
-
-    QString match;
-    QString action;
-};
-
-struct MimePrivate: Action::DefaultPrivate {
-    MimePrivate(const QUrl& fileUri, struct _GAppInfo* app);
-    virtual ~MimePrivate();
-    virtual bool isValid() const;
-    virtual QString name() const;
-    virtual void trigger() const;
-    virtual DefaultPrivate *clone() const;
-
-    QUrl fileUri;
-    struct _GAppInfo* appInfo;
-};
-
+// Service framework interface->service mapper.
 extern ServiceResolver resolver;
 
 namespace Internal {
@@ -91,15 +47,11 @@ Action trackerAction(const QStringList& uris,
 Action highlightAction(const QString& text,
                        const QString& action);
 
-Action mimeAction(const QUrl& fileUri,
-                  struct _GAppInfo* appInfo);
-
 // regexp -> actions
 typedef QHash<QString, QStringList> HighlighterMap;
 
 const HighlighterMap& highlighterConfig();
 
-char* contentTypeForFile(const char* fileUri);
 }
 }
 #endif

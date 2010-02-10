@@ -29,6 +29,19 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
+struct HighlightPrivate: public Action::DefaultPrivate
+{
+    HighlightPrivate(const QString& match, const QString& action);
+    virtual ~HighlightPrivate();
+    virtual bool isValid() const;
+    virtual QString name() const;
+    virtual void trigger() const;
+    virtual DefaultPrivate *clone() const;
+
+    QString match;
+    QString action;
+};
+
 HighlightPrivate::HighlightPrivate(const QString& match, const QString& action) :
     match(match), action(action)
 { }
