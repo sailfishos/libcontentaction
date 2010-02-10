@@ -27,6 +27,8 @@
 
 #include <QSettings>
 #include <QDebug>
+#include <QFile>
+#include <QHash>
 
 namespace ContentAction {
 
@@ -43,6 +45,9 @@ struct MimePrivate: public Action::DefaultPrivate {
     QUrl fileUri;
     struct _GAppInfo* appInfo;
 };
+
+QString defaultAppForContentType(const QString& contentType);
+QStringList appsForContentType(const QString& contentType);
 
 MimePrivate::MimePrivate(const QUrl& fileUri, GAppInfo* appInfo)
     : fileUri(fileUri), appInfo(appInfo)
@@ -150,5 +155,69 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri)
     g_list_free(infoList);
     return result;
 }
+
+QHash<QString, QString> readKeyValues(const QString& fileName)
+{
+    QHash<QString, QString> ret;
+    QFile file(fileName);
+    if (!file.exists()) {
+        LCA_WARNING << "not found:" << fileName;
+        return ret;
+    }
+    if (!file.open(QIODevice::ReadOnly)) {
+        LCA_WARNING << "cannot read:" << fileName;
+        return ret;
+    }
+    QTextStream stream(&file);
+    // Ignore the header
+    stream.readLine();
+    int n = 1;
+    while (!stream.atEnd()) {
+        QString line = stream.readLine();
+        if (line.isNull()) break;
+        ++n;
+        QStringList keyAndValue = line.split("=", QString::SkipEmptyParts);
+        if (keyAndValue.size() < 2) {
+            LCA_WARNING << "ignoring a syntax error in" << fileName << "line" << n;
+            continue;
+        }
+        ret.insert(keyAndValue[0], keyAndValue[1]);
+    }
+    return ret;
+}
+
+/// Returns the default application for handling the given \a contentType. The
+/// default application is read from the defaults.list. If there is no default
+/// application, returns an empty string.
+QString defaultAppForContentType(const QString& contentType)
+{
+    QHash<QString, QString> apps = readKeyValues("/usr/share/applications/defaults.list");
+    // FIXME: file name
+    if (apps.contains(contentType)) return apps[contentType];
+    return "";
+}
+
+/// Returns the applications which handle the given \a contentType. The
+/// applications are read from the mimeinfo.cache. The file is searched in the
+/// default locations. The returned list will contain elements of the form
+/// "appname.desktop".
+QStringList appsForContentType(const QString& contentType)
+{
+    QStringList ret;
+    // Get all apps handling this content type, FIXME file name
+    QHash<QString, QString> appData = readKeyValues("/usr/share/applications/mimeinfo.cache");
+    if (appData.contains(contentType))
+        ret = appData[contentType].split(";", QString::SkipEmptyParts);
+
+    // Get the default app handling this content type, insert it to the front
+    // of the list
+    QString defaultApp = defaultAppForContentType(contentType);
+    if (!defaultApp.isEmpty()) {
+        ret.removeAll(defaultApp);
+        ret.prepend(defaultApp);
+    }
+    return ret;
+}
+
 
 } // end namespace
