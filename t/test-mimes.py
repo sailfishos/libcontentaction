@@ -40,17 +40,39 @@ class Mimes(unittest.TestCase):
         filename = "file://" + testfiles_dir + "/plaintext"
         (status, output) = getstatusoutput("lca-tool --printforfile "+filename)
         self.assert_(status == 0)
-        self.assert_(output.find("cattofile") != -1)
-        self.assert_(output.find("nothing") != -1)
+        self.assert_(output.find("uberexec") != -1)
+        self.assert_(output.find("uberdui") != -1)
+        self.assert_(output.find("ubermimeopen") != -1)
 
-    def testInvokeActionForPlain(self):
+    def testInvokeDui(self):
+        program = CLTool("uberprogram.py")
+        self.assert_(program.expect("started"))
+
         filename = "file://" + testfiles_dir + "/plaintext"
-        (status, output) = getstatusoutput("lca-tool --invokeforfile cattofile "+filename)
+        (status, output) = getstatusoutput("lca-tool --invokeforfile uberdui " + filename)
         self.assert_(status == 0)
-        # when invoked, the action will create a file /tmp/executedAction
-        (status, output) = getstatusoutput("cat /tmp/executedAction")
+
+        self.assert_(program.expect("launch: "))
+        program.kill()
+
+    def testInvokeMimeOpen(self):
+        program = CLTool("uberprogram.py")
+        self.assert_(program.expect("started"))
+
+        filename = "file://" + testfiles_dir + "/plaintext"
+        (status, output) = getstatusoutput("lca-tool --invokeforfile ubermimeopen " + filename)
         self.assert_(status == 0)
-        self.assert_(output.find("This is plain text, used in test-mimes.py") != -1)
+
+        self.assert_(program.expect("mime_open:"))
+        program.kill()
+
+    def testInvokeExec(self):
+        filename = "file://" + testfiles_dir + "/plaintext"
+        (status, output) = getstatusoutput("lca-tool --invokeforfile uberexec " + filename)
+        self.assert_(status == 0)
+        f = open("./executedAction")
+        content = f.read()
+        self.assert_(content.find("This is plain text") != -1)
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Mimes)

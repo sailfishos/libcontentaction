@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=nothing
-GenericName=Nothing
-Comment=Test Helper
-Exec=echo ThisIsNothing
-Terminal=false
-Type=Application
-MimeType=text/plain;

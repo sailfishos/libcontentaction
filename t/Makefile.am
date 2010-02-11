@@ -19,6 +19,7 @@ citest_SCRIPTS = \
 	cltool.py \
 	gallery.py \
 	servicemapper.py \
+	uberprogram.py \
 	test-actions.sh \
 	test-classes.sh \
 	test-invoking.py \

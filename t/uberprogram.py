@@ -16,7 +16,7 @@ class Uberprogram(dbus.service.Object):
 
     @dbus.service.method(dbus_interface="uber.program")
     def mime_open(self, *args):
-        print 'mime_open', args
+        print 'mime_open: ', args
         stdout.flush()
 
 print "started"

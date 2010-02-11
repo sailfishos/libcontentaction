@@ -1,9 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=uberprogram
+Name=uberexec
 GenericName=Uber Program
 Comment=View ANYTHING
-Exec=/usr/bin/python2.5 -c "import sys; print \"uberalles:\", sys.argv[1:]"
+Exec=python -c "f = open(%U); content=f.read(); f2 = open('./executedAction', 'w'); f2.write(content);"
 Terminal=false
 Type=Application
-MimeType=application/pdf
+MimeType=text/plain
+

@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=cattofile
-Comment=Test Helper
-Exec=python -c "f = open(%U); content=f.read(); f2 = open('/tmp/executedAction', 'w'); f2.write(content);"
-Terminal=false
-Type=Application
-MimeType=text/plain;
