@@ -72,6 +72,8 @@ class Mimes(unittest.TestCase):
         self.assert_(status == 0)
         f = open("./executedAction")
         content = f.read()
+        f.close()
+        os.remove("./executedAction")
         self.assert_(content.find("This is plain text") != -1)
 
 def runTests():
