@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=uberprogram
+GenericName=Uber Program
+Comment=View ANYTHING
+Exec=/usr/bin/python2.5 -c "import sys; print \"uberalles:\", sys.argv[1:]"
+Terminal=false
+Type=Application
+MimeType=application/pdf
