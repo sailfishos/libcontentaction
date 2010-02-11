@@ -216,7 +216,8 @@ static QStringList appsForContentType(const QString& contentType)
 }
 
 struct MimePrivate: public Action::DefaultPrivate {
-    MimePrivate(const QString& desktopFileName, const QUrl& fileUri);
+    MimePrivate(const QString& desktopFileName, const QList<QUrl>& fileUris);
+    MimePrivate(const MimePrivate& other);
     virtual ~MimePrivate();
     virtual bool isValid() const;
     virtual QString name() const;
@@ -224,7 +225,7 @@ struct MimePrivate: public Action::DefaultPrivate {
     virtual DefaultPrivate *clone() const;
 
     QString desktopFileName;
-    QUrl fileUri;
+    QStringList fileNames;
 
     GAppInfo *appInfo;
     LaunchType kind;
@@ -233,13 +234,25 @@ struct MimePrivate: public Action::DefaultPrivate {
     QString method;
 };
 
-MimePrivate::MimePrivate(const QString& desktopFileName, const QUrl& fileUri) :
-    desktopFileName(desktopFileName), fileUri(fileUri)
+MimePrivate::MimePrivate(const QString& desktopFileName, const QList<QUrl>& fileUris) :
+    desktopFileName(desktopFileName)
 {
+    foreach (const QUrl& uri, fileUris)
+        fileNames << uri.toEncoded();
     kind = launchInfo(desktopFileName, service, iface, method);
     appInfo = G_APP_INFO(g_desktop_app_info_new_from_filename(
                              desktopFileName.toLocal8Bit().constData()));
 }
+
+MimePrivate::MimePrivate(const MimePrivate& other) :
+    desktopFileName(other.desktopFileName),
+    fileNames(other.fileNames),
+    appInfo(g_app_info_dup(other.appInfo)),
+    kind(other.kind),
+    service(other.service),
+    iface(other.iface),
+    method(other.method)
+{ }
 
 MimePrivate::~MimePrivate()
 {
@@ -261,18 +274,25 @@ QString MimePrivate::name() const
 void MimePrivate::trigger() const
 {
     switch (kind) {
-    case DuiLaunch: // fall-through
     case MimeOpenLaunch: {
+        QVariantList vargs;
+        foreach (const QString& file, fileNames)
+            vargs << file;
         QDBusInterface launcher(service, "/", iface);
-        launcher.asyncCall(method, fileUri);
+        launcher.callWithArgumentList(QDBus::NoBlock, method, vargs);
+        break;
+    }
+    case DuiLaunch: {
+        QDBusInterface launcher(service, "/", iface);
+        launcher.asyncCall(method, fileNames);
         break;
     }
     case ExecLaunch: {
         GError *error = 0;
         GList *uris = NULL;
 
-        QByteArray uri = fileUri.toEncoded();
-        uris = g_list_append(uris, uri.data());
+        foreach (const QString& file, fileNames)
+            uris = g_list_append(uris, file.toAscii().data());
 
         g_app_info_launch_uris(appInfo, uris, NULL, &error);
         if (error != NULL) {
@@ -288,7 +308,7 @@ void MimePrivate::trigger() const
 
 Action::DefaultPrivate *MimePrivate::clone() const
 {
-    return new MimePrivate(desktopFileName, fileUri);
+    return new MimePrivate(*this);
 }
 
 /// Returns the default action for a given \a file, based on its content type.
@@ -300,9 +320,10 @@ Action Action::defaultActionForFile(const QUrl& fileUri)
     // We treat .desktop files specially: the default action (the only
     // actually) is to launch the application it describes.
     if (contentType == "application/x-desktop")
-        return Action(new MimePrivate(fileUri.toLocalFile(), QUrl()));
+        return Action(new MimePrivate(fileUri.toLocalFile(), QList<QUrl>()));
     QString appid = defaultAppForContentType(contentType);
-    return Action(new MimePrivate(findDesktopFile(appid), fileUri));
+    return Action(new MimePrivate(findDesktopFile(appid),
+                                  QList<QUrl>() << fileUri));
 }
 
 /// Returns the set of applicable actions for a given \a file, based on its
@@ -316,12 +337,12 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri)
         return result;
     if (contentType == "application/x-desktop")
         return result << Action(new MimePrivate(fileUri.toLocalFile(),
-                                                QUrl()));
+                                                QList<QUrl>()));
 
     QStringList appIds = appsForContentType(contentType);
     foreach (const QString& id, appIds) {
         result << Action(new MimePrivate(findDesktopFile(id),
-                                         fileUri));
+                                         QList<QUrl>() << fileUri));
     }
     return result;
 }
