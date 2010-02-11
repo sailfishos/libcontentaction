@@ -89,10 +89,10 @@ static const QStringList& xdgDataDirs()
     if (d)
         dirs.append(QString::fromLocal8Bit(d));
     else
-        dirs.append(QDir::homePath() + "/.local/share/");
+        dirs.append(QDir::homePath() + "/.local/share");
     d = getenv("XDG_DATA_DIRS");
     if (!d)
-        d = "/usr/local/share/:/usr/share/";
+        d = "/usr/local/share:/usr/share";
     dirs.append(QString::fromLocal8Bit(d).split(":", QString::SkipEmptyParts));
     return dirs;
 }
@@ -322,6 +322,8 @@ Action Action::defaultActionForFile(const QUrl& fileUri)
     if (contentType == "application/x-desktop")
         return Action(new MimePrivate(fileUri.toLocalFile(), QList<QUrl>()));
     QString appid = defaultAppForContentType(contentType);
+    if (appid.isEmpty())
+        return Action();
     return Action(new MimePrivate(findDesktopFile(appid),
                                   QList<QUrl>() << fileUri));
 }
