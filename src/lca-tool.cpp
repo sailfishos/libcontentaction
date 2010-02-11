@@ -38,7 +38,8 @@ enum ActionToDo {
     PrintClassDefault,
     SetClassDefault,
     PrintForFile,
-    InvokeForFile
+    InvokeForFile,
+    LaunchFile,
 };
 
 void usage(char *prog)
@@ -55,9 +56,11 @@ void usage(char *prog)
         "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
         "  -S|--setclassdefault ACTION CLASS  set a default action for a Nepomuk class\n"
         "  -f|--printforfile FILE             print the applicable actions for a file\n"
-        "  -F|--invokeforfile FILEACTION FILE invoke an action for a file\n"
-        "where ACTION is: INTERFACE.METHOD of the maemo service framework\n"
-        "  FILEACTION is: the name of the application\n"
+        "  -F|--invokeforfile FILEACTION FILE invoke the given action for FILE\n"
+        "  -L|--launchfile FILE               invoke the default action for FILE\n"
+        "where\n"
+        "  ACTION is: INTERFACE.METHOD of the maemo service framework\n"
+        "  FILEACTION is: the name of the application (from the .desktop file)\n"
         "Return values:\n"
         "  0   success\n"
         "  1   no arguments given\n"
@@ -153,6 +156,10 @@ int main(int argc, char **argv)
             actionName = args.takeFirst();
             break;
         }
+        if (arg == "-L" || arg == "--launchfile") {
+            todo = LaunchFile;
+            break;
+        }
         err << "Unknown option " << arg << endl;
         return 2;
     }
@@ -244,6 +251,11 @@ int main(int argc, char **argv)
             err << "action '" << actionName << "'is not applicable\n";
             return 3;
         }
+        break;
+    }
+    case LaunchFile: {
+        Action::defaultActionForFile(QUrl(args[0])).trigger();
+        return 0;
     }
     }
     return 0;
