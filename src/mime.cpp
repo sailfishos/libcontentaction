@@ -152,7 +152,7 @@ static LaunchType launchInfo(const QString& desktopFile,
 static QString findDesktopFile(const QString& id)
 {
     QStringList dirs = xdgDataDirs();
-    for (int i = dirs.size(); i >= 0; --i) {
+    for (int i = dirs.size()-1; i >= 0; --i) {
         QFile f(dirs[i] + "/applications/" + id);
         if (f.exists())
             return f.fileName();
@@ -170,7 +170,7 @@ static QString defaultAppForContentType(const QString& contentType)
 
     if (!read) {
         QStringList dirs = xdgDataDirs();
-        for (int i = dirs.size(); i >= 0; --i) {
+        for (int i = dirs.size()-1; i >= 0; --i) {
             QFile f(dirs[i] + "/applications/defaults.list");
             if (!f.exists())
                 continue;
@@ -192,7 +192,7 @@ static QStringList appsForContentType(const QString& contentType)
 
     if (!read) {
         QStringList dirs = xdgDataDirs();
-        for (int i = dirs.size(); i >= 0; --i) {
+        for (int i = dirs.size()-1; i >= 0; --i) {
             QFile f(dirs[i] + "/applications/mimeinfo.cache");
             if (!f.exists())
                 continue;
