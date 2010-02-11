@@ -51,6 +51,7 @@ private:
     QDBusInterface* mapperProxy;
 };
 
-}
+ServiceResolver& resolver();
 
+}
 #endif

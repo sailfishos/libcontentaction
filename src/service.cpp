@@ -30,12 +30,18 @@
 namespace ContentAction
 {
 
+ServiceResolver& resolver()
+{
+    static ServiceResolver resolver;
+    return resolver;
+}
+
 ServiceResolver::ServiceResolver()
     : mapperProxy(new QDBusInterface("com.nokia.DuiServiceFw", "/",
                                   "com.nokia.DuiServiceFwIf", QDBusConnection::sessionBus()))
 {
     connect(mapperProxy, SIGNAL(serviceAvailable(QString,QString)),
-                                   this, SLOT(onServiceAvailable(QString,QString)));
+            this, SLOT(onServiceAvailable(QString,QString)));
 
     connect(mapperProxy, SIGNAL(serviceUnavailable(QString)),
             this, SLOT(onServiceUnavailable(QString)));

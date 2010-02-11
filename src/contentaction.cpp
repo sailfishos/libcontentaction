@@ -29,8 +29,6 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
-ServiceResolver resolver;
-
 Action::DefaultPrivate::~DefaultPrivate()
 { }
 

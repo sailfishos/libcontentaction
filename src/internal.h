@@ -25,9 +25,6 @@ struct Action::DefaultPrivate
     virtual DefaultPrivate *clone() const;
 };
 
-// Service framework interface->service mapper.
-extern ServiceResolver resolver;
-
 namespace Internal {
 
 typedef QHash<QString, QList<QPair<int, QString> > > Associations;

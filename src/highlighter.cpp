@@ -62,7 +62,7 @@ QString HighlightPrivate::name() const
 void HighlightPrivate::trigger() const
 {
     QString method;
-    QDBusInterface *proxy = resolver.implementorForAction(action, method);
+    QDBusInterface *proxy = resolver().implementorForAction(action, method);
     if (!proxy)
         return;
     QDBusMessage reply = proxy->call(method, match);

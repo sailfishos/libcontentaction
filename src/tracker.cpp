@@ -122,7 +122,7 @@ QString TrackerPrivate::name() const
 void TrackerPrivate::trigger() const
 {
     QString method;
-    QDBusInterface *proxy = resolver.implementorForAction(action, method);
+    QDBusInterface *proxy = resolver().implementorForAction(action, method);
     if (!proxy)
         return;
     QDBusMessage reply = proxy->call(method, uris);
