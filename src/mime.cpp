@@ -292,13 +292,14 @@ void MimePrivate::trigger() const
         GList *uris = NULL;
 
         foreach (const QString& file, fileNames)
-            uris = g_list_append(uris, file.toAscii().data());
+            uris = g_list_append(uris, g_strdup(file.toAscii().constData()));
 
         g_app_info_launch_uris(appInfo, uris, NULL, &error);
         if (error != NULL) {
             LCA_WARNING << "cannot trigger: " << error->message;
             g_error_free(error);
         }
+        g_list_foreach(uris, (GFunc)g_free, NULL);
         g_list_free(uris);
         break;
     }
