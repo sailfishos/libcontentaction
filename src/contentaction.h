@@ -64,22 +64,26 @@
   To define a new action applicable to Tracker URI:s, the following steps are
   needed:
 
-  - You need to have a defined D-Bus interface name, and the mapping from the
-    interface name to your D-Bus name needs to be known to the DUI Service
-    Framework. For this, it's enough to add a "Interface: " line to your D-Bus
-    .service file. You might also want to publish your D-Bus interface in the
-    maemo-services package, but it's not needed for libcontentaction.
+  - You must define a DUI Service FW interface, and you must declare your
+    application to be an implementor of that interface. For this, it's enough
+    to add a "Interface: " line to your D-Bus .service file. You might also
+    want to publish your interface in the maemo-services package, but it's not
+    needed for libcontentaction.
 
-  - You need to provide a function (over D-Bus) taking in a list of strings
-    (and no other parameters). When your function is called, the strings will
-    be the Tracker URI:s. It is essential that the D-Bus signature of the
-    function is excatly this. (You may have a return value; we'll ignore it.)
+  - The interface must contain a D-Bus function taking in a list of strings
+    and no other parameters (in D-Bus terms, "as"). When your function is
+    called, the strings will be the Tracker URI:s. It is essential that the
+    D-Bus signature of the function is excatly this. (You may have a return
+    value; we'll ignore it.)
 
-  - The mapping of one or many Nepomuk class names to your D-Bus interface +
-    function name needs to be added to the libcontentaction0 package (contact
-    the implementors for this). The configuration file format is still
-    evolving; in the future it will be possible to install the configuration
-    files separately from libcontentaction0.
+  - The object with the D-Bus object path / must implement the aforementioned
+    function of the aforementioned interface.
+
+  - The mapping of one or many Nepomuk class names to your Service FW
+    interface + function name needs to be added to the libcontentaction0
+    package (contact the implementors for this). The configuration file format
+    is still evolving; in the future it will be possible to install the
+    configuration files separately from libcontentaction0.
 
   \section provider_mime Providing actions for files
 
