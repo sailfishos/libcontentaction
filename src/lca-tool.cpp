@@ -239,7 +239,7 @@ int main(int argc, char **argv)
     case PrintForFile:
     case InvokeForFile: {
         QList<Action> actions = Action::actionsForFile(QUrl(args[0]));
-        foreach (Action action, actions) {
+        foreach (const Action& action, actions) {
             if (todo == PrintForFile) {
                 out << action.name() << endl;
             } else if (todo == InvokeForFile && actionName == action.name()) {
