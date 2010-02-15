@@ -18,6 +18,9 @@
 
     ContentAction::Internal::highlighterConfig*;
     ContentAction::Internal::highlightAction*;
+
+    ContentAction::Action::actionsForFile*;
+    ContentAction::Action::defaultActionForFile*;
   };
   local:
     *;
