@@ -1,3 +1,6 @@
+#include <unistd.h>
+#include <stdio.h>
+
 #include <contentaction.h>
 #include <contentaction-dui.h>
 
@@ -9,6 +12,10 @@
 #include <DuiApplicationWindow>
 #include <DuiLabel>
 #include <DuiButton>
+
+static QString text("Hello, please reach me at foo@example.com\n"
+                    "or call +1 555 23231.  But never send mail to\n"
+                    "spamtrap@here.you.go because we'll call 911.");
 
 class Us: public DuiWidget {
     Q_OBJECT
@@ -25,9 +32,7 @@ private:
 };
 
 Us::Us() :
-    textLabel(new DuiLabel("<b>need to trick the label into html mode</b>\n"
-                           "this is some sample text email@address.com\n"
-                           "+34241 number more 431", this)),
+    textLabel(new DuiLabel(text, this)),
     hiliteButton(new DuiButton("hilite me", this))
 {
     QGraphicsGridLayout *layout = new QGraphicsGridLayout(this);
@@ -49,6 +54,11 @@ int main(int argc, char **argv)
     DuiApplication app(argc, argv);
     DuiApplicationWindow window;
     DuiApplicationPage page;
+
+    if (!isatty(0))
+        text = QTextStream(stdin).readAll();
+    // Need to trick DuiLabel into html mode...
+    text.prepend("<span></span>");
 
     page.setCentralWidget(new Us());
 
