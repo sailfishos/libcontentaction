@@ -25,7 +25,8 @@ citest_SCRIPTS = \
 	test-invoking.py \
 	test-defaults.py \
 	test-mimes.py \
-	test-servicefw-signals.py
+	test-servicefw-signals.py \
+	test-desktop-launching.py
 
 noinst_SCRIPTS = \
 	start-sandbox.sh \
@@ -38,7 +39,8 @@ citest_DATA = \
 	data.contact \
 	data.web \
 	data.image \
-	plaintext
+	plaintext \
+	launchme.desktop
 
 check_PROGRAMS = \
 	linktest \
@@ -88,7 +90,8 @@ EXTRA_DIST = \
 	$(citest_SCRIPTS) \
 	$(noinst_SCRIPTS) \
 	hlinput.txt \
-	plaintext
+	plaintext \
+	launchme.desktop
 
 # NOTE: we depend on automake executing $(TESTS) in order.  Should this
 # change, we fail.
@@ -102,6 +105,7 @@ TESTS = \
 	test-servicefw-signals.py \
 	test-highlight.sh \
 	test-mimes.py \
+	test-desktop-launching.py \
 	stop-sandbox.sh
 
 clean-local:

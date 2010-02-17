@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=launchme
+GenericName=Launch Me
+Comment=Test helper
+Exec=python -c "f = open('./launchedAction', 'w'); f.write('I was launched');"
+Terminal=false
+Type=Application
+
