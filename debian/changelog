@@ -1,10 +1,10 @@
-libcontentaction (0.0.5~unreleased) unstable; urgency=low
+libcontentaction (0.0.5) unstable; urgency=low
 
   * API additions: defaultActionForFile, actionsForFile
   * Actions for desktop files (launch the corresponding app)
   * Implemented: SWP#CntFr-421, SWP#CntFr-411
 
- -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Fri, 29 Jan 2010 09:11:24 +0200
+ -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Wed, 17 Feb 2010 10:51:15 +0200
 
 libcontentaction (0.0.4) unstable; urgency=low
 
