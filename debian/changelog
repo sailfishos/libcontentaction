@@ -1,3 +1,9 @@
+libcontentaction (0.0.7~unreleased) unstable; urgency=low
+
+  * 
+
+ -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Thu, 18 Feb 2010 10:24:09 +0200
+
 libcontentaction (0.0.6) unstable; urgency=low
 
   * New binary package: libcontentaction-dui0
