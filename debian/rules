@@ -7,7 +7,7 @@ configure:
 	./autogen.sh
 
 Makefile: configure
-	./configure --prefix=/usr --sysconfdir=/etc
+	./configure --prefix=/usr --sysconfdir=/etc --with-dui
 
 build: debian/build-stamp
 debian/build-stamp: Makefile
@@ -53,7 +53,8 @@ binary-arch: build install
 	dh_testroot -a
 	dh_installchangelogs -a
 	dh_installdocs -a
-	dh_strip --dbg-package="libcontentaction0-dbg"
+	dh_strip -p libcontentaction0 --dbg-package="libcontentaction0-dbg"
+	dh_strip -p libcontentaction-dui0 --dbg-package="libcontentaction-dui0-dbg"
 	dh_link -a
 	dh_compress -a
 	dh_fixperms -a

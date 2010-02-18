@@ -1,3 +1,10 @@
+libcontentaction (0.0.6) unstable; urgency=low
+
+  * New binary package: libcontentaction-dui0
+    Containing DUI related functionality.
+
+ -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Thu, 18 Feb 2010 09:13:06 +0200
+
 libcontentaction (0.0.5) unstable; urgency=low
 
   * API additions: defaultActionForFile, actionsForFile

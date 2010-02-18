@@ -7,6 +7,7 @@ Build-Depends: debhelper (>= 5),
                libglib2.0-dev (>= 2.12.0),
                libtracker-client-0.7-dev,
                libgconf2-dev,
+               libdui-dev,
                doxygen (>= 1.5.9),
                pkg-config
 Standards-Version: 3.8.0
@@ -29,6 +30,27 @@ Section: libdevel
 Architecture: any
 Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-0.7-dev
 Description: Library for associating content with actions
+ .
+ This package contains the development files.
+
+Package: libcontentaction-dui0
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Dui-related parts from libcontentaction
+
+Package: libcontentaction-dui0-dbg
+Priority: extra
+Architecture: any
+Depends: libcontentaction-dui0 (= ${binary:Version})
+Description: Dui-related parts from libcontentaction
+ .
+ This package contains the debug symbols.
+
+Package: libcontentaction-dui-dev
+Section: libdevel
+Architecture: any
+Depends: libcontentaction-dui0 (= ${binary:Version})
+Description: Dui-related parts from libcontentaction
  .
  This package contains the development files.
 
