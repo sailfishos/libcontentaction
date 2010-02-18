@@ -29,6 +29,41 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
+/*!
+  \class ContentAction::Action
+
+  \brief ContentAction::Action represents an applicable action for a uri or a
+  set of uri's.
+
+  The ContentAction::Action object contains two parts: the uri or a set of
+  uri's it refers to, and an action, represented by maemo service framework
+  interface + function.
+
+  The applicable ContentAction::Action objects for a given uri or a set of
+  uri's can be retrieved by using the static member functions actions(const
+  QString& uri) and actions(const QStringList& uris). The return value is a
+  list of ContentAction::Action objects sorted in the order of relevance.
+
+  Each Nepomuk class is associated with a set of applicable actions. The list
+  of applicable actions for one uri is computed by concatenating the action
+  lists for all its classes and then sorting by their weights.
+
+  For multiple uri's, the set of applicable actions is the intersection of
+  applicable actions for each uri. The actions appear in the same order as
+  they appear in the action list of the first uri.
+
+  The ContentAction::Action can be triggered by using the member function
+  trigger().
+
+  It is also possible to retrive the default actions for a given uri or a set
+  of uris via member functions defaultAction(const QString& uri) and
+  defaultAction(const QStringList& uris).
+
+  When the list of uri's contains uri's of different classes, no default
+  action can be constructed, and the defaultAction function returns an invalid
+  ContentAction::Action.
+
+*/
 Action::DefaultPrivate::~DefaultPrivate()
 { }
 

@@ -10,7 +10,8 @@ SUFFIXES = .cpp .h .moc.cpp
 
 EXTRA_DIST = \
 	Exports \
-	Exports.dui
+	Exports.dui \
+	doc.h
 
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
