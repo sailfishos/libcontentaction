@@ -59,7 +59,7 @@ struct TrackerPrivate: public Action::DefaultPrivate
     virtual bool isValid() const;
     virtual QString name() const;
     virtual void trigger() const;
-    virtual DefaultPrivate *clone() const;
+    virtual TrackerPrivate *clone() const;
 
     QStringList uris; ///< the target uri's of the action
     QStringList classes; ///< the classes of the uri's (if they are of the
@@ -132,7 +132,7 @@ void TrackerPrivate::trigger() const
                     << "on" << proxy->service();
 }
 
-Action::DefaultPrivate *TrackerPrivate::clone() const
+TrackerPrivate *TrackerPrivate::clone() const
 {
     return new TrackerPrivate(uris, classes, action);
 }

@@ -222,7 +222,7 @@ struct MimePrivate: public Action::DefaultPrivate {
     virtual bool isValid() const;
     virtual QString name() const;
     virtual void trigger() const;
-    virtual DefaultPrivate *clone() const;
+    virtual MimePrivate* clone() const;
 
     QString desktopFileName;
     QStringList fileNames;
@@ -307,7 +307,7 @@ void MimePrivate::trigger() const
     }
 }
 
-Action::DefaultPrivate *MimePrivate::clone() const
+MimePrivate *MimePrivate::clone() const
 {
     return new MimePrivate(*this);
 }

@@ -36,7 +36,7 @@ struct HighlightPrivate: public Action::DefaultPrivate
     virtual bool isValid() const;
     virtual QString name() const;
     virtual void trigger() const;
-    virtual DefaultPrivate *clone() const;
+    virtual HighlightPrivate* clone() const;
 
     QString match;
     QString action;
@@ -72,7 +72,7 @@ void HighlightPrivate::trigger() const
                     << "on" << proxy->service();
 }
 
-Action::DefaultPrivate *HighlightPrivate::clone() const
+HighlightPrivate *HighlightPrivate::clone() const
 {
     return new HighlightPrivate(match, action);
 }
