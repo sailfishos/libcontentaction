@@ -96,7 +96,7 @@ public:
             if (!ix.isValid() || ix.row() >= actions.count())
                 return ret;
             if (role == Qt::DisplayRole)
-                ret = QString("!!%1").arg(actions.at(ix.row()).name());
+                ret = actions.at(ix.row()).localizedName();
             else if (role == ActionRole)
                 ret.setValue(actions.at(ix.row()));
             return ret;

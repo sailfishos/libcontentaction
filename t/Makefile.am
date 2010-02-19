@@ -83,6 +83,9 @@ servicetest_LDADD = \
 ../src/libcontentaction.la: FORCE
 	$(MAKE) -C ../src libcontentaction.la
 
+../src/libcontentaction-dui.la: FORCE
+	$(MAKE) -C ../src libcontentaction-dui.la
+
 .PHONY: FORCE
 
 EXTRA_DIST = \

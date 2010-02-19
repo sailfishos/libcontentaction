@@ -12,6 +12,7 @@
 #include <DuiApplicationWindow>
 #include <DuiLabel>
 #include <DuiButton>
+#include <DuiLocale>
 
 static QString text("Hello, please reach me at foo@example.com\n"
                     "or call +1 555 23231.  But never send mail to\n"
@@ -54,7 +55,9 @@ int main(int argc, char **argv)
     DuiApplication app(argc, argv);
     DuiApplicationWindow window;
     DuiApplicationPage page;
+    DuiLocale locale;
 
+    ContentAction::Action::installTranslators(locale.name());
     if (!isatty(0))
         text = QTextStream(stdin).readAll();
     // Need to trick DuiLabel into html mode...
