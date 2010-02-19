@@ -202,8 +202,9 @@ void Action::installTranslators(const QString& locale)
     }
     foreach (const QString& qmfn, translationsConfig()) {
         QTranslator *tr = new QTranslator();
-        if (!tr->load(qmfn + "_" + locale, l10ndir))
-            LCA_WARNING << "failed to load translation:" << qmfn;
+        QString fullfn = qmfn + "_" + locale;
+        if (!tr->load(fullfn, l10ndir))
+            LCA_WARNING << "failed to load translation:" << fullfn;
         cur_translators << tr;
         QCoreApplication::installTranslator(tr);
     }

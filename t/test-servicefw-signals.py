@@ -48,13 +48,7 @@ class ServiceFWSignals(unittest.TestCase):
         self.gallery2.kill()
 
     def testImplementorChanges(self):
-        # start a program which repeatedly queries the default action and
-        # invokes it; the program can either be found from PATH (test
-        # automation) or be in the build dir
-        try:
-            invoker = CLTool("servicetest")
-        except:
-            invoker = CLTool("./servicetest")
+        invoker = CLTool("servicetest")
 
         # assert that the old implementor was invoked
         self.assert_(self.gallery.expect("showImage ; an.image"))
@@ -74,13 +68,7 @@ class ServiceFWSignals(unittest.TestCase):
         self.assert_(self.gallery2.expect("showImage ; an.image", timeout=7))
 
     def testImplementorGone(self):
-        # start a program which repeatedly queries the default action and
-        # invokes it; the program can either be found from PATH (test
-        # automation) or be in the build dir
-        try:
-            invoker = CLTool("servicetest")
-        except:
-            invoker = CLTool("./servicetest")
+        invoker = CLTool("servicetest")
 
         # assert that the old implementor was invoked
         self.assert_(self.gallery.expect("showImage ; an.image"))
