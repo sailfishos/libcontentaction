@@ -11,7 +11,9 @@
     ContentAction::Action::canBeDefault*;
     ContentAction::Action::isValid*;
     ContentAction::Action::name*;
+    ContentAction::Action::localizedName*;
     ContentAction::Action::actions*;
+    ContentAction::Action::installTranslators*;
 
     ContentAction::Action::highlight*;
     ContentAction::Match::operator*;
@@ -21,6 +23,7 @@
 
     ContentAction::Action::actionsForFile*;
     ContentAction::Action::defaultActionForFile*;
+
   };
   local:
     *;

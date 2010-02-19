@@ -49,6 +49,8 @@ typedef QHash<QString, QStringList> HighlighterMap;
 
 const HighlighterMap& highlighterConfig();
 
-}
-}
+const QStringList translationsConfig();
+
+} // end namespace Internal
+} // end namespace ContentAction
 #endif

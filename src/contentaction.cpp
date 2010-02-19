@@ -24,10 +24,10 @@
 #include "service.h"
 
 #include <QDebug>
-
-namespace ContentAction {
-
-using namespace ContentAction::Internal;
+#include <QCoreApplication>
+#include <QTranslator>
+#include <QStringList>
+#include <QByteArray>
 
 /*!
   \class ContentAction::Action
@@ -64,6 +64,10 @@ using namespace ContentAction::Internal;
   ContentAction::Action.
 
 */
+namespace ContentAction {
+
+using namespace ContentAction::Internal;
+
 Action::DefaultPrivate::~DefaultPrivate()
 { }
 
@@ -170,6 +174,48 @@ bool Action::isValid() const
 QString Action::name() const
 {
     return d->name();
+}
+
+/// Installs (or re-installs) QCoreApplication translators based on \a locale.
+/// Call it at the beginning of the program, or when locale changes.  See also
+/// the \ref Localization section.
+///
+/// The default search directory might be overridden with the
+/// CONTENTACTION_L10N_DIR environment variable.
+void Action::installTranslators(const QString& locale)
+{
+    static QList<QTranslator *> cur_translators;
+    static QString l10ndir;
+
+    if (l10ndir.isEmpty()) {
+        QByteArray dir = qgetenv("CONTENTACTION_L10N_DIR");
+        if (!dir.isEmpty())
+            l10ndir = QString::fromLocal8Bit(dir);
+        else
+            l10ndir = QString::fromLocal8Bit(DEFAULT_L10N_DIR);
+    }
+
+    while (!cur_translators.isEmpty()) {
+        QTranslator *tr = cur_translators.takeFirst();
+        QCoreApplication::removeTranslator(tr);
+        delete tr;
+    }
+    foreach (const QString& qmfn, translationsConfig()) {
+        QTranslator *tr = new QTranslator();
+        if (!tr->load(qmfn + "_" + locale, l10ndir))
+            LCA_WARNING << "failed to load translation:" << qmfn;
+        cur_translators << tr;
+        QCoreApplication::installTranslator(tr);
+    }
+}
+
+/// Returns the localized name of the action, using the currently installed
+/// translators.
+QString Action::localizedName() const
+{
+    return QCoreApplication::translate("ContentAction",
+                                       d->name().toAscii().constData(),
+                                       "", QCoreApplication::CodecForTr);
 }
 
 } // end namespace

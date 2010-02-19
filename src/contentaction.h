@@ -41,6 +41,7 @@ public:
 
     bool isValid() const;
     QString name() const;
+    QString localizedName() const;
 
     static Action defaultAction(const QString& uri);
     static Action defaultAction(const QStringList& uris);
@@ -51,6 +52,8 @@ public:
     static QList<Action> actionsForFile(const QUrl& fileUri);
 
     static QList<Match> highlight(const QString& text);
+
+    static void installTranslators(const QString& locale);
 
     struct DefaultPrivate;
 

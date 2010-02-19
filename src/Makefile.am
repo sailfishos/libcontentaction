@@ -20,7 +20,8 @@ AM_CPPFLAGS = \
 	$(TRACKER_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(GIO_CFLAGS) \
-	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction/actions.d\"
+	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction/actions.d\" \
+	-DDEFAULT_L10N_DIR=\"@datadir@/contentaction/l10n\"
 
 LIBS += \
 	$(QtCore_LIBS) \
