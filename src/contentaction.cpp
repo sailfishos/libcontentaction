@@ -96,6 +96,11 @@ QString Action::DefaultPrivate::name() const
     return QString("Invalid action");
 }
 
+QString Action::DefaultPrivate::localizedName() const
+{
+    return name();
+}
+
 void Action::DefaultPrivate::trigger() const
 {
     LCA_WARNING << "triggered an invalid action, not doing anything.";
@@ -214,9 +219,7 @@ void Action::installTranslators(const QString& locale)
 /// translators.
 QString Action::localizedName() const
 {
-    return QCoreApplication::translate("ContentAction",
-                                       d->name().toAscii().constData(),
-                                       "", QCoreApplication::CodecForTr);
+    return d->localizedName();
 }
 
 } // end namespace

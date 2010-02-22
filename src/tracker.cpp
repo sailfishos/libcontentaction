@@ -34,6 +34,7 @@
 #include <QHash>
 #include <QDBusInterface>
 #include <QDebug>
+#include <QCoreApplication>
 
 #include <algorithm>
 
@@ -58,6 +59,7 @@ struct TrackerPrivate: public Action::DefaultPrivate
     virtual bool canBeDefault() const;
     virtual bool isValid() const;
     virtual QString name() const;
+    virtual QString localizedName() const;
     virtual void trigger() const;
     virtual TrackerPrivate *clone() const;
 
@@ -117,6 +119,13 @@ bool TrackerPrivate::isValid() const
 QString TrackerPrivate::name() const
 {
     return action;
+}
+
+QString TrackerPrivate::localizedName() const
+{
+    return QCoreApplication::translate("ContentAction",
+                                       name().toAscii().constData(),
+                                       "", QCoreApplication::CodecForTr);
 }
 
 void TrackerPrivate::trigger() const
