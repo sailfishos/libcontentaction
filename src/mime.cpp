@@ -283,7 +283,7 @@ void MimePrivate::trigger() const
         break;
     }
     case DuiLaunch: {
-        QDBusInterface launcher(service, "/", iface);
+        QDBusInterface launcher(service, "/org/maemo/dui", iface);
         launcher.asyncCall(method, fileNames);
         break;
     }
