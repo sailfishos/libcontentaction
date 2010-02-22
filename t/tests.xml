@@ -62,6 +62,13 @@
           PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-desktop-launching.py
         </step>
       </case>
+      <case name="test-l10n" description="A test of questionable value.">
+        <step expected_result="0">
+          . /tmp/session_bus_address.user; \
+          cd /usr/share/libcontentaction-tests; \
+          PATH=.:/usr/lib/libcontentaction-tests:$PATH ./test-l10n.sh
+        </step>
+      </case>
 
       <environments>
         <scratchbox>true</scratchbox>
