@@ -312,17 +312,28 @@ MimePrivate *MimePrivate::clone() const
     return new MimePrivate(*this);
 }
 
-/// Returns the default action for a given \a file, based on its content type.
+/// Returns the default action for a given \a fileUri, based on its content
+/// type.
 Action Action::defaultActionForFile(const QUrl& fileUri)
 {
     QString contentType = contentTypeForFile(fileUri);
     if (contentType.isEmpty())
         return Action();
+    return defaultActionForFile(fileUri, contentType);
+}
+
+/// Returns the default actions for a given \a fileUri, assuming that it's of
+/// the mime type \mimeType. This function can be used even when \a fileUri
+/// doesn't exist yet but will be created before trigger() is called, or if
+/// you already know the mime type. Note: if the file is a .desktop file, it
+/// must exist when this function is called.
+Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType)
+{
     // We treat .desktop files specially: the default action (the only
     // actually) is to launch the application it describes.
-    if (contentType == "application/x-desktop")
+    if (mimeType == "application/x-desktop")
         return Action(new MimePrivate(fileUri.toLocalFile(), QList<QUrl>()));
-    QString appid = defaultAppForContentType(contentType);
+    QString appid = defaultAppForContentType(mimeType);
     if (appid.isEmpty())
         return Action();
     return Action(new MimePrivate(findDesktopFile(appid),
@@ -333,16 +344,19 @@ Action Action::defaultActionForFile(const QUrl& fileUri)
 /// content type.
 QList<Action> Action::actionsForFile(const QUrl& fileUri)
 {
+    QString contentType = contentTypeForFile(fileUri);
+    return actionsForFile(fileUri, contentType);
+}
+
+QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeType)
+{
     QList<Action> result;
 
-    QString contentType = contentTypeForFile(fileUri);
-    if (contentType.isEmpty())
-        return result;
-    if (contentType == "application/x-desktop")
+    if (mimeType == "application/x-desktop")
         return result << Action(new MimePrivate(fileUri.toLocalFile(),
                                                 QList<QUrl>()));
 
-    QStringList appIds = appsForContentType(contentType);
+    QStringList appIds = appsForContentType(mimeType);
     foreach (const QString& id, appIds) {
         result << Action(new MimePrivate(findDesktopFile(id),
                                          QList<QUrl>() << fileUri));
