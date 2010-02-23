@@ -322,11 +322,11 @@ Action Action::defaultActionForFile(const QUrl& fileUri)
     return defaultActionForFile(fileUri, contentType);
 }
 
-/// Returns the default actions for a given \a fileUri, assuming that it's of
-/// the mime type \mimeType. This function can be used even when \a fileUri
-/// doesn't exist yet but will be created before trigger() is called, or if
-/// you already know the mime type. Note: if the file is a .desktop file, it
-/// must exist when this function is called.
+/// Returns the default actions for a given \a fileUri, assuming its mime type
+/// is \a mimeType. This function can be used even when \a fileUri doesn't
+/// exist yet but will be created before trigger() is called, or if you
+/// already know the mime type. Note: if the file is a .desktop file, it must
+/// exist when this function is called.
 Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType)
 {
     // We treat .desktop files specially: the default action (the only
@@ -340,7 +340,7 @@ Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType
                                   QList<QUrl>() << fileUri));
 }
 
-/// Returns the set of applicable actions for a given \a file, based on its
+/// Returns the set of applicable actions for a given \a fileUri, based on its
 /// content type.
 QList<Action> Action::actionsForFile(const QUrl& fileUri)
 {
@@ -348,6 +348,11 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri)
     return actionsForFile(fileUri, contentType);
 }
 
+/// Returns the set of applicable actions for a given \a fileUri, assuming
+/// it's mime type is \a mimeType. This function can be used even when \a
+/// fileUri doesn't exist yet but will be created before trigger() is called,
+/// or if you already know the mime type. Note: if the file is a .desktop
+/// file, it must exist when this function is called.
 QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeType)
 {
     QList<Action> result;
