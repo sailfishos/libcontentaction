@@ -23,6 +23,9 @@
 #include "internal.h"
 #include "service.h"
 
+// workaround for a bug in tracker.h; includes this too late
+#include <glib-object.h>
+
 #include <libtracker-client/tracker.h>
 
 #include <gconf/gconf.h>
