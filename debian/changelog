@@ -1,3 +1,9 @@
+libcontentaction (0.0.8~unreleased) unstable; urgency=low
+
+  * 
+
+ -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Wed, 24 Feb 2010 11:24:29 +0200
+
 libcontentaction (0.0.7) unstable; urgency=low
 
   * API additions: defaultActionForFile, actionsForFile taking in the mime
