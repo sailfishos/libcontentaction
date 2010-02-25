@@ -240,6 +240,7 @@ MimePrivate::MimePrivate(const QString& desktopFileName, const QList<QUrl>& file
     foreach (const QUrl& uri, fileUris)
         fileNames << uri.toEncoded();
     kind = launchInfo(desktopFileName, service, iface, method);
+    g_type_init();
     appInfo = G_APP_INFO(g_desktop_app_info_new_from_filename(
                              desktopFileName.toLocal8Bit().constData()));
 }
