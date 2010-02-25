@@ -67,11 +67,23 @@
   To define a new action applicable to files, the following steps are needed:
 
   - You need to manifest the Mime types your application handles in the
-    .desktop file of your application.
+    .desktop file of your application (the MimeType= line).
 
-  - You also need to declare your D-Bus bus name in the .desktop file.
+  - Provide one of the following three alternatives so what we can launch your
+    application:
+      - The line X-Maemo-Service=my.dbus.name in your .desktop file, and your
+      D-Bus object with path /org/maemo/dui implementing a function
+      com.nokia.DuiApplicationIf.launch(as). A patch is pending for DUI to do
+      this automatically for you. Read the Dui documentation on how to process
+      the parameters. The parameters will be file URI:s.
+      - Legacy: The line X-Osso-Service=my.dbus.name in your .desktop file,
+      and your D-Bus object with path / implementing a function mime_open. The
+      parameters will be file URI:s.
+      - The line Exec=my-program %U in your .desktop.file. Libcontentaction
+      will execute your command with the file URI's.
 
-  - Other steps are also needed but they are still undecided.
+  - If you want your application to be the default application for some mime
+    types, contact the libcontentaction implementors.
 
   \section highlighter Free-text highlighter
 
