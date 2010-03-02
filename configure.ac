@@ -13,15 +13,6 @@ AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 AC_PROG_QT_MOC
 
-# Optional Dui support
-AC_ARG_WITH([dui],
-            [AS_HELP_STRING([--with-dui],
-                            [build parts requiring Dui])],
-            [], [with_dui=no])
-AM_CONDITIONAL([WITH_DUI], [test "x$with_dui" != xno])
-AS_IF([test "x$with_dui" != xno],
-      [PKG_CHECK_MODULES([DUI], [Dui >= 0.18])])
-
 # check for libraries
 PKG_CHECK_MODULES([QtTest], [QtTest])
 PKG_CHECK_MODULES([QtCore], [QtCore])
@@ -31,6 +22,7 @@ PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12.0])
 PKG_CHECK_MODULES([TRACKER], [tracker-client-0.7])
 PKG_CHECK_MODULES([GCONF], [gconf-2.0])
 PKG_CHECK_MODULES([GIO], [gio-2.0 gio-unix-2.0])
+PKG_CHECK_MODULES([DUI], [Dui >= 0.18])
 
 # tools for documentation
 AX_FEATURE_DISABLEABLE([doc], [BUILD_DOCS], [disable building of documentation])
@@ -46,9 +38,7 @@ AM_CONDITIONAL([COVERAGE], [test "$missing_deps_COVERAGE" = ""])
 AC_CONFIG_FILES([
         Makefile
         contentaction-0.1.pc
-        contentaction-dui-0.1.pc
         contentaction-0.1-uninstalled.pc
-        contentaction-dui-0.1-uninstalled.pc
         src/Makefile
         t/Makefile
         t/env.sh

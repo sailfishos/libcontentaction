@@ -1,7 +1,0 @@
-{
-  global: extern "C++" {
-    ContentAction::Dui::highlightLabel*;
-  };
-  local:
-    *;
-};

@@ -16,11 +16,10 @@
     ContentAction::Action::highlight*;
     ContentAction::Match::operator*;
 
-    ContentAction::Internal::highlighterConfig*;
-    ContentAction::Internal::highlightAction*;
-
     ContentAction::Action::actionsForFile*;
     ContentAction::Action::defaultActionForFile*;
+
+    ContentAction::Dui::highlightLabel*;
   };
   local:
     *;

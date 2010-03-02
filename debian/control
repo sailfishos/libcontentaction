@@ -33,27 +33,6 @@ Description: Library for associating content with actions
  .
  This package contains the development files.
 
-Package: libcontentaction-dui0
-Architecture: any
-Depends: ${shlibs:Depends}
-Description: Dui-related parts from libcontentaction
-
-Package: libcontentaction-dui0-dbg
-Priority: extra
-Architecture: any
-Depends: libcontentaction-dui0 (= ${binary:Version})
-Description: Dui-related parts from libcontentaction
- .
- This package contains the debug symbols.
-
-Package: libcontentaction-dui-dev
-Section: libdevel
-Architecture: any
-Depends: libcontentaction-dui0 (= ${binary:Version})
-Description: Dui-related parts from libcontentaction
- .
- This package contains the development files.
-
 Package: libcontentaction-doc
 Section: doc
 Architecture: all

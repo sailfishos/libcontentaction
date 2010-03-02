@@ -22,9 +22,6 @@ void everything()
     QList<Action> paff = Action::actions("concatenation");
 
     Action::highlight("foo bar baz");
-    const HighlighterMap& m = highlighterConfig();
-    Q_UNUSED(m);
-    a = highlightAction("foo", "bar");
 
     Action::actionsForFile(QUrl("file:///somewhere/over/the/rainbow"));
     Action::defaultActionForFile(QUrl("file:///somewhere/over/the/rainbow"));

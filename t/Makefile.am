@@ -46,8 +46,6 @@ check_PROGRAMS = \
 	linktest \
 	hl1
 
-if WITH_DUI
-
 noinst_PROGRAMS = hldemo
 hldemo_SOURCES = hldemo.cpp
 hldemo_CPPFLAGS = \
@@ -55,12 +53,9 @@ hldemo_CPPFLAGS = \
 	-I$(top_srcdir)/src
 hldemo_LDADD = \
 	$(DUI_LIBS) \
-	../src/libcontentaction.la \
-	../src/libcontentaction-dui.la
+	../src/libcontentaction.la
 BUILT_SOURCES += hldemo.moc
 CLEANFILES += hldemo.moc
-
-endif
 
 hl1_SOURCES = \
 	hl1.cpp

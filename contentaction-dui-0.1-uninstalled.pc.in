@@ -1,9 +1,0 @@
-libdir=${pcfiledir}/src
-includedir=@abs_srcdir@/src
-
-Name: contentaction-dui
-Description: libcontentaction dui "integration"
-Version: uninstalled
-Requires: contentaction Dui
-Libs: -L${libdir} -L${libdir}/.libs -lcontentaction-dui
-Cflags: -I${includedir}

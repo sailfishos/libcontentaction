@@ -1,6 +1,3 @@
-BUILT_SOURCES=
-CLEANFILES=
-
 SUFFIXES = .cpp .h .moc.cpp
 
 .cpp.moc:
@@ -10,7 +7,6 @@ SUFFIXES = .cpp .h .moc.cpp
 
 EXTRA_DIST = \
 	Exports \
-	Exports.dui \
 	doc.h
 
 AM_CPPFLAGS = \
@@ -20,6 +16,7 @@ AM_CPPFLAGS = \
 	$(TRACKER_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(GIO_CFLAGS) \
+	$(DUI_CFLAGS) \
 	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction/actions.d\"
 
 LIBS += \
@@ -28,41 +25,15 @@ LIBS += \
 	$(QtDBus_LIBS) \
 	$(TRACKER_LIBS) \
 	$(GCONF_LIBS) \
-	$(GIO_LIBS)
+	$(GIO_LIBS) \
+	$(DUI_LIBS)
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \
-	contentaction.h
-
-lib_LTLIBRARIES = libcontentaction.la
-
-if WITH_DUI
-
-lib_LTLIBRARIES += libcontentaction-dui.la
-
-libcontentaction_dui_la_SOURCES = \
-	dui-highlight.cpp
-
-libcontentaction_dui_la_CPPFLAGS = \
-	$(DUI_CFLAGS)
-
-libcontentaction_dui_la_LDFLAGS = \
-	-Wl,--version-script=$(srcdir)/Exports.dui
-
-libcontentaction_dui_la_LIBADD = \
-	$(DUI_LIBS) \
-	libcontentaction.la
-
-libcontentaction_dui_la_DEPENDENCIES = \
-	Exports.dui
-
-inc_HEADERS += \
+	contentaction.h \
 	contentaction-dui.h
 
-BUILT_SOURCES += dui-highlight.moc
-CLEANFILES += dui-highlight.moc
-
-endif
+lib_LTLIBRARIES = libcontentaction.la
 
 libcontentaction_la_DEPENDENCIES = \
 	Exports
@@ -76,10 +47,15 @@ libcontentaction_la_SOURCES = \
 	service.h \
 	service.cpp \
 	mime.cpp \
-	tracker.cpp
+	tracker.cpp \
+	dui-highlight.cpp
 
-BUILT_SOURCES += service.moc.cpp
-CLEANFILES += service.moc.cpp
+BUILT_SOURCES = \
+	service.moc.cpp \
+	dui-highlight.moc
+CLEANFILES = \
+	service.moc.cpp \
+	dui-highlight.moc
 
 nodist_libcontentaction_la_SOURCES = \
 	service.moc.cpp
