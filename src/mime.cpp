@@ -152,7 +152,7 @@ static LaunchType launchInfo(const QString& desktopFile,
 static QString findDesktopFile(const QString& id)
 {
     QStringList dirs = xdgDataDirs();
-    for (int i = dirs.size()-1; i >= 0; --i) {
+    for (int i = 0; i < dirs.size(); ++i) {
         QFile f(dirs[i] + "/applications/" + id);
         if (f.exists())
             return f.fileName();
