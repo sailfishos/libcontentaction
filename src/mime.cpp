@@ -37,6 +37,8 @@
 #include <QDBusInterface>
 #include <QDBusPendingCall>
 
+#include <DuiDesktopEntry>
+
 namespace ContentAction {
 
 using namespace ContentAction::Internal;
@@ -120,33 +122,6 @@ static void readKeyValues(QFile& file, QHash<QString, QString>& dict)
     file.close();
 }
 
-// Determines how to launch the application that the given .desktop file
-// represents.  Returns the LaunchType and fills service, interface and method
-// if applicable.
-static LaunchType launchInfo(const QString& desktopFile,
-                             QString& service,
-                             QString& iface, QString& method)
-{
-    QFile file(desktopFile);
-    if (!file.exists())
-        return DontLaunch;
-    QHash<QString, QString> appInfo;
-    readKeyValues(file, appInfo);
-    if (appInfo.contains("X-Maemo-Service")) {
-        service = appInfo["X-Maemo-Service"];
-        iface = "com.nokia.DuiApplicationIf";
-        method = "launch";
-        return DuiLaunch;
-    }
-    if (appInfo.contains("X-Osso-Service")) {
-        service = appInfo["X-Osso-Service"];
-        iface = service;
-        method = "mime_open";
-        return MimeOpenLaunch;
-    }
-    return ExecLaunch;
-}
-
 // Searches XDG dirs for the .desktop file with the given id
 // ("something.desktop"), and returns the first hit.
 static QString findDesktopFile(const QString& id)
@@ -227,6 +202,7 @@ struct MimePrivate: public Action::DefaultPrivate {
     QString desktopFileName;
     QStringList fileNames;
 
+    DuiDesktopEntry *desktopEntry;
     GAppInfo *appInfo;
     LaunchType kind;
     QString service;
@@ -239,7 +215,22 @@ MimePrivate::MimePrivate(const QString& desktopFileName, const QList<QUrl>& file
 {
     foreach (const QUrl& uri, fileUris)
         fileNames << uri.toEncoded();
-    kind = launchInfo(desktopFileName, service, iface, method);
+    desktopEntry = new DuiDesktopEntry(desktopFileName);
+
+    if (!desktopEntry->isValid())
+        kind = DontLaunch;
+    else if (desktopEntry->contains("Desktop Entry/X-Maemo-Service")) {
+        kind = DuiLaunch;
+        iface = "com.nokia.DuiApplicationIf";
+        method = "launch";
+    } else if (desktopEntry->contains("Desktop Entry/X-Osso-Service")) {
+        kind = MimeOpenLaunch;
+        service = desktopEntry->value("Desktop Entry/X-Osso-Service");
+        iface = service;
+        method = "mime_open";
+    } else
+        kind = ExecLaunch;
+
     g_type_init();
     appInfo = G_APP_INFO(g_desktop_app_info_new_from_filename(
                              desktopFileName.toLocal8Bit().constData()));
@@ -248,6 +239,7 @@ MimePrivate::MimePrivate(const QString& desktopFileName, const QList<QUrl>& file
 MimePrivate::MimePrivate(const MimePrivate& other) :
     desktopFileName(other.desktopFileName),
     fileNames(other.fileNames),
+    desktopEntry(new DuiDesktopEntry(other.desktopFileName)),
     appInfo(g_app_info_dup(other.appInfo)),
     kind(other.kind),
     service(other.service),
@@ -257,6 +249,7 @@ MimePrivate::MimePrivate(const MimePrivate& other) :
 
 MimePrivate::~MimePrivate()
 {
+    delete desktopEntry;
     g_object_unref(appInfo);
 }
 
@@ -267,8 +260,7 @@ bool MimePrivate::isValid() const
 
 QString MimePrivate::name() const
 {
-    const char *appName = g_app_info_get_name(appInfo);
-    return QString::fromUtf8(appName);
+    return desktopEntry->name();
 }
 
 /// Launches the application, either via D-Bus or with GIO.

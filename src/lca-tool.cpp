@@ -23,6 +23,7 @@
 
 #include <unistd.h>
 #include <QTextStream>
+#include <QCoreApplication>
 
 using namespace ContentAction;
 using namespace ContentAction::Internal;
@@ -74,6 +75,7 @@ void usage(char *prog)
 
 int main(int argc, char **argv)
 {
+    QCoreApplication app(argc, argv);
     QTextStream err(stderr), out(stdout);
 
     if (argc == 1) {
