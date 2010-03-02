@@ -3,9 +3,9 @@ import dbus, dbus.service, dbus.mainloop.glib
 import gobject
 from sys import stdout, argv
 
-class Uberprogram(dbus.service.Object):
+class Uberprogram(dbus.service.FallbackObject):
     def __init__(self, busname):
-        dbus.service.Object.__init__(self, dbus.SessionBus(), '/')
+        dbus.service.FallbackObject.__init__(self, dbus.SessionBus(), '/')
         self.iam = dbus.service.BusName(busname, dbus.SessionBus())
 
     @dbus.service.method(dbus_interface='com.nokia.DuiApplicationIf',

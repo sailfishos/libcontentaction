@@ -23,6 +23,9 @@
 #include "internal.h"
 #include "service.h"
 
+// workaround for a bug in tracker.h; this is not defined
+#define G_BEGIN_DECLS extern "C" {
+
 #include <libtracker-client/tracker.h>
 
 #include <gconf/gconf.h>
