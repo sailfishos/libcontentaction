@@ -1,10 +1,12 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=ubermimeopen
+Name[en]=englishmimeopen
+Name[de]=deutschmimeopen
 GenericName=Uber Program
 Comment=View ANYTHING
 Exec=/usr/bin/python2.5 -c "import sys; print \"uberalles:\", sys.argv[1:]"
 Terminal=false
 Type=Application
-MimeType=text/plain
+MimeType=text/plain;
 X-Osso-Service=uber.program

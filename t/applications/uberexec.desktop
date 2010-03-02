@@ -1,10 +1,12 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=uberexec
+Name[en]=englishexec
+Name[de]=deutschexec
 GenericName=Uber Program
 Comment=View ANYTHING
 Exec=python -c "f = open(%U); content=f.read(); f2 = open('./executedAction', 'w'); f2.write(content);"
 Terminal=false
 Type=Application
-MimeType=text/plain
+MimeType=text/plain;
 
