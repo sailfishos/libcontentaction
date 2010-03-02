@@ -112,10 +112,10 @@ static void readKeyValues(QFile& file, QHash<QString, QString>& dict)
             break;
         if (line.isEmpty() || line[0] == '[' || line[0] == '#')
             continue;
-        QStringList keyAndValue = line.split('=', QString::SkipEmptyParts);
-        if (keyAndValue.size() < 2)
+        int eq = line.indexOf('=');
+        if (eq < 0)
             continue;
-        dict.insert(keyAndValue[0], keyAndValue[1]);
+        dict.insert(line.left(eq).trimmed(), line.mid(eq + 1).trimmed());
     }
     file.close();
 }
