@@ -30,6 +30,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QTextStream>
 #include <QDebug>
 #include <QFile>
@@ -196,10 +197,12 @@ struct MimePrivate: public Action::DefaultPrivate {
     virtual ~MimePrivate();
     virtual bool isValid() const;
     virtual QString name() const;
+    virtual QString localizedName() const;
     virtual void trigger() const;
     virtual MimePrivate* clone() const;
 
     QString desktopFileName;
+    QString desktopId;
     QStringList fileNames;
 
     DuiDesktopEntry *desktopEntry;
@@ -213,6 +216,7 @@ struct MimePrivate: public Action::DefaultPrivate {
 MimePrivate::MimePrivate(const QString& desktopFileName, const QList<QUrl>& fileUris) :
     desktopFileName(desktopFileName)
 {
+    desktopId = QFileInfo(desktopFileName).baseName();
     foreach (const QUrl& uri, fileUris)
         fileNames << uri.toEncoded();
     desktopEntry = new DuiDesktopEntry(desktopFileName);
@@ -238,6 +242,7 @@ MimePrivate::MimePrivate(const QString& desktopFileName, const QList<QUrl>& file
 
 MimePrivate::MimePrivate(const MimePrivate& other) :
     desktopFileName(other.desktopFileName),
+    desktopId(other.desktopId),
     fileNames(other.fileNames),
     desktopEntry(new DuiDesktopEntry(other.desktopFileName)),
     appInfo(g_app_info_dup(other.appInfo)),
@@ -259,6 +264,11 @@ bool MimePrivate::isValid() const
 }
 
 QString MimePrivate::name() const
+{
+    return desktopId;
+}
+
+QString MimePrivate::localizedName() const
 {
     return desktopEntry->name();
 }
