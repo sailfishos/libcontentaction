@@ -21,9 +21,11 @@
 #include "contentaction.h"
 #include "internal.h"
 
+#include <stdlib.h>
 #include <unistd.h>
 #include <QTextStream>
 #include <QCoreApplication>
+#include <DuiLocale>
 
 using namespace ContentAction;
 using namespace ContentAction::Internal;
@@ -81,6 +83,17 @@ int main(int argc, char **argv)
     if (argc == 1) {
         usage(argv[0]);
         return 1;
+    }
+
+    // Register Dui translation paths based on $LCATOOL_TR_PATH (defaulting to
+    // "/usr/share/l10n/dui").
+    char *l10npaths = getenv("LCATOOL_TR_PATH");
+    if (l10npaths) {
+        foreach (const QString& p, QString::fromLocal8Bit(l10npaths).split(':')) {
+            DuiLocale::addTranslationPath(p);
+        }
+    } else {
+        DuiLocale::addTranslationPath("/usr/share/l10n/dui");
     }
 
     QStringList args;
