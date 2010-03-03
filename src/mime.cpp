@@ -225,6 +225,7 @@ MimePrivate::MimePrivate(const QString& desktopFileName, const QList<QUrl>& file
         kind = DontLaunch;
     else if (desktopEntry->contains("Desktop Entry/X-Maemo-Service")) {
         kind = DuiLaunch;
+        service = desktopEntry->value("Desktop Entry/X-Maemo-Service");
         iface = "com.nokia.DuiApplicationIf";
         method = "launch";
     } else if (desktopEntry->contains("Desktop Entry/X-Osso-Service")) {
