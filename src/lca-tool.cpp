@@ -58,9 +58,11 @@ void usage(char *prog)
         "  -s|--setdefault ACTION             set the default action for the given URIs\n"
         "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
         "  -S|--setclassdefault ACTION CLASS  set a default action for a Nepomuk class\n"
-        "  -f|--printforfile FILE             print the applicable actions for a file\n"
-        "  -F|--invokeforfile FILEACTION FILE invoke the given action for FILE\n"
-        "  -L|--launchfile FILE               invoke the default action for FILE\n"
+        "  -f|--printforfile                  print the applicable actions for a file\n"
+        "  -F|--invokeforfile FILEACTION      invoke the given action for FILE\n"
+        "  -L|--launchfile                    invoke the default action for FILE\n"
+        "\n"
+        "  --l10n                             use localized names\n"
         "where\n"
         "  ACTION is: INTERFACE.METHOD of the maemo service framework\n"
         "  FILEACTION is: the name of the application (from the .desktop file)\n"
@@ -101,7 +103,9 @@ int main(int argc, char **argv)
         args << QString(argv[i]);
 
     ActionToDo todo = PrintHelp;
+    bool use_l10n = false;
     QString actionName;
+
     while (!args.isEmpty()) {
         QString arg = args.takeFirst();
         if (!arg.startsWith("-"))             // end of options
@@ -175,6 +179,10 @@ int main(int argc, char **argv)
             todo = LaunchFile;
             break;
         }
+        if (arg == "--l10n") {
+            use_l10n = true;
+            continue;
+        }
         err << "Unknown option " << arg << endl;
         return 2;
     }
@@ -195,7 +203,10 @@ int main(int argc, char **argv)
         QList<Action> actions = Action::actions(args);
         foreach (Action action, actions) {
             if (todo == PrintActions) {
-                out << action.name() << endl;
+                if (use_l10n)
+                    out << action.localizedName() << endl;
+                else
+                    out << action.name() << endl;
             } else if (todo == Invoke && actionName == action.name()) {
                 action.trigger();
                 return 0;
@@ -224,8 +235,12 @@ int main(int argc, char **argv)
         }
         if (todo == InvokeDefault)
             defAction.trigger();
-        else if (todo == PrintDefault)
-            out << defAction.name() << endl;
+        else if (todo == PrintDefault) {
+            if (use_l10n)
+                out << defAction.localizedName() << endl;
+            else
+                out << defAction.name() << endl;
+        }
         break;
     }
     case PrintClasses: {
@@ -256,7 +271,10 @@ int main(int argc, char **argv)
         QList<Action> actions = Action::actionsForFile(QUrl(args[0]));
         foreach (const Action& action, actions) {
             if (todo == PrintForFile) {
-                out << action.name() << endl;
+                if (use_l10n)
+                    out << action.localizedName() << endl;
+                else
+                    out << action.name() << endl;
             } else if (todo == InvokeForFile && actionName == action.name()) {
                 action.trigger();
                 return 0;
