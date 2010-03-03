@@ -21,6 +21,7 @@ struct Action::DefaultPrivate
     virtual bool canBeDefault() const;
     virtual bool isValid() const;
     virtual QString name() const;
+    virtual QString localizedName() const;
     virtual void trigger() const;
     virtual DefaultPrivate *clone() const;
 };
@@ -49,6 +50,8 @@ typedef QHash<QString, QStringList> HighlighterMap;
 
 const HighlighterMap& highlighterConfig();
 
-}
-}
+const QStringList translationsConfig();
+
+} // end namespace Internal
+} // end namespace ContentAction
 #endif

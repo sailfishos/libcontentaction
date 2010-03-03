@@ -34,6 +34,7 @@ using namespace ContentAction::Internal;
 
 static Associations ActionsForClasses_cfg; // class - action - weight triples
 static HighlighterMap Highlighter_cfg; // regexp -> actions
+static QStringList Translations; // translation files
 
 /// Returns the path where the action configuration files should be read from.
 /// It may be overridden via the $CONTENTACTION_ACTIONS environment variable.
@@ -97,8 +98,14 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
             currentRegexp = atts.value("regexp");
             if (currentRegexp.isEmpty())
                 fail("expected a nonempty regexp");
+        }
+        else if (qname == "translation") {
+            QString qm = atts.value("qm");
+            if (qm.isEmpty())
+                fail("empty qm file name");
+            Translations << qm;
         } else
-            fail("expected tag: class or highlight");
+            fail("unexpected tag");
         break;
     case inClass: {
         if (qname != "action")
@@ -201,4 +208,11 @@ const HighlighterMap& ContentAction::Internal::highlighterConfig()
 {
     readConfig();
     return Highlighter_cfg;
+}
+
+/// Returns the list of translation filenames found in the configs.
+const QStringList ContentAction::Internal::translationsConfig()
+{
+    readConfig();
+    return Translations;
 }

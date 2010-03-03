@@ -1,4 +1,6 @@
-SUBDIRS = applications
+SUBDIRS = \
+	applications \
+	test-l10n-data
 CLEANFILES =
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
@@ -26,7 +28,8 @@ citest_SCRIPTS = \
 	test-defaults.py \
 	test-mimes.py \
 	test-servicefw-signals.py \
-	test-desktop-launching.py
+	test-desktop-launching.py \
+	test-l10n.sh
 
 noinst_SCRIPTS = \
 	start-sandbox.sh \
@@ -44,7 +47,8 @@ citest_DATA = \
 
 check_PROGRAMS = \
 	linktest \
-	hl1
+	hl1 \
+	l10ntest
 
 noinst_PROGRAMS = hldemo
 hldemo_SOURCES = hldemo.cpp
@@ -57,26 +61,23 @@ hldemo_LDADD = \
 BUILT_SOURCES += hldemo.moc
 CLEANFILES += hldemo.moc
 
-hl1_SOURCES = \
-	hl1.cpp
-linktest_SOURCES = \
-	linktest.cpp
-linktest_LDADD = \
-	../src/libcontentaction.la
-
 testhelperdir = $(libdir)/libcontentaction-tests
-testhelper_PROGRAMS = servicetest
+testhelper_PROGRAMS = \
+	servicetest \
+	l10ntest
 
-servicetest_SOURCES = \
-	servicelistener.cpp
+hl1_SOURCES = hl1.cpp
+linktest_SOURCES = linktest.cpp
+servicetest_SOURCES = servicelistener.cpp
+l10ntest_SOURCES = l10ntest.cpp
 
 BUILT_SOURCES += servicelistener.moc
 
-servicetest_LDADD = \
-	../src/libcontentaction.la
-
 ../src/libcontentaction.la: FORCE
 	$(MAKE) -C ../src libcontentaction.la
+
+../src/libcontentaction-dui.la: FORCE
+	$(MAKE) -C ../src libcontentaction-dui.la
 
 .PHONY: FORCE
 
@@ -101,6 +102,7 @@ TESTS = \
 	test-highlight.sh \
 	test-mimes.py \
 	test-desktop-launching.py \
+	test-l10n.sh \
 	stop-sandbox.sh
 
 clean-local:

@@ -31,6 +31,10 @@ t/moc_*.cpp
 t/servicetest
 t/hldemo
 t/hl1
+t/l10ntest
+
+t/test-l10n-data/test_en_US.qm
+t/test-l10n-data/test_hu_HU.qm
 
 doc/doxygen.log
 doc/html/

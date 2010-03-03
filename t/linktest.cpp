@@ -25,6 +25,9 @@ void everything()
 
     Action::actionsForFile(QUrl("file:///somewhere/over/the/rainbow"));
     Action::defaultActionForFile(QUrl("file:///somewhere/over/the/rainbow"));
+
+    Action::installTranslators("en_US");
+    QString x = a.localizedName();
 }
 
 int main(int argc, char **argv)
