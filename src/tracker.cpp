@@ -126,9 +126,8 @@ QString TrackerPrivate::name() const
 
 QString TrackerPrivate::localizedName() const
 {
-    return QCoreApplication::translate("ContentAction",
-                                       name().toAscii().constData(),
-                                       "", QCoreApplication::CodecForTr);
+    return QCoreApplication::translate(0, name().toAscii().constData(), 0,
+                                       QCoreApplication::CodecForTr);
 }
 
 void TrackerPrivate::trigger() const

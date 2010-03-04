@@ -134,16 +134,18 @@
      \endcode
 
      Alternatively, the "qm" attribute might contain an absolute file name.
+     For testing purposes it is possible to set the search path via the
+     CONTENTACTION_L10N_PATH environment variable (containing colon-separated
+     directories).
 
-  2. Create the .ts files (translation sources) using "ContentAction" for the
-     context name.  Example:
+  2. Create the .ts files (translation sources) without any context name.
+     Example:
 
      \code
      <?xml version="1.0" encoding="utf-8"?>
      <!DOCTYPE TS>
      <TS version="2.0" language="en_US">
      <context>
-       <name>ContentAction</name>
        <message>
          <source>com.example.mua.composeMailTo</source>
          <translation>Send mail to</translation>

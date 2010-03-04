@@ -63,9 +63,8 @@ QString HighlightPrivate::name() const
 
 QString HighlightPrivate::localizedName() const
 {
-    return QCoreApplication::translate("ContentAction",
-                                       name().toAscii().constData(),
-                                       "", QCoreApplication::CodecForTr);
+    return QCoreApplication::translate(0, name().toAscii().constData(), 0,
+                                       QCoreApplication::CodecForTr);
 }
 
 void HighlightPrivate::trigger() const
