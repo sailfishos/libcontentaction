@@ -10,7 +10,7 @@ setlocale() {
 }
 
 export CONTENTACTION_ACTIONS=$srcdir/test-l10n-data
-export CONTENTACTION_L10N_DIR=test-l10n-data
+export CONTENTACTION_L10N_PATH=test-l10n-data
 
 setlocale en_US
 a=`l10ntest an.image`

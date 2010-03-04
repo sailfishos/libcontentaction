@@ -2,7 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="hu_HU">
   <context>
-    <name>ContentAction</name>
     <message>
       <source>com.nokia.imageviewer.show</source>
       <translation>mutasd a galeriaban</translation>
