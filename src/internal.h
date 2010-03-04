@@ -45,6 +45,8 @@ Action trackerAction(const QStringList& uris,
 Action highlightAction(const QString& text,
                        const QString& action);
 
+void initializeLocales();
+
 // regexp -> actions
 typedef QHash<QString, QStringList> HighlighterMap;
 

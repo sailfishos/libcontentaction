@@ -122,10 +122,7 @@
   \section Localization
 
   Action::localizedName() might be used to get human readable, localized
-  action names.  To use it, Action::installTranslators() should be called
-  first, passing the current locale name (e.g. "en_US").  It sets up
-  QCoreApplication translators based on libcontentaction's configuration
-  files.  You should also call this function whenever the locale changes.
+  action names.
 
   Action providers who would like to provide also translations should:
 

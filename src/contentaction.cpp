@@ -24,10 +24,6 @@
 #include "service.h"
 
 #include <QDebug>
-#include <QCoreApplication>
-#include <QTranslator>
-#include <QStringList>
-#include <QByteArray>
 
 /*!
   \class ContentAction::Action
@@ -181,44 +177,11 @@ QString Action::name() const
     return d->name();
 }
 
-/// Installs (or re-installs) QCoreApplication translators based on \a locale.
-/// Call it at the beginning of the program, or when locale changes.  See also
-/// the \ref Localization section.
-///
-/// The default search directory might be overridden with the
-/// CONTENTACTION_L10N_DIR environment variable.
-void Action::installTranslators(const QString& locale)
-{
-    static QList<QTranslator *> cur_translators;
-    static QString l10ndir;
-
-    if (l10ndir.isEmpty()) {
-        QByteArray dir = qgetenv("CONTENTACTION_L10N_DIR");
-        if (!dir.isEmpty())
-            l10ndir = QString::fromLocal8Bit(dir);
-        else
-            l10ndir = QString::fromLocal8Bit(DEFAULT_L10N_DIR);
-    }
-
-    while (!cur_translators.isEmpty()) {
-        QTranslator *tr = cur_translators.takeFirst();
-        QCoreApplication::removeTranslator(tr);
-        delete tr;
-    }
-    foreach (const QString& qmfn, translationsConfig()) {
-        QTranslator *tr = new QTranslator();
-        QString fullfn = qmfn + "_" + locale;
-        if (!tr->load(fullfn, l10ndir))
-            LCA_WARNING << "failed to load translation:" << fullfn;
-        cur_translators << tr;
-        QCoreApplication::installTranslator(tr);
-    }
-}
-
 /// Returns the localized name of the action, using the currently installed
 /// translators.
 QString Action::localizedName() const
 {
+    Internal::initializeLocales();
     return d->localizedName();
 }
 

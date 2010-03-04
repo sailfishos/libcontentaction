@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <QRegExp>
 #include <QDBusInterface>
+#include <QCoreApplication>
 
 namespace ContentAction {
 
@@ -35,6 +36,7 @@ struct HighlightPrivate: public Action::DefaultPrivate
     virtual ~HighlightPrivate();
     virtual bool isValid() const;
     virtual QString name() const;
+    virtual QString localizedName() const;
     virtual void trigger() const;
     virtual HighlightPrivate* clone() const;
 
@@ -57,6 +59,13 @@ bool HighlightPrivate::isValid() const
 QString HighlightPrivate::name() const
 {
     return action;
+}
+
+QString HighlightPrivate::localizedName() const
+{
+    return QCoreApplication::translate("ContentAction",
+                                       name().toAscii().constData(),
+                                       "", QCoreApplication::CodecForTr);
 }
 
 void HighlightPrivate::trigger() const

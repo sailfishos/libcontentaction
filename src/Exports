@@ -13,7 +13,6 @@
     ContentAction::Action::name*;
     ContentAction::Action::localizedName*;
     ContentAction::Action::actions*;
-    ContentAction::Action::installTranslators*;
 
     ContentAction::Action::highlight*;
     ContentAction::Match::operator*;

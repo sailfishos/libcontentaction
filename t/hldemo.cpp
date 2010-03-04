@@ -57,7 +57,6 @@ int main(int argc, char **argv)
     DuiApplicationPage page;
     DuiLocale locale;
 
-    ContentAction::Action::installTranslators(locale.name());
     if (!isatty(0))
         text = QTextStream(stdin).readAll();
     // Need to trick DuiLabel into html mode...
