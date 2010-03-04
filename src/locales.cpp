@@ -53,14 +53,14 @@ private:
 void LocaleWatcher::reloadTranslators()
 {
     static QList<QTranslator *> cur_translators;
-    static QString l10ndir;
+    static QStringList l10ndirs;
 
-    if (l10ndir.isEmpty()) {
-        QByteArray dir = qgetenv("CONTENTACTION_L10N_DIR");
-        if (!dir.isEmpty())
-            l10ndir = QString::fromLocal8Bit(dir);
+    if (l10ndirs.isEmpty()) {
+        char *d = getenv("CONTENTACTION_L10N_PATH");
+        if (d)
+            l10ndirs = QString::fromLocal8Bit(d).split(":");
         else
-            l10ndir = QString::fromLocal8Bit(DEFAULT_L10N_DIR);
+            l10ndirs.append(QString::fromLocal8Bit(DEFAULT_L10N_DIR));
     }
 
     while (!cur_translators.isEmpty()) {
@@ -71,10 +71,19 @@ void LocaleWatcher::reloadTranslators()
     foreach (const QString& qmfn, translationsConfig()) {
         QTranslator *tr = new QTranslator();
         QString fullfn = qmfn + "_" + locale->name();
-        if (!tr->load(fullfn, l10ndir))
-            LCA_WARNING << "failed to load translation:" << fullfn;
-        cur_translators << tr;
-        QCoreApplication::installTranslator(tr);
+        bool found = false;
+
+        foreach (const QString& dir, l10ndirs) {
+            if (tr->load(fullfn, dir)) {
+                cur_translators << tr;
+                QCoreApplication::installTranslator(tr);
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            LCA_WARNING << "failed to load translation:" << fullfn
+                        << "tried paths:" << l10ndirs;
     }
 }
 

@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <QTextStream>
 #include <QCoreApplication>
+#include <QDebug>
 #include <DuiLocale>
 
 using namespace ContentAction;
@@ -87,11 +88,10 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    // Register Dui translation paths based on $LCATOOL_TR_PATH (defaulting to
-    // "/usr/share/l10n/dui").
-    char *l10npaths = getenv("LCATOOL_TR_PATH");
+    char *l10npaths = getenv("CONTENTACTION_L10N_PATH");
     if (l10npaths) {
         foreach (const QString& p, QString::fromLocal8Bit(l10npaths).split(':')) {
+            qDebug() << "adding path:" << p;
             DuiLocale::addTranslationPath(p);
         }
     } else {
