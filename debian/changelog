@@ -1,8 +1,8 @@
 libcontentaction (0.0.9~unreleased) unstable; urgency=low
 
-  * 
+  * Support for localized action names.
 
- -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Fri, 26 Feb 2010 11:13:30 +0200
+ -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Wed, 03 Mar 2010 15:29:27 +0200
 
 libcontentaction (0.0.8) unstable; urgency=low
 
