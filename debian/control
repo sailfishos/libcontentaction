@@ -14,7 +14,7 @@ Standards-Version: 3.8.0
 
 Package: libcontentaction0
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: desktop-file-utils (>= 0.15-2+maemo5), ${shlibs:Depends}
 Description: Library for associating content with actions
 
 Package: libcontentaction0-dbg
