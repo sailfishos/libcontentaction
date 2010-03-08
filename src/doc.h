@@ -165,4 +165,7 @@
   3. Install the .qm files in `/usr/share/contentaction/l10n' (or elsewhere if
      an absolute filename is used).
 
+  For localization of .desktop file based actions please refer to libdui
+  documentation.
+
 */
