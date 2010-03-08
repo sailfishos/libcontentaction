@@ -35,6 +35,7 @@ t/l10ntest
 
 t/test-l10n-data/test_en_US.qm
 t/test-l10n-data/test_hu_HU.qm
+t/test-l10n-data/test_fi_FI.qm
 
 doc/doxygen.log
 doc/html/
