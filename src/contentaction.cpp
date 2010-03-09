@@ -97,6 +97,12 @@ QString Action::DefaultPrivate::localizedName() const
     return name();
 }
 
+QString Action::DefaultPrivate::icon() const
+{
+    LCA_WARNING << "called icon() for something that doesn't implement it";
+    return "NOT_IMPLEMENTED";
+}
+
 void Action::DefaultPrivate::trigger() const
 {
     LCA_WARNING << "triggered an invalid action, not doing anything.";
@@ -183,6 +189,12 @@ QString Action::localizedName() const
 {
     Internal::initializeLocales();
     return d->localizedName();
+}
+
+/// Returns the icon name for the action.
+QString Action::icon() const
+{
+    return d->icon();
 }
 
 } // end namespace

@@ -42,6 +42,7 @@ public:
     bool isValid() const;
     QString name() const;
     QString localizedName() const;
+    QString icon() const;
 
     static Action defaultAction(const QString& uri);
     static Action defaultAction(const QStringList& uris);

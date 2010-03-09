@@ -198,6 +198,7 @@ struct MimePrivate: public Action::DefaultPrivate {
     virtual bool isValid() const;
     virtual QString name() const;
     virtual QString localizedName() const;
+    virtual QString icon() const;
     virtual void trigger() const;
     virtual MimePrivate* clone() const;
 
@@ -272,6 +273,11 @@ QString MimePrivate::name() const
 QString MimePrivate::localizedName() const
 {
     return desktopEntry->name();
+}
+
+QString MimePrivate::icon() const
+{
+    return desktopEntry->icon();
 }
 
 /// Launches the application, either via D-Bus or with GIO.

@@ -4,6 +4,7 @@ Name=uberdui
 Name[en]=englishdui
 Name[de]=deutschdui
 GenericName=Uber Program
+Icon=duiicon
 Comment=View ANYTHING
 Exec=/usr/bin/python2.5 -c "import sys; print \"uberalles:\", sys.argv[1:]"
 Terminal=false

@@ -4,6 +4,7 @@ Name=ubermimeopen
 Name[en]=englishmimeopen
 Name[de]=deutschmimeopen
 GenericName=Uber Program
+Icon=mimeopenicon
 Comment=View ANYTHING
 Exec=/usr/bin/python2.5 -c "import sys; print \"uberalles:\", sys.argv[1:]"
 Terminal=false
