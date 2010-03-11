@@ -44,12 +44,12 @@ libcontentaction_la_SOURCES = \
 	contentaction.h \
 	contentaction.cpp \
 	config.cpp \
-	highlighter.cpp \
 	service.h \
 	service.cpp \
+	dbus.cpp \
+	exec.cpp \
 	mime.cpp \
 	tracker.cpp \
-	dui-highlight.cpp \
 	locales.cpp
 
 BUILT_SOURCES = \

@@ -26,11 +26,13 @@
 #include <QString>
 #include <QStringList>
 #include <QUrl>
+#include <QSharedPointer>
 
 namespace ContentAction
 {
 
 struct Match;
+struct ActionPrivate;
 
 class Action
 {
@@ -58,22 +60,18 @@ public:
 
     static void installTranslators(const QString& locale);
 
-    struct DefaultPrivate;
-
-    Action(DefaultPrivate *priv);
     Action();
-    Action(const Action& other);
     ~Action();
     Action& operator=(const Action& other);
 
-public slots:
     void trigger() const;
 
 private:
-    DefaultPrivate* d; /// Pimpl pointer
+    Action(ActionPrivate* priv);
 
-    // TODO: get rid of this
-    friend class TrackerPrivate;
+    QSharedPointer<ActionPrivate> d;
+
+    friend Action createAction(const QString& desktopFileId, const QStringList& params);
 };
 
 struct Match {

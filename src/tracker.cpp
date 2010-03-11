@@ -51,110 +51,6 @@ static GConfClient *Gconf = 0;
 
 #define GCONF_KEY_PREFIX "/Dui/contentaction/"
 
-struct TrackerPrivate: public Action::DefaultPrivate
-{
-    TrackerPrivate(const QStringList& uris,
-                   const QStringList& classes,
-                   const QString& action);
-    virtual ~TrackerPrivate();
-    virtual void setAsDefault();
-    virtual bool isDefault() const;
-    virtual bool canBeDefault() const;
-    virtual bool isValid() const;
-    virtual QString name() const;
-    virtual QString localizedName() const;
-    virtual void trigger() const;
-    virtual TrackerPrivate *clone() const;
-
-    QStringList uris; ///< the target uri's of the action
-    QStringList classes; ///< the classes of the uri's (if they are of the
-                         ///< same type)
-    QString action; ///< [service fw interface].[method]
-};
-
-TrackerPrivate::TrackerPrivate(const QStringList& uris,
-                               const QStringList& classes,
-                               const QString& action) :
-    uris(uris), classes(classes), action(action)
-{ }
-
-TrackerPrivate::~TrackerPrivate()
-{ }
-
-void TrackerPrivate::setAsDefault()
-{
-    // If the action concerns multiple uris, but they are not of the
-    // same type, we cannot set a default action.
-    if (classes.isEmpty()) {
-        LCA_WARNING << "cannot set a default action for "
-            "multiple uris of different types";
-        return;
-    }
-    // Set this action to be the default action for the most specific
-    // class
-    setDefaultAction(classes[0], action);
-    // FIXME: decide what to do if there are many "most specific" classes.
-}
-
-bool TrackerPrivate::isDefault() const
-{
-    Action def = Action::defaultAction(uris);
-    TrackerPrivate *tp = reinterpret_cast<TrackerPrivate *>(def.d);
-    return (tp->action == action);
-}
-
-bool TrackerPrivate::canBeDefault() const
-{
-    // If the action concerns multiple uris, but they are not of the
-    // same type, this action cannot be set as a default action.
-    if (classes.isEmpty()) {
-        return false;
-    }
-    // For now, all actions are applicable as default actions.
-    return true;
-}
-
-bool TrackerPrivate::isValid() const
-{
-    return true;
-}
-
-QString TrackerPrivate::name() const
-{
-    return action;
-}
-
-QString TrackerPrivate::localizedName() const
-{
-    return QCoreApplication::translate(0, name().toAscii().constData(), 0,
-                                       QCoreApplication::CodecForTr);
-}
-
-void TrackerPrivate::trigger() const
-{
-    QString method;
-    QDBusInterface *proxy = resolver().implementorForAction(action, method);
-    if (!proxy)
-        return;
-    QDBusMessage reply = proxy->call(method, uris);
-    if (reply.type() != QDBusMessage::ReplyMessage)
-        LCA_WARNING << "error reply from service implementor" << reply.errorName()
-                    << "when trying to call" << action
-                    << "on" << proxy->service();
-}
-
-TrackerPrivate *TrackerPrivate::clone() const
-{
-    return new TrackerPrivate(uris, classes, action);
-}
-
-Action Internal::trackerAction(const QStringList& uris,
-                               const QStringList& classes,
-                               const QString& action)
-{
-    return Action(new TrackerPrivate(uris, classes, action));
-}
-
 /// Returns the default action for a given uri. A default action is
 /// determined by walking up the class hierarchy of the \a uri, and
 /// taking the first default action defined for a class. If no default
@@ -167,7 +63,7 @@ Action Action::defaultAction(const QString& uri)
     // action for a class, return it and stop.
     // TODO: implement
     QStringList classes = classesOf(uri);
-    QString action = defaultActionForClasses(classes);
+/*    QString action = defaultActionForClasses(classes);
     if (action != "") {
         return trackerAction(QStringList() << uri, classes, action);
     }
@@ -175,7 +71,7 @@ Action Action::defaultAction(const QString& uri)
     // relevant action.
     QList<Action> acts = actions(uri);
     if (acts.size() > 0)
-        return acts[0];
+    return acts[0];*/
     return Action();
 }
 
@@ -185,7 +81,7 @@ Action Action::defaultAction(const QString& uri)
 /// invalid Action object is returned.
 Action Action::defaultAction(const QStringList& uris)
 {
-    bool first = true;
+    /*bool first = true;
     QStringList commonClasses;
     foreach (const QString& uri, uris) {
         QStringList classes = classesOf(uri);
@@ -208,7 +104,7 @@ Action Action::defaultAction(const QStringList& uris)
     // relevant action.
     QList<Action> acts = actions(uris);
     if (acts.size() > 0)
-        return acts[0];
+    return acts[0];*/
     return Action();
 }
 
@@ -219,25 +115,14 @@ Action Action::defaultAction(const QStringList& uris)
 QList<Action> Action::actions(const QString& uri)
 {
     QList<Action> result;
-    QList<QPair<int, QString> > allActions;
     QStringList classes = classesOf(uri);
 
     // Gather together the list of actions for all the classes of
-    // the uri, then sort according to weight.
+    // the uri.
     foreach (const QString& klass, classes) {
-        QList<QPair<int, QString> > actions = actionsForClass(klass);
-        for (int i = 0; i < actions.size(); ++i)
-            allActions << actions[i];
+        result.append(actionsForUri(uri, QString("x-maemo-nepomuk/") + klass));
     }
-    // Note: it's required that one action occurs only once in the
-    // class hierarchy. E.g., it's not allowed to associate an action
-    // both with nmm#Image and nmm#Photo.
-    qSort(allActions);
-    for (int i = 0; i < allActions.size(); ++i)
-        // The order is reversed here
-        result.prepend(trackerAction(QStringList() << uri,
-                                     classes, allActions[i].second));
-
+    // TODO: sort the result
     return result;
 }
 
@@ -247,48 +132,34 @@ QList<Action> Action::actions(const QString& uri)
 /// action list of the first uri.
 QList<Action> Action::actions(const QStringList& uris)
 {
-    QList<Action> commonActions;
     bool first = true;
-    // Empty list if the uri's are not of the same type; otherwise the
-    // class list of them.
-    QStringList commonClasses;
-
-    foreach (const QString& uri, uris) {
+    QStringList appsSoFar;
+    foreach(const QString& uri, uris) {
         QStringList classes = classesOf(uri);
+        QStringList appsForUri;
+        foreach (const QString& klass, classes) {
+            appsForUri.append(appsForContentType(QString("x-maemo-nepomuk/") + klass));
+        }
 
-        // Use Action::actions to get the list of applicable actions
-        // for this single uri. Note that the resulting Action objects
-        // have the "uri" and "classes" fields set for the individual
-        // uri, so we need to correct that later. Also, the order is
-        // now fixed.
-        QList<Action> acts = actions(uri);
         if (first) {
-            commonClasses = classes;
-            commonActions = acts;
-            first = false;
-        } else {
-            if (classes != commonClasses)
-                commonClasses.clear();
-
-            // Remove all actions not applicable to this uri.
-            QSet<QString> actionNames;
-            foreach (const Action& act, acts)
-                actionNames.insert(act.name());
-
-            QList<Action> intersection;
-            foreach (const Action& commonAct, commonActions) {
-                if (actionNames.contains(commonAct.name()))
-                    intersection << commonAct;
-            }
-            commonActions = intersection;
+            appsSoFar = appsForUri;
+        }
+        else {
+            // Remove the apps which cannot handle *any* of the superclasses of
+            // the uri.
+            QStringList intersection;
+            foreach (const QString& app, appsSoFar)
+                if (appsForUri.contains(app))
+                    intersection << app;
+            appsSoFar = intersection;
         }
     }
 
     QList<Action> result;
-    // Correct the URI's and classes of the intersected actions
-    foreach (const Action& act, commonActions)
-        result << trackerAction(uris, commonClasses, act.name());
-
+    foreach (const QString& app, appsSoFar) {
+        result << createAction(findDesktopFile(app), uris);
+    }
+    // TODO: sort the result
     return result;
 }
 

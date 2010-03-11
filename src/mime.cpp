@@ -125,7 +125,7 @@ static void readKeyValues(QFile& file, QHash<QString, QString>& dict)
 
 // Searches XDG dirs for the .desktop file with the given id
 // ("something.desktop"), and returns the first hit.
-static QString findDesktopFile(const QString& id)
+QString Internal::findDesktopFile(const QString& id)
 {
     QStringList dirs = xdgDataDirs();
     for (int i = 0; i < dirs.size(); ++i) {
@@ -161,7 +161,7 @@ static QString defaultAppForContentType(const QString& contentType)
 /// applications are read from the mimeinfo.cache. The file is searched in the
 /// default locations. The returned list will contain elements of the form
 /// "appname.desktop".
-static QStringList appsForContentType(const QString& contentType)
+QStringList Internal::appsForContentType(const QString& contentType)
 {
     static bool read = false;
     static QHash<QString, QString> mimeApps;
@@ -191,137 +191,6 @@ static QStringList appsForContentType(const QString& contentType)
     return ret;
 }
 
-struct MimePrivate: public Action::DefaultPrivate {
-    MimePrivate(const QString& desktopFileName, const QList<QUrl>& fileUris);
-    MimePrivate(const MimePrivate& other);
-    virtual ~MimePrivate();
-    virtual bool isValid() const;
-    virtual QString name() const;
-    virtual QString localizedName() const;
-    virtual QString icon() const;
-    virtual void trigger() const;
-    virtual MimePrivate* clone() const;
-
-    QString desktopFileName;
-    QString desktopId;
-    QStringList fileNames;
-
-    DuiDesktopEntry *desktopEntry;
-    GAppInfo *appInfo;
-    LaunchType kind;
-    QString service;
-    QString iface;
-    QString method;
-};
-
-MimePrivate::MimePrivate(const QString& desktopFileName, const QList<QUrl>& fileUris) :
-    desktopFileName(desktopFileName)
-{
-    desktopId = QFileInfo(desktopFileName).baseName();
-    foreach (const QUrl& uri, fileUris)
-        fileNames << uri.toEncoded();
-    desktopEntry = new DuiDesktopEntry(desktopFileName);
-
-    if (!desktopEntry->isValid())
-        kind = DontLaunch;
-    else if (desktopEntry->contains("Desktop Entry/X-Maemo-Service")) {
-        kind = DuiLaunch;
-        service = desktopEntry->value("Desktop Entry/X-Maemo-Service");
-        iface = "com.nokia.DuiApplicationIf";
-        method = "launch";
-    } else if (desktopEntry->contains("Desktop Entry/X-Osso-Service")) {
-        kind = MimeOpenLaunch;
-        service = desktopEntry->value("Desktop Entry/X-Osso-Service");
-        iface = service;
-        method = "mime_open";
-    } else
-        kind = ExecLaunch;
-
-    g_type_init();
-    appInfo = G_APP_INFO(g_desktop_app_info_new_from_filename(
-                             desktopFileName.toLocal8Bit().constData()));
-}
-
-MimePrivate::MimePrivate(const MimePrivate& other) :
-    desktopFileName(other.desktopFileName),
-    desktopId(other.desktopId),
-    fileNames(other.fileNames),
-    desktopEntry(new DuiDesktopEntry(other.desktopFileName)),
-    appInfo(g_app_info_dup(other.appInfo)),
-    kind(other.kind),
-    service(other.service),
-    iface(other.iface),
-    method(other.method)
-{ }
-
-MimePrivate::~MimePrivate()
-{
-    delete desktopEntry;
-    g_object_unref(appInfo);
-}
-
-bool MimePrivate::isValid() const
-{
-    return kind != DontLaunch;
-}
-
-QString MimePrivate::name() const
-{
-    return desktopId;
-}
-
-QString MimePrivate::localizedName() const
-{
-    return desktopEntry->name();
-}
-
-QString MimePrivate::icon() const
-{
-    return desktopEntry->icon();
-}
-
-/// Launches the application, either via D-Bus or with GIO.
-void MimePrivate::trigger() const
-{
-    switch (kind) {
-    case MimeOpenLaunch: {
-        QVariantList vargs;
-        foreach (const QString& file, fileNames)
-            vargs << file;
-        QDBusInterface launcher(service, "/", iface);
-        launcher.callWithArgumentList(QDBus::NoBlock, method, vargs);
-        break;
-    }
-    case DuiLaunch: {
-        QDBusInterface launcher(service, "/org/maemo/dui", iface);
-        launcher.asyncCall(method, fileNames);
-        break;
-    }
-    case ExecLaunch: {
-        GError *error = 0;
-        GList *uris = NULL;
-
-        foreach (const QString& file, fileNames)
-            uris = g_list_append(uris, g_strdup(file.toAscii().constData()));
-
-        g_app_info_launch_uris(appInfo, uris, NULL, &error);
-        if (error != NULL) {
-            LCA_WARNING << "cannot trigger: " << error->message;
-            g_error_free(error);
-        }
-        g_list_foreach(uris, (GFunc)g_free, NULL);
-        g_list_free(uris);
-        break;
-    }
-    default: break;
-    }
-}
-
-MimePrivate *MimePrivate::clone() const
-{
-    return new MimePrivate(*this);
-}
-
 /// Returns the default action for a given \a fileUri, based on its content
 /// type.
 Action Action::defaultActionForFile(const QUrl& fileUri)
@@ -342,12 +211,27 @@ Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType
     // We treat .desktop files specially: the default action (the only
     // actually) is to launch the application it describes.
     if (mimeType == "application/x-desktop")
-        return Action(new MimePrivate(fileUri.toLocalFile(), QList<QUrl>()));
+        return createAction(fileUri.toLocalFile(), QStringList());
     QString appid = defaultAppForContentType(mimeType);
     if (appid.isEmpty())
         return Action();
-    return Action(new MimePrivate(findDesktopFile(appid),
-                                  QList<QUrl>() << fileUri));
+    return createAction(findDesktopFile(appid),
+                        QStringList() << fileUri.toEncoded());
+}
+
+QList<Action> Internal::actionsForUri(const QString& uri, const QString& mimeType)
+{
+    QList<Action> result;
+
+    if (mimeType == "application/x-desktop")
+        return result << createAction(uri, QStringList());
+
+    QStringList appIds = appsForContentType(mimeType);
+    foreach (const QString& id, appIds) {
+        result << createAction(findDesktopFile(id),
+                               QStringList() << uri);
+    }
+    return result;
 }
 
 /// Returns the set of applicable actions for a given \a fileUri, based on its
@@ -365,18 +249,9 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri)
 /// file, it must exist when this function is called.
 QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeType)
 {
-    QList<Action> result;
-
     if (mimeType == "application/x-desktop")
-        return result << Action(new MimePrivate(fileUri.toLocalFile(),
-                                                QList<QUrl>()));
+        return actionsForUri(fileUri.toLocalFile(), mimeType);
 
-    QStringList appIds = appsForContentType(mimeType);
-    foreach (const QString& id, appIds) {
-        result << Action(new MimePrivate(findDesktopFile(id),
-                                         QList<QUrl>() << fileUri));
-    }
-    return result;
+    return actionsForUri(fileUri.toEncoded(), mimeType);
 }
-
 } // end namespace

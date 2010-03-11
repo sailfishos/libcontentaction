@@ -22,13 +22,34 @@
 #include "service.h"
 #include "internal.h"
 
+#include <DuiDesktopEntry>
+
 #include <QDBusInterface>
 #include <QDBusMessage>
 #include <QStringList>
-#include <QDebug>
 
 namespace ContentAction
 {
+
+ServiceFwPrivate::ServiceFwPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params)
+    : DefaultPrivate(desktopEntry, params),
+      serviceFwMethod(desktopEntry->value("Desktop Entry/X-Maemo-Method"))
+{
+}
+
+void ServiceFwPrivate::trigger() const
+{
+    QString method;
+    QDBusInterface *proxy = resolver().implementorForAction(serviceFwMethod, method);
+    if (!proxy)
+        return;
+    QDBusMessage reply = proxy->call(method, params);
+    if (reply.type() != QDBusMessage::ReplyMessage)
+        LCA_WARNING << "error reply from service implementor" << reply.errorName()
+                    << "when trying to call" << serviceFwMethod
+                    << "on" << proxy->service();
+}
+
 
 ServiceResolver& resolver()
 {

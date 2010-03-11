@@ -23,6 +23,7 @@
 #include "internal.h"
 #include "service.h"
 
+#include <DuiDesktopEntry>
 #include <QDebug>
 
 /*!
@@ -64,79 +65,121 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
-Action::DefaultPrivate::~DefaultPrivate()
-{ }
+namespace Internal {
+const QString XMaemoServiceKey("Desktop Entry/X-Maemo-Service");
+const QString XOssoServiceKey("Desktop Entry/X-Osso-Service");
+const QString XMaemoMethodKey("Desktop Entry/X-Maemo-Method");
+const QString XMaemoObjectPathKey("Desktop Entry/X-Maemo-Object-Path");
+const QString ExecKey("Desktop Entry/Exec");
+}
 
-void Action::DefaultPrivate::setAsDefault()
+ActionPrivate::~ActionPrivate()
+{
+}
+
+void ActionPrivate::setAsDefault()
 {
     LCA_WARNING << "called setAsDefault() on an invalid action";
 }
 
-bool Action::DefaultPrivate::isDefault() const
+bool ActionPrivate::isDefault() const
 {
     return false;
 }
 
-bool Action::DefaultPrivate::canBeDefault() const
+bool ActionPrivate::canBeDefault() const
 {
     return false;
 }
 
-bool Action::DefaultPrivate::isValid() const
+bool ActionPrivate::isValid() const
 {
     return false;
 }
 
-QString Action::DefaultPrivate::name() const
+QString ActionPrivate::name() const
 {
     return QString("Invalid action");
 }
 
-QString Action::DefaultPrivate::localizedName() const
+QString ActionPrivate::localizedName() const
 {
     return name();
 }
 
-QString Action::DefaultPrivate::icon() const
+QString ActionPrivate::icon() const
 {
     LCA_WARNING << "called icon() for something that doesn't implement it";
     return "NOT_IMPLEMENTED";
 }
 
-void Action::DefaultPrivate::trigger() const
+void ActionPrivate::trigger() const
 {
     LCA_WARNING << "triggered an invalid action, not doing anything.";
 }
 
-Action::DefaultPrivate *Action::DefaultPrivate::clone() const
+DefaultPrivate::DefaultPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params)
+    : desktopEntry(desktopEntry), params(params)
 {
-    return new DefaultPrivate();
 }
 
-Action::Action() : d(new DefaultPrivate())
-{ }
-
-Action::Action(DefaultPrivate *priv) : d(priv)
-{ }
-
-Action::Action(const Action& other)
+DefaultPrivate::~DefaultPrivate()
 {
-    d = other.d->clone();
+    delete desktopEntry;
+}
+
+bool DefaultPrivate::isValid() const
+{
+    return true;
+}
+
+QString DefaultPrivate::name() const
+{
+    return desktopEntry->fileName();
+}
+
+QString DefaultPrivate::localizedName() const
+{
+    return desktopEntry->name();
+}
+
+QString DefaultPrivate::icon() const
+{
+    return desktopEntry->icon();
+}
+
+Action::Action()
+    : d(new ActionPrivate())
+{
+}
+
+Action::Action(ActionPrivate* priv)
+    : d(priv)
+{
+}
+
+Action createAction(const QString& desktopFile, const QStringList& params)
+{
+    DuiDesktopEntry* desktopEntry = new DuiDesktopEntry(desktopFile);
+    if (desktopEntry->contains(XMaemoMethodKey) &&
+        !desktopEntry->contains(XMaemoServiceKey)) {
+        return Action(new ServiceFwPrivate(desktopEntry, params));
+    }
+    else if (desktopEntry->contains(XMaemoServiceKey) ||
+             desktopEntry->contains(XOssoServiceKey)) {
+        return Action(new DBusPrivate(desktopEntry, params));
+    }
+    else if (desktopEntry->contains(ExecKey)) {
+        return Action(new ExecPrivate(desktopEntry, params));
+    }
+    else {
+        // We don't know how to launch
+        return Action(new ActionPrivate());
+    }
 }
 
 Action::~Action()
 {
-    delete d;
-    d = 0;
-}
-
-Action& Action::operator=(const Action& other)
-{
-    DefaultPrivate *ourd = d;
-    DefaultPrivate *np = other.d->clone();
-    d = np;
-    delete ourd;
-    return *this;
 }
 
 /// Triggers the action represented by this Action object,
