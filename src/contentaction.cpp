@@ -24,6 +24,7 @@
 #include "service.h"
 
 #include <DuiDesktopEntry>
+#include <QFileInfo>
 #include <QDebug>
 
 /*!
@@ -135,7 +136,7 @@ bool DefaultPrivate::isValid() const
 
 QString DefaultPrivate::name() const
 {
-    return desktopEntry->fileName();
+    return QFileInfo(desktopEntry->fileName()).fileName();
 }
 
 QString DefaultPrivate::localizedName() const

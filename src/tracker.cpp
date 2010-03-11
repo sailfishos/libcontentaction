@@ -211,6 +211,12 @@ QStringList Internal::classesOf(const QString& uri)
         QString sub = QString::fromUtf8(row[0]);
         QString super = QString::fromUtf8(row[1]);
 
+        // Strip the http://www.semanticdestktop/ontologies part
+        if (!sub.isEmpty())
+            sub = sub.split('/', QString::SkipEmptyParts).last();
+        if (!super.isEmpty())
+            super = super.split('/', QString::SkipEmptyParts).last();
+
         if (sub.contains("InformationElement")) infoElement = sub;
 
         if (super != "") {

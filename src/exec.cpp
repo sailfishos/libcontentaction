@@ -23,6 +23,8 @@
 
 #include <DuiDesktopEntry>
 
+#include <QFileInfo>
+
 #include <gio/gdesktopappinfo.h>
 #include <gio/gio.h>
 #include <glib.h>
@@ -33,8 +35,8 @@ ExecPrivate::ExecPrivate(DuiDesktopEntry* desktopEntry, const QStringList& param
     : DefaultPrivate(desktopEntry, params)
 {
     g_type_init();
-    appInfo = G_APP_INFO(g_desktop_app_info_new_from_filename(
-                             desktopEntry->fileName().toLocal8Bit().constData()));
+    QString fileName = QFileInfo(desktopEntry->fileName()).fileName();
+    appInfo = G_APP_INFO(g_desktop_app_info_new(fileName.toLocal8Bit().constData()));
 }
 
 ExecPrivate::~ExecPrivate()

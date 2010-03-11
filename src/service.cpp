@@ -28,6 +28,8 @@
 #include <QDBusMessage>
 #include <QStringList>
 
+using namespace ContentAction::Internal;
+
 namespace ContentAction
 {
 

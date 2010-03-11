@@ -68,7 +68,7 @@ void LocaleWatcher::reloadTranslators()
         QCoreApplication::removeTranslator(tr);
         delete tr;
     }
-    foreach (const QString& qmfn, translationsConfig()) {
+    /*foreach (const QString& qmfn, translationsConfig()) {
         QTranslator *tr = new QTranslator();
         QString fullfn = qmfn + "_" + locale->name();
         bool found = false;
@@ -84,7 +84,7 @@ void LocaleWatcher::reloadTranslators()
         if (!found)
             LCA_WARNING << "failed to load translation:" << fullfn
                         << "tried paths:" << l10ndirs;
-    }
+                        }*/
 }
 
 LocaleWatcher::LocaleWatcher()
