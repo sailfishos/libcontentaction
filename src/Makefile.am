@@ -43,7 +43,6 @@ libcontentaction_la_SOURCES = \
 	internal.h \
 	contentaction.h \
 	contentaction.cpp \
-	config.cpp \
 	service.h \
 	service.cpp \
 	dbus.cpp \

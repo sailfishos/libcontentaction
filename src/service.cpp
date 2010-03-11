@@ -33,7 +33,7 @@ namespace ContentAction
 
 ServiceFwPrivate::ServiceFwPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params)
     : DefaultPrivate(desktopEntry, params),
-      serviceFwMethod(desktopEntry->value("Desktop Entry/X-Maemo-Method"))
+      serviceFwMethod(desktopEntry->value(XMaemoMethodKey))
 {
 }
 
@@ -50,7 +50,6 @@ void ServiceFwPrivate::trigger() const
                     << "on" << proxy->service();
 }
 
-
 ServiceResolver& resolver()
 {
     static ServiceResolver resolver;
@@ -59,7 +58,8 @@ ServiceResolver& resolver()
 
 ServiceResolver::ServiceResolver()
     : mapperProxy(new QDBusInterface("com.nokia.DuiServiceFw", "/",
-                                  "com.nokia.DuiServiceFwIf", QDBusConnection::sessionBus()))
+                                     "com.nokia.DuiServiceFwIf",
+                                     QDBusConnection::sessionBus()))
 {
     connect(mapperProxy, SIGNAL(serviceAvailable(QString,QString)),
             this, SLOT(onServiceAvailable(QString,QString)));

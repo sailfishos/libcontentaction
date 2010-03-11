@@ -31,42 +31,50 @@ using namespace ContentAction::Internal;
 
 namespace ContentAction {
 
-DBusPrivate::DBusPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params)
-    : DefaultPrivate(desktopEntry, params), varArgs(false)
+const QString XMaemoFixedArgsKey("Desktop Entry/X-Maemo-Fixed-Args");
+
+DBusPrivate::DBusPrivate(DuiDesktopEntry* desktopEntry, const QStringList& _params)
+    : DefaultPrivate(desktopEntry, _params), varArgs(false)
 {
-    if (desktopEntry->contains(XMaemoServiceKey)) {
-        busName = desktopEntry->value(XMaemoServiceKey);
+    // mime_open  X-Osso-Service
+    // dui-launch X-Maemo-Service
+    // user-defined X-Maemo-Service && X-Maemo-Method (+ X-Maemo-Object-Path)
+    //    + fixed args
 
-        // Default to com.nokia.DuiApplicationIf.launch but support any
-        // interface + method
-        QString ifaceMethod = desktopEntry->value(XMaemoMethodKey);
-        if (ifaceMethod.isEmpty()) {
-            iface = "com.nokia.DuiApplicationIf";
-            method = "launch";
-            objectPath = "/org/maemo/dui";
-        }
-        else {
-            // Split into method and interface
-            int dotIx = ifaceMethod.lastIndexOf(".");
-            if (dotIx < 1) {
-                LCA_WARNING << "invalid interface.method declaration" << ifaceMethod;
-            }
-            else {
-                // Action, e.g., "com.nokia.video-interface.play"
-                iface = ifaceMethod.left(dotIx);
-                method = ifaceMethod.right(ifaceMethod.size() - dotIx - 1);
-            }
-
-            objectPath = desktopEntry->value(XMaemoObjectPathKey);
-            if (objectPath.isEmpty())
-                objectPath = "/";
-        }
-    }
-    else if (desktopEntry->contains(XOssoServiceKey)) {
+    if (desktopEntry->contains(XOssoServiceKey)) {
         busName = desktopEntry->value(XOssoServiceKey);
         iface = busName;
         method = "mime_open";
         varArgs = true;
+    }
+    // Now we assume that X-Maemo-Service is present.
+    busName = desktopEntry->value(XMaemoServiceKey);
+    // Default to com.nokia.DuiApplicationIf.launch but support any interface
+    // + method
+    QString ifaceMethod = desktopEntry->value(XMaemoMethodKey);
+    if (ifaceMethod.isEmpty()) {
+        iface = "com.nokia.DuiApplicationIf";
+        method = "launch";
+        objectPath = "/org/maemo/dui";
+    }
+    else {
+        // Split into method and interface
+        int dotIx = ifaceMethod.lastIndexOf(".");
+        if (dotIx < 1) {
+            LCA_WARNING << "invalid interface.method declaration" << ifaceMethod;
+            return;
+        }
+        // Action, e.g., "com.nokia.video-interface.play"
+        iface = ifaceMethod.left(dotIx);
+        method = ifaceMethod.mid(dotIx + 1);
+        objectPath = desktopEntry->value(XMaemoObjectPathKey);
+        if (objectPath.isEmpty())
+            objectPath = "/";
+
+        QStringList fixedArgs = desktopEntry->value(XMaemoFixedArgsKey)
+            .split(';', QString::SkipEmptyParts);
+        fixedArgs.append(params);
+        params = fixedArgs;
     }
 }
 

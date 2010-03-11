@@ -44,13 +44,6 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
-enum LaunchType {
-    DontLaunch     = 0, ///< We have no clue.
-    ExecLaunch     = 1, ///< Use the Exec line from the .desktop file
-    DuiLaunch      = 2, ///< Use the Dui interface, and launch()
-    MimeOpenLaunch = 3, ///< Legacy, do mime_open
-};
-
 /// Returns the content type of the given file, or an empty string if it cannot
 /// be retrieved.
 static QString contentTypeForFile(const QUrl& fileUri)

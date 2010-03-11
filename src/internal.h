@@ -77,6 +77,7 @@ extern const QString XMaemoServiceKey;
 extern const QString XOssoServiceKey;
 extern const QString XMaemoMethodKey;
 extern const QString XMaemoObjectPathKey;
+extern const QString XMaemoFixedArgsKey;
 extern const QString ExecKey;
 
 typedef QHash<QString, QList<QPair<int, QString> > > Associations;

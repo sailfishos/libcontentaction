@@ -1,0 +1,42 @@
+Proposed format of .desktop files describing actions
+====================================================
+
+[Desktop Entry]
+Type=X-Maemo-Action
+Icon=gallery.png
+
+;; weight, used in sorting the actions
+X-Maemo-Weight=1000
+
+;; <one of the 2 localization methods>
+;; Duialistic
+X-Dui-translation-catalog=myactioncatalog
+X-Dui-logical-id=myide
+;; xdg
+Name=View in gallery
+Name[de]=Gucken im galerie
+
+;; <one of the N launching methods>
+;; blast from the past
+Exec=/usr/bin/gallery %U
+;; Dui-launch
+X-Maemo-Service=bus.name
+;; general D-Bus invocation
+X-Maemo-Service=bus.name
+X-Maemo-Method=iface.method
+X-Maemo-Object-Path=/the/object/path ;; defaults to '/'
+X-Maemo-Fixed-Args=foo;bar;baz;
+;; Maemo ServiceFW based action
+X-Maemo-ServiceFW-Method=iface.method
+;; legacy mime_open (don't use it in new programs)
+X-Osso-Service=bus.name
+
+;; <conditions>
+;; ordinary mimetypes
+MimeType=image/*;text/plain;
+;; pre-defined regexps for highlighter
+MimeType=x-maemo-regexp/phone;
+;; Tracker classes / properties
+MimeType=x-maemo-nepomuk/nco:Contact;
+;; wtf?
+MimeType=x-maemo-nepomuk/nco:hasAddress.nco:StreetAddress
