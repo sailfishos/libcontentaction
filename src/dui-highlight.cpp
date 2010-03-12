@@ -36,28 +36,29 @@ Q_DECLARE_METATYPE(ContentAction::Action);
 
 namespace {
 
-using ContentAction::Action;
+using namespace ContentAction;
+using namespace ContentAction::Internal;
 
 class LCALabelHighlighter: public DuiCommonLabelHighlighter
 {
     Q_OBJECT
 public:
     LCALabelHighlighter(const QRegExp& regexp,
-                        const QStringList& actions,
+                        const QString& mime,
                         QObject *parent = 0);
 private slots:
     void doDefaultAction(const QString& match);
     void doPopupActions(const QString& match);
     void doAction(const QModelIndex& ix);
 private:
-    const QStringList& actions;
+    const QString& mime;
 };
 
 LCALabelHighlighter::LCALabelHighlighter(const QRegExp& regexp,
-                                         const QStringList& actions,
+                                         const QString& mime,
                                          QObject *parent) :
     DuiCommonLabelHighlighter(regexp),
-    actions(actions)
+    mime(mime)
 {
     if (parent)
         setParent(parent);
@@ -69,8 +70,8 @@ LCALabelHighlighter::LCALabelHighlighter(const QRegExp& regexp,
 
 void LCALabelHighlighter::doDefaultAction(const QString& match)
 {
-    Action defAction = ContentAction::Internal::highlightAction(match,
-                                                                actions[0]);
+    QString app = defaultAppForContentType(mime);
+    Action defAction = createAction(findDesktopFile(app), QStringList() << match);
     defAction.trigger();
 }
 
@@ -115,8 +116,9 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 {
     qRegisterMetaType<Action>();
     QList<Action> alist;
-    foreach (const QString& a, actions) {
-        alist << ContentAction::Internal::highlightAction(match, a);
+    QStringList apps = appsForContentType(mime);
+    foreach (const QString& app, apps) {
+        alist << createAction(findDesktopFile(app), QStringList() << match);
     }
     DuiPopupList *popuplist = new DuiPopupList();
     popuplist->setItemModel(new ActionListModel(alist, popuplist));
@@ -138,16 +140,17 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 /// choose one.
 void ContentAction::Dui::highlightLabel(DuiLabel *label)
 {
-    using namespace ContentAction::Internal;
-
     const HighlighterMap& cfg = highlighterConfig();
-    QHashIterator<QString, QStringList> iter(cfg);
+    QHashIterator<QString, QString> iter(cfg);
     while (iter.hasNext()) {
         iter.next();
-        LCALabelHighlighter *hl = new LCALabelHighlighter(QRegExp(iter.key()),
-                                                          iter.value(),
-                                                          label);
-        label->addHighlighter(hl);
+        // iter.key == mime type, iter.value == regexp
+        if (!appsForContentType(iter.key()).isEmpty() && !defaultAppForContentType(iter.key()).isEmpty()) {
+            LCALabelHighlighter *hl = new LCALabelHighlighter(QRegExp(iter.value()),
+                                                              iter.key(),
+                                                              label);
+            label->addHighlighter(hl);
+        }
     }
 }
 

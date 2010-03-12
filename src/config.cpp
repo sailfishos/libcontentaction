@@ -32,9 +32,7 @@ namespace {
 
 using namespace ContentAction::Internal;
 
-static Associations ActionsForClasses_cfg; // class - action - weight triples
-static HighlighterMap Highlighter_cfg; // regexp -> actions
-static QStringList Translations; // translation files
+static HighlighterMap Highlighter_cfg; // mime type -> regexp
 
 /// Returns the path where the action configuration files should be read from.
 /// It may be overridden via the $CONTENTACTION_ACTIONS environment variable.
@@ -63,12 +61,10 @@ struct ConfigReader: public QXmlDefaultHandler {
     }
 
     enum {
-        inLimbo, inActions, inClass, inHighlight,
+        inLimbo, inActions, inHighlight,
     } state;
 
     QString error;
-    QString currentClass;
-    QString currentRegexp;
 };
 
 #define fail(msg)                               \
@@ -88,51 +84,21 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
         state = inActions;
         break;
     case inActions:
-        if (qname == "class") {
-            state = inClass;
-            currentClass = atts.value("name").trimmed();
-            if (currentClass.isEmpty())
-                fail("expected nonempty class name");
-        } else if (qname == "highlight") {
+        if (qname == "highlight") {
             state = inHighlight;
-            currentRegexp = atts.value("regexp");
-            if (currentRegexp.isEmpty())
+            QString regexp = atts.value("regexp");
+            if (regexp.isEmpty())
                 fail("expected a nonempty regexp");
+            QString mime = atts.value("name").trimmed();
+            if (mime.isEmpty())
+                fail("expected a nonempy mimetype");
+            Highlighter_cfg[mime.prepend("x-maemo-highlight/")] = regexp;
         }
-        else if (qname == "translation") {
-            QString qm = atts.value("qm");
-            if (qm.isEmpty())
-                fail("empty qm file name");
-            Translations << qm;
-        } else
+        else
             fail("unexpected tag");
         break;
-    case inClass: {
-        if (qname != "action")
-            fail("expected tag: action");
-        QString action = atts.value("name").trimmed();
-        if (action.isEmpty())
-            fail("expected nonempty action name");
-        bool isOk = false;
-        int weight = atts.value("weight").trimmed().toInt(&isOk);
-        if (!isOk)
-            fail("expected integer weight");
-        if (!ActionsForClasses_cfg.contains(currentClass))
-            ActionsForClasses_cfg[currentClass] = QList<QPair<int, QString> >();
-        ActionsForClasses_cfg[currentClass].append(
-            QPair<int, QString>(weight, action));
-        break;
-    }
     case inHighlight: {
-        if (qname != "action")
-            fail("expected tag: action");
-        QString action = atts.value("name").trimmed();
-        if (action.isEmpty())
-            fail("expected nonempy action name");
-        if (!Highlighter_cfg.contains(currentRegexp))
-            Highlighter_cfg.insert(currentRegexp, QStringList());
-        if (!Highlighter_cfg[currentRegexp].contains(action))
-            Highlighter_cfg[currentRegexp].append(action);
+        fail("unexpected tag");
         break;
     }
     }
@@ -146,9 +112,6 @@ bool ConfigReader::endElement(const QString& nsuri, const QString& name,
     case inActions:
         if (qname == "actions")
             state = inLimbo;
-    case inClass:
-        if (qname == "class")
-            state = inActions;
         break;
     case inHighlight:
         if (qname == "highlight")
@@ -188,21 +151,11 @@ static void readConfig()
             continue;
         }
     }
-    foreach (const QString& klass, ActionsForClasses_cfg.keys())
-        qSort(ActionsForClasses_cfg[klass]);
 }
 
 } // end anon namespace
 
-/// Returns the "Nepomuk class - action - weight" associations read from the
-/// configuration files.
-const Associations& ContentAction::Internal::actionsForClasses()
-{
-    readConfig();
-    return ActionsForClasses_cfg;
-}
-
-/// Returns the highlighter configuration map of (regexp, actions) read from
+/// Returns the highlighter configuration map of (mimetype, regexp) read from
 /// the configuration files.
 const HighlighterMap& ContentAction::Internal::highlighterConfig()
 {
@@ -210,9 +163,3 @@ const HighlighterMap& ContentAction::Internal::highlighterConfig()
     return Highlighter_cfg;
 }
 
-/// Returns the list of translation filenames found in the configs.
-const QStringList ContentAction::Internal::translationsConfig()
-{
-    readConfig();
-    return Translations;
-}

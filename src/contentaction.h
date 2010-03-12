@@ -62,6 +62,7 @@ public:
 
     Action();
     ~Action();
+    Action(const Action& other);
     Action& operator=(const Action& other);
 
     void trigger() const;

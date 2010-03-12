@@ -84,11 +84,10 @@ typedef QHash<QString, QList<QPair<int, QString> > > Associations;
 
 QList<Action> actionsForUri(const QString& uri, const QString& mimeType);
 QStringList appsForContentType(const QString& contentType);
+QString defaultAppForContentType(const QString& contentType);
 QString findDesktopFile(const QString& id);
 
-const Associations& actionsForClasses();
 QStringList classesOf(const QString& uri);
-QList<QPair<int, QString> > actionsForClass(const QString& klass);
 QString defaultActionForClass(const QString& klass);
 bool setDefaultAction(const QString& klass, const QString& action);
 QString defaultActionFromGConf(const QString& klass);
@@ -96,8 +95,8 @@ QString defaultActionForClasses(const QStringList& classes);
 
 void initializeLocales();
 
-// regexp -> actions
-typedef QHash<QString, QStringList> HighlighterMap;
+// regexp -> mime type
+typedef QHash<QString, QString> HighlighterMap;
 
 const HighlighterMap& highlighterConfig();
 

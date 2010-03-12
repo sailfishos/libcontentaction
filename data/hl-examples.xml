@@ -2,13 +2,7 @@
 <actions>
   <!-- the following highlight rules are just examples -->
 
-  <highlight regexp="[^\s@]+@([^\s.]+)(\.[^\s.]+)*">
-    <action name="com.example.mua.composeMailTo"/>
-  </highlight>
-
-  <highlight regexp="\+?\d+([- ]\d+)*">
-    <action name="com.example.phone.call"/>
-    <action name="com.example.addressbook.add"/>
-  </highlight>
+  <highlight regexp="[^\s@]+@([^\s.]+)(\.[^\s.]+)*" name="email"/>
+  <highlight regexp="\+?\d+([- ]\d+)*" name="phone"/>
 
 </actions>

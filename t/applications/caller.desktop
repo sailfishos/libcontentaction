@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=callller
+Exec=echo "caller with params:" %U
+Terminal=false
+Type=Application
+MimeType=x-maemo-highlight/phone;

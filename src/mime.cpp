@@ -132,7 +132,7 @@ QString Internal::findDesktopFile(const QString& id)
 // Returns the default application for handling the given \a contentType. The
 // default application is read from the defaults.list. If there is no default
 // application, returns an empty string.
-static QString defaultAppForContentType(const QString& contentType)
+QString Internal::defaultAppForContentType(const QString& contentType)
 {
     static bool read = false;
     static QHash<QString, QString> defaultApps;

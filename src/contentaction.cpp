@@ -154,6 +154,11 @@ Action::Action()
 {
 }
 
+Action::Action(const Action& other)
+    : d(other.d)
+{
+}
+
 Action::Action(ActionPrivate* priv)
     : d(priv)
 {

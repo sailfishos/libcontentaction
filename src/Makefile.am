@@ -49,7 +49,10 @@ libcontentaction_la_SOURCES = \
 	exec.cpp \
 	mime.cpp \
 	tracker.cpp \
-	locales.cpp
+	locales.cpp \
+	highlighter.cpp \
+	dui-highlight.cpp \
+	config.cpp
 
 BUILT_SOURCES = \
 	service.moc.cpp \
