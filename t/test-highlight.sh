@@ -4,14 +4,13 @@ srcdir=.
 [ -r ./env.sh ] && . ./env.sh;
 . $srcdir/testlib.sh
 
-./hl1 < $srcdir/hlinput.txt |
-{
-        read start end x;
-        test "$start" -eq 15 -a "$end" -eq 33 || exit 1;
-        read start end x;
-        test "$start" -eq 81 -a "$end" -eq 104 || exit 1;
-        read start end x;
-        test "$start" -eq 61 -a "$end" -eq 73 || exit 1;
-        read start end x;
-        test "$start" -eq 77 -a "$end" -eq 80 || exit 1;
+strstr() {
+    expr "$1" : "$2" >/dev/null;
 }
+
+res=$(./hl1 < $srcdir/hlinput.txt)
+
+strstr "$res" ".*61 73 '+44 433 2236' caller" || exit 1
+strstr "$res" ".*77 80 '911' caller" || exit 1 
+strstr "$res" ".*15 33 'email@address.here' emailer" || exit 1 
+strstr "$res" ".*81 104 'ooaoa+foo@motherland.ru' emailer" || exit 1
