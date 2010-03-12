@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=othername
+X-Dui-translation-catalog=test
+X-Dui-logical-id=some.other.action
+Terminal=false
+Type=Application
+MimeType=x-maemo-nepomuk/nfo#Image;
+Exec=/bin/true

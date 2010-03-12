@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=showname
+X-Dui-logical-id=com.nokia.imageviewer.show
+Terminal=false
+Type=Application
+MimeType=x-maemo-nepomuk/nfo#Image;
+Exec=/bin/true

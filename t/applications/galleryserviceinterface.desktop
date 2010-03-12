@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=fake gallery
+Terminal=false
+Type=Application
+MimeType=x-maemo-nepomuk/nfo#Image;
+X-Maemo-Method=com.nokia.galleryserviceinterface.showImage

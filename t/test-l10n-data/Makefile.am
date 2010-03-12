@@ -5,7 +5,7 @@ ci_DATA = \
 	test_fi_FI.qm
 
 dist_ci_DATA = \
-	test-l10n-actions.xml
+	applications/
 
 EXTRA_DIST = \
 	test_en_US.ts \

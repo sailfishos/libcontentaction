@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=uploadname
+X-Dui-logical-id=upload.to.album
+Terminal=false
+Type=Application
+MimeType=x-maemo-nepomuk/nfo#Image;
+Exec=/bin/true
