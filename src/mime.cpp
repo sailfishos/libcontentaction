@@ -150,29 +150,37 @@ QString Internal::defaultAppForContentType(const QString& contentType)
     return defaultApps.value(contentType, QString());
 }
 
+// Reads the mimeinfo.cache files and returns the mapping from mime types to
+// desktop entries.
+const QHash<QString, QString>& Internal::mimeApps()
+{
+    static bool read = false;
+    static QHash<QString, QString> mimecache;
+
+    if (read)
+        return mimecache;
+
+    QStringList dirs = xdgDataDirs();
+    for (int i = dirs.size()-1; i >= 0; --i) {
+        QFile f(dirs[i] + "/applications/mimeinfo.cache");
+        if (!f.exists())
+            continue;
+        readKeyValues(f, mimecache);
+    }
+    read = true;
+    return mimecache;
+}
+
 /// Returns the applications which handle the given \a contentType. The
 /// applications are read from the mimeinfo.cache. The file is searched in the
 /// default locations. The returned list will contain elements of the form
 /// "appname.desktop".
 QStringList Internal::appsForContentType(const QString& contentType)
 {
-    static bool read = false;
-    static QHash<QString, QString> mimeApps;
-
-    if (!read) {
-        QStringList dirs = xdgDataDirs();
-        for (int i = dirs.size()-1; i >= 0; --i) {
-            QFile f(dirs[i] + "/applications/mimeinfo.cache");
-            if (!f.exists())
-                continue;
-            readKeyValues(f, mimeApps);
-        }
-    }
-
-    read = true;
     QStringList ret;
-    if (mimeApps.contains(contentType))
-        ret = mimeApps[contentType].split(";", QString::SkipEmptyParts);
+
+    if (mimeApps().contains(contentType))
+        ret = mimeApps()[contentType].split(";", QString::SkipEmptyParts);
 
     // Get the default app handling this content type, insert it to the front
     // of the list

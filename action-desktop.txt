@@ -37,6 +37,7 @@ MimeType=image/*;text/plain;
 ;; pre-defined regexps for highlighter
 MimeType=x-maemo-regexp/phone;
 ;; Tracker classes / properties
-MimeType=x-maemo-nepomuk/nco:Contact;
+MimeType=x-maemo-tracker/nco-Contact;
+MimeType=x-maemo-tracker/nco-hasPhoneNumber;
 ;; wtf?
-MimeType=x-maemo-nepomuk/nco:hasAddress.nco:StreetAddress
+MimeType=x-maemo-tracker/nco-hasAddress.nco-StreetAddress

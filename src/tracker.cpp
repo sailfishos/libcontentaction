@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation.
+ * Copyright (C) 2009, 2010 Nokia Corporation.
  *
  * Contact: Marius Vollmer <marius.vollmer@nokia.com>
  *
@@ -36,17 +36,17 @@
 #include <QDebug>
 #include <QCoreApplication>
 
-#include <algorithm>
-
 namespace ContentAction {
 
 using namespace ContentAction::Internal;
+
+static const QString OntologyMimeClass("x-maemo-tracker/");
 
 // initialized on the first request
 static TrackerClient *Tracker = 0;
 static GConfClient *Gconf = 0;
 
-#define GCONF_KEY_PREFIX "/Dui/contentaction/"
+static const QString GCONF_KEY_PREFIX("/Dui/contentaction/");
 
 /// Returns the default action for a given uri. A default action is
 /// determined by walking up the class hierarchy of the \a uri, and
@@ -60,15 +60,9 @@ Action Action::defaultAction(const QString& uri)
     // action for a class, return it and stop.
     // TODO: implement
     QStringList classes = classesOf(uri);
-/*    QString action = defaultActionForClasses(classes);
-    if (action != "") {
-        return trackerAction(QStringList() << uri, classes, action);
+    foreach (const QString& cls, classes) {
+        defaultAppForContentType(cls);
     }
-    // No default actions were found from GConf. Fall back to the most
-    // relevant action.
-    QList<Action> acts = actions(uri);
-    if (acts.size() > 0)
-    return acts[0];*/
     return Action();
 }
 
@@ -167,10 +161,61 @@ static bool isValidIRI(const QString& uri)
     return validRE.exactMatch(uri);
 }
 
-/// Returns the Nepomuk classes of a given \a uri. This only returns
-/// the "semantic class path" containing nie:InformationElement, and
-/// ignores the class path containing nie:DataObject. The classes are
-/// returned in the order from most immediate to least immediate.
+// Builds a map from long ontology names to a short, prefixed ones.
+static const QHash<QString, QString>& prefixMap()
+{
+    // long name => short name
+    static QHash<QString, QString> prefixMap;
+    static bool read = false;
+
+    if (read)
+        return prefixMap;
+
+    QHashIterator<QString, QString> iter(mimeApps());
+    QStringList trackerMimes;
+
+    while (iter.hasNext()) {
+        iter.next();
+        if (iter.key().startsWith(OntologyMimeClass)) {
+            // demangle "x-foo/prefix-Class" into "prefix:Class"
+            trackerMimes << iter.key()
+                .mid(OntologyMimeClass.length())
+                .replace('-', ':');
+        }
+    }
+
+    QString query = QString("SELECT %1 {}").arg(trackerMimes.join(" "));
+    GError *error = NULL;
+    GPtrArray *res = tracker_resources_sparql_query(Tracker,
+                                                    query.toUtf8().data(),
+                                                    &error);
+    read = true;
+    if (error) {
+        LCA_WARNING << "query returned an error:" << error->message;
+        g_error_free(error);
+        return prefixMap;
+    }
+    if (res->len != 1) {
+        LCA_WARNING << "expected one row from the query";
+        return prefixMap;
+    }
+
+    char **row = (char **)g_ptr_array_index(res, 0);
+    for (int i = 0; i < trackerMimes.count(); ++i) {
+        if (!row[i])
+            continue;
+        prefixMap.insert(QString::fromUtf8(row[i]), trackerMimes[i]);
+    }
+    g_strfreev(row);
+    g_ptr_array_free(res, TRUE);
+    return prefixMap;
+}
+
+/// Returns the mime-types corresponding to the Nepomuk classes of a given \a
+/// uri.  It only returns the "semantic class path" containing
+/// nie:InformationElement, and ignores the class path containing
+/// nie:DataObject.  The classes are returned in the order from most immediate
+/// to least immediate.
 QStringList Internal::classesOf(const QString& uri)
 {
     QStringList result;
@@ -186,9 +231,10 @@ QStringList Internal::classesOf(const QString& uri)
             return result;
         }
     }
-    QString query = QString("SELECT ?sub ?super WHERE {<%1> a ?sub . "
-                            "OPTIONAL {?sub rdfs:subClassOf ?super . "
-                            "} }").arg(uri);
+    QString query = QString("SELECT ?sub ?super WHERE { "
+                            "  <%1> a ?sub . "
+                            "  OPTIONAL { ?sub rdfs:subClassOf ?super . } "
+                            "}").arg(uri);
     // In the result, sub is a class of uri and super is an immediate
     // superclass of sub.
 
@@ -204,20 +250,14 @@ QStringList Internal::classesOf(const QString& uri)
 
     // Read the "semantic class path" starting from nie:InformationElement
     QHash<QString, QStringList> classes; // class -> its immediate subclasses
-    QString infoElement = ""; // The long name for nie:InformationElement
+    QString infoElement; // The long name for nie:InformationElement
     for (guint i = 0; i < resArray->len; ++i) {
         char **row = (char **)g_ptr_array_index(resArray, i);
-        // NOTE: we assume Tracker returns utf8
         QString sub = QString::fromUtf8(row[0]);
         QString super = QString::fromUtf8(row[1]);
 
-        // Strip the http://www.semanticdestktop/ontologies part
-        if (!sub.isEmpty())
-            sub = sub.split('/', QString::SkipEmptyParts).last();
-        if (!super.isEmpty())
-            super = super.split('/', QString::SkipEmptyParts).last();
-
-        if (sub.contains("InformationElement")) infoElement = sub;
+        if (sub.contains("InformationElement"))
+            infoElement = sub;
 
         if (super != "") {
             if (!classes.contains(super))
@@ -238,8 +278,14 @@ QStringList Internal::classesOf(const QString& uri)
     while (ix < temp.size())
         temp.append(classes.value(temp[ix++], QStringList()));
 
-    // Then reverse the list; unfortunately Qt doesn't have rbegin
-    std::reverse_copy(temp.begin(), temp.end(), std::back_inserter(result));
+    // Then reverse the list; unfortunately Qt doesn't have rbegin.  Also
+    // filter out classes for which we don't have any applicable actions and
+    // map long names back to short prefixed ones.  XXX is this a good idea
+    // here?
+    for (int i = temp.count() - 1; i >= 0; --i) {
+        if (prefixMap().contains(temp[i]))
+            result << prefixMap()[temp[i]];
+    }
     return result;
 }
 
@@ -254,7 +300,7 @@ QString Internal::defaultActionFromGConf(const QString& klass)
 
     // Query the value from GConf
     char* escaped = gconf_escape_key(klass.toUtf8().constData(), -1);
-    QString key = QString(GCONF_KEY_PREFIX) + QString::fromAscii(escaped);
+    QString key = GCONF_KEY_PREFIX + QString::fromAscii(escaped);
 
     GError* error = NULL;
     GConfValue* value = gconf_client_get(Gconf, key.toAscii().constData(), &error);
@@ -292,7 +338,7 @@ bool Internal::setDefaultAction(const QString& klass, const QString& action)
 
     // Set the class - action pair to GConf
     char* escaped = gconf_escape_key(klass.toUtf8().constData(), -1);
-    QString key = QString(GCONF_KEY_PREFIX) + QString::fromAscii(escaped);
+    QString key = GCONF_KEY_PREFIX + QString::fromAscii(escaped);
 
     GError* error = NULL;
 
