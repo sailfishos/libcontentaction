@@ -5,7 +5,7 @@ Maintainer: Marius Vollmer <marius.vollmer@nokia.com>
 Build-Depends: debhelper (>= 5),
                libqt4-dev,
                libglib2.0-dev (>= 2.12.0),
-               libtracker-client-0.7-dev,
+               libtracker-client-dev,
                libgconf2-dev,
                libdui-dev,
                doxygen (>= 1.5.9),
@@ -28,7 +28,7 @@ Description: Library for associating content with actions
 Package: libcontentaction-dev
 Section: libdevel
 Architecture: any
-Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-0.7-dev
+Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-dev
 Description: Library for associating content with actions
  .
  This package contains the development files.
