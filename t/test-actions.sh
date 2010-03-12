@@ -8,14 +8,14 @@ tstart $srcdir/gallery.py
 
 testOne() {
         a=`lca-tool --print an.image`;
-        b='com.nokia.galleryserviceinterface.showImage';
+        b='galleryserviceinterface';
         test "x$a" = "x$b";
         return $?
 }
 
 testTwo() {
         a=`lca-tool --print an.image b.image`;
-        b='com.nokia.galleryserviceinterface.showImage';
+        b='galleryserviceinterface';
         test "x$a" = "x$b";
         return $?
 }
