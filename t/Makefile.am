@@ -68,6 +68,10 @@ testhelper_PROGRAMS = \
 
 hl1_SOURCES = hl1.cpp
 linktest_SOURCES = linktest.cpp
+linktest_CPPFLAGS = \
+	$(AM_CPPFLAGS) \
+	$(GIO_CFLAGS)
+
 servicetest_SOURCES = servicelistener.cpp
 l10ntest_SOURCES = l10ntest.cpp
 

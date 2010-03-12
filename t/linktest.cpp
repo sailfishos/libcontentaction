@@ -31,7 +31,7 @@ void everything()
 
 int main(int argc, char **argv)
 {
-	if (argc > 3975)
-		everything();
-	return 0;
+    if (argc > 3975)
+        everything();
+    return 0;
 }

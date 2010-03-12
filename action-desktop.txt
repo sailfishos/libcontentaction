@@ -27,7 +27,7 @@ X-Maemo-Method=iface.method
 X-Maemo-Object-Path=/the/object/path ;; defaults to '/'
 X-Maemo-Fixed-Args=foo;bar;baz;
 ;; Maemo ServiceFW based action
-X-Maemo-ServiceFW-Method=iface.method
+X-Maemo-Method=iface.method ;; in addition, you must not define X-Maemo-Service
 ;; legacy mime_open (don't use it in new programs)
 X-Osso-Service=bus.name
 

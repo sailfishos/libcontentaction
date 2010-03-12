@@ -159,6 +159,12 @@ Action::Action(const Action& other)
 {
 }
 
+Action& Action::operator=(const Action& other)
+{
+    d = other.d;
+    return *this;
+}
+
 Action::Action(ActionPrivate* priv)
     : d(priv)
 {
