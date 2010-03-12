@@ -44,8 +44,10 @@ DBusPrivate::DBusPrivate(DuiDesktopEntry* desktopEntry, const QStringList& _para
     if (desktopEntry->contains(XOssoServiceKey)) {
         busName = desktopEntry->value(XOssoServiceKey);
         iface = busName;
+        objectPath = "/";
         method = "mime_open";
         varArgs = true;
+        return;
     }
     // Now we assume that X-Maemo-Service is present.
     busName = desktopEntry->value(XMaemoServiceKey);
