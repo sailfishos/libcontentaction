@@ -35,8 +35,7 @@ ExecPrivate::ExecPrivate(DuiDesktopEntry* desktopEntry, const QStringList& param
     : DefaultPrivate(desktopEntry, params)
 {
     g_type_init();
-    QString fileName = QFileInfo(desktopEntry->fileName()).fileName();
-    appInfo = G_APP_INFO(g_desktop_app_info_new(fileName.toLocal8Bit().constData()));
+    appInfo = G_APP_INFO(g_desktop_app_info_new_from_filename(desktopEntry->fileName().toLocal8Bit().constData()));
 }
 
 ExecPrivate::~ExecPrivate()

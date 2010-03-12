@@ -136,7 +136,7 @@ bool DefaultPrivate::isValid() const
 
 QString DefaultPrivate::name() const
 {
-    return QFileInfo(desktopEntry->fileName()).fileName();
+    return QFileInfo(desktopEntry->fileName()).baseName();
 }
 
 QString DefaultPrivate::localizedName() const
