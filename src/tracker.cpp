@@ -58,11 +58,14 @@ Action Action::defaultAction(const QString& uri)
 {
     // Walk through the class list of the uri, if we find a default
     // action for a class, return it and stop.
-    // TODO: implement
     QStringList classes = classesOf(uri);
     foreach (const QString& cls, classes) {
-        defaultAppForContentType(cls);
+        QString def = defaultAppForContentType(cls);
+        if (!def.isEmpty())
+            return createAction(findDesktopFile(def), QStringList() << uri);
     }
+    // FIXME: should we fall back to one of the existing actions if there are
+    // some?
     return Action();
 }
 
@@ -72,7 +75,7 @@ Action Action::defaultAction(const QString& uri)
 /// invalid Action object is returned.
 Action Action::defaultAction(const QStringList& uris)
 {
-    /*bool first = true;
+    bool first = true;
     QStringList commonClasses;
     foreach (const QString& uri, uris) {
         QStringList classes = classesOf(uri);
@@ -87,15 +90,16 @@ Action Action::defaultAction(const QStringList& uris)
             }
         }
     }
-    QString action = defaultActionForClasses(commonClasses);
-    if (action != "") {
-        return trackerAction(uris, commonClasses, action);
+    if (commonClasses.isEmpty())
+        return Action();
+
+    foreach (const QString& cls, commonClasses) {
+        QString def = defaultAppForContentType(cls);
+        if (!def.isEmpty())
+            return createAction(findDesktopFile(def), uris);
     }
-    // No default actions were found from GConf. Fall back to the most
-    // relevant action.
-    QList<Action> acts = actions(uris);
-    if (acts.size() > 0)
-    return acts[0];*/
+    // FIXME: should we fall back to one of the existing actions if there are
+    // some?
     return Action();
 }
 
