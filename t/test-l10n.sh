@@ -9,14 +9,6 @@ setlocale() {
     gconftool-2 -t string -s /Dui/i18n/Language "$LANG";
 }
 
-abspath() {
-    cd -P "$1" && pwd -P;
-}
-
-strstr() {
-    expr "$1" : "$2" >/dev/null;
-}
-
 #lca-tool adds these as translation paths
 export CONTENTACTION_L10N_PATH=test-l10n-data
 

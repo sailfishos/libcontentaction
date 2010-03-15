@@ -6,23 +6,9 @@ srcdir=.
 
 tstart $srcdir/gallery.py
 
-testOne() {
-        a=`lca-tool --print an.image`;
-        b='galleryserviceinterface';
-        test "x$a" = "x$b";
-        return $?
-}
-
-testTwo() {
-        a=`lca-tool --print an.image b.image`;
-        b='galleryserviceinterface';
-        test "x$a" = "x$b";
-        return $?
-}
-
-set -e;
-
-testOne;
-testTwo;
+a=`lca-tool --print an.image`;
+strstr "$a" '.*galleryserviceinterface' || exit 1;
+a=`lca-tool --print an.image b.image`;
+strstr "$a" '.*galleryserviceinterface' || exit 1;
 
 exit 0;

@@ -22,4 +22,13 @@ atexit() {
         CLEANUP="$CLEANUP ; $@";
 }
 
+abspath() {
+    cd -P "$1" && pwd -P;
+}
+
+# strstr HAYSTACK NEEDLE
+strstr() {
+    expr "$1" : "$2" >/dev/null;
+}
+
 trap do_cleanup EXIT;

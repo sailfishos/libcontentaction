@@ -2,42 +2,49 @@ Proposed format of .desktop files describing actions
 ====================================================
 
 [Desktop Entry]
-Type=X-Maemo-Action
+;; Ideally this should be something like X-Maemo-Action, but GIO doesn't want
+;; to execute things that are not Application:s
+Type=Application
 Icon=gallery.png
-
-;; weight, used in sorting the actions
+;; weight, used in sorting the actions, the heavy ones sink to the bottom
+;; of the list presented to the user.
 X-Maemo-Weight=1000
 
-;; <one of the 2 localization methods>
+;; <One of the localization methods>
 ;; Duialistic
 X-Dui-translation-catalog=myactioncatalog
 X-Dui-logical-id=myide
-;; xdg
+;; xdg style
 Name=View in gallery
 Name[de]=Gucken im galerie
 
 ;; <one of the N launching methods>
-;; blast from the past
+;; 1. oldschool
 Exec=/usr/bin/gallery %U
-;; Dui-launch
+;; 2. Dui-launch
 X-Maemo-Service=bus.name
-;; general D-Bus invocation
+;; 3. general D-Bus invocation
 X-Maemo-Service=bus.name
 X-Maemo-Method=iface.method
-X-Maemo-Object-Path=/the/object/path ;; defaults to '/'
+;; optional object path, defaults to '/'
+X-Maemo-Object-Path=/the/object/path
+;; optional fixed string arguments, they get prepended to normal arguments
 X-Maemo-Fixed-Args=foo;bar;baz;
-;; Maemo ServiceFW based action
-X-Maemo-Method=iface.method ;; in addition, you must not define X-Maemo-Service
-;; legacy mime_open (don't use it in new programs)
+;; 4. Maemo ServiceFW based action
+;; NOTE in this case you should not define X-Maemo-Service!
+X-Maemo-Method=iface.method
+;; 5. mime_open legacy, provided only to wrap old programs into actions, don't use it
+;; in new applications
 X-Osso-Service=bus.name
 
-;; <conditions>
-;; ordinary mimetypes
+;; <conditions> defining when this action applies
+;; 1. ordinary mimetypes
 MimeType=image/*;text/plain;
-;; pre-defined regexps for highlighter
+;; 2. pre-defined regexps for highlighter
 MimeType=x-maemo-regexp/phone;
-;; Tracker classes / properties
+;; 3. Tracker classes
 MimeType=x-maemo-tracker/nco-Contact;
+;; 4. Tracker properties ??
 MimeType=x-maemo-tracker/nco-hasPhoneNumber;
-;; wtf?
-MimeType=x-maemo-tracker/nco-hasAddress.nco-StreetAddress
+;; 5. chained tracker properties ??
+MimeType=x-maemo-tracker/nco-hasAddress.nco-streetAddress
