@@ -33,9 +33,9 @@ t/hldemo
 t/hl1
 t/l10ntest
 
-t/test-l10n-data/test_en_US.qm
-t/test-l10n-data/test_hu_HU.qm
-t/test-l10n-data/test_fi_FI.qm
+t/test-l10n-data/test_en.qm
+t/test-l10n-data/test_hu.qm
+t/test-l10n-data/test_fi.qm
 
 doc/doxygen.log
 doc/html/
