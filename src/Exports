@@ -18,6 +18,7 @@
     ContentAction::Action::defaultActionForFile*;
 
     ContentAction::Dui::highlightLabel*;
+    ContentAction::Internal::classesOf*;
   };
   local:
     *;

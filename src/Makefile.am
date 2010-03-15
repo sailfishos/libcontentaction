@@ -70,13 +70,8 @@ libcontentaction_la_LDFLAGS = \
 
 bin_PROGRAMS = lca-tool
 
-# Force different object file names by using per-target flags.
-lca_tool_CPPFLAGS = \
-	$(AM_CPPFLAGS)
-
 lca_tool_SOURCES = \
-	lca-tool.cpp \
-	$(libcontentaction_la_SOURCES)
+	lca-tool.cpp
+lca_tool_LDADD = \
+	libcontentaction.la
 
-nodist_lca_tool_SOURCES = \
-	service.moc.cpp
