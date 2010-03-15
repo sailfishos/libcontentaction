@@ -7,3 +7,6 @@ pkgconfig_DATA = \
 	contentaction-0.1.pc
 noinst_DATA = \
 	contentaction-0.1-uninstalled.pc
+
+EXTRA_DIST = \
+	action-desktop.txt
