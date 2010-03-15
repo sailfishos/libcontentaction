@@ -59,8 +59,6 @@ int main(int argc, char **argv)
 
     if (!isatty(0))
         text = QTextStream(stdin).readAll();
-    // Need to trick DuiLabel into html mode...
-    text.prepend("<span></span>");
 
     page.setCentralWidget(new Us());
 
