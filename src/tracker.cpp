@@ -100,18 +100,14 @@ Action Action::defaultAction(const QStringList& uris)
 }
 
 /// Returns the set of applicable actions for a given \a uri. The nepomuk
-/// classes of the uri are read from Tracker. For each class, the set of
-/// applicable actions and corresponding weights is read from a configuration
-/// file.
+/// classes of the uri are read from Tracker.
 QList<Action> Action::actions(const QString& uri)
 {
     QList<Action> result;
     QStringList classes = classesOf(uri);
 
-    // Gather together the list of actions for all the classes of
-    // the uri.
     foreach (const QString& klass, classes) {
-        result.append(actionsForUri(uri, QString("x-maemo-nepomuk/") + klass));
+        result.append(actionsForUri(uri, klass));
     }
     // TODO: sort the result
     return result;
@@ -161,7 +157,8 @@ static bool isValidIRI(const QString& uri)
     return validRE.exactMatch(uri);
 }
 
-// Builds a map from long ontology names to a short, prefixed ones.
+// Builds a map from long ontology names => mimetypes used by the library
+// ("x-maemo-tracker/prefix-Class").
 static const QHash<QString, QString>& prefixMap()
 {
     // long name => short name
@@ -184,6 +181,11 @@ static const QHash<QString, QString>& prefixMap()
         }
     }
 
+    // handle if we don't have any mapping, in this case retry on the next
+    // call
+    if (trackerMimes.isEmpty())
+        return prefixMap;
+
     QString query = QString("SELECT %1 {}").arg(trackerMimes.join(" "));
     GError *error = NULL;
     GPtrArray *res = tracker_resources_sparql_query(Tracker,
@@ -204,7 +206,9 @@ static const QHash<QString, QString>& prefixMap()
     for (int i = 0; i < trackerMimes.count(); ++i) {
         if (!row[i])
             continue;
-        prefixMap.insert(QString::fromUtf8(row[i]), trackerMimes[i]);
+        prefixMap.insert(QString::fromUtf8(row[i]),
+                         OntologyMimeClass +
+                         trackerMimes[i].replace(':', '-'));
     }
     g_strfreev(row);
     g_ptr_array_free(res, TRUE);
@@ -278,10 +282,9 @@ QStringList Internal::classesOf(const QString& uri)
     while (ix < temp.size())
         temp.append(classes.value(temp[ix++], QStringList()));
 
-    // Then reverse the list; unfortunately Qt doesn't have rbegin.  Also
-    // filter out classes for which we don't have any applicable actions and
-    // map long names back to short prefixed ones.  XXX is this a good idea
-    // here?
+    // Then reverse the list and also filter out classes for which we don't
+    // have any applicable actions and map long names back to short prefixed
+    // ones.
     for (int i = temp.count() - 1; i >= 0; --i) {
         if (prefixMap().contains(temp[i]))
             result << prefixMap()[temp[i]];
