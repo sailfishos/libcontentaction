@@ -6,9 +6,6 @@
     ContentAction::Action::operator*;
     ContentAction::Action::defaultAction*;
     ContentAction::Action::trigger*;
-    ContentAction::Action::setAsDefault*;
-    ContentAction::Action::isDefault*;
-    ContentAction::Action::canBeDefault*;
     ContentAction::Action::isValid*;
     ContentAction::Action::name*;
     ContentAction::Action::localizedName*;

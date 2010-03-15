@@ -21,9 +21,6 @@ namespace ContentAction {
 struct ActionPrivate
 {
     virtual ~ActionPrivate();
-    virtual void setAsDefault();
-    virtual bool isDefault() const;
-    virtual bool canBeDefault() const;
     virtual bool isValid() const;
     virtual QString name() const;
     virtual QString localizedName() const;

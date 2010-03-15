@@ -78,21 +78,6 @@ ActionPrivate::~ActionPrivate()
 {
 }
 
-void ActionPrivate::setAsDefault()
-{
-    LCA_WARNING << "called setAsDefault() on an invalid action";
-}
-
-bool ActionPrivate::isDefault() const
-{
-    return false;
-}
-
-bool ActionPrivate::canBeDefault() const
-{
-    return false;
-}
-
 bool ActionPrivate::isValid() const
 {
     return false;
@@ -199,30 +184,6 @@ Action::~Action()
 void Action::trigger() const
 {
     d->trigger();
-}
-
-/// Sets the action represented by this Action to be the default for a
-/// Nepomuk class. If there is only one uri, the class for which the
-/// default is set is the lowest class in the class hierarchy. If
-/// there are multiple uri's, the default action can be set only if
-/// they represent objects of the same type. In this case, the Nepomuk
-/// class is decided the same way as in the case of one uri.
-void Action::setAsDefault()
-{
-    d->setAsDefault();
-}
-
-/// Returns true if the current Action object is the default
-/// action for the set of uri's it refers to.
-bool Action::isDefault() const
-{
-    return d->isDefault();
-}
-
-/// Semantics TBD.
-bool Action::canBeDefault() const
-{
-    return d->canBeDefault();
 }
 
 /// Returns true if the Action object represents an action

@@ -10,9 +10,6 @@ void everything()
 {
     Action a = Action::defaultAction("satisf action");
     a.trigger();
-    a.setAsDefault();
-    a.isDefault();
-    a.canBeDefault();
     a.isValid();
     a.name();
     Action b = Action::defaultAction(QStringList() << "and" << "some");

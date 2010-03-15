@@ -37,10 +37,6 @@ struct ActionPrivate;
 class Action
 {
 public:
-    void setAsDefault();
-    bool isDefault() const;
-    bool canBeDefault() const;
-
     bool isValid() const;
     QString name() const;
     QString localizedName() const;

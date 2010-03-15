@@ -38,7 +38,7 @@ enum ActionToDo {
     InvokeDefault,
     PrintClasses,
     PrintDefault,
-    SetDefault,
+//    SetDefault,
 //    PrintClassDefault,
 //    SetClassDefault,
     PrintForFile,
@@ -56,7 +56,7 @@ void usage(char *prog)
         "  -I|--invokedefault                 invoke the default action\n"
         "  -c|--classes                       print the classes of the URIs\n"
         "  -d|--default                       print the default action\n"
-        "  -s|--setdefault ACTION             set the default action for the given URIs\n"
+//        "  -s|--setdefault ACTION             set the default action for the given URIs\n"
 //        "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
 //        "  -S|--setclassdefault ACTION CLASS  set a default action for a Nepomuk class\n"
         "  -f|--printforfile                  print the applicable actions for a file\n"
@@ -155,6 +155,7 @@ int main(int argc, char **argv)
             todo = PrintDefault;
             break;
         }
+#if 0
         if (arg == "-s" || arg == "--setdefault") {
             todo = SetDefault;
             if (args.isEmpty()) {
@@ -164,6 +165,7 @@ int main(int argc, char **argv)
             actionName = args.takeFirst();
             break;
         }
+#endif
         if (arg == "-f" || arg == "--printforfile") {
             todo = PrintForFile;
             break;
@@ -200,7 +202,7 @@ int main(int argc, char **argv)
         return 1;
         break;
     case PrintActions:
-    case SetDefault:
+//    case SetDefault:
     case Invoke: {
         QList<Action> actions = Action::actions(args);
         foreach (Action action, actions) {
@@ -213,19 +215,23 @@ int main(int argc, char **argv)
                 action.trigger();
                 return 0;
             }
+#if 0
             else if (todo == SetDefault && actionName == action.name()) {
                 action.setAsDefault();
                 return 0;
             }
+#endif
         }
         if (todo == Invoke) {
             err << "action '" << actionName << "'is not applicable\n";
             return 3;
         }
+#if 0
         else if (todo == SetDefault) {
             err << "action '" << actionName << "'cannot be set as default\n";
             return 7;
         }
+#endif
         break;
     }
     case PrintDefault:
