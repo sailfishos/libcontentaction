@@ -47,8 +47,7 @@ citest_DATA = \
 
 check_PROGRAMS = \
 	linktest \
-	hl1 \
-	l10ntest
+	hl1
 
 noinst_PROGRAMS = hldemo
 hldemo_SOURCES = hldemo.cpp
@@ -63,8 +62,7 @@ CLEANFILES += hldemo.moc
 
 testhelperdir = $(libdir)/libcontentaction-tests
 testhelper_PROGRAMS = \
-	servicetest \
-	l10ntest
+	servicetest
 
 hl1_SOURCES = hl1.cpp
 linktest_SOURCES = linktest.cpp
@@ -73,7 +71,6 @@ linktest_CPPFLAGS = \
 	$(GIO_CFLAGS)
 
 servicetest_SOURCES = servicelistener.cpp
-l10ntest_SOURCES = l10ntest.cpp
 
 BUILT_SOURCES += servicelistener.moc
 

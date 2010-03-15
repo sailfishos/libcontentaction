@@ -1,16 +1,13 @@
 cidir = $(datarootdir)/libcontentaction-tests/test-l10n-data
 ci_DATA = \
-	test_en_US.qm \
-	test_hu_HU.qm \
-	test_fi_FI.qm
-
-dist_ci_DATA = \
-	applications/
+	test_en.qm \
+	test_hu.qm \
+	test_fi.qm
 
 EXTRA_DIST = \
-	test_en_US.ts \
-	test_hu_HU.ts \
-	test_fi_FI.ts
+	test_en.ts \
+	test_hu.ts \
+	test_fi.ts
 
 .ts.qm:
 	lrelease $< -qm $@

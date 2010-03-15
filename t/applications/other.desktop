@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=othername
+X-DUI-translation-catalog=test
+X-DUI-logical-id=some.other.action
+Terminal=false
+Type=Application
+MimeType=x-maemo-tracker/nfo-Image;
+Exec=/bin/true

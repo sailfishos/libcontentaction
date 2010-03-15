@@ -3,4 +3,4 @@ text/plain=uberexec.desktop;ubermimeopen.desktop;uberdui.desktop;
 x-maemo-highlight/email=emailer.desktop;
 x-maemo-highlight/phone=caller.desktop;
 x-maemo-tracker/nco-Contact=contacthandler.desktop;
-x-maemo-tracker/nfo-Image=galleryserviceinterface.desktop;
+x-maemo-tracker/nfo-Image=galleryserviceinterface.desktop;other.desktop;upload.desktop;show.desktop;

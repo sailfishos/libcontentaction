@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fi_FI">
+<TS version="2.0" language="fi">
   <context>
     <message>
       <source>com.nokia.imageviewer.show</source>

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=showname
+X-DUI-translation-catalog=test
+X-DUI-logical-id=com.nokia.imageviewer.show
+Terminal=false
+Type=Application
+MimeType=x-maemo-tracker/nfo-Image;
+Exec=/bin/true

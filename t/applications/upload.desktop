@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=uploadname
+X-DUI-translation-catalog=test
+X-DUI-logical-id=upload.to.album
+Terminal=false
+Type=Application
+MimeType=x-maemo-tracker/nfo-Image;
+Exec=/bin/true
