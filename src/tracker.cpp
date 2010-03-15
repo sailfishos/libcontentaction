@@ -23,7 +23,7 @@
 #include "internal.h"
 #include "service.h"
 
-#include <libtracker-client/tracker.h>
+#include <libtracker-client/tracker-client.h>
 
 #include <QDir>
 #include <QFile>

@@ -2,7 +2,13 @@ libcontentaction (0.0.9~unreleased) unstable; urgency=low
 
   * Support for localized action names.
 
- -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Wed, 03 Mar 2010 15:29:27 +0200
+ -- Jean-Luc Lamadon <jean-luc.lamadon@nokia.com>  Mon, 15 Mar 2010 09:44:52 +0200
+
+libcontentaction (0.0.8.1) unstable; urgency=low
+
+  * Update build dependency to libtracker-client to reflect binary package renaming
+
+ -- Jean-Luc Lamadon <jean-luc.lamadon@nokia.com>  Fri, 12 Mar 2010 13:52:11 +0200
 
 libcontentaction (0.0.8) unstable; urgency=low
 

@@ -27,7 +27,7 @@ Description: Library for associating content with actions
 Package: libcontentaction-dev
 Section: libdevel
 Architecture: any
-Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-0.7-dev
+Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-dev
 Description: Library for associating content with actions
  .
  This package contains the development files.
