@@ -1,5 +1,5 @@
 [MIME Cache]
-text/plain=uberexec.desktop;ubermimeopen.desktop;uberdui.desktop;
+text/plain=uberexec.desktop;ubermimeopen.desktop;uberdui.desktop;fixedparams.desktop;
 x-maemo-highlight/email=emailer.desktop;
 x-maemo-highlight/phone=caller.desktop;
 x-maemo-tracker/nco-Contact=contacthandler.desktop;

@@ -11,4 +11,5 @@ dist_citestapp_DATA = \
 	galleryserviceinterface.desktop \
 	other.desktop \
 	show.desktop \
-	upload.desktop
+	upload.desktop \
+	fixedparams.desktop

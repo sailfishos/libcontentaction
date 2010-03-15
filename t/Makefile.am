@@ -29,7 +29,8 @@ citest_SCRIPTS = \
 	test-mimes.py \
 	test-servicefw-signals.py \
 	test-desktop-launching.py \
-	test-l10n.sh
+	test-l10n.sh \
+	test-fixed-params.py
 
 noinst_SCRIPTS = \
 	start-sandbox.sh \
@@ -104,6 +105,7 @@ TESTS = \
 	test-mimes.py \
 	test-desktop-launching.py \
 	test-l10n.sh \
+	test-fixed-params.py \
 	stop-sandbox.sh
 
 clean-local:

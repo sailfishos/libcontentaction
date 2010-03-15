@@ -69,6 +69,13 @@
           PATH=.:/usr/lib/libcontentaction-tests:$PATH ./test-l10n.sh
         </step>
       </case>
+      <case name="test-fixedparams" description="A test of questionable value.">
+        <step expected_result="0">
+          . /tmp/session_bus_address.user; \
+          cd /usr/share/libcontentaction-tests; \
+          PATH=.:/usr/lib/libcontentaction-tests:$PATH ./test-fixed-params.py
+        </step>
+      </case>
 
       <environments>
         <scratchbox>true</scratchbox>
