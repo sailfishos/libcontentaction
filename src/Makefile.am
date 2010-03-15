@@ -7,14 +7,14 @@ SUFFIXES = .cpp .h .moc.cpp
 
 EXTRA_DIST = \
 	Exports \
-	doc.h
+	doc.h \
+	gconf.cpp
 
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
 	$(QtXml_CFLAGS) \
 	$(QtDBus_CFLAGS) \
 	$(TRACKER_CFLAGS) \
-	$(GCONF_CFLAGS) \
 	$(GIO_CFLAGS) \
 	$(DUI_CFLAGS) \
 	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction/actions.d\" \
@@ -25,7 +25,6 @@ LIBS += \
 	$(QtXml_LIBS) \
 	$(QtDBus_LIBS) \
 	$(TRACKER_LIBS) \
-	$(GCONF_LIBS) \
 	$(GIO_LIBS) \
 	$(DUI_LIBS)
 

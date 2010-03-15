@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation.
+ * Copyright (C) 2009, 2010 Nokia Corporation.
  *
  * Contact: Marius Vollmer <marius.vollmer@nokia.com>
  *
@@ -39,8 +39,8 @@ enum ActionToDo {
     PrintClasses,
     PrintDefault,
     SetDefault,
-    PrintClassDefault,
-    SetClassDefault,
+//    PrintClassDefault,
+//    SetClassDefault,
     PrintForFile,
     InvokeForFile,
     LaunchFile,
@@ -57,8 +57,8 @@ void usage(char *prog)
         "  -c|--classes                       print the classes of the URIs\n"
         "  -d|--default                       print the default action\n"
         "  -s|--setdefault ACTION             set the default action for the given URIs\n"
-        "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
-        "  -S|--setclassdefault ACTION CLASS  set a default action for a Nepomuk class\n"
+//        "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
+//        "  -S|--setclassdefault ACTION CLASS  set a default action for a Nepomuk class\n"
         "  -f|--printforfile                  print the applicable actions for a file\n"
         "  -F|--invokeforfile FILEACTION      invoke the given action for FILE\n"
         "  -L|--launchfile                    invoke the default action for FILE\n"
@@ -73,8 +73,8 @@ void usage(char *prog)
         "  2   problem with command arguments\n"
         "  3   tried to invoke an action not applicable for the given URIs\n"
         "  4   no default action exists for the given URIs\n"
-        "  5   no default action exists for the given Nepomuk class\n"
-        "  6   setting a default action for the given Nepomuk class failed\n"
+//        "  5   no default action exists for the given Nepomuk class\n"
+//        "  6   setting a default action for the given Nepomuk class failed\n"
         "  7   an action cannot be set as default action for the given URIs\n";
 }
 
@@ -136,6 +136,7 @@ int main(int argc, char **argv)
             todo = PrintClasses;
             break;
         }
+#if 0
         if (arg == "-D" || arg == "--classdefault") {
             todo = PrintClassDefault;
             break;
@@ -149,6 +150,7 @@ int main(int argc, char **argv)
             actionName = args.takeFirst();
             break;
         }
+#endif
         if (arg == "-d" || arg == "--default") {
             todo = PrintDefault;
             break;
@@ -248,6 +250,7 @@ int main(int argc, char **argv)
             out << cls << endl;
         break;
     }
+#if 0
     case PrintClassDefault: {
         QString defAction = defaultActionFromGConf(args[0]);
         if (defAction != "")
@@ -266,6 +269,7 @@ int main(int argc, char **argv)
         }
         break;
     }
+#endif
     case PrintForFile:
     case InvokeForFile: {
         QList<Action> actions = Action::actionsForFile(QUrl(args[0]));

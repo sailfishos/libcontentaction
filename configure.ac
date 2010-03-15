@@ -20,7 +20,6 @@ PKG_CHECK_MODULES([QtXml], [QtXml])
 PKG_CHECK_MODULES([QtDBus], [QtDBus])
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12.0])
 PKG_CHECK_MODULES([TRACKER], [tracker-client-0.7])
-PKG_CHECK_MODULES([GCONF], [gconf-2.0])
 PKG_CHECK_MODULES([GIO], [gio-2.0 gio-unix-2.0])
 PKG_CHECK_MODULES([DUI], [Dui >= 0.18])
 

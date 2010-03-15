@@ -25,9 +25,6 @@
 
 #include <libtracker-client/tracker.h>
 
-#include <gconf/gconf.h>
-#include <gconf/gconf-client.h>
-
 #include <QDir>
 #include <QFile>
 #include <QPair>
@@ -44,9 +41,6 @@ static const QString OntologyMimeClass("x-maemo-tracker/");
 
 // initialized on the first request
 static TrackerClient *Tracker = 0;
-static GConfClient *Gconf = 0;
-
-static const QString GCONF_KEY_PREFIX("/Dui/contentaction/");
 
 /// Returns the default action for a given uri. A default action is
 /// determined by walking up the class hierarchy of the \a uri, and
@@ -129,7 +123,7 @@ QList<Action> Action::actions(const QStringList& uris)
         QStringList classes = classesOf(uri);
         QStringList appsForUri;
         foreach (const QString& klass, classes) {
-            appsForUri.append(appsForContentType(QString("x-maemo-nepomuk/") + klass));
+            appsForUri.append(appsForContentType(klass));
         }
 
         if (first) {
@@ -294,85 +288,6 @@ QStringList Internal::classesOf(const QString& uri)
             result << prefixMap()[temp[i]];
     }
     return result;
-}
-
-/// Returns the per-class default action. If there is no default
-/// action for that class, returns an empty string.
-QString Internal::defaultActionFromGConf(const QString& klass)
-{
-    if (Gconf == 0) {
-        g_type_init(); // XXX: needed?
-        Gconf = gconf_client_get_default();
-    }
-
-    // Query the value from GConf
-    char* escaped = gconf_escape_key(klass.toUtf8().constData(), -1);
-    QString key = GCONF_KEY_PREFIX + QString::fromAscii(escaped);
-
-    GError* error = NULL;
-    GConfValue* value = gconf_client_get(Gconf, key.toAscii().constData(), &error);
-
-    g_free(escaped);
-
-    if (error) {
-        LCA_WARNING << "Error getting data from GConf:" << error->message;
-        g_error_free(error);
-        return "";
-    }
-
-    if (value == 0) {
-        // The key doesn't exist; no default action for the class
-        return "";
-    }
-
-    const char* valueString = gconf_value_get_string(value); // shouldn't be freed
-
-    QString action = "";
-    if (valueString) {
-        action = QString::fromUtf8(valueString);
-    }
-
-    gconf_value_free(value);
-    return action;
-}
-
-bool Internal::setDefaultAction(const QString& klass, const QString& action)
-{
-    if (Gconf == 0) {
-        g_type_init(); // XXX: needed?
-        Gconf = gconf_client_get_default();
-    }
-
-    // Set the class - action pair to GConf
-    char* escaped = gconf_escape_key(klass.toUtf8().constData(), -1);
-    QString key = GCONF_KEY_PREFIX + QString::fromAscii(escaped);
-
-    GError* error = NULL;
-
-    gconf_client_set_string(Gconf, key.toAscii().constData(),
-                            action.toUtf8().constData(), &error);
-    g_free(escaped);
-
-    if (error) {
-        LCA_WARNING << "Error setting data to GConf:" << error->message;
-        g_error_free(error);
-        return false;
-    }
-    return true;
-}
-
-/// Walks up the inheritance hierarchy, checking the default actions
-/// for each class. Returns the first action found, or an empty string
-/// if none were found.
-QString Internal::defaultActionForClasses(const QStringList& classes)
-{
-    foreach (const QString& klass, classes) {
-        QString action = defaultActionFromGConf(klass);
-        if (action != "") {
-            return action;
-        }
-    }
-    return "";
 }
 
 } // end namespace
