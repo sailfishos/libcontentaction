@@ -4,5 +4,5 @@ Name=contacthandler
 Exec=echo "contacthandler with params:" %U
 Terminal=false
 Type=Application
+NotShowIn=X-DUI;
 MimeType=x-maemo-tracker/nco-Contact;
-

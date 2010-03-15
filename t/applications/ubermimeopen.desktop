@@ -11,3 +11,4 @@ Terminal=false
 Type=Application
 MimeType=text/plain;
 X-Osso-Service=uber.program
+NotShowIn=X-DUI;

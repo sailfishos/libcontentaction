@@ -7,3 +7,4 @@ Terminal=false
 Type=Application
 MimeType=x-maemo-tracker/nfo-Image;
 Exec=/bin/true
+NotShowIn=X-DUI;

@@ -13,3 +13,4 @@ MimeType=text/plain;
 X-Maemo-Service=uber.program
 X-DUI-translation-catalog=test
 X-DUI-logical-id=some.other.action
+NotShowIn=X-DUI;
