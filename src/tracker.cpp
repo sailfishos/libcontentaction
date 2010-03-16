@@ -58,8 +58,10 @@ Action Action::defaultAction(const QString& uri)
         if (!def.isEmpty())
             return createAction(findDesktopFile(def), QStringList() << uri);
     }
-    // FIXME: should we fall back to one of the existing actions if there are
-    // some?
+    // Fall back to one of the existing actions (if there are some)
+    QList<Action> acts = actions(uri);
+    if (acts.size() >= 1)
+        return acts[0];
     return Action();
 }
 
@@ -92,8 +94,10 @@ Action Action::defaultAction(const QStringList& uris)
         if (!def.isEmpty())
             return createAction(findDesktopFile(def), uris);
     }
-    // FIXME: should we fall back to one of the existing actions if there are
-    // some?
+    // Fall back to one of the existing actions (if there are some)
+    QList<Action> acts = actions(uris);
+    if (acts.size() >= 1)
+        return acts[0];
     return Action();
 }
 

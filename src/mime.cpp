@@ -214,10 +214,14 @@ Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType
     if (mimeType == "application/x-desktop")
         return createAction(fileUri.toLocalFile(), QStringList());
     QString appid = defaultAppForContentType(mimeType);
-    if (appid.isEmpty())
-        return Action();
-    return createAction(findDesktopFile(appid),
+    if (!appid.isEmpty())
+        return createAction(findDesktopFile(appid),
                         QStringList() << fileUri.toEncoded());
+    // Fall back to one of the existing actions (if there are some)
+    QList<Action> acts = actionsForUri(fileUri.toEncoded(), mimeType);
+    if (acts.size() >= 1)
+        return acts[0];
+    return Action();
 }
 
 QList<Action> Internal::actionsForUri(const QString& uri, const QString& mimeType)
