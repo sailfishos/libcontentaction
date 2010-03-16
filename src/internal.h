@@ -91,7 +91,6 @@ QString defaultActionFromGConf(const QString& klass);
 QString defaultActionForClasses(const QStringList& classes);
 
 const QHash<QString, QString>& mimeApps();
-void initializeLocales();
 
 // regexp -> mime type
 typedef QHash<QString, QString> HighlighterMap;

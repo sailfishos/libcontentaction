@@ -48,19 +48,16 @@ libcontentaction_la_SOURCES = \
 	exec.cpp \
 	mime.cpp \
 	tracker.cpp \
-	locales.cpp \
 	highlighter.cpp \
 	dui-highlight.cpp \
 	config.cpp
 
 BUILT_SOURCES = \
 	service.moc.cpp \
-	dui-highlight.moc \
-	locales.moc
+	dui-highlight.moc
 CLEANFILES = \
 	service.moc.cpp \
-	dui-highlight.moc \
-	locales.moc
+	dui-highlight.moc
 
 nodist_libcontentaction_la_SOURCES = \
 	service.moc.cpp

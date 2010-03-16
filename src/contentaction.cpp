@@ -203,7 +203,6 @@ QString Action::name() const
 /// translators.
 QString Action::localizedName() const
 {
-    Internal::initializeLocales();
     return d->localizedName();
 }
 
