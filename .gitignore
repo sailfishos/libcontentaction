@@ -14,6 +14,7 @@ debian/libcontentaction0-dbg
 debian/libcontentaction-dev
 debian/libcontentaction-doc
 debian/libcontentaction-tests
+debian/libcontentaction-data
 debian/tmp
 debian/*.debhelper.log
 debian/files

@@ -17,7 +17,7 @@ AM_CPPFLAGS = \
 	$(TRACKER_CFLAGS) \
 	$(GIO_CFLAGS) \
 	$(DUI_CFLAGS) \
-	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction/actions.d\" \
+	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction\" \
 	-DDEFAULT_L10N_DIR=\"@datadir@/contentaction/l10n\"
 
 LIBS += \

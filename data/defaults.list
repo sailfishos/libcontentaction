@@ -1,0 +1,4 @@
+[Default Applications]
+x-maemo-tracker/nfo-Video=tempvideosuiteif.desktop
+x-maemo-tracker/nfo-Image=tempgalleryif.desktop
+x-maemo-tracker/nmm-MusicPiece=tempmusicsuiteif.desktop

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Show
+MimeType=x-maemo-tracker/nfo-Image;
+X-Maemo-Method=com.nokia.galleryserviceinterface.showMediaInFullScreen
+NotShowIn=X-DUI;

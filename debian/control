@@ -13,7 +13,7 @@ Standards-Version: 3.8.0
 
 Package: libcontentaction0
 Architecture: any
-Depends: desktop-file-utils (>= 0.15-2+maemo5), ${shlibs:Depends}
+Depends: libcontentaction-data, desktop-file-utils (>= 0.15-2+maemo5), ${shlibs:Depends}
 Description: Library for associating content with actions
 
 Package: libcontentaction0-dbg
@@ -52,3 +52,8 @@ Depends: ${shlibs:Depends},
 XB-Maemo-CI-Packages: libcontentaction0
 XB-Maemo-CI-Stage: staging, acceptance
 Description: libcontentaction tests
+
+Package: libcontentaction-data
+Architecture: all
+Description: Configuration files for libcontentaction.
+

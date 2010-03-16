@@ -1,2 +1,9 @@
-actionsdir = $(sysconfdir)/contentaction/actions.d
+actionsdir = $(sysconfdir)/contentaction
 dist_actions_DATA = hl-examples.xml
+
+applicationsdir = $(datadir)/applications
+dist_applications_DATA = \
+	defaults.list \
+	tempgalleryif.desktop \
+	tempmusicsuiteif.desktop \
+	tempvideosuiteif.desktop
