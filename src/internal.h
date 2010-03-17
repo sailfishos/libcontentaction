@@ -84,7 +84,7 @@ QString findDesktopFile(const QString& id);
 QString contentTypeForFile(const QUrl& fileUri);
 QStringList mimeTypesForUri(const QString& uri);
 
-const QHash<QString, QString>& mimeApps();
+const QHash<QString, QStringList>& mimeApps();
 const QHash<QString, QString>& highlighterConfig();
 const QHash<QString, QString>& trackerConditions();
 
