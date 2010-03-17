@@ -46,7 +46,7 @@ using namespace ContentAction::Internal;
 
 /// Returns the content type of the given file, or an empty string if it cannot
 /// be retrieved.
-static QString contentTypeForFile(const QUrl& fileUri)
+QString Internal::contentTypeForFile(const QUrl& fileUri)
 {
     g_type_init();
     QByteArray filename = fileUri.toEncoded();

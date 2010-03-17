@@ -20,11 +20,11 @@
           PATH=.:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-actions.sh
         </step>
       </case>
-      <case name="test-classes" description="A test of questionable value.">
+      <case name="test-mimetypes" description="A test of questionable value.">
         <step expected_result="0">
           . /tmp/session_bus_address.user; \
           cd /usr/share/libcontentaction-tests; \
-          PATH=.:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-classes.sh
+          PATH=.:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-mimetypes.sh
         </step>
       </case>
       <case name="test-invoking" description="A test of questionable value.">

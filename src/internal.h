@@ -81,12 +81,8 @@ QList<Action> actionsForUri(const QString& uri, const QString& mimeType);
 QStringList appsForContentType(const QString& contentType);
 QString defaultAppForContentType(const QString& contentType);
 QString findDesktopFile(const QString& id);
-
-QStringList classesOf(const QString& uri);
-QString defaultActionForClass(const QString& klass);
-bool setDefaultAction(const QString& klass, const QString& action);
-QString defaultActionFromGConf(const QString& klass);
-QString defaultActionForClasses(const QStringList& classes);
+QString contentTypeForFile(const QUrl& fileUri);
+QStringList mimeTypesForUri(const QString& uri);
 
 const QHash<QString, QString>& mimeApps();
 const QHash<QString, QString>& highlighterConfig();

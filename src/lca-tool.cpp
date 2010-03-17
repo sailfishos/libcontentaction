@@ -36,7 +36,7 @@ enum ActionToDo {
     PrintActions,
     Invoke,
     InvokeDefault,
-    PrintClasses,
+    PrintMimes,
     PrintDefault,
 //    SetDefault,
 //    PrintClassDefault,
@@ -54,7 +54,7 @@ void usage(char *prog)
         "  -p|--print                         print the applicable actions\n"
         "  -i|--invoke ACTION                 invoke the specified action\n"
         "  -I|--invokedefault                 invoke the default action\n"
-        "  -c|--classes                       print the classes of the URIs\n"
+        "  -m|--mimes                         print the mime types of the URIs\n"
         "  -d|--default                       print the default action\n"
 //        "  -s|--setdefault ACTION             set the default action for the given URIs\n"
 //        "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
@@ -132,8 +132,8 @@ int main(int argc, char **argv)
             todo = InvokeDefault;
             break;
         }
-        if (arg == "-c" || arg == "--classes") {
-            todo = PrintClasses;
+        if (arg == "-m" || arg == "--mimes") {
+            todo = PrintMimes;
             break;
         }
 #if 0
@@ -251,9 +251,14 @@ int main(int argc, char **argv)
         }
         break;
     }
-    case PrintClasses: {
-        foreach (const QString& cls, classesOf(args[0]))
-            out << cls << endl;
+    case PrintMimes: {
+        if (args[0].startsWith("file://"))
+            out << contentTypeForFile(args[0]) << endl;
+        else {
+            foreach (const QString& mime, mimeTypesForUri(args[0])) {
+                out << mime << endl;
+            }
+        }
         break;
     }
 #if 0

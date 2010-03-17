@@ -5,6 +5,6 @@ X-DUI-translation-catalog=test
 X-DUI-logical-id=some.other.action
 Terminal=false
 Type=Application
-MimeType=x-maemo-tracker/nfo-Image;
+MimeType=x-maemo-nepomuk/image;
 Exec=/bin/true
 NotShowIn=X-DUI;

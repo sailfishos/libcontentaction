@@ -18,7 +18,8 @@
     ContentAction::Action::defaultActionForFile*;
 
     ContentAction::Dui::highlightLabel*;
-    ContentAction::Internal::classesOf*;
+    ContentAction::Internal::mimeTypesForUri*;
+    ContentAction::Internal::contentTypeForFile*;
   };
   local:
     *;

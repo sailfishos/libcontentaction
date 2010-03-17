@@ -23,7 +23,7 @@ citest_SCRIPTS = \
 	servicemapper.py \
 	uberprogram.py \
 	test-actions.sh \
-	test-classes.sh \
+	test-mimetypes.sh \
 	test-invoking.py \
 	test-defaults.py \
 	test-mimes.py \
@@ -97,7 +97,7 @@ TESTS = \
 	start-sandbox.sh \
 	linktest \
 	test-actions.sh \
-	test-classes.sh \
+	test-mimetypes.sh \
 	test-invoking.py \
 	test-defaults.py \
 	test-servicefw-signals.py \
