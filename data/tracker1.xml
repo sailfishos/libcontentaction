@@ -12,6 +12,14 @@
     { ?uri a nfo:Image . }
   </tracker-condition>
 
+  <tracker-condition name="video">
+    { ?uri a nfo:Video . }
+  </tracker-condition>
+
+  <tracker-condition name="musicpiece">
+    { ?uri a nmm:MusicPiece . }
+  </tracker-condition>
+
   <tracker-condition name="contactWithPhonenumber">
     { ?uri a nco:Contact ;
            nco:hasPhoneNumber ?phone . }

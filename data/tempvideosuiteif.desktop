@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Play
-MimeType=x-maemo-tracker/nfo-Video;
+MimeType=x-maemo-nepomuk/video;
 X-Maemo-Method=com.nokia.VideoSuiteServiceIf.play
 NotShowIn=X-DUI;
 
