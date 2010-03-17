@@ -26,7 +26,7 @@
   Actions can target one of the following:
 
   -# mime types ("image/jpeg")
-  -# ontology classes ("x-maemo-tracker/nco-Contact")
+  -# Tracker-query based conditions ("x-maemo-nepomuk/contact")
   -# regular expressions ("x-maemo-regexp/phonenumber")
      from a pre-defined set
 
@@ -69,8 +69,8 @@
   ;; Defining when this action applies:
   ;; 1. ordinary mimetypes
   MimeType=image/*;text/plain;
-  ;; 2. Ontology classes
-  MimeType=x-maemo-tracker/nco-Contact;
+  ;; 2. Tracker-query based conditions
+  MimeType=x-maemo-nepomuk/contact;
   ;; 3. pre-defined regexps for the highlighter
   MimeType=x-maemo-regexp/phonenumber;
 
@@ -109,11 +109,40 @@
     You might also want to publish your interface in the maemo-services
     package, but it's not needed for libcontentaction.
 
+  \section tracker_conditions Defining new Tracker-based conditions
 
-  \section default_actions Default actions
+  Conditions are defined with XML files in \c /etc/contentaction/ (this
+  location is overridden by $CONTENTACTION_ACTIONS).  A condition is described
+  by a \a <tracker-condition> element, whose \c name attribute is appended to
+  \c "x-maemo-nepomuk/" to get the corresponding mime type.  The element's
+  text contains the SparQL snippet used to evaluate the condition by
+  substituting it into the following query:
 
-  If you want your application to be the default application for some mime
-  types, contact the libcontentaction implementors.
+  \code
+  SELECT 1 {
+     SNIPPET
+     FILTER(?uri = <the-uri-to-verify-against>)
+  }
+  \endcode
+
+  For example:
+
+  \code
+  <actions>
+    <tracker-condition name="image">
+      { ?uri a nfo:Image . }
+    </tracker-condition>
+
+    <tracker-condition name="contact">
+      { ?uri a nco:Contact . }
+    </tracker-condition>
+
+    <tracker-condition name="contactWithPhonenumber"><![CDATA[
+      { ?uri a nco:Contact ;
+             nco:hasPhoneNumber ?phone . }
+    ]]></tracker-condition>
+  </actions>
+  \endcode
 
   \section highlighter Free-text highlighter
 
@@ -126,5 +155,12 @@
   These actions have different semantics than ordinary Actions.  When
   triggered, they call the method with a single element list containing the
   matched text (as UTF-8).  These are very likely _not_ valid URIs!
+
+  \subsection defining_regexps Defining new regexps for the highlighter
+
+  \section default_actions Default actions
+
+  If you want your application to be the default application for some mime
+  types, contact the libcontentaction implementors.
 
 */
