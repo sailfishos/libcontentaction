@@ -44,9 +44,5 @@ X-Osso-Service=bus.name
 MimeType=image/*;text/plain;
 ;; 2. pre-defined regexps for highlighter
 MimeType=x-maemo-regexp/phone;
-;; 3. Tracker classes
-MimeType=x-maemo-tracker/nco-Contact;
-;; 4. Tracker properties ??
-MimeType=x-maemo-tracker/nco-hasPhoneNumber;
-;; 5. chained tracker properties ??
-MimeType=x-maemo-tracker/nco-hasAddress.nco-streetAddress
+;; 3. Tracker-query based conditions
+MimeType=x-maemo-nepomuk/contact;

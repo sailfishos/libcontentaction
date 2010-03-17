@@ -125,7 +125,9 @@
   }
   \endcode
 
-  For example:
+  The condition applies if the query returns non-zero rows.
+
+  Example:
 
   \code
   <actions>

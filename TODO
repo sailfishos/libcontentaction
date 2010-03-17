@@ -1,2 +1,15 @@
--- Unify the service fw interfaces
+Todos and enhancement ideas
+===========================
 
+-- Unify the service fw interfaces
+-- Take a look at the "back" operation in service fw
+-- Provide API to remove DuiLabel highlighters
+-- Allow selective highlighting?
+-- Implement action weights
+-- Allow a way to set default actions
+   - Think about mime type localization (tracker-based ones)
+   - Provide the needed APIs
+   - Make a ui?
+-- Support wildcards for mime types
+-- Watch relevant files/dirs for changes
+-- Provide some useful regexps / tracker-queries
