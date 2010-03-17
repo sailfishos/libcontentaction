@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<actions>
+
+  <!--
+      SELECT 1 {
+         $CONDITION
+         FILTER(?uri = %s)
+      }
+  -->
+
+  <tracker-condition name="image">
+    { ?uri a nfo:Image . }
+  </tracker-condition>
+
+  <tracker-condition name="contactWithPhonenumber">
+    { ?uri a nco:Contact ;
+           nco:hasPhoneNumber ?phone . }
+  </tracker-condition>
+
+</actions>

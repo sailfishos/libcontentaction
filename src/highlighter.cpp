@@ -34,7 +34,7 @@ using namespace ContentAction::Internal;
 /// list of Match objects.
 QList<Match> Action::highlight(const QString& text)
 {
-    const HighlighterMap& cfg = highlighterConfig();
+    const QHash<QString, QString>& cfg = highlighterConfig();
     QList<Match> result;
 
     foreach (const QString& mime, cfg.keys()) {

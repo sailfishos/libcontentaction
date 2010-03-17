@@ -140,7 +140,7 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 /// choose one.
 void ContentAction::Dui::highlightLabel(DuiLabel *label)
 {
-    const HighlighterMap& cfg = highlighterConfig();
+    const QHash<QString, QString>& cfg = highlighterConfig();
     QHashIterator<QString, QString> iter(cfg);
     while (iter.hasNext()) {
         iter.next();

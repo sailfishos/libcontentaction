@@ -32,7 +32,10 @@ namespace {
 
 using namespace ContentAction::Internal;
 
-static HighlighterMap Highlighter_cfg; // mime type -> regexp
+static QHash<QString, QString> Highlighter_cfg; // mime type -> regexp
+
+// friendly tracker condition name => sparql snippet
+static QHash<QString, QString> Tracker_cfg;
 
 /// Returns the path where the action configuration files should be read from.
 /// It may be overridden via the $CONTENTACTION_ACTIONS environment variable.
@@ -50,6 +53,7 @@ struct ConfigReader: public QXmlDefaultHandler {
                       const QString& qname, const QXmlAttributes &atts);
     bool endElement(const QString& nsuri, const QString& name,
                     const QString& qname);
+    bool characters(const QString& chars);
     QString errorString() const { return error; }
     bool fatalError(const QXmlParseException &exception) {
         LCA_WARNING << QString("parse error at line %1 column %2: %3")
@@ -61,9 +65,11 @@ struct ConfigReader: public QXmlDefaultHandler {
     }
 
     enum {
-        inLimbo, inActions, inHighlight,
+        inLimbo, inActions, inHighlight, inTrackerCondition,
     } state;
 
+    QString condName;
+    QString sparqlSnippet;
     QString error;
 };
 
@@ -94,19 +100,34 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
                 fail("expected a nonempy mimetype");
             Highlighter_cfg[mime.prepend("x-maemo-highlight/")] = regexp;
         }
+        else if (qname == "tracker-condition") {
+            state = inTrackerCondition;
+            condName = atts.value("name");
+            if (name.isEmpty())
+                fail("expected a name for the condition");
+            sparqlSnippet.clear();
+        }
         else
             fail("unexpected tag");
         break;
-    case inHighlight: {
+    case inTrackerCondition:
+    case inHighlight:
         fail("unexpected tag");
         break;
-    }
     }
     return true;
 }
 
+bool ConfigReader::characters(const QString& chars)
+{
+    if (state != inTrackerCondition)
+        return true;
+    sparqlSnippet.append(chars.trimmed());
+    return true;
+}
+
 bool ConfigReader::endElement(const QString& nsuri, const QString& name,
-                                 const QString& qname)
+                              const QString& qname)
 {
     switch (state) {
     case inActions:
@@ -116,6 +137,13 @@ bool ConfigReader::endElement(const QString& nsuri, const QString& name,
     case inHighlight:
         if (qname == "highlight")
             state = inActions;
+        break;
+    case inTrackerCondition: {
+        if (qname == "tracker-condition")
+            state = inActions;
+        Tracker_cfg.insert(condName, sparqlSnippet);
+        break;
+    }
     default:
         break;
     }
@@ -157,9 +185,15 @@ static void readConfig()
 
 /// Returns the highlighter configuration map of (mimetype, regexp) read from
 /// the configuration files.
-const HighlighterMap& ContentAction::Internal::highlighterConfig()
+const QHash<QString, QString>& ContentAction::Internal::highlighterConfig()
 {
     readConfig();
     return Highlighter_cfg;
 }
 
+/// Returns the map from friendly names -> sparql snippets.
+const QHash<QString, QString>& ContentAction::Internal::trackerConditions()
+{
+    readConfig();
+    return Tracker_cfg;
+}

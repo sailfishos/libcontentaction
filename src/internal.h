@@ -77,8 +77,6 @@ extern const QString XMaemoObjectPathKey;
 extern const QString XMaemoFixedArgsKey;
 extern const QString ExecKey;
 
-typedef QHash<QString, QList<QPair<int, QString> > > Associations;
-
 QList<Action> actionsForUri(const QString& uri, const QString& mimeType);
 QStringList appsForContentType(const QString& contentType);
 QString defaultAppForContentType(const QString& contentType);
@@ -91,13 +89,8 @@ QString defaultActionFromGConf(const QString& klass);
 QString defaultActionForClasses(const QStringList& classes);
 
 const QHash<QString, QString>& mimeApps();
-
-// regexp -> mime type
-typedef QHash<QString, QString> HighlighterMap;
-
-const HighlighterMap& highlighterConfig();
-
-const QStringList translationsConfig();
+const QHash<QString, QString>& highlighterConfig();
+const QHash<QString, QString>& trackerConditions();
 
 } // end namespace Internal
 } // end namespace ContentAction
