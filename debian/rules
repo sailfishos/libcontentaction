@@ -7,7 +7,7 @@ configure:
 	./autogen.sh
 
 Makefile: configure
-	./configure --prefix=/usr --sysconfdir=/etc --with-dui
+	./configure --prefix=/usr --sysconfdir=/etc
 
 build: debian/build-stamp
 debian/build-stamp: Makefile
