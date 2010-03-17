@@ -1,8 +1,17 @@
-libcontentaction (0.0.9~unreleased) unstable; urgency=low
+libcontentaction (0.1.0~unreleased) unstable; urgency=low
 
-  * Support for localized action names.
+  * Major changes:
+    -- All actions are defined in .desktop files.
+    -- Tracker-based conditions and highlighter regexps are
+       defined in the configuration files.
+    -- Default-ness related methods of Action are gone, also
+       defaults are not stored in GConf.  (API pending).
+  * New package: libcontentaction-data
+    Contains configuration files.
+  * Package libcontentaction-dui removed.
+    Now libcontentaction depends on libdui unconditionally.
 
- -- Jean-Luc Lamadon <jean-luc.lamadon@nokia.com>  Mon, 15 Mar 2010 09:44:52 +0200
+ -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Wed, 17 Mar 2010 14:46:08 +0200
 
 libcontentaction (0.0.8.1) unstable; urgency=low
 

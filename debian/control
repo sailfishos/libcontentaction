@@ -55,5 +55,4 @@ Description: libcontentaction tests
 
 Package: libcontentaction-data
 Architecture: all
-Description: Configuration files for libcontentaction.
-
+Description: Configuration files for libcontentaction
