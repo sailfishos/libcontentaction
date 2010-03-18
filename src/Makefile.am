@@ -7,8 +7,7 @@ SUFFIXES = .cpp .h .moc.cpp
 
 EXTRA_DIST = \
 	Exports \
-	doc.h \
-	gconf.cpp
+	doc.h
 
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
