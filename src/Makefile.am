@@ -63,6 +63,7 @@ nodist_libcontentaction_la_SOURCES = \
 	service.moc.cpp
 
 libcontentaction_la_LDFLAGS = \
+	-Wl,--as-needed \
 	-Wl,--version-script=$(srcdir)/Exports
 
 bin_PROGRAMS = lca-tool
