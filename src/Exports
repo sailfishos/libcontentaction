@@ -13,6 +13,8 @@
     ContentAction::Action::defaultAction*;
     ContentAction::Action::actionsForFile*;
     ContentAction::Action::defaultActionForFile*;
+    ContentAction::Action::actionsForScheme*;
+    ContentAction::Action::defaultActionForScheme*;
 
     ContentAction::Action::highlight*;
     ContentAction::Match::operator*;

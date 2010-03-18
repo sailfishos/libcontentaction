@@ -5,4 +5,4 @@ Exec=echo "emailer with params:" %U
 Terminal=false
 Type=Application
 NotShowIn=X-DUI;
-MimeType=x-maemo-highlight/email;
+MimeType=x-maemo-highlight/email;x-maemo-urischeme/mailto;

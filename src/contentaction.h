@@ -46,11 +46,13 @@ public:
     static Action defaultAction(const QStringList& uris);
     static Action defaultActionForFile(const QUrl& fileUri);
     static Action defaultActionForFile(const QUrl& fileUri, const QString& mimeType);
+    static Action defaultActionForScheme(const QString& uri);
 
     static QList<Action> actions(const QString& uri);
     static QList<Action> actions(const QStringList& uris);
     static QList<Action> actionsForFile(const QUrl& fileUri);
     static QList<Action> actionsForFile(const QUrl& fileUri, const QString& mimeType);
+    static QList<Action> actionsForScheme(const QString& uri);
 
     static QList<Match> highlight(const QString& text);
 

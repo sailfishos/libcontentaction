@@ -25,10 +25,10 @@
 
   Actions can target one of the following:
 
-  -# mime types ("image/jpeg")
-  -# Tracker-query based conditions ("x-maemo-nepomuk/contact")
-  -# regular expressions ("x-maemo-highlight/phonenumber")
-     from a pre-defined set
+  -# mime types (\c image/jpeg)
+  -# Tracker-query based conditions (\c x-maemo-nepomuk/contact)
+  -# regular expressions (\c x-maemo-highlight/phonenumber)
+  -# URI schemes (\c x-maemo-urischeme/mailto)
 
   The library supports launching actions with one of the following methods:
 
@@ -73,6 +73,8 @@
   MimeType=x-maemo-nepomuk/contact;
   ;; 3. pre-defined regexps for the highlighter
   MimeType=x-maemo-highlight/phonenumber;
+  ;; 4. URI schemes
+  MimeType=x-maemo-scheme/mailto;
 
   ;; Defining how to trigger the action:
   ;; 1. invoke a DuiApplication based program, by calling
