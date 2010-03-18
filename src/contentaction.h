@@ -54,8 +54,6 @@ public:
 
     static QList<Match> highlight(const QString& text);
 
-    static void installTranslators(const QString& locale);
-
     Action();
     ~Action();
     Action(const Action& other);
