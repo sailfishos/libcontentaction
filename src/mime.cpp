@@ -44,6 +44,8 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
+static const QString DesktopFileMimeType("application/x-desktop");
+
 /// Returns the content type of the given file, or an empty string if it cannot
 /// be retrieved.
 QString Internal::contentTypeForFile(const QUrl& fileUri)
@@ -217,7 +219,7 @@ Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType
 {
     // We treat .desktop files specially: the default action (the only
     // actually) is to launch the application it describes.
-    if (mimeType == "application/x-desktop")
+    if (mimeType == DesktopFileMimeType)
         return createAction(fileUri.toLocalFile(), QStringList());
     QString appid = defaultAppForContentType(mimeType);
     if (!appid.isEmpty())
@@ -234,7 +236,7 @@ QList<Action> Internal::actionsForUri(const QString& uri, const QString& mimeTyp
 {
     QList<Action> result;
 
-    if (mimeType == "application/x-desktop")
+    if (mimeType == DesktopFileMimeType)
         return result << createAction(uri, QStringList());
 
     QStringList appIds = appsForContentType(mimeType);
@@ -260,7 +262,7 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri)
 /// file, it must exist when this function is called.
 QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeType)
 {
-    if (mimeType == "application/x-desktop")
+    if (mimeType == DesktopFileMimeType)
         return actionsForUri(fileUri.toLocalFile(), mimeType);
 
     return actionsForUri(fileUri.toEncoded(), mimeType);
