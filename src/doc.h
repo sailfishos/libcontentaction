@@ -27,7 +27,7 @@
 
   -# mime types ("image/jpeg")
   -# Tracker-query based conditions ("x-maemo-nepomuk/contact")
-  -# regular expressions ("x-maemo-regexp/phonenumber")
+  -# regular expressions ("x-maemo-highlight/phonenumber")
      from a pre-defined set
 
   The library supports launching actions with one of the following methods:
@@ -72,7 +72,7 @@
   ;; 2. Tracker-query based conditions
   MimeType=x-maemo-nepomuk/contact;
   ;; 3. pre-defined regexps for the highlighter
-  MimeType=x-maemo-regexp/phonenumber;
+  MimeType=x-maemo-highlight/phonenumber;
 
   ;; Defining how to trigger the action:
   ;; 1. invoke a DuiApplication based program, by calling
@@ -110,6 +110,9 @@
     package, but it's not needed for libcontentaction.
 
   \section tracker_conditions Defining new Tracker-based conditions
+
+  \attention
+  The following section may be subject to changes!
 
   Conditions are defined with XML files in \c /etc/contentaction/ (this
   location is overridden by $CONTENTACTION_ACTIONS).  A condition is described
@@ -153,12 +156,27 @@
   and the possible actions.
 
   \note
-
   These actions have different semantics than ordinary Actions.  When
   triggered, they call the method with a single element list containing the
   matched text (as UTF-8).  These are very likely _not_ valid URIs!
 
   \subsection defining_regexps Defining new regexps for the highlighter
+
+  \attention
+  The following section may be subject to changes!
+
+  Similarly to Tracker-query based conditions, regexps are also defined in XML
+  files residing in \c /etc/contentaction:
+
+  \code
+  <actions>
+    <highlight regexp="[^\s@]+@([^\s.]+)(\.[^\s.]+)*" name="email"/>
+    <highlight regexp="\+?\d+([- ]\d+)*" name="phone"/>
+  </actions>
+  \endcode
+
+  To form the mimetype used in the action .desktop files, \c
+  x-maemo-highlight/ is prepended to the \a name attribute.
 
   \section default_actions Default actions
 

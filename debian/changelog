@@ -6,6 +6,8 @@ libcontentaction (0.1.0~unreleased) unstable; urgency=low
        defined in the configuration files.
     -- Default-ness related methods of Action are gone, also
        defaults are not stored in GConf.  (API pending).
+  * Added functions do selectively highlight and
+    remove highlighting from DuiLabels.
   * New package: libcontentaction-data
     Contains configuration files.
   * Package libcontentaction-dui removed.

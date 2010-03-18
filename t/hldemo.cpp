@@ -26,20 +26,26 @@ public:
 
 private slots:
     void doHilite();
+    void doUnHilite();
 
 private:
     DuiLabel *textLabel;
     DuiButton *hiliteButton;
+    DuiButton *unhiliteButton;
 };
 
 Us::Us() :
     textLabel(new DuiLabel(text, this)),
-    hiliteButton(new DuiButton("hilite me", this))
+    hiliteButton(new DuiButton("hilite", this)),
+    unhiliteButton(new DuiButton("unhilite", this))
 {
     QGraphicsGridLayout *layout = new QGraphicsGridLayout(this);
     layout->addItem(hiliteButton, 0, 0);
+    layout->addItem(unhiliteButton, 0, 1);
     layout->addItem(textLabel, 1, 0, 1, 2);
+    textLabel->setWordWrap(true);
     connect(hiliteButton, SIGNAL(clicked()), this, SLOT(doHilite()));
+    connect(unhiliteButton, SIGNAL(clicked()), this, SLOT(doUnHilite()));
 }
 
 Us::~Us()
@@ -48,6 +54,11 @@ Us::~Us()
 void Us::doHilite()
 {
     ContentAction::Dui::highlightLabel(textLabel);
+}
+
+void Us::doUnHilite()
+{
+    ContentAction::Dui::dehighlightLabel(textLabel);
 }
 
 int main(int argc, char **argv)
@@ -59,6 +70,8 @@ int main(int argc, char **argv)
 
     if (!isatty(0))
         text = QTextStream(stdin).readAll();
+    // DuiLabel doesn't wordwrap unless it's richtext...
+    text.prepend("<span></span>");
 
     page.setCentralWidget(new Us());
 

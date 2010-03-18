@@ -32,8 +32,6 @@
 #include <DuiLabelHighlighter>
 #include <DuiPopupList>
 
-Q_DECLARE_METATYPE(ContentAction::Action);
-
 namespace {
 
 using namespace ContentAction;
@@ -51,7 +49,7 @@ private slots:
     void doPopupActions(const QString& match);
     void doAction(const QModelIndex& ix);
 private:
-    const QString& mime;
+    QString mime;
 };
 
 LCALabelHighlighter::LCALabelHighlighter(const QRegExp& regexp,
@@ -133,6 +131,43 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 
 } // end anon namespace
 
+static void hiLabel(DuiLabel *label,
+                    const QHash<QString, QString>& cfg)
+{
+    QHashIterator<QString, QString> iter(cfg);
+    QObjectList hiliters;
+
+    if (label->property("_lca_highlighters").isValid())
+        return;
+    while (iter.hasNext()) {
+        iter.next();
+        // iter.key == mime type, iter.value == regexp
+        if (!appsForContentType(iter.key()).isEmpty() &&
+            !defaultAppForContentType(iter.key()).isEmpty()) {
+            LCALabelHighlighter *hl = new LCALabelHighlighter(QRegExp(iter.value()),
+                                                              iter.key(),
+                                                              label);
+            hiliters.append(hl);
+            label->addHighlighter(hl);
+        }
+    }
+    label->setProperty("_lca_highlighters", QVariant::fromValue(hiliters));
+}
+
+static void unhiliteLabel(DuiLabel *label)
+{
+    QVariant prop = label->property("_lca_highlighters");
+    if (!prop.isValid())
+        return;
+    QObjectList hiliters = prop.value<QObjectList>();
+    foreach (QObject *hl, hiliters) {
+        LCALabelHighlighter *lcahl = static_cast<LCALabelHighlighter *>(hl);
+        label->removeHighlighter(lcahl);
+        delete lcahl;
+    }
+    label->setProperty("_lca_highlighters", QVariant());
+}
+
 /// Attaches possibly several DuiLabelHighlighter:s to the label, based on the
 /// highlighter configuration.  Clicking on a highlighted label invokes the
 /// first action defined for the matching pattern.  A long-click causes a
@@ -141,17 +176,32 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 void ContentAction::Dui::highlightLabel(DuiLabel *label)
 {
     const QHash<QString, QString>& cfg = highlighterConfig();
-    QHashIterator<QString, QString> iter(cfg);
-    while (iter.hasNext()) {
-        iter.next();
-        // iter.key == mime type, iter.value == regexp
-        if (!appsForContentType(iter.key()).isEmpty() && !defaultAppForContentType(iter.key()).isEmpty()) {
-            LCALabelHighlighter *hl = new LCALabelHighlighter(QRegExp(iter.value()),
-                                                              iter.key(),
-                                                              label);
-            label->addHighlighter(hl);
-        }
-    }
+    hiLabel(label, cfg);
 }
+
+/// Similar to highlightLabel() but allows specifying which regexp-types to
+/// highlight (e.g. only "x-maemo-highlight/mailto").
+void ContentAction::Dui::highlightLabel(DuiLabel *label,
+                                        QStringList typesToHighlight)
+{
+    const QHash<QString, QString>& cfg = highlighterConfig();
+    QHash<QString, QString> filtered;
+    foreach (const QString& k, typesToHighlight) {
+        QString re(cfg.value(k, QString()));
+        if (re.isEmpty())
+            continue;
+        filtered.insert(k, re);
+    }
+    hiLabel(label, filtered);
+}
+
+/// Removes all highlighters attached by highlightLabel() from \a label.
+void ContentAction::Dui::dehighlightLabel(DuiLabel *label)
+{
+    unhiliteLabel(label);
+}
+
+Q_DECLARE_METATYPE(QObjectList);
+Q_DECLARE_METATYPE(ContentAction::Action);
 
 #include "dui-highlight.moc"

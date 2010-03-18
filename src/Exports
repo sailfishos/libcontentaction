@@ -4,20 +4,22 @@
     "ContentAction::Action::Action(ContentAction::Action const&)";
     "ContentAction::Action::~Action()";
     ContentAction::Action::operator*;
-    ContentAction::Action::defaultAction*;
     ContentAction::Action::trigger*;
     ContentAction::Action::isValid*;
     ContentAction::Action::name*;
     ContentAction::Action::localizedName*;
+
     ContentAction::Action::actions*;
+    ContentAction::Action::defaultAction*;
+    ContentAction::Action::actionsForFile*;
+    ContentAction::Action::defaultActionForFile*;
 
     ContentAction::Action::highlight*;
     ContentAction::Match::operator*;
 
-    ContentAction::Action::actionsForFile*;
-    ContentAction::Action::defaultActionForFile*;
-
     ContentAction::Dui::highlightLabel*;
+    ContentAction::Dui::dehighlightLabel*;
+
     ContentAction::Internal::mimeTypesForUri*;
     ContentAction::Internal::contentTypeForFile*;
   };

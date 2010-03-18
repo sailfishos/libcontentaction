@@ -37,6 +37,8 @@ namespace ContentAction {
 namespace Dui {
 
 void highlightLabel(DuiLabel *label);
+void highlightLabel(DuiLabel *label, QStringList typesToHighlight);
+void dehighlightLabel(DuiLabel *label);
 
 } // end namespace
 } // end namespace

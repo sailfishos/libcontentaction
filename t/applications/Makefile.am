@@ -6,6 +6,7 @@ dist_citestapp_DATA = \
 	uberdui.desktop \
 	ubermimeopen.desktop \
 	caller.desktop \
+	addcontact.desktop \
 	contacthandler.desktop \
 	emailer.desktop \
 	galleryserviceinterface.desktop \
