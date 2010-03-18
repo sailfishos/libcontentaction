@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation.
+ * Copyright (C) 2009, 2010 Nokia Corporation.
  *
  * Contact: Marius Vollmer <marius.vollmer@nokia.com>
  *
@@ -25,41 +25,32 @@
 
 #include <DuiDesktopEntry>
 #include <QFileInfo>
-#include <QDebug>
 
 /*!
   \class ContentAction::Action
 
-  \brief ContentAction::Action represents an applicable action for a uri or a
-  set of uri's.
+  \brief ContentAction::Action represents an action for the given resources
 
-  The ContentAction::Action object contains two parts: the uri or a set of
-  uri's it refers to, and an action, represented by maemo service framework
-  interface + function.
+  The Action object binds together the method of invocation (e.g. which D-Bus
+  method to call, what binary to execute) and the resources (URIs, Tracker
+  objects, text snippets, etc.) used for its creation.
 
-  The applicable ContentAction::Action objects for a given uri or a set of
-  uri's can be retrieved by using the static member functions actions(const
-  QString& uri) and actions(const QStringList& uris). The return value is a
-  list of ContentAction::Action objects sorted in the order of relevance.
+  There are multiple ways to construct an Action:
 
-  Each Nepomuk class is associated with a set of applicable actions. The list
-  of applicable actions for one uri is computed by concatenating the action
-  lists for all its classes and then sorting by their weights.
+  - For <b>objects in Tracker</b> try Action::actions() and
+    Action::defaultAction()
+  - For handling ordinary \b files and other URIs call
+    Action::actionsForFile() or Action::defaultActionForFile()
+  - For <b>pseudo-urls</b> like \c "mailto:" use Action::actionsForScheme() or
+    Action::defaultActionForScheme()
 
-  For multiple uri's, the set of applicable actions is the intersection of
-  applicable actions for each uri. The actions appear in the same order as
-  they appear in the action list of the first uri.
+  Functions returning multiple actions try to return them in the order of
+  relevance.  The action can be triggered by calling the trigger() method.
 
-  The ContentAction::Action can be triggered by using the member function
-  trigger().
-
-  It is also possible to retrive the default actions for a given uri or a set
-  of uris via member functions defaultAction(const QString& uri) and
-  defaultAction(const QStringList& uris).
-
-  When the list of uri's contains uri's of different classes, no default
-  action can be constructed, and the defaultAction function returns an invalid
-  ContentAction::Action.
+  Some functions accept multiple inputs (a list), they will return the
+  intersection of applicable actions for all inputs.  If the actions for the
+  inputs would conflict, these methods return an empty result set (emtpy list
+  or an invalid Action).
 
 */
 namespace ContentAction {
@@ -179,28 +170,29 @@ Action::~Action()
 {
 }
 
-/// Triggers the action represented by this Action object,
-/// using the uri's contained by the Action object.
+/// Triggers the action represented by this object, using the URIs contained
+/// by the Action object.
 void Action::trigger() const
 {
     d->trigger();
 }
 
-/// Returns true if the Action object represents an action
-/// which can be triggered.
+/// Returns \a true if the Action object represents an action which can be
+/// triggered.
 bool Action::isValid() const
 {
     return d->isValid();
 }
 
-/// Returns the name of the action, i.e., [service fw interface].[function]
+/// Returns the name of the action (the basename of the .desktop file
+/// describing the action).
 QString Action::name() const
 {
     return d->name();
 }
 
-/// Returns the localized name of the action, using the currently installed
-/// translators.
+/// Returns the localized name of the action.  Note that if the locale
+/// changes, actions must be recreated.
 QString Action::localizedName() const
 {
     return d->localizedName();

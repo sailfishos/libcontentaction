@@ -23,12 +23,12 @@
 #define CONTENTACTION_DUI_H
 
 /*!
-  \section DUI "integration"
+  \namespace ContentAction::Dui
+
+  \brief DUI integration
 
   The text-highlighter part of libcontentaction can be used to implement
   DuiLabelHighlighter functionality.
-
-  \sa ContentAction::Dui::highlightLabel()
 */
 
 class DuiLabel;

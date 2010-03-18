@@ -180,7 +180,7 @@ void ContentAction::Dui::highlightLabel(DuiLabel *label)
 }
 
 /// Similar to highlightLabel() but allows specifying which regexp-types to
-/// highlight (e.g. only "x-maemo-highlight/mailto").
+/// highlight (e.g. only \c "x-maemo-highlight/mailto").
 void ContentAction::Dui::highlightLabel(DuiLabel *label,
                                         QStringList typesToHighlight)
 {

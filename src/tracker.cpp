@@ -131,10 +131,11 @@ static QStringList mimeTypesForUris(QStringList uris)
     return commonMimeTypes;
 }
 
-/// Returns the default action for a given uri.  A default action is
-/// determined by checking the mime types of the \a uri, and taking the first
-/// default action defined for a mime type.  If no default action is set,
-/// returns the most relevant action, i.e., the first action returned by
+/// Returns the default action for the given \a uri representing an object
+/// stored in Tracker.  A default action is determined by checking the \ref
+/// tracker_conditions "conditions" that apply to the \a uri, and taking the
+/// first one having a default action.  If no default action is found, it
+/// returns the most relevant action, i.e. the first action returned by
 /// actions().  If there are no applicable actions, an invalid Action object
 /// is returned.
 Action Action::defaultAction(const QString& uri)
@@ -153,10 +154,10 @@ Action Action::defaultAction(const QString& uri)
     return Action();
 }
 
-/// Returns the default action for a given list of uri's. If the uri's
-/// represent object of different types (e.g., one is an image, other
-/// is an audio file), a default action cannot be constructed and an
-/// invalid Action object is returned.
+/// Returns the default action for a given list of URIs.  If the URIs
+/// represent objects of different types (e.g. one is an image, other is an
+/// audio file), a default action cannot be constructed and an invalid Action
+/// object is returned.
 Action Action::defaultAction(const QStringList& uris)
 {
     QStringList mimeTypes = mimeTypesForUris(uris);
@@ -173,11 +174,12 @@ Action Action::defaultAction(const QStringList& uris)
     return Action();
 }
 
-/// Returns the set of applicable actions for a given \a uri. The applicablity
-/// is based on pre-defined tracker conditions. If a ccondition "cond1"
-/// applies to \a uri, then we consider that x-maemo-nepomuk/cond1 is one of
-/// the mime types of the uri, and search the applicable applications
-/// accordingly.
+/// Returns the set of applicable actions for an object stored in Tracker
+/// represented by the given \a uri.  The applicability is determined by the
+/// pre-defined \ref tracker_conditions "Tracker conditions".  If a condition
+/// \c cond applies to \a uri, then we consider that \c x-maemo-nepomuk/cond1
+/// is one of the mime types of the uri, and search the applicable
+/// applications accordingly (and alliterating :).
 QList<Action> Action::actions(const QString& uri)
 {
     QList<Action> result;
@@ -195,10 +197,10 @@ QList<Action> Action::actions(const QString& uri)
 }
 
 /// Returns the set of actions applicable to all \a uris.  The set is
-/// constructed by first figuring out the common mime types for all \a uris.
-/// For each mime type, we add the actions which handle that mime type.  The
-/// order of the actions is the order in which they appear in the action list
-/// of the first uri.
+/// constructed by first figuring out the common "pseudo-mimetypes" for all \a
+/// uris.  For each mimetype, we add the actions handling it.  The order of
+/// the actions is the order in which they appear in the action list of the
+/// first uri.
 QList<Action> Action::actions(const QStringList& uris)
 {
     QList<Action> result;

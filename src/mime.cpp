@@ -256,11 +256,11 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri)
     return actionsForFile(fileUri, contentType);
 }
 
-/// Returns the set of applicable actions for a given \a fileUri, assuming
-/// it's mime type is \a mimeType. This function can be used even when \a
-/// fileUri doesn't exist yet but will be created before trigger() is called,
-/// or if you already know the mime type. Note: if the file is a .desktop
-/// file, it must exist when this function is called.
+/// Returns the set of applicable actions for a given \a fileUri, assuming its
+/// content type is \a mimeType.  This function can be used even when \a
+/// fileUri doesn't exist but will be created before trigger() is called, or
+/// if you already know the mime type.  Note: if the file is a .desktop file,
+/// it must exist when this function is called.
 QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeType)
 {
     if (mimeType == DesktopFileMimeType)
