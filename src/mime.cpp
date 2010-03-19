@@ -249,7 +249,7 @@ static QString generalizeMimeType(const QString &mime)
     if (mime.startsWith(OntologyMimeClass) ||
         mime.startsWith(HighlighterMimeClass) ||
         mime.startsWith(UriSchemeMimeClass))
-        return mime;
+        return "";
     int n = mime.indexOf('/');
     if (n < 0)
         return mime;
