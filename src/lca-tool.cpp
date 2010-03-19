@@ -31,52 +31,79 @@
 using namespace ContentAction;
 using namespace ContentAction::Internal;
 
-enum ActionToDo {
-    PrintHelp,
-    PrintActions,
-    Invoke,
-    InvokeDefault,
-    PrintMimes,
-    PrintDefault,
-//    SetDefault,
-//    PrintClassDefault,
-//    SetClassDefault,
-    PrintForFile,
-    InvokeForFile,
-    LaunchFile,
+static const char help[] = \
+"Usage: lca-tool [OPTIONS] MODE MODALCOMMAND URIS\n"
+"       lca-tool [OPTIONS] OTHERCOMMAND ARGS\n"
+"OPTION can be:\n"
+"  --l10n              use localized names when printing actions\n"
+"\n"
+"MODE is one of:\n"
+"  --tracker           URIS are representing objects stored in Tracker,\n"
+"                      dispatched using Tracker-query based conditions\n"
+"  --file              URI is a file (or other resource), dispatched based on\n"
+"                      its content type\n"
+"  --scheme            URIS are dispatched based on their scheme only\n"
+"\n"
+"In modal use, the following commands are available:\n"
+"  --print             prints actions applicable to URIS\n"
+"  --trigger ACTION    trigger ACTION with the given URIS\n"
+"  --printdefault      print the default action for URIS\n"
+"  --triggerdefault    trigger the default action for the given URIS\n"
+"  --printmimes        print the (pseudo) mimetypes of URIS\n"
+"\n"
+"ACTION is the basename of the action's .desktop file (both when printing and\n"
+"when invoking).\n"
+"\n"
+"Modeless commands are:\n"
+"  --help                          print this text\n"
+"  --actionsformime MIME           print actions for the given mimetype\n"
+"  --mimedefault MIME              print the default action for the given\n"
+"                                  mimetype\n"
+"  --setmimedefault MIME ACTION    set ACTION as default for the given mimetype\n"
+"\n"
+"Return values:\n"
+"  0   success\n"
+"  1   not enough arguments\n"
+"  2   problems with the arguments\n"
+"  3   triggered an action not applicable to the given URIS\n"
+"  4   no default action exists for the given URIS\n"
+"\n"
+"Examples:\n"
+"  $ lca-tool --tracker --triggerdefault urn:1246934-4213\n"
+"  $ lca-tool --file --print file://$HOME/plaintext\n"
+"  $ lca-tool --scheme --triggerdefault mailto:someone@example.com\n"
+"  $ lca-tool --setmimedefault image/jpeg imageviewer\n";
+
+enum UriMode {
+    NoMode = 0,
+    TrackerMode,
+    FileMode,
+    SchemeMode,
 };
 
-void usage(char *prog)
-{
-    QTextStream err(stderr);
-    err << "Usage: " << prog << " [OPTIONS] [URIS...]\n"
-        "  -h|--help                          print this text\n"
-        "  -p|--print                         print the applicable actions\n"
-        "  -i|--invoke ACTION                 invoke the specified action\n"
-        "  -I|--invokedefault                 invoke the default action\n"
-        "  -m|--mimes                         print the mime types of the URIs\n"
-        "  -d|--default                       print the default action\n"
-//        "  -s|--setdefault ACTION             set the default action for the given URIs\n"
-//        "  -D|--classdefault CLASS            print the default action for a Nepomuk class\n"
-//        "  -S|--setclassdefault ACTION CLASS  set a default action for a Nepomuk class\n"
-        "  -f|--printforfile                  print the applicable actions for a file\n"
-        "  -F|--invokeforfile FILEACTION      invoke the given action for FILE\n"
-        "  -L|--launchfile                    invoke the default action for FILE\n"
-        "\n"
-        "  --l10n                             use localized names\n"
-        "where\n"
-        "  ACTION is: INTERFACE.METHOD of the maemo service framework\n"
-        "  FILEACTION is: the name of the application (from the .desktop file)\n"
-        "Return values:\n"
-        "  0   success\n"
-        "  1   no arguments given\n"
-        "  2   problem with command arguments\n"
-        "  3   tried to invoke an action not applicable for the given URIs\n"
-        "  4   no default action exists for the given URIs\n"
-//        "  5   no default action exists for the given Nepomuk class\n"
-//        "  6   setting a default action for the given Nepomuk class failed\n"
-        "  7   an action cannot be set as default action for the given URIs\n";
-}
+enum ActionToDo {
+    Nothing,
+
+    PrintHelp,
+
+    PrintActions,
+    TriggerAction,
+    PrintDefaultAction,
+    TriggerDefaultAction,
+    PrintMimes,
+
+    PrintActionsForMime,
+    PrintMimeDefault,
+    SetMimeDefault,
+};
+
+#define NEEDARG(errmsg)                         \
+    do {                                        \
+        if (args.isEmpty()) {                   \
+            err << (errmsg) << endl;            \
+            return 2;                           \
+        }                                       \
+    } while (0)
 
 int main(int argc, char **argv)
 {
@@ -84,7 +111,7 @@ int main(int argc, char **argv)
     QTextStream err(stderr), out(stdout);
 
     if (argc == 1) {
-        usage(argv[0]);
+        err << help;
         return 1;
     }
 
@@ -102,209 +129,178 @@ int main(int argc, char **argv)
     for (int i = 1; i < argc; ++i)
         args << QString(argv[i]);
 
-    ActionToDo todo = PrintHelp;
+    UriMode mode = NoMode;
+    ActionToDo todo = Nothing;
     bool use_l10n = false;
-    QString actionName;
+    QString actionName, mime;
 
     while (!args.isEmpty()) {
+        UriMode newmode = NoMode;
         QString arg = args.takeFirst();
-        if (!arg.startsWith("-"))             // end of options
-            break;
 
-        if (arg == "-h" || arg == "--help") {
-            usage(argv[0]);
-            return 1;
-        }
-        if (arg == "-p" || arg == "--print") {
-            todo = PrintActions;
+        if (!arg.startsWith("-"))
             break;
-        }
-        if (arg == "-i" || arg == "--invoke") {
-            todo = Invoke;
-            if (args.isEmpty()) {
-                err << "an action must be given when using " << arg << endl;
-                return 2;
-            }
-            actionName = args.takeFirst();
-            break;
-        }
-        if (arg == "-I" || arg == "--invokedefault") {
-            todo = InvokeDefault;
-            break;
-        }
-        if (arg == "-m" || arg == "--mimes") {
-            todo = PrintMimes;
-            break;
-        }
-#if 0
-        if (arg == "-D" || arg == "--classdefault") {
-            todo = PrintClassDefault;
-            break;
-        }
-        if (arg == "-S" || arg == "--setclassdefault") {
-            todo = SetClassDefault;
-            if (args.isEmpty()) {
-                err << "an action must be given when using " << arg << endl;
-                return 2;
-            }
-            actionName = args.takeFirst();
-            break;
-        }
-#endif
-        if (arg == "-d" || arg == "--default") {
-            todo = PrintDefault;
-            break;
-        }
-#if 0
-        if (arg == "-s" || arg == "--setdefault") {
-            todo = SetDefault;
-            if (args.isEmpty()) {
-                err << "an action must be given when using " << arg << endl;
-                return 2;
-            }
-            actionName = args.takeFirst();
-            break;
-        }
-#endif
-        if (arg == "-f" || arg == "--printforfile") {
-            todo = PrintForFile;
-            break;
-        }
-        if (arg == "-F" || arg == "--invokeforfile") {
-            todo = InvokeForFile;
-            if (args.isEmpty()) {
-                err << "an action must be given when using " << arg << endl;
-                return 2;
-            }
-            actionName = args.takeFirst();
-            break;
-        }
-        if (arg == "-L" || arg == "--launchfile") {
-            todo = LaunchFile;
-            break;
-        }
+        // misc options
         if (arg == "--l10n") {
             use_l10n = true;
             continue;
         }
-        err << "Unknown option " << arg << endl;
+        // modes
+        if (arg == "--tracker")
+            newmode = TrackerMode;
+        else if (arg == "--file")
+            newmode = FileMode;
+        else if (arg == "--scheme")
+            newmode = SchemeMode;
+        if (newmode != NoMode) {
+            if (mode != NoMode) {
+                err << "only a single MODE may be specified" << endl;
+                return 2;
+            }
+            mode = newmode;
+            newmode = NoMode;
+            continue;
+        }
+
+        // modeless actions
+        if (arg == "--help") {
+            err << help;
+            return 0;
+        }
+        else if (arg == "--actionsformime") {
+            todo = PrintActionsForMime;
+            NEEDARG("a MIME must be given when using --actionsformime");
+            mime = args.takeFirst();
+        }
+        else if (arg == "--mimedefault") {
+            todo = PrintMimeDefault;
+            NEEDARG("a MIME must be given when using --mimedefault");
+            mime = args.takeFirst();
+        }
+        else if (arg == "--setmimedefault") {
+            todo = SetMimeDefault;
+            NEEDARG("a MIME must be given when using --setmimedefault");
+            mime = args.takeFirst();
+            NEEDARG("an ACTION also must be given when using --setmimedefault");
+            actionName = args.takeFirst();
+        }
+        // modal actions
+        else if (arg == "--print") {
+            todo = PrintActions;
+        }
+        else if (arg == "--trigger") {
+            todo = TriggerAction;
+            NEEDARG("an ACTION must be given when using --trigger");
+            actionName = args.takeFirst();
+        }
+        else if (arg == "--printdefault") {
+            todo = PrintDefaultAction;
+        }
+        else if (arg == "--triggerdefault") {
+            todo = TriggerDefaultAction;
+        }
+        else if (arg == "--printmimes") {
+            todo = PrintMimes;
+        }
+        else {
+            err << "Unknown option " << arg << endl;
+            return 2;
+        }
+        // bail out if we know what to do
+        if (todo != Nothing)
+            break;
+    }
+
+    // handle modeless actions first
+    switch (todo) {
+    case PrintActionsForMime:
+        foreach (const QString& a, Internal::appsForContentType(mime)) {
+            out << a << endl;
+        }
+        break;
+    case PrintMimeDefault:
+        out << Internal::defaultAppForContentType(mime) << endl;
+        break;
+    case SetMimeDefault:
+        err << "not yet implemented" << endl;
+        break;
+    default:
+        break;
+    }
+
+    // then modals; they need arguments
+    if (args.isEmpty()) {
+        err << "option needs more arguments" << endl;
         return 2;
     }
 
-    if (args.isEmpty()) {
-        err << "option needs more arguments\n";
-        return 2;
+    // get the Action:s and the default Action based on the mode
+    QList<Action> actions;
+    Action defAction;
+    switch (mode) {
+    case TrackerMode:
+        actions = Action::actions(args);
+        defAction = Action::defaultAction(args);
+        break;
+    case FileMode:
+        actions = Action::actionsForFile(QUrl(args[0]));
+        defAction = Action::defaultActionForFile(QUrl(args[0]));
+        break;
+    case SchemeMode:
+        actions = Action::actionsForScheme(args[0]);
+        defAction = Action::defaultActionForScheme(args[0]);
+        break;
+    default:
+        break;
     }
 
     switch (todo) {
-    case PrintHelp:
-        usage(argv[0]);
-        return 1;
-        break;
     case PrintActions:
-//    case SetDefault:
-    case Invoke: {
-        QList<Action> actions = Action::actions(args);
-        foreach (Action action, actions) {
-            if (todo == PrintActions) {
-                if (use_l10n)
-                    out << action.localizedName() << endl;
-                else
-                    out << action.name() << endl;
-            } else if (todo == Invoke && actionName == action.name()) {
-                action.trigger();
-                return 0;
-            }
-#if 0
-            else if (todo == SetDefault && actionName == action.name()) {
-                action.setAsDefault();
-                return 0;
-            }
-#endif
+        foreach (const Action& a, actions) {
+            out << (use_l10n ? a.localizedName() : a.name()) << endl;
         }
-        if (todo == Invoke) {
-            err << "action '" << actionName << "'is not applicable\n";
-            return 3;
-        }
-#if 0
-        else if (todo == SetDefault) {
-            err << "action '" << actionName << "'cannot be set as default\n";
-            return 7;
-        }
-#endif
         break;
-    }
-    case PrintDefault:
-    case InvokeDefault: {
-        Action defAction = Action::defaultAction(args);
+    case TriggerAction:
+        foreach (const Action& a, actions) {
+            if (a.name() == actionName) {
+                a.trigger();
+                return 0;
+            }
+        }
+        err << actionName << "is not applicable" << endl;
+        return 3;
+        break;
+    case PrintDefaultAction:
+        out << (use_l10n ? defAction.localizedName() : defAction.name()) << endl;
+        break;
+    case TriggerDefaultAction:
         if (!defAction.isValid()) {
-            err << "no default action for the given URIs\n";
+            err << "no default action for the given URIs" << endl;
             return 4;
         }
-        if (todo == InvokeDefault)
-            defAction.trigger();
-        else if (todo == PrintDefault) {
-            if (use_l10n)
-                out << defAction.localizedName() << endl;
-            else
-                out << defAction.name() << endl;
-        }
+        defAction.trigger();
+        return 0;
         break;
-    }
     case PrintMimes: {
-        if (args[0].startsWith("file://"))
-            out << contentTypeForFile(args[0]) << endl;
-        else {
-            foreach (const QString& mime, mimeTypesForUri(args[0])) {
+        switch (mode) {
+        case TrackerMode:
+            foreach (const QString& mime, mimeForTrackerObject(args[0])) {
                 out << mime << endl;
             }
+            break;
+        case FileMode:
+            out << mimeForFile(args[0]) << endl;
+            break;
+        case SchemeMode:
+            out << mimeForScheme(args[0]) << endl;
+            break;
+        default:
+            break;
         }
         break;
     }
-#if 0
-    case PrintClassDefault: {
-        QString defAction = defaultActionFromGConf(args[0]);
-        if (defAction != "")
-            out << defAction << endl;
-        else {
-            err << "no default action for: " << args[0] << endl;
-            return 5;
-        }
+    default:
         break;
-    }
-    case SetClassDefault: {
-        if (!setDefaultAction(args[0], actionName)) {
-            err << "failed to set default action " << actionName
-                << " for a class " << args[0] << endl;
-            return 6;
-        }
-        break;
-    }
-#endif
-    case PrintForFile:
-    case InvokeForFile: {
-        QList<Action> actions = Action::actionsForFile(QUrl(args[0]));
-        foreach (const Action& action, actions) {
-            if (todo == PrintForFile) {
-                if (use_l10n)
-                    out << action.localizedName() << endl;
-                else
-                    out << action.name() << endl;
-            } else if (todo == InvokeForFile && actionName == action.name()) {
-                action.trigger();
-                return 0;
-            }
-        }
-        if (todo == InvokeForFile) {
-            err << "action '" << actionName << "'is not applicable\n";
-            return 3;
-        }
-        break;
-    }
-    case LaunchFile: {
-        Action::defaultActionForFile(QUrl(args[0])).trigger();
-        return 0;
-    }
     }
     return 0;
 }
