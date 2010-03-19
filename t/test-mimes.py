@@ -38,7 +38,7 @@ if 'MIME_TEST_DIR' in os.environ:
 class Mimes(unittest.TestCase):
     def testActionsForPlain(self):
         filename = "file://" + testfiles_dir + "/plaintext"
-        (status, output) = getstatusoutput("lca-tool --printforfile "+filename)
+        (status, output) = getstatusoutput("lca-tool --file --print " + filename)
         self.assert_(status == 0)
         self.assert_(output.find("uberexec") != -1)
         self.assert_(output.find("uberdui") != -1)
@@ -49,7 +49,7 @@ class Mimes(unittest.TestCase):
         self.assert_(program.expect("started"))
 
         filename = "file://" + testfiles_dir + "/plaintext"
-        (status, output) = getstatusoutput("lca-tool --invokeforfile uberdui " + filename)
+        (status, output) = getstatusoutput("lca-tool --file --trigger uberdui " + filename)
         self.assert_(status == 0)
 
         self.assert_(program.expect("launch: "))
@@ -60,7 +60,7 @@ class Mimes(unittest.TestCase):
         self.assert_(program.expect("started"))
 
         filename = "file://" + testfiles_dir + "/plaintext"
-        (status, output) = getstatusoutput("lca-tool --invokeforfile ubermimeopen " + filename)
+        (status, output) = getstatusoutput("lca-tool --file --trigger ubermimeopen " + filename)
         self.assert_(status == 0)
 
         self.assert_(program.expect("mime_open:"))
@@ -68,7 +68,7 @@ class Mimes(unittest.TestCase):
 
     def testInvokeExec(self):
         filename = "file://" + testfiles_dir + "/plaintext"
-        (status, output) = getstatusoutput("lca-tool --invokeforfile uberexec " + filename)
+        (status, output) = getstatusoutput("lca-tool --file --trigger uberexec " + filename)
         self.assert_(status == 0)
         f = open("./executedAction")
         content = f.read()

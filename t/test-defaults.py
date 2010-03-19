@@ -96,9 +96,9 @@ class Defaults(unittest.TestCase):
         self.assert_(status >> 8 == 7)
 
     def testQueryDefault(self):
-        (status, output) = getstatusoutput("lca-tool --default an.image")
+        (status, output) = getstatusoutput("lca-tool --tracker --printdefault an.image")
         self.assert_(status == 0);
-        self.assert_(output.find("galleryserviceinterface.desktop"))
+        self.assert_(output.find("galleryserviceinterface"))
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Defaults)

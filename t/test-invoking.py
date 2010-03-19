@@ -40,23 +40,23 @@ class Actions(unittest.TestCase):
         self.gallery.kill()
 
     def testInvokeForImage(self):
-        (status, output) = getstatusoutput("lca-tool --invokedefault an.image")
+        (status, output) = getstatusoutput("lca-tool --tracker --triggerdefault an.image")
         self.assert_(status == 0)
         # assert that the gallery was invoked
         self.assert_(self.gallery.expect("showImage ; an.image"))
 
     def testInvokeForTwoImages(self):
-        (status, output) = getstatusoutput("lca-tool --invokedefault an.image b.image")
+        (status, output) = getstatusoutput("lca-tool --tracker --triggerdefault an.image b.image")
         self.assert_(status == 0)
         # assert that the gallery was invoked
         self.assert_(self.gallery.expect("showImage ; an.image,b.image"))
 
     def testInvokeForInvalid(self):
-        (status, output) = getstatusoutput("lca-tool --invokedefault invalid.uri")
+        (status, output) = getstatusoutput("lca-tool --tracker --triggerdefault invalid.uri")
         self.assert_(status >> 8 == 4)
 
     def testInvokeForDifferentClasses(self):
-        (status, output) = getstatusoutput("lca-tool --invokedefault an.image a.contact")
+        (status, output) = getstatusoutput("lca-tool --tracker --triggerdefault an.image a.contact")
         self.assert_(status >> 8 == 4)
 
 def runTests():

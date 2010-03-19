@@ -6,9 +6,9 @@ srcdir=.
 
 tstart $srcdir/gallery.py
 
-a=`lca-tool --print an.image`;
+a=`lca-tool --tracker --print an.image`;
 strstr "$a" '.*galleryserviceinterface' || exit 1;
-a=`lca-tool --print an.image b.image`;
+a=`lca-tool --tracker --print an.image b.image`;
 strstr "$a" '.*galleryserviceinterface' || exit 1;
 
 exit 0;

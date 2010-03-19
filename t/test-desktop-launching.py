@@ -39,13 +39,13 @@ if 'MIME_TEST_DIR' in os.environ:
 class Launching(unittest.TestCase):
     def testActionsForDesktop(self):
         filename = "file://" + testfiles_dir + "/launchme.desktop"
-        (status, output) = getstatusoutput("lca-tool --printforfile " + filename)
+        (status, output) = getstatusoutput("lca-tool --file --print " + filename)
         self.assert_(status == 0)
         self.assert_(output.find("launchme") != -1)
 
     def testLaunch(self):
         filename = "file://" + testfiles_dir + "/launchme.desktop"
-        (status, output) = getstatusoutput("lca-tool --launchfile " + filename)
+        (status, output) = getstatusoutput("lca-tool --file --triggerdefault " + filename)
         self.assert_(status == 0)
 
         time.sleep(3)

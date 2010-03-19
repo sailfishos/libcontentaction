@@ -46,7 +46,7 @@ class FixedParams(unittest.TestCase):
 
     def testInvokeWithFixedParams(self):
         filename = "file://" + testfiles_dir + "/plaintext"
-        (status, output) = getstatusoutput("lca-tool -F fixedparams " + filename)
+        (status, output) = getstatusoutput("lca-tool --file --trigger fixedparams " + filename)
         self.assert_(status == 0)
         # assert that the gallery was invoked and the fixed params got prepended
         self.assert_(self.gallery.expect("showImage ; these,are,fixed," + filename))
