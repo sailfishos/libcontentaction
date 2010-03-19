@@ -39,6 +39,7 @@ os.environ["XDG_DATA_DIRS"] = os.environ["XDG_DATA_HOME"]
 class Defaults(unittest.TestCase):
     def setUp(self):
         os.environ["XDG_DATA_HOME"] = mkdtemp(dir = ".")
+        os.mkdir(os.environ["XDG_DATA_HOME"] + "/applications")
     def tearDown(self):
         rmtree(os.environ["XDG_DATA_HOME"])
         
