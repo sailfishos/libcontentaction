@@ -278,14 +278,16 @@ Action Action::defaultActionForScheme(const QString& uri)
         return Action();
     QString mime(UriSchemeMimeClass + uri.left(n));
     QString defApp = defaultAppForContentType(mime);
+    if (defApp.isEmpty())
+        return Action();
     return createAction(findDesktopFile(defApp), QStringList() << uri);
 }
 
 /// Returns all actions handling the scheme of the given \a uri.  The uri
 /// scheme is mapped to mime types by prefixing it with \c
 /// "x-maemo-urischeme/".  For example an email client may declare to handle
-/// the \c "x-maemo-scheme/mailto" mimetype and a browser then just triggers
-/// the returned Action to activate a \c mailto: link.
+/// the \c "x-maemo-urischeme/mailto" mimetype and a browser then just
+/// triggers the returned Action to activate a \c mailto: link.
 QList<Action> Action::actionsForScheme(const QString& uri)
 {
     QList<Action> result;
