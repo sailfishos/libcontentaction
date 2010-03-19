@@ -74,7 +74,7 @@ MimeType=x-maemo-nepomuk/contact;
 ;; 3. pre-defined regexps for the highlighter
 MimeType=x-maemo-highlight/phonenumber;
 ;; 4. URI schemes
-MimeType=x-maemo-scheme/mailto;
+MimeType=x-maemo-urischeme/mailto;
 
 ;; Defining how to trigger the action:
 ;; 1. invoke a DuiApplication based program, by calling
