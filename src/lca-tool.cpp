@@ -60,6 +60,7 @@ static const char help[] = \
 "  --mimedefault MIME              print the default action for the given\n"
 "                                  mimetype\n"
 "  --setmimedefault MIME ACTION    set ACTION as default for the given mimetype\n"
+"  --resetmimedefault MIME         remove the user-defined default from the given mimetype\n"
 "\n"
 "Return values:\n"
 "  0   success\n"
@@ -95,6 +96,7 @@ enum ActionToDo {
     PrintActionsForMime,
     PrintMimeDefault,
     SetMimeDefault,
+    ResetMimeDefault,
 };
 
 #define NEEDARG(errmsg)                         \
@@ -184,6 +186,11 @@ int main(int argc, char **argv)
             NEEDARG("an ACTION also must be given when using --setmimedefault");
             actionName = args.takeFirst();
         }
+        else if (arg == "--resetmimedefault") {
+            todo = ResetMimeDefault;
+            NEEDARG("a MIME must be given when using --setmimedefault");
+            mime = args.takeFirst();
+        }
         // modal actions
         else if (arg == "--print") {
             todo = PrintActions;
@@ -215,14 +222,21 @@ int main(int argc, char **argv)
     switch (todo) {
     case PrintActionsForMime:
         foreach (const QString& a, Internal::appsForContentType(mime)) {
-            out << a << endl;
+            out << QString(a).remove(".desktop") << endl;
         }
+        return 0;
         break;
     case PrintMimeDefault:
-        out << Internal::defaultAppForContentType(mime) << endl;
+        out << Internal::defaultAppForContentType(mime).remove(".desktop") << endl;
+        return 0;
         break;
     case SetMimeDefault:
-        err << "not yet implemented" << endl;
+        setMimeDefault(mime, actionName);
+        return 0;
+        break;
+    case ResetMimeDefault:
+        resetMimeDefault(mime);
+        return 0;
         break;
     default:
         break;

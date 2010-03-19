@@ -22,6 +22,7 @@
 #include "internal.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <gio/gdesktopappinfo.h>
 #include <gio/gio.h>
@@ -73,7 +74,16 @@ QString Internal::mimeForFile(const QUrl& fileUri)
     return ret;
 }
 
-// Returns the XDG data directories.
+static QString xdgDataHome()
+{
+    const char *d;
+    d = getenv("XDG_DATA_HOME");
+    if (d)
+        return QString::fromLocal8Bit(d);
+    else
+        return QDir::homePath() + "/.local/share";
+}
+
 static const QStringList& xdgDataDirs()
 {
     static bool dirsSet = false;
@@ -83,12 +93,8 @@ static const QStringList& xdgDataDirs()
         return dirs;
 
     dirsSet = true;
+    dirs.append(xdgDataHome());
     const char *d;
-    d = getenv("XDG_DATA_HOME");
-    if (d)
-        dirs.append(QString::fromLocal8Bit(d));
-    else
-        dirs.append(QDir::homePath() + "/.local/share");
     d = getenv("XDG_DATA_DIRS");
     if (!d)
         d = "/usr/local/share:/usr/share";
@@ -96,12 +102,35 @@ static const QStringList& xdgDataDirs()
     return dirs;
 }
 
+static void writeDefaultsList(const QHash<QString, QString>& defaults)
+{
+    QString targetFileName = xdgDataHome() + "/applications/defaults.list";
+    QFile outFile(targetFileName + ".temp");
+    if (!outFile.open(QIODevice::WriteOnly)) {
+        LCA_WARNING << "cannot write" << outFile.fileName();
+        return;
+    }
+    QTextStream stream(&outFile);
+
+    stream << "[Default Applications]" << endl;
+    for (QHash<QString, QString>::ConstIterator it = defaults.constBegin();
+         it != defaults.constEnd(); ++it) {
+        stream << it.key() << "=" << it.value() << endl;
+    }
+    outFile.close();
+
+    // Unfortunately, QFile doesn't provide an API to do this (renaming a file
+    // and thus overwriting an existing file)
+    ::rename((targetFileName + ".temp").toLatin1().constData(),
+             targetFileName.toLatin1().constData());
+
+}
+
 // Reads "Key=Value" formatted lines from the file, and updates dict with
 // them.
 static void readKeyValues(QFile& file, QHash<QString, QString>& dict)
 {
     if (!file.open(QIODevice::ReadOnly)) {
-        LCA_WARNING << "cannot read" << file.fileName();
         return;
     }
     QTextStream stream(&file);
@@ -117,6 +146,39 @@ static void readKeyValues(QFile& file, QHash<QString, QString>& dict)
         dict.insert(line.left(eq).trimmed(), line.mid(eq + 1).trimmed());
     }
     file.close();
+}
+
+/// Sets the \a app as a default application to the given \a mimeType. \a app
+/// must be a application name, i.e., the base file name of the .desktop file,
+/// without the .desktop extension.
+void setMimeDefault(const QString& mimeType, const QString& app)
+{
+    QHash<QString, QString> defaults;
+    // Read the contents of $XDG_DATA_HOME/applications/defaults.list (if
+    // it exists)
+    QFile file(xdgDataHome() + "/applications/defaults.list");
+    readKeyValues(file, defaults);
+
+    defaults[mimeType] = app + ".desktop";
+
+    // Write back
+    writeDefaultsList(defaults);
+}
+
+/// Removes the association between \a mimeType and a user-configured default
+/// action.
+void resetMimeDefault(const QString& mimeType)
+{
+    QHash<QString, QString> defaults;
+    // Read the contents of $XDG_DATA_HOME/applications/defaults.list (if
+    // it exists)
+    QFile file(xdgDataHome() + "/applications/defaults.list");
+    readKeyValues(file, defaults);
+
+    defaults.remove(mimeType);
+
+    // Write back
+    writeDefaultsList(defaults);
 }
 
 // Searches XDG dirs for the .desktop file with the given id

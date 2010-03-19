@@ -29,76 +29,51 @@ except: pass
 import unittest
 from commands import getstatusoutput
 from cltool import CLTool
+from tempfile import mkdtemp
+from shutil import rmtree
+
+# Killing XDG_DATA_DIRS is normally not a good idea, but here we don't need
+# any "determining mime type of file" functionalities.
+os.environ["XDG_DATA_DIRS"] = os.environ["XDG_DATA_HOME"]
 
 class Defaults(unittest.TestCase):
-    def DONOTtearDown(self):
-        getstatusoutput("gconftool-2 --recursive-unset /Dui/contentaction")
-
-    def DONOTtestNoDefaultForClass(self):
-        (status, output) = getstatusoutput("lca-tool --classdefault http://fake.ontology/fke#NotAFile")
-        self.assert_(status >>8 == 5)
-
-    def DONOTtestSetAndGetDefaultForClass(self):
-        (status, output) = getstatusoutput("lca-tool --setclassdefault fake.action http://fake.ontology/fke#AudioFile")
+    def setUp(self):
+        os.environ["XDG_DATA_HOME"] = mkdtemp(dir = ".")
+    def tearDown(self):
+        rmtree(os.environ["XDG_DATA_HOME"])
+        
+    def testSettingDefault(self):
+        (status, output) = getstatusoutput("lca-tool --setmimedefault text/plain foo")
         self.assert_(status == 0)
 
-        (status, output) = getstatusoutput("lca-tool --classdefault http://fake.ontology/fke#AudioFile")
+        (status, output) = getstatusoutput("lca-tool --mimedefault text/plain")
         self.assert_(status == 0)
-        self.assert_(output.find("fake.action") != -1)
+        self.assert_(output.find("foo") != -1)
 
-    def DONOTtestNonImmediateDefault(self):
-        # set a default for a non-immediate superclass
-        (status, output) = getstatusoutput("lca-tool --setclassdefault nonimmediate.default http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Visual")
-        (status, output) = getstatusoutput("lca-tool --default an.image")
+    def testDefaultIsFirst(self):
+        (status, output) = getstatusoutput("lca-tool --setmimedefault text/plain foo")
         self.assert_(status == 0)
-        self.assert_(output.find("nonimmediate.default") != -1)
+        (status, output) = getstatusoutput("lca-tool --actionsformime text/plain")
 
-    def DONOTtestImmediateDefault(self):
-        # set a default for a non-immediate superclass
-        (status, output) = getstatusoutput("lca-tool --setclassdefault nonimmediate.default http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Visual")
-        # and also for an immediate superclass
-        (status, output) = getstatusoutput("lca-tool --setclassdefault better.default http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image")
-
-        (status, output) = getstatusoutput("lca-tool --default an.image")
         self.assert_(status == 0)
-        self.assert_(output.find("better.default") != -1)
+        self.assert_(output.find("foo") < output.find("uberdui"))
+        self.assert_(output.find("foo") < output.find("ubermimeopen"))
+        self.assert_(output.find("foo") < output.find("uberexec"))
 
-    def DONOTtestDefaultForManyUris(self):
-        (status, output) = getstatusoutput("lca-tool --setclassdefault better.default http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image")
-
-        (status, output) = getstatusoutput("lca-tool --default an.image b.image")
-        self.assert_(status == 0)
-        self.assert_(output.find("better.default") != -1)
-
-    def DONOTtestSettingDefault(self):
-        # only an applicable action can be set as default, so set the only applicable action
-        (status, output) = getstatusoutput("lca-tool --setdefault com.nokia.galleryserviceinterface.showImage an.image")
+    def testResettingDefault(self):
+        # check what are the actions (in order) before
+        (status, oldactions) = getstatusoutput("lca-tool --actionsformime text/plain")
         self.assert_(status == 0)
 
-        # the default action should be set for the most specific subclass
-        (status, output) = getstatusoutput("lca-tool --classdefault http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image")
-        self.assert_(status == 0)
-        self.assert_(output.find("com.nokia.galleryserviceinterface.showImage") != -1)
-
-    def DONOTtestSettingDefaultForManyUris(self):
-        # only an applicable action can be set as default, so set the only applicable action
-        (status, output) = getstatusoutput("lca-tool --setdefault com.nokia.galleryserviceinterface.showImage an.image b.image")
+        (status, output) = getstatusoutput("lca-tool --setmimedefault text/plain foo")
         self.assert_(status == 0)
 
-        # the default action should be set for the most specific subclass
-        (status, output) = getstatusoutput("lca-tool --classdefault http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image")
+        (status, output) = getstatusoutput("lca-tool --resetmimedefault text/plain")
         self.assert_(status == 0)
-        self.assert_(output.find("com.nokia.galleryserviceinterface.showImage") != -1)
 
-    def DONOTtestSettingDefaultForIncompatibleUris(self):
-        # only an applicable action can be set as default, so set the only applicable action
-        (status, output) = getstatusoutput("lca-tool --setdefault com.nokia.galleryserviceinterface.showImage an.image a.contact")
-        self.assert_(status >> 8 == 7)
-
-    def testQueryDefault(self):
-        (status, output) = getstatusoutput("lca-tool --tracker --printdefault an.image")
-        self.assert_(status == 0);
-        self.assert_(output.find("galleryserviceinterface"))
+        (status, newactions) = getstatusoutput("lca-tool --actionsformime text/plain")
+        self.assert_(status == 0)
+        self.assert_(newactions == oldactions)
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Defaults)

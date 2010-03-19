@@ -78,5 +78,8 @@ struct Match {
     bool operator<(const Match& other) const;
 };
 
+void setMimeDefault(const QString& mimeType, const QString& app);
+void resetMimeDefault(const QString& mimeType);
+
 } // end namespace
 #endif
