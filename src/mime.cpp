@@ -45,8 +45,9 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
+const QString UriSchemeMimeClass("x-maemo-urischeme/");
+
 static const QString DesktopFileMimeType("application/x-desktop");
-static const QString UriSchemeMimeClass("x-maemo-urischeme/");
 
 /// Returns the content type of the given file, or an empty string if it cannot
 /// be retrieved.
@@ -242,6 +243,19 @@ const QHash<QString, QStringList>& Internal::mimeApps()
     return mimecache;
 }
 
+static QString generalizeMimeType(const QString &mime)
+{
+    // No wildcards for our pseudo mimetypes.
+    if (mime.startsWith(OntologyMimeClass) ||
+        mime.startsWith(HighlighterMimeClass) ||
+        mime.startsWith(UriSchemeMimeClass))
+        return mime;
+    int n = mime.indexOf('/');
+    if (n < 0)
+        return mime;
+    return QString(mime.left(n) + "/*");
+}
+
 /// Returns the applications which handle the given \a contentType. The
 /// applications are read from the mimeinfo.cache. The file is searched in the
 /// default locations. The returned list will contain elements of the form
@@ -251,7 +265,12 @@ QStringList Internal::appsForContentType(const QString& contentType)
     QStringList ret;
 
     if (mimeApps().contains(contentType))
-        ret = mimeApps()[contentType];
+        ret << mimeApps()[contentType];
+
+    // Also add more general handlers.
+    QString general(generalizeMimeType(contentType));
+    if (mimeApps().contains(general))
+        ret << mimeApps()[general];
 
     // Get the default app handling this content type, insert it to the front
     // of the list

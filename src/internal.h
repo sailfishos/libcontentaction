@@ -68,8 +68,14 @@ struct ExecPrivate : public DefaultPrivate {
 
 Action createAction(const QString& desktopFileId, const QStringList& params);
 
+// our pseudo mimetype classes
+extern const QString OntologyMimeClass;
+extern const QString HighlighterMimeClass;
+extern const QString UriSchemeMimeClass;
+
 namespace Internal {
 
+// custom .desktop file keys
 extern const QString XMaemoServiceKey;
 extern const QString XOssoServiceKey;
 extern const QString XMaemoMethodKey;

@@ -4,4 +4,5 @@ x-maemo-highlight/phone=addcontact.desktop;caller.desktop;
 x-maemo-nepomuk/image=galleryserviceinterface.desktop;other.desktop;upload.desktop;show.desktop;
 x-maemo-urischeme/mailto=emailer.desktop
 x-maemo-nepomuk/contact=contacthandler.desktop
-text/plain=uberdui.desktop;uberexec.desktop;fixedparams.desktop;ubermimeopen.desktop;
+text/*=fixedparams.desktop
+text/plain=uberdui.desktop;uberexec.desktop;ubermimeopen.desktop;

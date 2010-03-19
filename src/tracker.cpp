@@ -37,7 +37,7 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
-static const QString OntologyMimeClass("x-maemo-nepomuk/");
+const QString OntologyMimeClass("x-maemo-nepomuk/");
 
 // initialized on the first request
 static TrackerClient *Tracker = 0;

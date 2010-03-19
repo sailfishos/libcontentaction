@@ -28,12 +28,15 @@
 #include <QStringList>
 #include <QMultiHash>
 
+const QString ContentAction::HighlighterMimeClass("x-maemo-highlight/");
+
 namespace {
 
+using namespace ContentAction;
 using namespace ContentAction::Internal;
 
-static QHash<QString, QString> Highlighter_cfg; // mime type -> regexp
-
+// mime type -> regexp
+static QHash<QString, QString> Highlighter_cfg;
 // friendly tracker condition name => sparql snippet
 static QHash<QString, QString> Tracker_cfg;
 
@@ -98,7 +101,7 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
             QString mime = atts.value("name").trimmed();
             if (mime.isEmpty())
                 fail("expected a nonempy mimetype");
-            Highlighter_cfg[mime.prepend("x-maemo-highlight/")] = regexp;
+            Highlighter_cfg[mime.prepend(HighlighterMimeClass)] = regexp;
         }
         else if (qname == "tracker-condition") {
             state = inTrackerCondition;
