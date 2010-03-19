@@ -91,7 +91,7 @@ static bool checkTrackerCondition(const QString& condition, const QString& uri)
 
 /// Evaluates the specified tracker conditions and check which match the \a
 /// uri.
-QStringList Internal::mimeTypesForUri(const QString& uri)
+QStringList Internal::mimeForTrackerObject(const QString& uri)
 {
     QStringList mimeTypes;
     QHash<QString, QString> conditions = trackerConditions();
@@ -114,7 +114,7 @@ static QStringList mimeTypesForUris(QStringList uris)
     bool first = true;
     QStringList commonMimeTypes;
     foreach (const QString& uri, uris) {
-        QStringList mimeTypes = mimeTypesForUri(uri);
+        QStringList mimeTypes = mimeForTrackerObject(uri);
 
         if (first) {
             commonMimeTypes = mimeTypes;
@@ -140,7 +140,7 @@ static QStringList mimeTypesForUris(QStringList uris)
 /// is returned.
 Action Action::defaultAction(const QString& uri)
 {
-    QStringList mimeTypes = mimeTypesForUri(uri);
+    QStringList mimeTypes = mimeForTrackerObject(uri);
     foreach (const QString& mimeType, mimeTypes) {
         QString def = defaultAppForContentType(mimeType);
         if (!def.isEmpty())
@@ -184,7 +184,7 @@ QList<Action> Action::actions(const QString& uri)
 {
     QList<Action> result;
 
-    QStringList mimeTypes = mimeTypesForUri(uri);
+    QStringList mimeTypes = mimeForTrackerObject(uri);
     foreach (const QString& mimeType, mimeTypes) {
         QStringList apps = appsForContentType(mimeType);
         foreach (const QString& app, apps) {

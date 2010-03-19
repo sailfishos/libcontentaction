@@ -49,7 +49,7 @@ static const QString UriSchemeMimeClass("x-maemo-urischeme/");
 
 /// Returns the content type of the given file, or an empty string if it cannot
 /// be retrieved.
-QString Internal::contentTypeForFile(const QUrl& fileUri)
+QString Internal::mimeForFile(const QUrl& fileUri)
 {
     g_type_init();
     QByteArray filename = fileUri.toEncoded();
@@ -205,7 +205,7 @@ QStringList Internal::appsForContentType(const QString& contentType)
 /// type.
 Action Action::defaultActionForFile(const QUrl& fileUri)
 {
-    QString contentType = contentTypeForFile(fileUri);
+    QString contentType = mimeForFile(fileUri);
     if (contentType.isEmpty())
         return Action();
     return defaultActionForFile(fileUri, contentType);
@@ -252,7 +252,7 @@ QList<Action> Internal::actionsForUri(const QString& uri, const QString& mimeTyp
 /// content type.
 QList<Action> Action::actionsForFile(const QUrl& fileUri)
 {
-    QString contentType = contentTypeForFile(fileUri);
+    QString contentType = mimeForFile(fileUri);
     return actionsForFile(fileUri, contentType);
 }
 
@@ -269,15 +269,21 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeTyp
     return actionsForUri(fileUri.toEncoded(), mimeType);
 }
 
+/// Returns the pseudo-mimetype of the scheme of \a uri.
+QString Internal::mimeForScheme(const QString& uri)
+{
+    QString mime;
+    int n = uri.indexOf(':');
+    if (n > 0)
+        mime = UriSchemeMimeClass + uri.left(n);
+    return mime;
+}
+
 /// Returns the default action for handling the scheme of the passed \a uri.
 /// \sa actionsForScheme().
 Action Action::defaultActionForScheme(const QString& uri)
 {
-    int n = uri.indexOf(':');
-    if (n < 0)
-        return Action();
-    QString mime(UriSchemeMimeClass + uri.left(n));
-    QString defApp = defaultAppForContentType(mime);
+    QString defApp = defaultAppForContentType(mimeForScheme(uri));
     if (defApp.isEmpty())
         return Action();
     return createAction(findDesktopFile(defApp), QStringList() << uri);
@@ -291,11 +297,7 @@ Action Action::defaultActionForScheme(const QString& uri)
 QList<Action> Action::actionsForScheme(const QString& uri)
 {
     QList<Action> result;
-    int n = uri.indexOf(':');
-    if (n < 0)
-        return result;
-    QString mime(UriSchemeMimeClass + uri.left(n));
-    foreach (const QString& app, appsForContentType(mime)) {
+    foreach (const QString& app, appsForContentType(mimeForScheme(uri))) {
         result << createAction(findDesktopFile(app), QStringList() << uri);
     }
     return result;
