@@ -12,7 +12,7 @@ Makefile: configure
 build: debian/build-stamp
 debian/build-stamp: Makefile
 	dh_testdir
-	$(MAKE) LDFLAGS='$(LDFLAGS)'
+	$(MAKE)
 	touch $@
 
 clean:

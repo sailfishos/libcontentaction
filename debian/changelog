@@ -1,19 +1,19 @@
 libcontentaction (0.1.0~unreleased) unstable; urgency=low
 
-  * Major changes:
-    -- All actions are defined in .desktop files.
-    -- Tracker-based conditions and highlighter regexps are
-       defined in the configuration files.
-    -- Default-ness related methods of Action are gone, also
-       defaults are not stored in GConf.  (API pending).
-  * Added functions do selectively highlight and
-    remove highlighting from DuiLabels.
-  * New package: libcontentaction-data
-    Contains configuration files.
-  * Package libcontentaction-dui removed.
-    Now libcontentaction depends on libdui unconditionally.
+  * All actions are defined in .desktop files.
+  * Tracker-based conditions and highlighter regexps are defined in the
+    configuration files.
+  * New API to create Action:s for URI schemes (like mailto:).
+  * Defaultness related methods of Action are gone, there is a new API for
+    setting defaults.
+  * Added functions to selectively highlight and remove all highlighting
+    from DuiLabels.
+  * lca-tool synopsis changed.
+  * New binary package: libcontentaction-data, containing configuration files.
+  * Package libcontentaction-dui removed, now libcontentaction depends on
+    libdui unconditionally.
 
- -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Wed, 17 Mar 2010 14:46:08 +0200
+ -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Mon, 22 Mar 2010 10:01:25 +0200
 
 libcontentaction (0.0.8.1) unstable; urgency=low
 
