@@ -54,9 +54,6 @@ Type=Application
 Icon=gallery.png
 ;; This is needed to prevent this action appearing in the launcher.
 NotShowIn=X-DUI;
-;; The action weight, used to sort the actions.  The heavy ones sink to the
-;; bottom of the list presented to the user.
-X-Maemo-Weight=1000
 
 ;; Defining a localization method:
 ;; 1. Dui-based
