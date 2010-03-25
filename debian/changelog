@@ -1,3 +1,9 @@
+libcontentaction (0.1.1) unstable; urgency=low
+
+  * Added Conflicts against libcontentaction-dui-dev
+
+ -- Jean-Luc Lamadon <jean-luc.lamadon@nokia.com>  Thu, 25 Mar 2010 17:06:49 +0200
+
 libcontentaction (0.1.0) unstable; urgency=low
 
   * All actions are defined in .desktop files.
