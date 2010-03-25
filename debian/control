@@ -25,6 +25,7 @@ Description: Library for associating content with actions
  This package contains the debug symbols.
 
 Package: libcontentaction-dev
+Conflicts: libcontentaction-dui-dev
 Section: libdevel
 Architecture: any
 Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-dev
