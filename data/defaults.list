@@ -1,4 +1,23 @@
 [Default Applications]
-x-maemo-tracker/nfo-Video=tempvideosuiteif.desktop
+application/excel=office-tools.desktop
+application/mspowerpoint=office-tools.desktop
+application/msword=office-tools.desktop
+application/pdf=office-tools.desktop
+application/vnd.ms-powerpoint=office-tools.desktop
+application/vnd.oasis.opendocument.presentation=office-tools.desktop
+application/vnd.oasis.opendocument.spreadsheet=office-tools.desktop
+application/vnd.oasis.opendocument.text=office-tools.desktop
+application/vnd.openxmlformats-officedocument.presentationml.presentation=office-tools.desktop
+application/vnd.openxmlformats-officedocument.presentationml.slideshow=office-tools.desktop
+application/vnd.openxmlformats-officedocument.presentationml.template=office-tools.desktop
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet=office-tools.desktop
+application/vnd.openxmlformats-officedocument.spreadsheetml.template=office-tools.desktop
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=office-tools.desktop
+application/vnd.openxmlformats-officedocument.wordprocessingml.template=office-tools.desktop
+application/x-vnd.oasis.opendocument.presentation=office-tools.desktop
+application/x-vnd.oasis.opendocument.spreadsheet=office-tools.desktop
+application/x-vnd.oasis.opendocument.text=office-tools.desktop
+text/plain=office-tools.desktop
 x-maemo-tracker/nfo-Image=tempgalleryif.desktop
+x-maemo-tracker/nfo-Video=tempvideosuiteif.desktop
 x-maemo-tracker/nmm-MusicPiece=tempmusicsuiteif.desktop
