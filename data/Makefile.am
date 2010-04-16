@@ -5,7 +5,4 @@ dist_actions_DATA = \
 
 applicationsdir = $(datadir)/applications
 dist_applications_DATA = \
-	defaults.list \
-	tempgalleryif.desktop \
-	tempmusicsuiteif.desktop \
-	tempvideosuiteif.desktop
+	defaults.list

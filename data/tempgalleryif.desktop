@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Show
-MimeType=x-maemo-nepomuk/image;
-X-Maemo-Method=com.nokia.galleryserviceinterface.showMediaInFullScreen
-NotShowIn=X-DUI;

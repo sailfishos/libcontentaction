@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Play
-MimeType=x-maemo-nepomuk/musicpiece;
-X-Maemo-Method=com.nokia.MusicSuiteServicePublicIf.play
-NotShowIn=X-DUI;
