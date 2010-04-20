@@ -257,11 +257,14 @@ int main(int argc, char **argv)
         defAction = Action::defaultAction(args);
         break;
     case FileMode:
-        if (!args[0].startsWith("file://"))
-            args[0].prepend("file://");
+    {
+        QFileInfo fileInfo(args[0]);
+        if (fileInfo.exists())
+            args[0] = fileInfo.absoluteFilePath().prepend("file://");
         actions = Action::actionsForFile(QUrl(args[0]));
         defAction = Action::defaultActionForFile(QUrl(args[0]));
-        break;
+    }
+    break;
     case SchemeMode:
         actions = Action::actionsForScheme(args[0]);
         defAction = Action::defaultActionForScheme(args[0]);
