@@ -30,7 +30,8 @@ citest_SCRIPTS = \
 	test-servicefw-signals.py \
 	test-desktop-launching.py \
 	test-l10n.sh \
-	test-fixed-params.py
+	test-fixed-params.py \
+	test-schemes.sh
 
 noinst_SCRIPTS = \
 	start-sandbox.sh \
@@ -106,6 +107,7 @@ TESTS = \
 	test-desktop-launching.py \
 	test-l10n.sh \
 	test-fixed-params.py \
+	test-schemes.sh \
 	stop-sandbox.sh
 
 clean-local:

@@ -370,10 +370,16 @@ QString Internal::mimeForScheme(const QString& uri)
 /// \sa actionsForScheme().
 Action Action::defaultActionForScheme(const QString& uri)
 {
-    QString defApp = defaultAppForContentType(mimeForScheme(uri));
-    if (defApp.isEmpty())
-        return Action();
-    return createAction(findDesktopFile(defApp), QStringList() << uri);
+    QString mimeType = mimeForScheme(uri);
+    QString defApp = defaultAppForContentType(mimeType);
+    if (!defApp.isEmpty())
+        return createAction(findDesktopFile(defApp), QStringList() << uri);
+
+    // Fall back to one of the existing actions (if there are some)
+    QList<Action> acts = actionsForUri(uri, mimeType);
+    if (acts.size() >= 1)
+        return acts[0];
+    return Action();
 }
 
 /// Returns all actions handling the scheme of the given \a uri.  The uri
