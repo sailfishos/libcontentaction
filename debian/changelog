@@ -3,7 +3,8 @@ libcontentaction (0.1.2) unstable; urgency=low
   * API for getting a list of actions for a mime type, and setting an
     action as a default.
   * Fixes: NB#164714 - No fallback-if-no-default for scheme actions
- --
+
+ -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Tue, 20 Apr 2010 14:06:47 +0300
 
 libcontentaction (0.1.1) unstable; urgency=low
 
