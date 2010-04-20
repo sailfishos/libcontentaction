@@ -24,6 +24,10 @@ void everything()
     Action::defaultActionForFile(QUrl("file:///somewhere/over/the/rainbow"));
 
     QString x = a.localizedName();
+
+    setMimeDefault("foo", "bar");
+    QList<Action> list = actionsForMime("foo");
+    setMimeDefault("foo", list[0]);
 }
 
 int main(int argc, char **argv)
