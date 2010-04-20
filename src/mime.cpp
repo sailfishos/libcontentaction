@@ -149,6 +149,12 @@ static void readKeyValues(QFile& file, QHash<QString, QString>& dict)
     file.close();
 }
 
+/// Sets the \a action as a default application to the given \a mimeType.
+void setMimeDefault(const QString& mimeType, const Action& action)
+{
+    setMimeDefault(mimeType, action.name());
+}
+
 /// Sets the \a app as a default application to the given \a mimeType. \a app
 /// must be a application name, i.e., the base file name of the .desktop file,
 /// without the .desktop extension.
@@ -383,5 +389,17 @@ QList<Action> Action::actionsForScheme(const QString& uri)
     }
     return result;
 }
+
+QList<Action> actionsForMime(const QString& mimeType)
+{
+    QList<Action> result;
+    QStringList appIds = appsForContentType(mimeType);
+    foreach (const QString& id, appIds) {
+        result << createAction(findDesktopFile(id),
+                               QStringList());
+    }
+    return result;
+}
+
 
 } // end namespace

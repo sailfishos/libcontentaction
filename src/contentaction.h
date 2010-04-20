@@ -78,6 +78,8 @@ struct Match {
     bool operator<(const Match& other) const;
 };
 
+QList<Action> actionsForMime(const QString& mimeType);
+void setMimeDefault(const QString& mimeType, const Action& action);
 void setMimeDefault(const QString& mimeType, const QString& app);
 void resetMimeDefault(const QString& mimeType);
 

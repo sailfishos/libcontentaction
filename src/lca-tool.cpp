@@ -221,8 +221,8 @@ int main(int argc, char **argv)
     // handle modeless actions first
     switch (todo) {
     case PrintActionsForMime:
-        foreach (const QString& a, Internal::appsForContentType(mime)) {
-            out << QString(a).remove(".desktop") << endl;
+        foreach (const Action& a, actionsForMime(mime)) {
+            out << a.name() << endl;
         }
         return 0;
         break;
