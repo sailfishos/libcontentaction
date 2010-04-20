@@ -26,6 +26,7 @@
 #include <QTextStream>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QFileInfo>
 #include <MLocale>
 
 using namespace ContentAction;
