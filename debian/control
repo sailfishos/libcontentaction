@@ -15,6 +15,7 @@ Package: libcontentaction0
 Architecture: any
 Depends: libcontentaction-data, desktop-file-utils (>= 0.15-2+maemo5), ${shlibs:Depends}
 Description: Library for associating content with actions
+Provides: lca-tool
 
 Package: libcontentaction0-dbg
 Priority: extra
