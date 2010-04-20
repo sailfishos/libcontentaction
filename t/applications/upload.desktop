@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=uploadname
-X-DUI-translation-catalog=test
-X-DUI-logical-id=upload.to.album
+X-M-translation-catalog=test
+X-M-logical-id=upload.to.album
 Terminal=false
 Type=Application
 MimeType=x-maemo-nepomuk/image;
 Exec=/bin/true
-NotShowIn=X-DUI;
+NotShowIn=X-MeeGo;

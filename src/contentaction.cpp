@@ -23,7 +23,7 @@
 #include "internal.h"
 #include "service.h"
 
-#include <DuiDesktopEntry>
+#include <MDesktopEntry>
 #include <QFileInfo>
 
 /*!
@@ -95,7 +95,7 @@ void ActionPrivate::trigger() const
     LCA_WARNING << "triggered an invalid action, not doing anything.";
 }
 
-DefaultPrivate::DefaultPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params)
+DefaultPrivate::DefaultPrivate(MDesktopEntry* desktopEntry, const QStringList& params)
     : desktopEntry(desktopEntry), params(params)
 {
 }
@@ -148,7 +148,7 @@ Action::Action(ActionPrivate* priv)
 
 Action createAction(const QString& desktopFile, const QStringList& params)
 {
-    DuiDesktopEntry* desktopEntry = new DuiDesktopEntry(desktopFile);
+    MDesktopEntry* desktopEntry = new MDesktopEntry(desktopFile);
     if (desktopEntry->contains(XMaemoMethodKey) &&
         !desktopEntry->contains(XMaemoServiceKey)) {
         return Action(new ServiceFwPrivate(desktopEntry, params));

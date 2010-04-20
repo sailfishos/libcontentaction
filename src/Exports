@@ -22,6 +22,9 @@
     ContentAction::Dui::highlightLabel*;
     ContentAction::Dui::dehighlightLabel*;
 
+    ContentAction::highlightLabel*;
+    ContentAction::dehighlightLabel*;
+
     ContentAction::Internal::appsForContentType*;
     ContentAction::Internal::defaultAppForContentType*;
 

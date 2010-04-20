@@ -4,5 +4,5 @@ Name=fake gallery
 Terminal=false
 Type=Application
 MimeType=x-maemo-nepomuk/image;
-NotShowIn=X-DUI;
+NotShowIn=X-MeeGo;
 X-Maemo-Method=com.nokia.galleryserviceinterface.showImage

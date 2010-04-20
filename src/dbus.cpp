@@ -21,7 +21,7 @@
 
 #include "internal.h"
 
-#include <DuiDesktopEntry>
+#include <MDesktopEntry>
 
 #include <QVariantList>
 #include <QDBusInterface>
@@ -33,11 +33,11 @@ namespace ContentAction {
 
 const QString XMaemoFixedArgsKey("Desktop Entry/X-Maemo-Fixed-Args");
 
-DBusPrivate::DBusPrivate(DuiDesktopEntry* desktopEntry, const QStringList& _params)
+DBusPrivate::DBusPrivate(MDesktopEntry* desktopEntry, const QStringList& _params)
     : DefaultPrivate(desktopEntry, _params), varArgs(false)
 {
     // mime_open  X-Osso-Service
-    // dui-launch X-Maemo-Service
+    // meegotouch launch X-Maemo-Service
     // user-defined X-Maemo-Service && X-Maemo-Method (+ X-Maemo-Object-Path)
     //    + fixed args
 
@@ -51,13 +51,13 @@ DBusPrivate::DBusPrivate(DuiDesktopEntry* desktopEntry, const QStringList& _para
     }
     // Now we assume that X-Maemo-Service is present.
     busName = desktopEntry->value(XMaemoServiceKey);
-    // Default to com.nokia.DuiApplicationIf.launch but support any interface
+    // Default to com.nokia.MApplicationIf.launch but support any interface
     // + method
     QString ifaceMethod = desktopEntry->value(XMaemoMethodKey);
     if (ifaceMethod.isEmpty()) {
-        iface = "com.nokia.DuiApplicationIf";
+        iface = "com.nokia.MApplicationIf";
         method = "launch";
-        objectPath = "/org/maemo/dui";
+        objectPath = "/org/maemo/m";
     }
     else {
         // Split into method and interface
@@ -94,7 +94,7 @@ void DBusPrivate::trigger() const
         // Call a D-Bus function with a string list
         QDBusInterface launcher(busName, objectPath, iface);
         launcher.asyncCall(method, params);
-        // FIXME: What if we're launching a non-dui desktop file, and we don't
+        // FIXME: What if we're launching a non-meegotouch desktop file, and we don't
         // have any func taking a string list; only a func taking nothing?
     }
 }

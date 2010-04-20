@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=showname
-X-DUI-translation-catalog=test
-X-DUI-logical-id=com.nokia.imageviewer.show
+X-M-translation-catalog=test
+X-M-logical-id=com.nokia.imageviewer.show
 Terminal=false
 Type=Application
 MimeType=x-maemo-nepomuk/image;
 Exec=/bin/true
-NotShowIn=X-DUI;
+NotShowIn=X-MeeGo;

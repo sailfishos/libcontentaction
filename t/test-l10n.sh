@@ -6,7 +6,7 @@ srcdir=.
 
 setlocale() {
     export LANG="$1";
-    gconftool-2 -t string -s /Dui/i18n/Language "$LANG";
+    gconftool-2 -t string -s /meegotouch/i18n/language "$LANG";
 }
 
 #lca-tool adds these as translation paths
@@ -59,6 +59,6 @@ strstr "$a" ".*!! showname" || exit 1;
 a=$(lca-tool --l10n --file --print "file://$plaintext" 2>/dev/null)
 strstr "$a" ".*uberexec" || exit 1;
 strstr "$a" ".*ubermimeopen" || exit 1;
-strstr "$a" ".*!! uberdui" || exit 1;
+strstr "$a" ".*!! ubermeego" || exit 1;
 
 exit 0;

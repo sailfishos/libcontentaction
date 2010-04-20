@@ -22,7 +22,7 @@
 #include "service.h"
 #include "internal.h"
 
-#include <DuiDesktopEntry>
+#include <MDesktopEntry>
 
 #include <QDBusInterface>
 #include <QDBusMessage>
@@ -33,7 +33,7 @@ using namespace ContentAction::Internal;
 namespace ContentAction
 {
 
-ServiceFwPrivate::ServiceFwPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params)
+ServiceFwPrivate::ServiceFwPrivate(MDesktopEntry* desktopEntry, const QStringList& params)
     : DefaultPrivate(desktopEntry, params),
       serviceFwMethod(desktopEntry->value(XMaemoMethodKey))
 {
@@ -59,8 +59,8 @@ ServiceResolver& resolver()
 }
 
 ServiceResolver::ServiceResolver()
-    : mapperProxy(new QDBusInterface("com.nokia.DuiServiceFw", "/",
-                                     "com.nokia.DuiServiceFwIf",
+    : mapperProxy(new QDBusInterface("com.nokia.MServiceFw", "/",
+                                     "com.nokia.MServiceFwIf",
                                      QDBusConnection::sessionBus()))
 {
     connect(mapperProxy, SIGNAL(serviceAvailable(QString,QString)),
@@ -78,7 +78,7 @@ ServiceResolver::~ServiceResolver()
     delete mapperProxy;
 }
 
-/// A slot connected to the serviceAvailable signal from Dui service mapper.
+/// A slot connected to the serviceAvailable signal from Meego service mapper.
 void ServiceResolver::onServiceAvailable(QString implementor, QString interface)
 {
     // Now a service become available for an interface, but we cannot know
@@ -97,7 +97,7 @@ void ServiceResolver::onServiceAvailable(QString implementor, QString interface)
     }
 }
 
-/// A slot connected to the serviceUnavailable signal from Dui service mapper.
+/// A slot connected to the serviceUnavailable signal from Meego service mapper.
 void ServiceResolver::onServiceUnavailable(QString implementor)
 {
     // Check which interfaces now become unusable
@@ -109,7 +109,7 @@ void ServiceResolver::onServiceUnavailable(QString implementor)
 }
 
 /// Returns the name of the current implementor of an interface. If an error
-/// occurs (e.g., we cannot connect to the Dui service mapper), returns an
+/// occurs (e.g., we cannot connect to the Meego service mapper), returns an
 /// empty string.
 QString ServiceResolver::implementorName(const QString& interface)
 {

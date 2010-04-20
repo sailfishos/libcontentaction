@@ -21,7 +21,7 @@
 
 #include "internal.h"
 
-#include <DuiDesktopEntry>
+#include <MDesktopEntry>
 
 #include <QFileInfo>
 
@@ -31,7 +31,7 @@
 
 namespace ContentAction {
 
-ExecPrivate::ExecPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params)
+ExecPrivate::ExecPrivate(MDesktopEntry* desktopEntry, const QStringList& params)
     : DefaultPrivate(desktopEntry, params)
 {
     g_type_init();

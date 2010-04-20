@@ -14,7 +14,7 @@
 
 #define LCA_WARNING qWarning() << "libcontentaction:"
 
-class DuiDesktopEntry;
+class MDesktopEntry;
 
 namespace ContentAction {
 
@@ -30,25 +30,25 @@ struct ActionPrivate
 
 struct DefaultPrivate : public ActionPrivate
 {
-    DefaultPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params);
+    DefaultPrivate(MDesktopEntry* desktopEntry, const QStringList& params);
     virtual ~DefaultPrivate();
     virtual bool isValid() const;
     virtual QString name() const;
     virtual QString localizedName() const;
     virtual QString icon() const;
-    DuiDesktopEntry* desktopEntry;
+    MDesktopEntry* desktopEntry;
     QStringList params;
 };
 
 struct ServiceFwPrivate : public DefaultPrivate {
-    ServiceFwPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params);
+    ServiceFwPrivate(MDesktopEntry* desktopEntry, const QStringList& params);
     virtual void trigger() const;
 
     QString serviceFwMethod;
 };
 
 struct DBusPrivate : public DefaultPrivate {
-    DBusPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params);
+    DBusPrivate(MDesktopEntry* desktopEntry, const QStringList& params);
     virtual void trigger() const;
 
     QString busName;
@@ -59,7 +59,7 @@ struct DBusPrivate : public DefaultPrivate {
 };
 
 struct ExecPrivate : public DefaultPrivate {
-    ExecPrivate(DuiDesktopEntry* desktopEntry, const QStringList& params);
+    ExecPrivate(MDesktopEntry* desktopEntry, const QStringList& params);
     virtual ~ExecPrivate();
     virtual void trigger() const;
 

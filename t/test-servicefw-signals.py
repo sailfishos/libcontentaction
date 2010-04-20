@@ -39,7 +39,7 @@ class ServiceFWSignals(unittest.TestCase):
         self.assert_(self.gallery2.expect("started"))
 
         # reset the mapping inside the service mapper
-        p = Popen('qdbus com.nokia.DuiServiceFw / org.maemo.contentaction.testing.changeMapping "just.a.gallery" "com.nokia.galleryserviceinterface"', shell=True)
+        p = Popen('qdbus com.nokia.MServiceFw / org.maemo.contentaction.testing.changeMapping "just.a.gallery" "com.nokia.galleryserviceinterface"', shell=True)
         sts = os.waitpid(p.pid, 0)[1]
         self.assert_(sts == 0)
 
@@ -54,13 +54,13 @@ class ServiceFWSignals(unittest.TestCase):
         self.assert_(self.gallery.expect("showImage ; an.image"))
 
         # change the mapping inside our mock service mapper
-        p = Popen('qdbus com.nokia.DuiServiceFw / org.maemo.contentaction.testing.changeMapping "just.another.gallery" "com.nokia.galleryserviceinterface"', shell=True)
+        p = Popen('qdbus com.nokia.MServiceFw / org.maemo.contentaction.testing.changeMapping "just.another.gallery" "com.nokia.galleryserviceinterface"', shell=True)
         sts = os.waitpid(p.pid, 0)[1]
         self.assert_(sts == 0)
 
         # then command our mock service mapper to send a signal that the
         # implementor has changed
-        p = Popen('qdbus com.nokia.DuiServiceFw / org.maemo.contentaction.testing.emitServiceAvailable "just.another.gallery" "com.nokia.galleryserviceinterface"', shell=True)
+        p = Popen('qdbus com.nokia.MServiceFw / org.maemo.contentaction.testing.emitServiceAvailable "just.another.gallery" "com.nokia.galleryserviceinterface"', shell=True)
         sts = os.waitpid(p.pid, 0)[1]
         self.assert_(sts == 0)
 
@@ -74,13 +74,13 @@ class ServiceFWSignals(unittest.TestCase):
         self.assert_(self.gallery.expect("showImage ; an.image"))
 
         # change the mapping inside our mock service mapper
-        p = Popen('qdbus com.nokia.DuiServiceFw / org.maemo.contentaction.testing.changeMapping "just.another.gallery" "com.nokia.galleryserviceinterface"', shell=True)
+        p = Popen('qdbus com.nokia.MServiceFw / org.maemo.contentaction.testing.changeMapping "just.another.gallery" "com.nokia.galleryserviceinterface"', shell=True)
         sts = os.waitpid(p.pid, 0)[1]
         self.assert_(sts == 0)
 
         # then command our mock service mapper to send a signal that the
         # implementor is no longer available
-        p = Popen('qdbus com.nokia.DuiServiceFw / org.maemo.contentaction.testing.emitServiceUnavailable "just.a.gallery"', shell=True)
+        p = Popen('qdbus com.nokia.MServiceFw / org.maemo.contentaction.testing.emitServiceUnavailable "just.a.gallery"', shell=True)
         sts = os.waitpid(p.pid, 0)[1]
         self.assert_(sts == 0)
 

@@ -1,16 +1,16 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=uberdui
-Name[en]=englishdui
-Name[de]=deutschdui
+Name=ubermeego
+Name[en]=englishmeego
+Name[de]=deutschmeego
 GenericName=Uber Program
-Icon=duiicon
+Icon=ubericon
 Comment=View ANYTHING
 Exec=/usr/bin/python2.5 -c "import sys; print \"uberalles:\", sys.argv[1:]"
 Terminal=false
 Type=Application
 MimeType=text/plain;
 X-Maemo-Service=uber.program
-X-DUI-translation-catalog=test
-X-DUI-logical-id=some.other.action
-NotShowIn=X-DUI;
+X-M-translation-catalog=test
+X-M-logical-id=some.other.action
+NotShowIn=X-MeeGo;

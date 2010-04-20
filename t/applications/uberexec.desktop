@@ -10,4 +10,4 @@ Exec=python -c "f = open(%U); content=f.read(); f2 = open('./executedAction', 'w
 Terminal=false
 Type=Application
 MimeType=text/plain;
-NotShowIn=X-DUI;
+NotShowIn=X-MeeGo;

@@ -26,7 +26,7 @@
 #include <QTextStream>
 #include <QCoreApplication>
 #include <QDebug>
-#include <DuiLocale>
+#include <MLocale>
 
 using namespace ContentAction;
 using namespace ContentAction::Internal;
@@ -121,10 +121,10 @@ int main(int argc, char **argv)
     if (l10npaths) {
         foreach (const QString& p, QString::fromLocal8Bit(l10npaths).split(':')) {
             qDebug() << "adding path:" << p;
-            DuiLocale::addTranslationPath(p);
+            MLocale::addTranslationPath(p);
         }
     } else {
-        DuiLocale::addTranslationPath("/usr/share/l10n/dui");
+        MLocale::addTranslationPath("/usr/share/l10n/meegotouch");
     }
 
     QStringList args;

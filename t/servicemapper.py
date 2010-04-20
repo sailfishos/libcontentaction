@@ -6,7 +6,7 @@ import gobject
 class ServiceMapper(dbus.service.Object):
     def __init__(self, path):
         dbus.service.Object.__init__(self, dbus.SessionBus(), path)
-        self.iam = dbus.service.BusName('com.nokia.DuiServiceFw',
+        self.iam = dbus.service.BusName('com.nokia.MServiceFw',
                                         dbus.SessionBus())
         self.mapping = {}
         try:
@@ -14,7 +14,7 @@ class ServiceMapper(dbus.service.Object):
         except IOError:
             execfile(os.path.dirname(__file__) + '/service.map')
 
-    @dbus.service.method(dbus_interface='com.nokia.DuiServiceFwIf',
+    @dbus.service.method(dbus_interface='com.nokia.MServiceFwIf',
                          in_signature='s', out_signature='s')
     def serviceName(self, interface):
         return self.mapping.get(interface, '')
@@ -34,12 +34,12 @@ class ServiceMapper(dbus.service.Object):
     def emitServiceUnavailable(self, implementor):
         self.serviceUnavailable(implementor)
 
-    @dbus.service.signal(dbus_interface='com.nokia.DuiServiceFwIf',
+    @dbus.service.signal(dbus_interface='com.nokia.MServiceFwIf',
                          signature='ss')
     def serviceAvailable(self, implementor, interface):
         print "emit service available", implementor, interface
 
-    @dbus.service.signal(dbus_interface='com.nokia.DuiServiceFwIf',
+    @dbus.service.signal(dbus_interface='com.nokia.MServiceFwIf',
                          signature='s')
     def serviceUnavailable(self, implementor):
         print "emit service unavailable", implementor

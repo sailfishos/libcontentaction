@@ -54,10 +54,10 @@ check_PROGRAMS = \
 noinst_PROGRAMS = hldemo
 hldemo_SOURCES = hldemo.cpp
 hldemo_CPPFLAGS = \
-	$(DUI_CFLAGS) \
+	$(MT_CFLAGS) \
 	-I$(top_srcdir)/src
 hldemo_LDADD = \
-	$(DUI_LIBS) \
+	$(MT_LIBS) \
 	../src/libcontentaction.la
 BUILT_SOURCES += hldemo.moc
 CLEANFILES += hldemo.moc
@@ -78,9 +78,6 @@ BUILT_SOURCES += servicelistener.moc
 
 ../src/libcontentaction.la: FORCE
 	$(MAKE) -C ../src libcontentaction.la
-
-../src/libcontentaction-dui.la: FORCE
-	$(MAKE) -C ../src libcontentaction-dui.la
 
 .PHONY: FORCE
 

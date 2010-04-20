@@ -8,7 +8,7 @@ class Uberprogram(dbus.service.FallbackObject):
         dbus.service.FallbackObject.__init__(self, dbus.SessionBus(), '/')
         self.iam = dbus.service.BusName(busname, dbus.SessionBus())
 
-    @dbus.service.method(dbus_interface='com.nokia.DuiApplicationIf',
+    @dbus.service.method(dbus_interface='com.nokia.MApplicationIf',
                          in_signature='as')
     def launch(self, uris):
         print 'launch:', uris

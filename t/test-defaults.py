@@ -57,7 +57,7 @@ class Defaults(unittest.TestCase):
         (status, output) = getstatusoutput("lca-tool --actionsformime text/plain")
 
         self.assert_(status == 0)
-        self.assert_(output.find("foo") < output.find("uberdui"))
+        self.assert_(output.find("foo") < output.find("ubermeego"))
         self.assert_(output.find("foo") < output.find("ubermimeopen"))
         self.assert_(output.find("foo") < output.find("uberexec"))
 

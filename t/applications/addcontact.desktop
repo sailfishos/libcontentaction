@@ -4,5 +4,5 @@ Name=add contact to phonebook
 Exec=echo "adding contact, params:" %U
 Terminal=false
 Type=Application
-NotShowIn=X-DUI;
+NotShowIn=X-MeeGo;
 MimeType=x-maemo-highlight/phone;

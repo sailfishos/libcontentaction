@@ -18,7 +18,7 @@ from libcontentaction.
 In case of file URIs, the library finds out the mime type and uses that as a
 key of the association.  For objects stored in Tracker, the ontology classes
 are used for this purpose.  Finally, the library provides
-ContentAction::Dui::highlightLabel() for adding highlighters to a DuiLabel
+ContentAction::highlightLabel() for adding highlighters to a MLabel
 based on the available actions handling regexps.
 
 \section providing_actions Providing actions
@@ -32,7 +32,7 @@ Actions can target one of the following:
 
 The library supports launching actions with one of the following methods:
 
--# launch a Dui based application using the DuiApplication D-Bus interface
+-# launch a MeeGoTouch based application using the MApplication D-Bus interface
 -# call a D-Bus method specified in the .desktop file
 -# call a Maemo Service Framework method
 -# execute a binary
@@ -53,12 +53,12 @@ Let's take an image viewer for example.
 Type=Application
 Icon=gallery.png
 ;; This is needed to prevent this action appearing in the launcher.
-NotShowIn=X-DUI;
+NotShowIn=X-MeeGo;
 
 ;; Defining a localization method:
-;; 1. Dui-based
-X-Dui-translation-catalog=gallery_catalog
-X-Dui-logical-id=view_logical_id
+;; 1. MeeGoTouch-based
+X-M-translation-catalog=gallery_catalog
+X-M-logical-id=view_logical_id
 ;; 2. XDG style
 Name=View in gallery
 Name[fi]=Näytä galleriassa
@@ -74,8 +74,8 @@ MimeType=x-maemo-highlight/phonenumber;
 MimeType=x-maemo-urischeme/mailto;
 
 ;; Defining how to trigger the action:
-;; 1. invoke a DuiApplication based program, by calling
-;; the com.nokia.DuiApplicationIf.launch method
+;; 1. invoke a MApplication based program, by calling
+;; the com.nokia.MApplicationIf.launch method
 X-Maemo-Service=org.maemo.gallery_service
 ;; 2. general D-Bus invocation
 X-Maemo-Service=org.maemo.gallery_service

@@ -2,23 +2,22 @@
 #include <stdio.h>
 
 #include <contentaction.h>
-#include <contentaction-dui.h>
 
 #include <QGraphicsGridLayout>
 #include <QDebug>
 
-#include <DuiApplication>
-#include <DuiApplicationPage>
-#include <DuiApplicationWindow>
-#include <DuiLabel>
-#include <DuiButton>
-#include <DuiLocale>
+#include <MApplication>
+#include <MApplicationPage>
+#include <MApplicationWindow>
+#include <MLabel>
+#include <MButton>
+#include <MLocale>
 
 static QString text("Hello, please reach me at foo@example.com\n"
                     "or call +1 555 23231.  But never send mail to\n"
                     "spamtrap@here.you.go because we'll call 911.");
 
-class Us: public DuiWidget {
+class Us: public MWidget {
     Q_OBJECT
 public:
     Us();
@@ -29,15 +28,15 @@ private slots:
     void doUnHilite();
 
 private:
-    DuiLabel *textLabel;
-    DuiButton *hiliteButton;
-    DuiButton *unhiliteButton;
+    MLabel *textLabel;
+    MButton *hiliteButton;
+    MButton *unhiliteButton;
 };
 
 Us::Us() :
-    textLabel(new DuiLabel(text, this)),
-    hiliteButton(new DuiButton("hilite", this)),
-    unhiliteButton(new DuiButton("unhilite", this))
+    textLabel(new MLabel(text, this)),
+    hiliteButton(new MButton("hilite", this)),
+    unhiliteButton(new MButton("unhilite", this))
 {
     QGraphicsGridLayout *layout = new QGraphicsGridLayout(this);
     layout->addItem(hiliteButton, 0, 0);
@@ -53,30 +52,30 @@ Us::~Us()
 
 void Us::doHilite()
 {
-    ContentAction::Dui::highlightLabel(textLabel);
+    ContentAction::highlightLabel(textLabel);
 }
 
 void Us::doUnHilite()
 {
-    ContentAction::Dui::dehighlightLabel(textLabel);
+    ContentAction::dehighlightLabel(textLabel);
 }
 
 int main(int argc, char **argv)
 {
-    DuiApplication app(argc, argv);
-    DuiApplicationWindow window;
-    DuiApplicationPage page;
-    DuiLocale locale;
+    MApplication app(argc, argv);
+    MApplicationWindow window;
+    MApplicationPage page;
+    MLocale locale;
 
     if (!isatty(0))
         text = QTextStream(stdin).readAll();
-    // DuiLabel doesn't wordwrap unless it's richtext...
+    // MLabel doesn't wordwrap unless it's richtext...
     text.prepend("<span></span>");
 
     page.setCentralWidget(new Us());
 
     window.show();
-    page.appearNow();
+    page.appear();
     return app.exec();
 }
 #include "hldemo.moc"

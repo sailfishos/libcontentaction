@@ -31,12 +31,12 @@ case "$1" in
                 done
                 echo "Killing servicemapper"
                 # replace servicemapper with ours
-                kill -9 `ps axw | awk '/duiservicemapper/ { print $1; }'` || true;
+                kill -9 `ps axw | awk '/mservicemapper/ { print $1; }'` || true;
                 $srcdir/servicemapper.py &
                 echo "$!" > /tmp/servicemapper.py.pid;
                 # wait until our service mapper has started
                 for i in `seq 10`; do
-                        if qdbus | grep "com.nokia.DuiServiceFw"; then
+                        if qdbus | grep "com.nokia.MServiceFw"; then
 			        break;
 		        fi
 			sleep 1;

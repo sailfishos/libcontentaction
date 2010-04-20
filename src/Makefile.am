@@ -15,7 +15,7 @@ AM_CPPFLAGS = \
 	$(QtDBus_CFLAGS) \
 	$(TRACKER_CFLAGS) \
 	$(GIO_CFLAGS) \
-	$(DUI_CFLAGS) \
+	$(MT_CFLAGS) \
 	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction\" \
 	-DDEFAULT_L10N_DIR=\"@datadir@/contentaction/l10n\"
 
@@ -25,7 +25,7 @@ LIBS += \
 	$(QtDBus_LIBS) \
 	$(TRACKER_LIBS) \
 	$(GIO_LIBS) \
-	$(DUI_LIBS)
+	$(MT_LIBS)
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \
@@ -48,15 +48,15 @@ libcontentaction_la_SOURCES = \
 	mime.cpp \
 	tracker.cpp \
 	highlighter.cpp \
-	dui-highlight.cpp \
+	highlight.cpp \
 	config.cpp
 
 BUILT_SOURCES = \
 	service.moc.cpp \
-	dui-highlight.moc
+	highlight.moc
 CLEANFILES = \
 	service.moc.cpp \
-	dui-highlight.moc
+	highlight.moc
 
 nodist_libcontentaction_la_SOURCES = \
 	service.moc.cpp

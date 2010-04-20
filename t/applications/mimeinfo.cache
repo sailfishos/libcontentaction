@@ -5,4 +5,4 @@ x-maemo-nepomuk/image=galleryserviceinterface.desktop;other.desktop;upload.deskt
 x-maemo-urischeme/mailto=emailer.desktop
 x-maemo-nepomuk/contact=contacthandler.desktop
 text/*=fixedparams.desktop
-text/plain=uberdui.desktop;uberexec.desktop;ubermimeopen.desktop;
+text/plain=ubermeego.desktop;uberexec.desktop;ubermimeopen.desktop;

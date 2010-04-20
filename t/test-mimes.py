@@ -41,15 +41,15 @@ class Mimes(unittest.TestCase):
         (status, output) = getstatusoutput("lca-tool --file --print " + filename)
         self.assert_(status == 0)
         self.assert_(output.find("uberexec") != -1)
-        self.assert_(output.find("uberdui") != -1)
+        self.assert_(output.find("ubermeego") != -1)
         self.assert_(output.find("ubermimeopen") != -1)
 
-    def testInvokeDui(self):
+    def testInvokeMeego(self):
         program = CLTool("uberprogram.py")
         self.assert_(program.expect("started"))
 
         filename = "file://" + testfiles_dir + "/plaintext"
-        (status, output) = getstatusoutput("lca-tool --file --trigger uberdui " + filename)
+        (status, output) = getstatusoutput("lca-tool --file --trigger ubermeego " + filename)
         self.assert_(status == 0)
 
         self.assert_(program.expect("launch: "))

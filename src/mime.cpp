@@ -39,7 +39,7 @@
 #include <QDBusInterface>
 #include <QDBusPendingCall>
 
-#include <DuiDesktopEntry>
+#include <MDesktopEntry>
 
 namespace ContentAction {
 

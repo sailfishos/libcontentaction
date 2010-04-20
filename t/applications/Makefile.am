@@ -3,7 +3,7 @@ dist_citestapp_DATA = \
 	mimeinfo.cache \
 	defaults.list \
 	uberexec.desktop \
-	uberdui.desktop \
+	ubermeego.desktop \
 	ubermimeopen.desktop \
 	caller.desktop \
 	addcontact.desktop \

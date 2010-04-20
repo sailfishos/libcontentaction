@@ -28,16 +28,16 @@
 #include <QModelIndex>
 #include <QAbstractListModel>
 
-#include <DuiLabel>
-#include <DuiLabelHighlighter>
-#include <DuiPopupList>
+#include <MLabel>
+#include <MLabelHighlighter>
+#include <MPopupList>
 
 namespace {
 
 using namespace ContentAction;
 using namespace ContentAction::Internal;
 
-class LCALabelHighlighter: public DuiCommonLabelHighlighter
+class LCALabelHighlighter: public MCommonLabelHighlighter
 {
     Q_OBJECT
 public:
@@ -55,7 +55,7 @@ private:
 LCALabelHighlighter::LCALabelHighlighter(const QRegExp& regexp,
                                          const QString& mime,
                                          QObject *parent) :
-    DuiCommonLabelHighlighter(regexp),
+    MCommonLabelHighlighter(regexp),
     mime(mime)
 {
     if (parent)
@@ -118,7 +118,7 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
     foreach (const QString& app, apps) {
         alist << createAction(findDesktopFile(app), QStringList() << match);
     }
-    DuiPopupList *popuplist = new DuiPopupList();
+    MPopupList *popuplist = new MPopupList();
     popuplist->setItemModel(new ActionListModel(alist, popuplist));
     popuplist->setTitle(match);
     popuplist->setTitleBarVisible(true);
@@ -131,7 +131,7 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 
 } // end anon namespace
 
-static void hiLabel(DuiLabel *label,
+static void hiLabel(MLabel *label,
                     const QHash<QString, QString>& cfg)
 {
     QHashIterator<QString, QString> iter(cfg);
@@ -154,7 +154,7 @@ static void hiLabel(DuiLabel *label,
     label->setProperty("_lca_highlighters", QVariant::fromValue(hiliters));
 }
 
-static void unhiliteLabel(DuiLabel *label)
+static void unhiliteLabel(MLabel *label)
 {
     QVariant prop = label->property("_lca_highlighters");
     if (!prop.isValid())
@@ -168,12 +168,12 @@ static void unhiliteLabel(DuiLabel *label)
     label->setProperty("_lca_highlighters", QVariant());
 }
 
-/// Attaches possibly several DuiLabelHighlighter:s to the label, based on the
+/// Attaches possibly several MLabelHighlighter:s to the label, based on the
 /// highlighter configuration.  Clicking on a highlighted label invokes the
 /// first action defined for the matching pattern.  A long-click causes a
 /// popup list to be shown with the possible actions, from where the user may
 /// choose one.
-void ContentAction::Dui::highlightLabel(DuiLabel *label)
+void ContentAction::highlightLabel(MLabel *label)
 {
     const QHash<QString, QString>& cfg = highlighterConfig();
     hiLabel(label, cfg);
@@ -181,7 +181,7 @@ void ContentAction::Dui::highlightLabel(DuiLabel *label)
 
 /// Similar to highlightLabel() but allows specifying which regexp-types to
 /// highlight (e.g. only \c "x-maemo-highlight/mailto").
-void ContentAction::Dui::highlightLabel(DuiLabel *label,
+void ContentAction::highlightLabel(MLabel *label,
                                         QStringList typesToHighlight)
 {
     const QHash<QString, QString>& cfg = highlighterConfig();
@@ -196,12 +196,31 @@ void ContentAction::Dui::highlightLabel(DuiLabel *label,
 }
 
 /// Removes all highlighters attached by highlightLabel() from \a label.
-void ContentAction::Dui::dehighlightLabel(DuiLabel *label)
+void ContentAction::dehighlightLabel(MLabel *label)
 {
     unhiliteLabel(label);
+}
+
+void ContentAction::Dui::highlightLabel(DuiLabel *label)
+{
+    LCA_WARNING << "DuiLabel support is removed, migrate to MeeGoTouch.";
+}
+
+/// Similar to highlightLabel() but allows specifying which regexp-types to
+/// highlight (e.g. only \c "x-maemo-highlight/mailto").
+void ContentAction::Dui::highlightLabel(DuiLabel *label,
+                                        QStringList typesToHighlight)
+{
+    LCA_WARNING << "DuiLabel support is removed, migrate to MeeGoTouch.";
+}
+
+/// Removes all highlighters attached by highlightLabel() from \a label.
+void ContentAction::Dui::dehighlightLabel(DuiLabel *label)
+{
+    LCA_WARNING << "DuiLabel support is removed, migrate to MeeGoTouch.";
 }
 
 Q_DECLARE_METATYPE(QObjectList);
 Q_DECLARE_METATYPE(ContentAction::Action);
 
-#include "dui-highlight.moc"
+#include "highlight.moc"

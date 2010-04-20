@@ -28,6 +28,8 @@
 #include <QUrl>
 #include <QSharedPointer>
 
+class MLabel;
+
 namespace ContentAction
 {
 
@@ -82,6 +84,10 @@ QList<Action> actionsForMime(const QString& mimeType);
 void setMimeDefault(const QString& mimeType, const Action& action);
 void setMimeDefault(const QString& mimeType, const QString& app);
 void resetMimeDefault(const QString& mimeType);
+
+void highlightLabel(MLabel *label);
+void highlightLabel(MLabel *label, QStringList typesToHighlight);
+void dehighlightLabel(MLabel *label);
 
 } // end namespace
 #endif
