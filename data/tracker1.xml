@@ -1,21 +1,108 @@
 <?xml version="1.0"?>
 <actions>
 
+  <tracker-condition name="contactWithPhoneNumber">
+    { ?uri a nco:Contact ;
+           nco:hasPhoneNumber ?phone . }
+  </tracker-condition>
+
   <tracker-condition name="image">
     { ?uri a nfo:Image . }
   </tracker-condition>
 
-  <tracker-condition name="video">
-    { ?uri a nfo:Video . }
+  <tracker-condition name="application">
+    { ?uri a nfo:SoftwareApplication . }
+  </tracker-condition>
+
+  <tracker-condition name="calendarEvent">
+    { ?uri a ncal:Event . }
+  </tracker-condition>
+
+  <tracker-condition name="call">
+    { ?uri a nmo:Call . }
+  </tracker-condition>
+
+  <tracker-condition name="personContact">
+    { ?uri a nco:PersonContact . }
+  </tracker-condition>
+
+  <tracker-condition name="email">
+    { ?uri a nmo:Email . }
+  </tracker-condition>
+
+  <tracker-condition name="paginatedTextDocument">
+    { ?uri a nfo:PaginatedTextDocument . }
+  </tracker-condition>
+
+  <tracker-condition name="plainTextDocument">
+    { ?uri a nfo:PlainTextDocument . }
+  </tracker-condition>
+
+  <tracker-condition name="presentation">
+    { ?uri a nfo:Presentation . }
+  </tracker-condition>
+
+  <tracker-condition name="spreadsheet">
+    { ?uri a nfo:Spreadsheet . }
+  </tracker-condition>
+
+  <tracker-condition name="email">
+    { ?uri a nmo:Email . }
+  </tracker-condition>
+
+  <tracker-condition name="feedMessage">
+    { ?uri a mfo:FeedMessage . }
+  </tracker-condition>
+
+  <tracker-condition name="folder">
+    { ?uri a nfo:Folder . }
+  </tracker-condition>
+
+  <tracker-condition name="im">
+    { ?uri a nmo:IMMessage . }
   </tracker-condition>
 
   <tracker-condition name="musicpiece">
     { ?uri a nmm:MusicPiece . }
   </tracker-condition>
 
-  <tracker-condition name="contactWithPhonenumber">
-    { ?uri a nco:Contact ;
-           nco:hasPhoneNumber ?phone . }
+  <tracker-condition name="musicPiece">
+    { ?uri a nmm:MusicPiece . }
   </tracker-condition>
 
+  <tracker-condition name="phoneNumber">
+    { ?uri a nco:PhoneNumber . }
+  </tracker-condition>
+
+  <tracker-condition name="photo">
+    { ?uri a nmm:Photo . }
+  </tracker-condition>
+
+  <tracker-condition name="radioStation">
+    { ?uri a nmm:RadioStation . }
+  </tracker-condition>
+
+  <tracker-condition name="sms">
+    { ?uri a nmo:SMSMessage . }
+  </tracker-condition>
+
+  <tracker-condition name="tag">
+    { ?uri a nao:Tag . }
+  </tracker-condition>
+
+  <tracker-condition name="video">
+    { ?uri a nfo:Video . }
+  </tracker-condition>
+
+  <tracker-condition name="webHistory">
+    { ?uri a nfo:WebHistory . }
+  </tracker-condition>
+
+  <tracker-condition name="youtubeVideo">
+    { ?uri a youtube:nmm:Video . }
+  </tracker-condition>
+
+  <tracker-condition name="oviMusicPiece">
+    { ?uri a ovi:nmm:MusicPiece . }
+  </tracker-condition>
 </actions>
