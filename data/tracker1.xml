@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <actions>
 
-  <tracker-condition name="contact-with-phonenumber">
+  <tracker-condition name="contact-with-phone-number">
     { ?uri a nco:Contact ;
            nco:hasPhoneNumber ?phone . }
   </tracker-condition>
@@ -71,7 +71,7 @@
     { ?uri a nmm:MusicPiece . }
   </tracker-condition>
 
-  <tracker-condition name="phonenumber">
+  <tracker-condition name="phone-number">
     { ?uri a nco:PhoneNumber . }
   </tracker-condition>
 
@@ -79,11 +79,11 @@
     { ?uri a nmm:Photo . }
   </tracker-condition>
 
-  <tracker-condition name="radiostation">
+  <tracker-condition name="radio-station">
     { ?uri a nmm:RadioStation . }
   </tracker-condition>
 
-  <tracker-condition name="sms">
+  <tracker-condition name="sms-message">
     { ?uri a nmo:SMSMessage . }
   </tracker-condition>
 
