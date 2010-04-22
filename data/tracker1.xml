@@ -18,6 +18,14 @@
     { ?uri a ncal:Event . }
   </tracker-condition>
 
+  <tracker-condition name="calendar-journal">
+    { ?uri a ncal:Journal . }
+  </tracker-condition>
+
+  <tracker-condition name="calendar-todo">
+    { ?uri a ncal:Todo . }
+  </tracker-condition>
+
   <tracker-condition name="call">
     { ?uri a nmo:Call . }
   </tracker-condition>
