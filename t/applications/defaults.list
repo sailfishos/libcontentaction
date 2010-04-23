@@ -1,4 +1,4 @@
 [Default Applications]
 x-maemo-highlight/email=emailer.desktop
 x-maemo-highlight/phone=caller.desktop
-x-maemo-tracker/nfo-Image=galleryserviceinterface.desktop
+x-maemo-nepomuk/image=galleryserviceinterface.desktop
