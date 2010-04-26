@@ -1,4 +1,4 @@
-libcontentaction (0.1.3~unreleased) unstable; urgency=low
+libcontentaction (0.1.3) unstable; urgency=low
 
   * API for getting the default action for a mime type.
 
