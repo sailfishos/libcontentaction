@@ -1,8 +1,8 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=othername
-X-M-translation-catalog=test
-X-M-logical-id=some.other.action
+X-MeeGo-Translation-Catalog=test
+X-MeeGo-Logical-Id=some.other.action
 Terminal=false
 Type=Application
 MimeType=x-maemo-nepomuk/image;

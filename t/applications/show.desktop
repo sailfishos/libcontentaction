@@ -1,8 +1,8 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=showname
-X-M-translation-catalog=test
-X-M-logical-id=com.nokia.imageviewer.show
+X-MeeGo-Translation-Catalog=test
+X-MeeGo-Logical-Id=com.nokia.imageviewer.show
 Terminal=false
 Type=Application
 MimeType=x-maemo-nepomuk/image;
