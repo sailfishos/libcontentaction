@@ -228,7 +228,7 @@ int main(int argc, char **argv)
         return 0;
         break;
     case PrintMimeDefault:
-        out << Internal::defaultAppForContentType(mime).remove(".desktop") << endl;
+        out << defaultActionForMime(mime).name() << endl;
         return 0;
         break;
     case SetMimeDefault:

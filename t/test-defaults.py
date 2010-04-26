@@ -44,29 +44,28 @@ class Defaults(unittest.TestCase):
         rmtree(os.environ["XDG_DATA_HOME"])
         
     def testSettingDefault(self):
-        (status, output) = getstatusoutput("lca-tool --setmimedefault text/plain foo")
+        (status, output) = getstatusoutput("lca-tool --setmimedefault text/plain ubermeego")
         self.assert_(status == 0)
 
         (status, output) = getstatusoutput("lca-tool --mimedefault text/plain")
         self.assert_(status == 0)
-        self.assert_(output.find("foo") != -1)
+        self.assert_(output.find("ubermeego") != -1)
 
     def testDefaultIsFirst(self):
-        (status, output) = getstatusoutput("lca-tool --setmimedefault text/plain foo")
+        (status, output) = getstatusoutput("lca-tool --setmimedefault text/plain uberexec")
         self.assert_(status == 0)
         (status, output) = getstatusoutput("lca-tool --actionsformime text/plain")
 
         self.assert_(status == 0)
-        self.assert_(output.find("foo") < output.find("ubermeego"))
-        self.assert_(output.find("foo") < output.find("ubermimeopen"))
-        self.assert_(output.find("foo") < output.find("uberexec"))
+        self.assert_(output.find("uberexec") < output.find("ubermeego"))
+        self.assert_(output.find("uberexec") < output.find("ubermimeopen"))
 
     def testResettingDefault(self):
         # check what are the actions (in order) before
         (status, oldactions) = getstatusoutput("lca-tool --actionsformime text/plain")
         self.assert_(status == 0)
 
-        (status, output) = getstatusoutput("lca-tool --setmimedefault text/plain foo")
+        (status, output) = getstatusoutput("lca-tool --setmimedefault text/plain ubermeego")
         self.assert_(status == 0)
 
         (status, output) = getstatusoutput("lca-tool --resetmimedefault text/plain")

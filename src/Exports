@@ -35,6 +35,7 @@
     ContentAction::setMimeDefault*;
     ContentAction::resetMimeDefault*;
     ContentAction::actionsForMime*;
+    ContentAction::defaultActionForMime*;
   };
   local:
     *;

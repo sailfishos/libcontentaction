@@ -407,5 +407,13 @@ QList<Action> actionsForMime(const QString& mimeType)
     return result;
 }
 
+Action defaultActionForMime(const QString& mimeType)
+{
+    QString appid = defaultAppForContentType(mimeType);
+    if (!appid.isEmpty())
+        return createAction(findDesktopFile(appid),
+                            QStringList());
+    return Action();
+}
 
 } // end namespace

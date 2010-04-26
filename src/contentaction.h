@@ -81,6 +81,7 @@ struct Match {
 };
 
 QList<Action> actionsForMime(const QString& mimeType);
+Action defaultActionForMime(const QString& mimeType);
 void setMimeDefault(const QString& mimeType, const Action& action);
 void setMimeDefault(const QString& mimeType, const QString& app);
 void resetMimeDefault(const QString& mimeType);

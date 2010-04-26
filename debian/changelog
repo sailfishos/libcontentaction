@@ -1,6 +1,6 @@
 libcontentaction (0.1.3~unreleased) unstable; urgency=low
 
-  * 
+  * API for getting the default action for a mime type.
 
  -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Mon, 26 Apr 2010 08:38:55 +0300
 
