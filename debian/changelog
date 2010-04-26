@@ -1,3 +1,9 @@
+libcontentaction (0.1.3~unreleased) unstable; urgency=low
+
+  * 
+
+ -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Mon, 26 Apr 2010 08:38:55 +0300
+
 libcontentaction (0.1.2) unstable; urgency=low
 
   * API for getting a list of actions for a mime type, and setting an
