@@ -1,5 +1,5 @@
 AC_PREREQ([2.61])
-AC_INIT([libcontentaction], [0.1.4~unreleased], [marius.vollmer@nokia.com], libcontentaction)
+AC_INIT([libcontentaction], [0.1.4], [marius.vollmer@nokia.com], libcontentaction)
 
 AC_CONFIG_SRCDIR([Makefile.am])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -19,7 +19,7 @@ PKG_CHECK_MODULES([QtCore], [QtCore])
 PKG_CHECK_MODULES([QtXml], [QtXml])
 PKG_CHECK_MODULES([QtDBus], [QtDBus])
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12.0])
-PKG_CHECK_MODULES([TRACKER], [tracker-client-0.7])
+PKG_CHECK_MODULES([TRACKER], [tracker-client-0.9])
 PKG_CHECK_MODULES([GIO], [gio-2.0 gio-unix-2.0])
 PKG_CHECK_MODULES([MT], [meegotouch >= 0.20])
 

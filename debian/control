@@ -5,7 +5,7 @@ Maintainer: Marius Vollmer <marius.vollmer@nokia.com>
 Build-Depends: debhelper (>= 5),
                libqt4-dev,
                libglib2.0-dev (>= 2.12.0),
-               libtracker-client-dev,
+               libtracker-client-dev (>= 0.9.0),
                libmeegotouch-dev,
                doxygen (>= 1.5.9),
                pkg-config
@@ -29,7 +29,7 @@ Package: libcontentaction-dev
 Conflicts: libcontentaction-dui-dev
 Section: libdevel
 Architecture: any
-Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-dev
+Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-dev (>= 0.9.0)
 Description: Library for associating content with actions
  .
  This package contains the development files.
