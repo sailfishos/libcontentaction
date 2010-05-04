@@ -45,6 +45,7 @@ const QString TrackerBusName("org.freedesktop.Tracker1");
 const QString TrackerObjectPath("/org/freedesktop/Tracker1/Resources");
 const QString TrackerInterface("org.freedesktop.Tracker1.Resources");
 const QString TrackerFunction("SparqlQuery");
+static QDBusInterface* Tracker = 0;
 
 /// Returns true if the \a uri is a valid uri.
 static bool isValidIRI(const QString& uri)
@@ -60,13 +61,16 @@ static bool checkTrackerCondition(const QString& condition, const QString& uri)
         return false;
     }
 
+    qDBusRegisterMetaType<QVector<QStringList> >();
+    if (!Tracker) {
+        Tracker = new QDBusInterface(TrackerBusName, TrackerObjectPath,
+                                     TrackerInterface);
+    }
+
     QString query = QString("SELECT 1 { %1 FILTER (?uri = <%2>)}")
         .arg(condition).arg(uri);
 
-    qDBusRegisterMetaType<QVector<QStringList> >();
-    QDBusInterface tracker(TrackerBusName, TrackerObjectPath,
-                           TrackerInterface);
-    QDBusReply<QVector<QStringList> > reply = tracker.call(TrackerFunction, query);
+    QDBusReply<QVector<QStringList> > reply = Tracker->call(TrackerFunction, query);
 
     if (!reply.isValid() || reply.value().size() == 0)
         return false;
