@@ -41,11 +41,15 @@ namespace ContentAction {
 using namespace ContentAction::Internal;
 
 const QString OntologyMimeClass("x-maemo-nepomuk/");
+const QString SoftwareApplicationMimeType("x-maemo-nepomuk/software-application");
+
 const QString TrackerBusName("org.freedesktop.Tracker1");
 const QString TrackerObjectPath("/org/freedesktop/Tracker1/Resources");
 const QString TrackerInterface("org.freedesktop.Tracker1.Resources");
 const QString TrackerFunction("SparqlQuery");
 static QDBusInterface* Tracker = 0;
+
+
 
 /// Returns true if the \a uri is a valid uri.
 static bool isValidIRI(const QString& uri)
@@ -84,13 +88,14 @@ QStringList Internal::mimeForTrackerObject(const QString& uri)
     QStringList mimeTypes;
     QHash<QString, QString> conditions = trackerConditions();
     foreach (const QString& mimeType, conditions.keys()) {
-        // Don't consider mime types for which nobody defines an action
-        QStringList apps = appsForContentType(OntologyMimeClass + mimeType);
-        if (apps.isEmpty()) continue;
+        // Don't consider mime types for which nobody defines an action,
+        // except if it is `software-application' which is special case.
+        QString pseudoMimeType(OntologyMimeClass + mimeType);
+        if (pseudoMimeType != SoftwareApplicationMimeType &&
+            appsForContentType(pseudoMimeType).isEmpty()) continue;
 
-        if (checkTrackerCondition(conditions[mimeType], uri)) {
-            mimeTypes << (OntologyMimeClass + mimeType);
-        }
+        if (checkTrackerCondition(conditions[mimeType], uri))
+            mimeTypes << pseudoMimeType;
     }
     return mimeTypes;
 }
@@ -119,6 +124,18 @@ static QStringList mimeTypesForUris(QStringList uris)
     return commonMimeTypes;
 }
 
+// Given a nfo:SoftwareApplication uri constructs an Action, which when
+// triggered launches the corresponding application.
+static Action createSoftwareAction(const QString& uri)
+{
+    QString query("SELECT ?url WHERE { <%1> a nfo:SoftwareApplication ; nie:url ?url }");
+    QDBusReply<QVector<QStringList> > reply = Tracker->call(TrackerFunction, query.arg(uri));
+    if (!reply.isValid() || reply.value().size() == 0)
+        return Action();
+    QUrl desktopFileUri(reply.value()[0][0]);
+    return createAction(desktopFileUri.toLocalFile(), QStringList());
+}
+
 /// Returns the default action for the given \a uri representing an object
 /// stored in Tracker.  A default action is determined by checking the \ref
 /// tracker_conditions "conditions" that apply to the \a uri, and taking the
@@ -130,6 +147,8 @@ Action Action::defaultAction(const QString& uri)
 {
     QStringList mimeTypes = mimeForTrackerObject(uri);
     foreach (const QString& mimeType, mimeTypes) {
+        if (mimeType == SoftwareApplicationMimeType)
+            return createSoftwareAction(uri);
         QString def = defaultAppForContentType(mimeType);
         if (!def.isEmpty())
             return createAction(findDesktopFile(def),
@@ -165,7 +184,7 @@ Action Action::defaultAction(const QStringList& uris)
 /// Returns the set of applicable actions for an object stored in Tracker
 /// represented by the given \a uri.  The applicability is determined by the
 /// pre-defined \ref tracker_conditions "Tracker conditions".  If a condition
-/// \c cond applies to \a uri, then we consider that \c x-maemo-nepomuk/cond1
+/// \c cond applies to \a uri, then we consider that \c x-maemo-nepomuk/cond
 /// is one of the mime types of the uri, and search the applicable
 /// applications accordingly (and alliterating :).
 QList<Action> Action::actions(const QString& uri)
@@ -175,6 +194,8 @@ QList<Action> Action::actions(const QString& uri)
     QStringList mimeTypes = mimeForTrackerObject(uri);
     foreach (const QString& mimeType, mimeTypes) {
         QStringList apps = appsForContentType(mimeType);
+        if (mimeType == SoftwareApplicationMimeType)
+            result << createSoftwareAction(uri);
         foreach (const QString& app, apps) {
             result << createAction(findDesktopFile(app),
                                    QStringList() << uri);

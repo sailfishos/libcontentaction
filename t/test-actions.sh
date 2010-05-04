@@ -15,4 +15,12 @@ atexit rm -f test.html
 uri="file://$(abspath .)/test.html"
 a=$(lca-tool --file --print $uri)
 strstr "$a" '.*fixedparams' || exit 1
+
+appuri="file://$(abspath $srcdir)/applications/emailer.desktop"
+tracker-sparql -u -q "INSERT { <a.softwareapp> nie:url \"$appuri\" . }"
+a=$(lca-tool --tracker --print a.softwareapp)
+strstr "$a" '.*emailer' || exit 1
+a=$(lca-tool --tracker --printdefault a.softwareapp)
+test "$a" = "emailer" || exit 1
+
 exit 0
