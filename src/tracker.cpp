@@ -23,24 +23,28 @@
 #include "internal.h"
 #include "service.h"
 
-#include <libtracker-client/tracker-client.h>
-
 #include <QDir>
 #include <QFile>
 #include <QPair>
 #include <QHash>
+#include <QStringList>
 #include <QDBusInterface>
+#include <QDBusReply>
+#include <QDBusMetaType>
 #include <QDebug>
 #include <QCoreApplication>
+
+Q_DECLARE_METATYPE(QVector<QStringList>)
 
 namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
 const QString OntologyMimeClass("x-maemo-nepomuk/");
-
-// initialized on the first request
-static TrackerClient *Tracker = 0;
+const QString TrackerBusName("org.freedesktop.Tracker1");
+const QString TrackerObjectPath("/org/freedesktop/Tracker1/Resources");
+const QString TrackerInterface("org.freedesktop.Tracker1.Resources");
+const QString TrackerFunction("SparqlQuery");
 
 /// Returns true if the \a uri is a valid uri.
 static bool isValidIRI(const QString& uri)
@@ -55,38 +59,18 @@ static bool checkTrackerCondition(const QString& condition, const QString& uri)
         LCA_WARNING << "invalid characters in uri:" << uri;
         return false;
     }
-    if (!Tracker) {
-        Tracker = tracker_client_new(TRACKER_CLIENT_ENABLE_WARNINGS, 0);
-        if (!Tracker) {
-            LCA_WARNING << "failed to connect to Tracker";
-            return false;
-        }
-    }
 
     QString query = QString("SELECT 1 { %1 FILTER (?uri = <%2>)}")
         .arg(condition).arg(uri);
 
-    GError *error = NULL;
-    GPtrArray *res = tracker_resources_sparql_query(Tracker,
-                                                    query.toUtf8().data(),
-                                                    &error);
-    if (error) {
-        LCA_WARNING << "query returned an error:" << error->message;
-        g_error_free(error);
+    qDBusRegisterMetaType<QVector<QStringList> >();
+    QDBusInterface tracker(TrackerBusName, TrackerObjectPath,
+                           TrackerInterface);
+    QDBusReply<QVector<QStringList> > reply = tracker.call(TrackerFunction, query);
+
+    if (!reply.isValid() || reply.value().size() == 0)
         return false;
-    }
-
-    if (res->len != 0 && res->len != 1) {
-        LCA_WARNING << "unexpected number of rows returned:" << res->len;
-    }
-
-    bool toReturn = (res->len > 0);
-    if (res->len > 0) {
-        char **row = (char **)g_ptr_array_index(res, 0);
-        g_strfreev(row);
-    }
-    g_ptr_array_free(res, TRUE);
-    return toReturn;
+    return true;
 }
 
 /// Evaluates the specified tracker conditions and check which match the \a

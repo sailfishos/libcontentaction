@@ -13,7 +13,6 @@ AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
 	$(QtXml_CFLAGS) \
 	$(QtDBus_CFLAGS) \
-	$(TRACKER_CFLAGS) \
 	$(GIO_CFLAGS) \
 	$(MT_CFLAGS) \
 	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction\" \
@@ -23,7 +22,6 @@ LIBS += \
 	$(QtCore_LIBS) \
 	$(QtXml_LIBS) \
 	$(QtDBus_LIBS) \
-	$(TRACKER_LIBS) \
 	$(GIO_LIBS) \
 	$(MT_LIBS)
 
