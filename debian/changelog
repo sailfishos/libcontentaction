@@ -1,6 +1,7 @@
-libcontentaction (0.1.5~unreleased) unstable; urgency=low
+libcontentaction (0.1.5) unstable; urgency=low
 
   * Stopped using libtracker-client; using tracker D-Bus interface directly.
+  * Actions for launching nfo:SoftwareApplication uris.
 
  -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Thu, 29 Apr 2010 16:55:55 +0300
 
