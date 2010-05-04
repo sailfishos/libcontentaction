@@ -9,6 +9,13 @@
 @prefix ncal: <http://www.semanticdesktop.org/ontologies/2007/04/02/ncal#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
+<a.softwareapp> a nfo:SoftwareApplication, nie:DataObject .
+
+<a.contact> a nco:PersonContact .
+
+<an.image> a nfo:Image .
+<b.image> a nfo:Image .
+
 <urn:uuid:1930642225> a nfo:WebHistory;
 	nie:title "www.piratebay.org 0";
 	nie:contentCreated "2009-04-23T17:02:08";
@@ -68,4 +75,3 @@
 	nie:contentCreated "2009-07-30T16:34:03";
 	nfo:domain "http://slashdot.org";
 	nfo:uri "http://slashdot.org/68571".
-

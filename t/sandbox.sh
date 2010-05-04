@@ -26,9 +26,7 @@ case "$1" in
 			sleep 1;
                 done
                 # import our test data to tracker
-                for d in $srcdir/data.*; do
-                        tracker-import "$d";
-                done
+                tracker-import "$srcdir/testdata.ttl"
                 echo "Killing servicemapper"
                 # replace servicemapper with ours
                 kill -9 `ps axw | awk '/mservicemapper/ { print $1; }'` || true;

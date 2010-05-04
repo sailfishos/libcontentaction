@@ -41,9 +41,7 @@ noinst_SCRIPTS = \
 citest_DATA = \
 	tests.xml \
 	service.map \
-	data.contact \
-	data.web \
-	data.image \
+	testdata.ttl \
 	plaintext \
 	launchme.desktop
 
