@@ -254,8 +254,13 @@ int main(int argc, char **argv)
     Action defAction;
     switch (mode) {
     case TrackerMode:
-        actions = Action::actions(args);
-        defAction = Action::defaultAction(args);
+        if (args.size() > 1) {
+            actions = Action::actions(args);
+            defAction = Action::defaultAction(args);
+        } else {
+            actions = Action::actions(args[0]);
+            defAction = Action::defaultAction(args[0]);
+        }
         break;
     case FileMode:
     {
