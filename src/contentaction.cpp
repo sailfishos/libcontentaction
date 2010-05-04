@@ -161,6 +161,7 @@ Action createAction(const QString& desktopFile, const QStringList& params)
         return Action(new ExecPrivate(desktopEntry, params));
     }
     else {
+        delete desktopEntry;
         // We don't know how to launch
         return Action(new ActionPrivate());
     }
