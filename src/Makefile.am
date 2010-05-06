@@ -15,7 +15,7 @@ AM_CPPFLAGS = \
 	$(QtDBus_CFLAGS) \
 	$(GIO_CFLAGS) \
 	$(MT_CFLAGS) \
-	-DDEFAULT_ACTIONS=\"@sysconfdir@/contentaction\" \
+	-DDEFAULT_ACTIONS=\"@datadir@/contentaction\" \
 	-DDEFAULT_L10N_DIR=\"@datadir@/contentaction/l10n\"
 
 LIBS += \

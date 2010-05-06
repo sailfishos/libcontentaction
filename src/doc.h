@@ -44,6 +44,11 @@ to accept an array of strings.
 To define a new action, drop a .desktop file in /usr/share/applications (or
 in one of the directories in $XDG_DATA_DIRS).
 
+When you install a debian package which puts a file in /usr/share/applications, debian triggers take
+care of calling update-desktop-database which gathers information about handled mime types to
+/usr/share/mimeinfo.cache.  When experimenting, you might want to call update-desktop-database
+manually.
+
 \subsection writing_desktopfile Writing .desktop files for actions
 
 Let's take an image viewer for example.
@@ -57,8 +62,8 @@ NotShowIn=X-MeeGo;
 
 ;; Defining a localization method:
 ;; 1. MeeGoTouch-based
-X-M-translation-catalog=gallery_catalog
-X-M-logical-id=view_logical_id
+X-MeeGo-translation-catalog=gallery_catalog
+X-MeeGo-logical-id=view_logical_id
 ;; 2. XDG style
 Name=View in gallery
 Name[fi]=Näytä galleriassa
@@ -113,7 +118,10 @@ Additionally:
 \attention
 The following section may be subject to changes!
 
-Conditions are defined with XML files in \c /etc/contentaction/ (this
+\attention
+The configuration file directory has changed from /etc/contentaction to /usr/share/contentaction.
+
+Conditions are defined with XML files in \c /usr/share/contentaction/ (this
 location is overridden by $CONTENTACTION_ACTIONS).  A condition is described
 by a \a <tracker-condition> element, whose \c name attribute is appended to
 \c "x-maemo-nepomuk/" to get the corresponding mime type.  The element's
@@ -141,7 +149,7 @@ Example:
     { ?uri a nco:Contact . }
   </tracker-condition>
 
-  <tracker-condition name="contactWithPhonenumber"><![CDATA[
+  <tracker-condition name="contact-with-phone-number"><![CDATA[
     { ?uri a nco:Contact ;
            nco:hasPhoneNumber ?phone . }
   ]]></tracker-condition>

@@ -1,4 +1,4 @@
-actionsdir = $(sysconfdir)/contentaction
+actionsdir = $(datadir)/contentaction
 dist_actions_DATA = \
 	hl-examples.xml \
 	tracker1.xml
