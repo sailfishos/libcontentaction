@@ -28,7 +28,7 @@ Package: libcontentaction-dev
 Conflicts: libcontentaction-dui-dev
 Section: libdevel
 Architecture: any
-Depends: libcontentaction0 (= ${binary:Version}), libtracker-client-dev (>= 0.9.0)
+Depends: libcontentaction0 (= ${binary:Version})
 Description: Library for associating content with actions
  .
  This package contains the development files.
