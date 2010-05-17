@@ -107,4 +107,8 @@
     { ?uri a nfo:WebHistory . }
   </tracker-condition>
 
+  <tracker-condition name="mms-message">
+    { ?uri a nmo:MMSMessage . }
+  </tracker-condition>
+
 </actions>
