@@ -8,8 +8,18 @@ tstart $srcdir/gallery.py
 
 a=$(lca-tool --tracker --print an.image)
 strstr "$a" '.*galleryserviceinterface' || exit 1
+strstr "$a" '.*plainimageviewer' || exit 1
+
 a=$(lca-tool --tracker --print an.image b.image)
 strstr "$a" '.*galleryserviceinterface' || exit 1
+strstr "$a" '.*plainimageviewer' || exit 1
+
+a=$(lca-tool --tracker --print a.music)
+strstr "$a" '.*plainmusicplayer' || exit 1
+
+a=$(lca-tool --tracker --print a.music b.music)
+strstr "$a" '.*plainmusicplayer' || exit 1
+
 echo test > test.html
 atexit rm -f test.html
 uri="file://$(abspath .)/test.html"

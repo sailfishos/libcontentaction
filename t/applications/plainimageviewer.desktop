@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=plain_imageviewer
+GenericName=A plain image viewer
+Icon=execicon
+Comment=Views an image
+Exec=echo plain_imageviewer %U
+Terminal=false
+Type=Application
+MimeType=image/*;
+NotShowIn=X-MeeGo;

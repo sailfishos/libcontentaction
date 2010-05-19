@@ -5,4 +5,4 @@ Exec=echo "contacthandler with params:" %U
 Terminal=false
 Type=Application
 NotShowIn=X-MeeGo;
-MimeType=x-maemo-nepomuk/contact;
+MimeType=x-maemo-nepomuk/person-contact;

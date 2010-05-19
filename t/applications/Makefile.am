@@ -13,4 +13,7 @@ dist_citestapp_DATA = \
 	other.desktop \
 	show.desktop \
 	upload.desktop \
-	fixedparams.desktop
+	fixedparams.desktop \
+	plainimageviewer.desktop \
+	trackerimageviewer.desktop \
+	plainmusicplayer.desktop

@@ -36,57 +36,78 @@
 
 Q_DECLARE_METATYPE(QVector<QStringList>)
 
-namespace ContentAction {
+#define LCA_DEBUG                                   \
+    if (1) {} else (qDebug() << (__func__) << ':')
 
+namespace ContentAction {
 using namespace ContentAction::Internal;
 
 const QString OntologyMimeClass("x-maemo-nepomuk/");
-const QString SoftwareApplicationMimeType("x-maemo-nepomuk/software-application");
+static const QString SoftwareApplicationMimeType("x-maemo-nepomuk/software-application");
+static const QString SparqlQuery("SparqlQuery");
 
-const QString TrackerBusName("org.freedesktop.Tracker1");
-const QString TrackerObjectPath("/org/freedesktop/Tracker1/Resources");
-const QString TrackerInterface("org.freedesktop.Tracker1.Resources");
-const QString TrackerFunction("SparqlQuery");
-static QDBusInterface* Tracker = 0;
-
-
-
-/// Returns true if the \a uri is a valid uri.
+// Returns true if the \a uri is a valid IRI, warns otherwise.
 static bool isValidIRI(const QString& uri)
 {
     static const QRegExp validRE("[^<>\"{}|^`\\\\]*");
-    return validRE.exactMatch(uri);
-}
-
-static bool checkTrackerCondition(const QString& condition, const QString& uri)
-{
-    if (!isValidIRI(uri)) {
+    if (!validRE.exactMatch(uri)) {
         LCA_WARNING << "invalid characters in uri:" << uri;
         return false;
-    }
+    } else
+        return true;
+}
 
-    qDBusRegisterMetaType<QVector<QStringList> >();
+static QDBusInterface *tracker()
+{
+    static QDBusInterface* Tracker = 0;
     if (!Tracker) {
-        Tracker = new QDBusInterface(TrackerBusName, TrackerObjectPath,
-                                     TrackerInterface);
+        qDBusRegisterMetaType<QVector<QStringList> >();
+        Tracker = new QDBusInterface(QLatin1String("org.freedesktop.Tracker1"),
+                                     QLatin1String("/org/freedesktop/Tracker1/Resources"),
+                                     QLatin1String("org.freedesktop.Tracker1.Resources"));
     }
+    return Tracker;
+}
 
+// Queries nie:url and nie:mimeType properties for the given \a uris.  If the
+// query didn't fail, urlsAndMimes is set to the list of ["url1", "mime1",
+// "url2", "mime2", ...].  Finally it checks that all urls and mimes are
+// nonempty and returns true if this holds.
+static bool mimeAndUriFromTracker(const QStringList& uris, QStringList &urlsAndMimes)
+{
+    QString query("SELECT ");
+    foreach (const QString& uri, uris)
+        query += QString("nie:url(<%1>) nie:mimeType(<%1>) ").arg(uri);
+    query += " {}";
+    QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query);
+    if (!reply.isValid())
+        return false;
+    urlsAndMimes = reply.value()[0];
+    foreach (const QString& x, urlsAndMimes)
+        if (x.isEmpty()) return false;
+    return true;
+}
+
+// Queries tracker whether \a condition applies to \a uri.
+static bool checkTrackerCondition(const QString& condition, const QString& uri)
+{
     QString query = QString("SELECT 1 { %1 FILTER (?uri = <%2>)}")
         .arg(condition).arg(uri);
 
-    QDBusReply<QVector<QStringList> > reply = Tracker->call(TrackerFunction, query);
+    QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query);
 
     if (!reply.isValid() || reply.value().size() == 0)
         return false;
     return true;
 }
 
-/// Evaluates the specified tracker conditions and check which match the \a
-/// uri.
+/// Evaluates all tracker conditions and checks which apply to the given \a
+/// uri.  Returns a list of pseudo-mimetypes.
 QStringList Internal::mimeForTrackerObject(const QString& uri)
 {
     QStringList mimeTypes;
     QHash<QString, QString> conditions = trackerConditions();
+    // TODO: evaluate them at once.
     foreach (const QString& mimeType, conditions.keys()) {
         // Don't consider mime types for which nobody defines an action,
         // except if it is `software-application' which is special case.
@@ -100,39 +121,30 @@ QStringList Internal::mimeForTrackerObject(const QString& uri)
     return mimeTypes;
 }
 
-/// Evaluates the specified tracker conditions and check which match all URIS
-/// in \a uris.
-static QStringList mimeTypesForUris(QStringList uris)
+// Returns a list of pseudo-mimetypes of tracker conditions per uri applicable
+// to all of the given \a uris.
+static QList<QStringList> mimeTypesForUris(const QStringList& uris)
 {
-    bool first = true;
-    QStringList commonMimeTypes;
+    QList<QStringList> allMimeTypes;
     foreach (const QString& uri, uris) {
-        QStringList mimeTypes = mimeForTrackerObject(uri);
-
-        if (first) {
-            commonMimeTypes = mimeTypes;
-            first = false;
-        } else {
-            // Remove the mime types which don't apply to uri
-            QStringList intersection;
-            foreach (const QString& mimeType, commonMimeTypes)
-                if (mimeTypes.contains(mimeType))
-                    intersection << mimeType;
-            commonMimeTypes = intersection;
-        }
+        if (!isValidIRI(uri)) return QList<QStringList>();
+        allMimeTypes << mimeForTrackerObject(uri);
     }
-    return commonMimeTypes;
+    return allMimeTypes;
 }
 
 // Given a nfo:SoftwareApplication uri constructs an Action, which when
 // triggered launches the corresponding application.
 static Action createSoftwareAction(const QString& uri)
 {
-    QString query("SELECT ?url WHERE { <%1> a nfo:SoftwareApplication ; nie:url ?url }");
-    QDBusReply<QVector<QStringList> > reply = Tracker->call(TrackerFunction, query.arg(uri));
-    if (!reply.isValid() || reply.value().size() == 0)
+    QString query("SELECT nie:url(<%1>) {}");
+    QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query.arg(uri));
+    if (!reply.isValid())
         return Action();
-    QUrl desktopFileUri(reply.value()[0][0]);
+    QString fileUri(reply.value()[0][0]);
+    if (fileUri.isEmpty())
+        return Action();
+    QUrl desktopFileUri(fileUri);
     return createAction(desktopFileUri.toLocalFile(), QStringList());
 }
 
@@ -145,7 +157,9 @@ static Action createSoftwareAction(const QString& uri)
 /// is returned.
 Action Action::defaultAction(const QString& uri)
 {
+    if (!isValidIRI(uri)) return Action();
     QStringList mimeTypes = mimeForTrackerObject(uri);
+    LCA_DEBUG << "pseudo-mimes" << mimeTypes;
     foreach (const QString& mimeType, mimeTypes) {
         if (mimeType == SoftwareApplicationMimeType)
             return createSoftwareAction(uri);
@@ -154,7 +168,15 @@ Action Action::defaultAction(const QString& uri)
             return createAction(findDesktopFile(def),
                                 QStringList() << uri);
     }
+    // If the resource is a file-based one, query its url and mimetype, and
+    // consider the default action for them.
+    QStringList urlAndMime;
+    if (mimeAndUriFromTracker(QStringList() << uri, urlAndMime)) {
+        LCA_DEBUG << "real url and mimetype" << urlAndMime;
+        return defaultActionForFile(urlAndMime[0], urlAndMime[1]);
+    }
     // Fall back to one of the existing actions (if there are some)
+    LCA_DEBUG << "fallback to actions()";
     QList<Action> acts = actions(uri);
     if (acts.size() >= 1)
         return acts[0];
@@ -167,16 +189,51 @@ Action Action::defaultAction(const QString& uri)
 /// object is returned.
 Action Action::defaultAction(const QStringList& uris)
 {
-    QStringList mimeTypes = mimeTypesForUris(uris);
-    foreach (const QString& mimeType, mimeTypes) {
-        QString def = defaultAppForContentType(mimeType);
-        if (!def.isEmpty())
-            return createAction(findDesktopFile(def),
-                                uris);
+    QList<QStringList> mimeTypes = mimeTypesForUris(uris);
+    LCA_DEBUG << "pseudo mimes per uri" << mimeTypes;
+    QSet<QString> defApps;
+    for (int i = 0; i < mimeTypes.size(); ++i) {
+        QSet<QString> defs;
+        foreach (const QString& mimeType, mimeTypes[i]) {
+            QString def = defaultAppForContentType(mimeType);
+            if (!def.isEmpty())
+                defs << def;
+        }
+        if (i == 0)
+            defApps = defs;
+        else
+            defApps.intersect(defs);
+    }
+    LCA_DEBUG << "defApps" << defApps;
+    // If there are multiple possible default applications, the choice is
+    // arbitrary.
+    if (!defApps.empty())
+        return createAction(findDesktopFile(*defApps.begin()), uris);
+
+    // Try mimetype based handlers for real things.
+    QStringList urlsAndMimes;
+    if (mimeAndUriFromTracker(uris, urlsAndMimes)) {
+        LCA_DEBUG << "urlsAndMimes" << urlsAndMimes;
+        QStringList fileUris;
+        QString defApp;
+        for (int i = 0; i < urlsAndMimes.size(); i += 2) {
+            fileUris << urlsAndMimes[i];
+            QString def = defaultAppForContentType(urlsAndMimes[i+1]);
+            if (i == 0)
+                defApp = def;
+            if (defApp != def) {
+                defApp.clear();
+                break;
+            }
+        }
+        LCA_DEBUG << "defApp" << defApp;
+        if (!defApp.isEmpty())
+            return createAction(findDesktopFile(defApp), fileUris);
     }
     // Fall back to one of the existing actions (if there are some)
+    LCA_DEBUG << "fallback to actions()";
     QList<Action> acts = actions(uris);
-    if (acts.size() >= 1)
+    if (acts.size() > 0)
         return acts[0];
     return Action();
 }
@@ -190,8 +247,10 @@ Action Action::defaultAction(const QStringList& uris)
 QList<Action> Action::actions(const QString& uri)
 {
     QList<Action> result;
+    if (!isValidIRI(uri)) return result;
 
     QStringList mimeTypes = mimeForTrackerObject(uri);
+    LCA_DEBUG << "pseudo mimes" << mimeTypes;
     foreach (const QString& mimeType, mimeTypes) {
         QStringList apps = appsForContentType(mimeType);
         if (mimeType == SoftwareApplicationMimeType)
@@ -201,26 +260,57 @@ QList<Action> Action::actions(const QString& uri)
                                    QStringList() << uri);
         }
     }
+    // Construct additional actions based on nie:mimeType(uri), passing
+    // nie:url(uri) as argument.
+    QStringList urlAndMime;
+    if (mimeAndUriFromTracker(QStringList() << uri, urlAndMime)) {
+        LCA_DEBUG << "real url and mimetype" << urlAndMime;
+        result << actionsForFile(urlAndMime[0], urlAndMime[1]);
+    }
     // TODO: sort the result
     return result;
 }
 
-/// Returns the set of actions applicable to all \a uris.  The set is
-/// constructed by first figuring out the common "pseudo-mimetypes" for all \a
-/// uris.  For each mimetype, we add the actions handling it.  The order of
-/// the actions is the order in which they appear in the action list of the
-/// first uri.
+/// Returns the set of actions applicable to all \a uris (which represent
+/// Tracker resources).  The set is constructed by first figuring out the
+/// common "pseudo-mimetypes" for all \a uris.  For each mimetype, we add the
+/// actions handling it.  The order of the actions is the order in which they
+/// appear in the action list of the first uri.
 QList<Action> Action::actions(const QStringList& uris)
 {
     QList<Action> result;
-    QStringList mimeTypes = mimeTypesForUris(uris);
+    QList<QStringList> mimeTypes = mimeTypesForUris(uris);
 
-    foreach (const QString& mimeType, mimeTypes) {
-        QStringList apps = appsForContentType(mimeType);
-        foreach (const QString& app, apps) {
-            result << createAction(findDesktopFile(app),
-                                   uris);
+    LCA_DEBUG << "pseudo mimes per uri" << mimeTypes;
+    QSet<QString> commonApps;
+    for (int i = 0; i < mimeTypes.size(); ++i) {
+        QSet<QString> apps;
+        foreach (const QString& mime, mimeTypes[i])
+            apps += appsForContentType(mime).toSet();
+        if (i == 0)
+            commonApps = apps;
+        else
+            commonApps.intersect(apps);
+    }
+    LCA_DEBUG << "commonApps" << commonApps;
+    foreach (const QString& app, commonApps)
+        result << createAction(findDesktopFile(app), uris);
+
+    QStringList urlsAndMimes;
+    if (mimeAndUriFromTracker(uris, urlsAndMimes)) {
+        LCA_DEBUG << "real urls and mimes" << urlsAndMimes;
+        commonApps.clear();
+        QStringList fileUris;
+        for (int i = 0; i < urlsAndMimes.size(); i += 2) {
+            fileUris << urlsAndMimes[i];
+            if (i == 0)
+                commonApps = appsForContentType(urlsAndMimes[i+1]).toSet();
+            else
+                commonApps.intersect(appsForContentType(urlsAndMimes[i+1]).toSet());
         }
+        LCA_DEBUG << "real-mime commonApps" << commonApps;
+        foreach (const QString& app, commonApps)
+            result << createAction(findDesktopFile(app), fileUris);
     }
     // TODO: sort the result
     return result;

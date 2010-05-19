@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=plain_musicplayer
+GenericName=A plain music player
+Icon=execicon
+Comment=Views audio
+Exec=echo plain_musicplayer %U
+Terminal=false
+Type=Application
+MimeType=audio/*;
+NotShowIn=X-MeeGo;
