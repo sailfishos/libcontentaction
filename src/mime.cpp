@@ -49,6 +49,19 @@ const QString UriSchemeMimeClass("x-maemo-urischeme/");
 
 static const QString DesktopFileMimeType("application/x-desktop");
 
+static QString generalizeMimeType(const QString &mime)
+{
+    // No wildcards for our pseudo mimetypes.
+    if (mime.startsWith(OntologyMimeClass) ||
+        mime.startsWith(HighlighterMimeClass) ||
+        mime.startsWith(UriSchemeMimeClass))
+        return "";
+    int n = mime.indexOf('/');
+    if (n < 0)
+        return mime;
+    return QString(mime.left(n) + "/*");
+}
+
 /// Returns the content type of the given file, or an empty string if it cannot
 /// be retrieved.
 QString Internal::mimeForFile(const QUrl& fileUri)
@@ -219,7 +232,12 @@ QString Internal::defaultAppForContentType(const QString& contentType)
         }
     }
     read = true;
-    return defaultApps.value(contentType, QString());
+    if (defaultApps.contains(contentType))
+        return defaultApps.value(contentType);
+    QString generalizedType(generalizeMimeType(contentType));
+    if (defaultApps.contains(generalizedType))
+        return defaultApps.value(generalizedType);
+    return QString();
 }
 
 // Reads the mimeinfo.cache files and returns the mapping from mime types to
@@ -247,19 +265,6 @@ const QHash<QString, QStringList>& Internal::mimeApps()
     }
     read = true;
     return mimecache;
-}
-
-static QString generalizeMimeType(const QString &mime)
-{
-    // No wildcards for our pseudo mimetypes.
-    if (mime.startsWith(OntologyMimeClass) ||
-        mime.startsWith(HighlighterMimeClass) ||
-        mime.startsWith(UriSchemeMimeClass))
-        return "";
-    int n = mime.indexOf('/');
-    if (n < 0)
-        return mime;
-    return QString(mime.left(n) + "/*");
 }
 
 /// Returns the applications which handle the given \a contentType. The
