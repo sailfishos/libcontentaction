@@ -121,8 +121,9 @@ QStringList Internal::mimeForTrackerObject(const QString& uri)
     return mimeTypes;
 }
 
-// Returns a list of pseudo-mimetypes of tracker conditions per uri applicable
-// to all of the given \a uris.
+// Returns a list of per-uri pseudo-mimetypes applicable to each of \a uris.
+// [["mime1-for-uri1", "mime2-for-uri1"], ["mime1-for-uri2"], ...]
+// It would be amazing if there would be only one pseudo mime-type per uri.
 static QList<QStringList> mimeTypesForUris(const QStringList& uris)
 {
     QList<QStringList> allMimeTypes;
@@ -133,8 +134,8 @@ static QList<QStringList> mimeTypesForUris(const QStringList& uris)
     return allMimeTypes;
 }
 
-// Given a nfo:SoftwareApplication uri constructs an Action, which when
-// triggered launches the corresponding application.
+// Given a nfo:SoftwareApplication \a uri, constructs an Action, which
+// launches the corresponding application when triggered.
 static Action createSoftwareAction(const QString& uri)
 {
     QString query("SELECT nie:url(<%1>) {}");
@@ -151,10 +152,13 @@ static Action createSoftwareAction(const QString& uri)
 /// Returns the default action for the given \a uri representing an object
 /// stored in Tracker.  A default action is determined by checking the \ref
 /// tracker_conditions "conditions" that apply to the \a uri, and taking the
-/// first one having a default action.  If no default action is found, it
-/// returns the most relevant action, i.e. the first action returned by
-/// actions().  If there are no applicable actions, an invalid Action object
-/// is returned.
+/// first one having a default action.  If no default action is found in this
+/// way, it checks whether \a uri represents a resource with \c nie:url and \c
+/// nie:mimeType properties.  If there is a default action for the given
+/// mimetype, it is returned (note that triggering this action will pass the
+/// \c nie:url as argument).  If neither methods succeeded, it falls back to
+/// the most relevant action, i.e. the first action returned by actions().  If
+/// there are no applicable actions, an invalid Action object is returned.
 Action Action::defaultAction(const QString& uri)
 {
     if (!isValidIRI(uri)) return Action();
@@ -183,10 +187,15 @@ Action Action::defaultAction(const QString& uri)
     return Action();
 }
 
-/// Returns the default action for a given list of URIs.  If the URIs
-/// represent objects of different types (e.g. one is an image, other is an
-/// audio file), a default action cannot be constructed and an invalid Action
-/// object is returned.
+/// Returns the default action for a given list of \a uris representing
+/// Tracker resources.  If the URIs represent objects of different types
+/// (e.g. one is an image, other is an audio file), a default action cannot be
+/// constructed in this manner.  In that case the \c nie:mimeType properties
+/// of all \a uris are checked and we attempt to construct a default action
+/// based on them (passing \c nie:url as argument) (\see
+/// Action::defaultAction(const QString& uri) also).  If both ways fail, it
+/// falls back to the first action returned by actions().  If there are none,
+/// an invalid Action is returned.
 Action Action::defaultAction(const QStringList& uris)
 {
     QList<QStringList> mimeTypes = mimeTypesForUris(uris);
@@ -242,8 +251,11 @@ Action Action::defaultAction(const QStringList& uris)
 /// represented by the given \a uri.  The applicability is determined by the
 /// pre-defined \ref tracker_conditions "Tracker conditions".  If a condition
 /// \c cond applies to \a uri, then we consider that \c x-maemo-nepomuk/cond
-/// is one of the mime types of the uri, and search the applicable
-/// applications accordingly (and alliterating :).
+/// is one of the mime types of the uri, and construct the Action:s
+/// accordingly.  Additionally we check whether the \a uri has both \c nie:url
+/// and \c nie:mimeType properties, in which case we append extra Actions for
+/// the corresponding mime types.  Note that these actions are passed the \c
+/// nie:url as argument.
 QList<Action> Action::actions(const QString& uri)
 {
     QList<Action> result;
@@ -273,24 +285,33 @@ QList<Action> Action::actions(const QString& uri)
 
 /// Returns the set of actions applicable to all \a uris (which represent
 /// Tracker resources).  The set is constructed by first figuring out the
-/// common "pseudo-mimetypes" for all \a uris.  For each mimetype, we add the
-/// actions handling it.  The order of the actions is the order in which they
-/// appear in the action list of the first uri.
+/// "pseudo-mimetypes" for all \a uris.  The resulting actions are the common
+/// ones handling all \a uris.  The order of the actions is the order in which
+/// they appear in the action list of the first uri.  Additional actions for
+/// \c nie:mimeType properties of the \a uris are appended similarly to the
+/// single-uri version of this function.  \see Action::actions(const QString&
+/// uri) for details.
 QList<Action> Action::actions(const QStringList& uris)
 {
     QList<Action> result;
     QList<QStringList> mimeTypes = mimeTypesForUris(uris);
 
     LCA_DEBUG << "pseudo mimes per uri" << mimeTypes;
-    QSet<QString> commonApps;
+    QStringList commonApps;
     for (int i = 0; i < mimeTypes.size(); ++i) {
-        QSet<QString> apps;
+        QStringList apps;
         foreach (const QString& mime, mimeTypes[i])
-            apps += appsForContentType(mime).toSet();
-        if (i == 0)
+            apps += appsForContentType(mime);
+        if (i == 0) {
             commonApps = apps;
-        else
-            commonApps.intersect(apps);
+        } else {
+            QStringList intersection;
+            foreach (const QString& commonApp, commonApps) {
+                if (apps.contains(commonApp))
+                    intersection << commonApp;
+            }
+            commonApps = intersection;
+        }
     }
     LCA_DEBUG << "commonApps" << commonApps;
     foreach (const QString& app, commonApps)
@@ -303,10 +324,17 @@ QList<Action> Action::actions(const QStringList& uris)
         QStringList fileUris;
         for (int i = 0; i < urlsAndMimes.size(); i += 2) {
             fileUris << urlsAndMimes[i];
-            if (i == 0)
-                commonApps = appsForContentType(urlsAndMimes[i+1]).toSet();
-            else
-                commonApps.intersect(appsForContentType(urlsAndMimes[i+1]).toSet());
+            QStringList apps = appsForContentType(urlsAndMimes[i+1]);
+            if (i == 0) {
+                commonApps = apps;
+            } else {
+                QStringList intersection;
+                foreach (const QString& commonApp, commonApps) {
+                    if (apps.contains(commonApp))
+                        intersection << commonApp;
+                }
+                commonApps = intersection;
+            }
         }
         LCA_DEBUG << "real-mime commonApps" << commonApps;
         foreach (const QString& app, commonApps)

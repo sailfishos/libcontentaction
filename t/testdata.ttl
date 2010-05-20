@@ -31,6 +31,10 @@
 <a.softwareapp> a nfo:SoftwareApplication, nie:DataObject .
 
 <a.contact> a nco:PersonContact .
+<b.phonenumber> a nco:PhoneNumber ;
+	nco:phoneNumber "555-334112" .
+<b.contact> a nco:PersonContact ;
+	nco:hasPhoneNumber <b.phonenumber> .
 
 <an.image> a nfo:Image , nie:DataObject ;
            nie:url "file:///tmp/aaa.jpg" ;
