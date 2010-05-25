@@ -1,8 +1,8 @@
 libcontentaction (0.1.7~unreleased) unstable; urgency=low
 
-  * 
+  * Updating defaults.list
 
- -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Thu, 20 May 2010 10:59:28 +0300
+ -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Tue, 25 May 2010 15:30:24 +0300
 
 libcontentaction (0.1.6) unstable; urgency=low
 
