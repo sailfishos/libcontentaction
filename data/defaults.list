@@ -52,7 +52,6 @@ video/x-msvideo=videosuiteinterface.desktop
 video/x-xvid=videosuiteinterface.desktop
 x-maemo-nepomuk/contact=opencontactcard.desktop
 x-maemo-nepomuk/email=mail.desktop
-x-maemo-nepomuk/image=galleryserviceaction.desktop
 x-maemo-nepomuk/ms-docs=officetools.desktop
 x-maemo-nepomuk/ms-excel=officetools.desktop
 x-maemo-nepomuk/ms-ppt=officetools.desktop
