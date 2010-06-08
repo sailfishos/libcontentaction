@@ -12,6 +12,7 @@ void everything()
     a.trigger();
     a.isValid();
     a.name();
+    a.icon();
     Action b = Action::defaultAction(QStringList() << "and" << "some");
     Action c(b);
     c = a;

@@ -8,6 +8,7 @@
     ContentAction::Action::isValid*;
     ContentAction::Action::name*;
     ContentAction::Action::localizedName*;
+    ContentAction::Action::icon*;
 
     ContentAction::Action::actions*;
     ContentAction::Action::defaultAction*;
