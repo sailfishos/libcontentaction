@@ -1,8 +1,8 @@
 libcontentaction (0.1.9) unstable; urgency=low
 
-  *
+  * Fixed missing exports.
 
- -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Fri, 28 May 2010 16:03:51 +0300
+ -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Tue, 08 Jun 2010 10:26:10 +0300
 
 libcontentaction (0.1.8) unstable; urgency=low
 
