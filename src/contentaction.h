@@ -28,6 +28,14 @@
 #include <QUrl>
 #include <QSharedPointer>
 
+#ifndef LCA_EXPORT
+# if defined(LCA_BUILD)
+#  define LCA_EXPORT Q_DECL_EXPORT
+# else
+#  define LCA_EXPORT Q_DECL_IMPORT
+# endif
+#endif
+
 class MLabel;
 
 namespace ContentAction
@@ -36,7 +44,7 @@ namespace ContentAction
 struct Match;
 struct ActionPrivate;
 
-class Action
+class LCA_EXPORT Action
 {
 public:
     bool isValid() const;
@@ -73,22 +81,22 @@ private:
     friend Action createAction(const QString& desktopFileId, const QStringList& params);
 };
 
-struct Match {
+struct LCA_EXPORT Match {
     QList<Action> actions; ///< list of applicable actions
     int start, end; ///< [start, end) determines the matching substring
 
     bool operator<(const Match& other) const;
 };
 
-QList<Action> actionsForMime(const QString& mimeType);
-Action defaultActionForMime(const QString& mimeType);
-void setMimeDefault(const QString& mimeType, const Action& action);
-void setMimeDefault(const QString& mimeType, const QString& app);
-void resetMimeDefault(const QString& mimeType);
+LCA_EXPORT QList<Action> actionsForMime(const QString& mimeType);
+LCA_EXPORT Action defaultActionForMime(const QString& mimeType);
+LCA_EXPORT void setMimeDefault(const QString& mimeType, const Action& action);
+LCA_EXPORT void setMimeDefault(const QString& mimeType, const QString& app);
+LCA_EXPORT void resetMimeDefault(const QString& mimeType);
 
-void highlightLabel(MLabel *label);
-void highlightLabel(MLabel *label, QStringList typesToHighlight);
-void dehighlightLabel(MLabel *label);
+LCA_EXPORT void highlightLabel(MLabel *label);
+LCA_EXPORT void highlightLabel(MLabel *label, QStringList typesToHighlight);
+LCA_EXPORT void dehighlightLabel(MLabel *label);
 
 } // end namespace
 #endif

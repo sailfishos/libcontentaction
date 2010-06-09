@@ -84,13 +84,13 @@ extern const QString XMaemoFixedArgsKey;
 extern const QString ExecKey;
 
 QList<Action> actionsForUri(const QString& uri, const QString& mimeType);
-QStringList appsForContentType(const QString& contentType);
-QString defaultAppForContentType(const QString& contentType);
+LCA_EXPORT QStringList appsForContentType(const QString& contentType);
+LCA_EXPORT QString defaultAppForContentType(const QString& contentType);
 QString findDesktopFile(const QString& id);
 
-QString mimeForScheme(const QString& uri);
-QString mimeForFile(const QUrl& fileUri);
-QStringList mimeForTrackerObject(const QString& uri);
+LCA_EXPORT QString mimeForScheme(const QString& uri);
+LCA_EXPORT QString mimeForFile(const QUrl& fileUri);
+LCA_EXPORT QStringList mimeForTrackerObject(const QString& uri);
 
 const QHash<QString, QStringList>& mimeApps();
 const QHash<QString, QString>& highlighterConfig();

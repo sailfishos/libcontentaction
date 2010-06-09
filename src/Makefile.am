@@ -6,7 +6,6 @@ SUFFIXES = .cpp .h .moc.cpp
 	$(MOC) -o "$@" "$<"
 
 EXTRA_DIST = \
-	Exports \
 	doc.h
 
 AM_CPPFLAGS = \
@@ -16,7 +15,8 @@ AM_CPPFLAGS = \
 	$(GIO_CFLAGS) \
 	$(MT_CFLAGS) \
 	-DDEFAULT_ACTIONS=\"@datadir@/contentaction\" \
-	-DDEFAULT_L10N_DIR=\"@datadir@/contentaction/l10n\"
+	-DDEFAULT_L10N_DIR=\"@datadir@/contentaction/l10n\" \
+	-DLCA_BUILD
 
 LIBS += \
 	$(QtCore_LIBS) \
@@ -27,13 +27,9 @@ LIBS += \
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \
-	contentaction.h \
-	contentaction-dui.h
+	contentaction.h
 
 lib_LTLIBRARIES = libcontentaction.la
-
-libcontentaction_la_DEPENDENCIES = \
-	Exports
 
 libcontentaction_la_SOURCES = \
 	internal.h \
@@ -59,9 +55,11 @@ CLEANFILES = \
 nodist_libcontentaction_la_SOURCES = \
 	service.moc.cpp
 
+libcontentaction_la_CXXFLAGS = \
+	-fvisibility=hidden
+
 libcontentaction_la_LDFLAGS = \
-	-Wl,--as-needed \
-	-Wl,--version-script=$(srcdir)/Exports
+	-Wl,--as-needed
 
 bin_PROGRAMS = lca-tool
 
