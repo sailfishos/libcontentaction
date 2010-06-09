@@ -72,12 +72,11 @@ DBusPrivate::DBusPrivate(MDesktopEntry* desktopEntry, const QStringList& _params
         objectPath = desktopEntry->value(XMaemoObjectPathKey);
         if (objectPath.isEmpty())
             objectPath = "/";
-
-        QStringList fixedArgs = desktopEntry->value(XMaemoFixedArgsKey)
-            .split(';', QString::SkipEmptyParts);
-        fixedArgs.append(params);
-        params = fixedArgs;
     }
+    QStringList fixedArgs = desktopEntry->value(XMaemoFixedArgsKey)
+        .split(';', QString::SkipEmptyParts);
+    fixedArgs.append(params);
+    params = fixedArgs;
 }
 
 void DBusPrivate::trigger() const
