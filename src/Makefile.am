@@ -27,8 +27,7 @@ LIBS += \
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \
-	contentaction.h \
-	contentaction-dui.h
+	contentaction.h
 
 lib_LTLIBRARIES = libcontentaction.la
 

@@ -19,7 +19,6 @@
  */
 #include "contentaction.h"
 #include "internal.h"
-#include "contentaction-dui.h"
 
 #include <QRegExp>
 #include <QGraphicsGridLayout>
@@ -199,25 +198,6 @@ void ContentAction::highlightLabel(MLabel *label,
 void ContentAction::dehighlightLabel(MLabel *label)
 {
     unhiliteLabel(label);
-}
-
-void ContentAction::Dui::highlightLabel(DuiLabel *label)
-{
-    LCA_WARNING << "DuiLabel support is removed, migrate to MeeGoTouch.";
-}
-
-/// Similar to highlightLabel() but allows specifying which regexp-types to
-/// highlight (e.g. only \c "x-maemo-highlight/mailto").
-void ContentAction::Dui::highlightLabel(DuiLabel *label,
-                                        QStringList typesToHighlight)
-{
-    LCA_WARNING << "DuiLabel support is removed, migrate to MeeGoTouch.";
-}
-
-/// Removes all highlighters attached by highlightLabel() from \a label.
-void ContentAction::Dui::dehighlightLabel(DuiLabel *label)
-{
-    LCA_WARNING << "DuiLabel support is removed, migrate to MeeGoTouch.";
 }
 
 Q_DECLARE_METATYPE(QObjectList);

@@ -20,9 +20,6 @@
     ContentAction::Action::highlight*;
     ContentAction::Match::operator*;
 
-    ContentAction::Dui::highlightLabel*;
-    ContentAction::Dui::dehighlightLabel*;
-
     ContentAction::highlightLabel*;
     ContentAction::dehighlightLabel*;
 
