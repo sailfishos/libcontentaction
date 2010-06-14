@@ -58,5 +58,4 @@ x-maemo-nepomuk/ms-ppt=officetools.desktop
 x-maemo-nepomuk/ms-txt=officetools.desktop
 x-maemo-nepomuk/music-piece=musicsuiteinterface.desktop
 x-maemo-nepomuk/musicpiece=musicsuiteinterface.desktop
-x-maemo-nepomuk/video=videosuiteinterface.desktop
 x-maemo-urischeme/mailto=mail.desktop
