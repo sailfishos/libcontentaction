@@ -1,3 +1,9 @@
+libcontentaction (0.1.11~unreleased) unstable; urgency=low
+
+  * 
+
+ -- Marja Hassinen <ext-marja.2.hassinen@nokia.com>  Wed, 16 Jun 2010 09:02:11 +0300
+
 libcontentaction (0.1.10) unstable; urgency=low
 
   * X-Maemo-Fixed-Params supported also for the MApplication::launch method.
