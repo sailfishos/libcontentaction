@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=kindergarten
+Exec=echo "tiszta ovoda:" %U
+Terminal=false
+Type=Application
+NotShowIn=X-MeeGo;
+MimeType=x-maemo-highlight/ovoda;

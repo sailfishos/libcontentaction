@@ -1,6 +1,8 @@
 [Default Applications]
 x-maemo-highlight/email=emailer.desktop
 x-maemo-highlight/phone=caller.desktop
+x-maemo-highlight/url=caller.desktop
+x-maemo-highlight/ovoda=ovoda.desktop
 x-maemo-nepomuk/image=galleryserviceinterface.desktop
 image/*=plainimageviewer.desktop
 audio/*=plainmusicplayer.desktop
