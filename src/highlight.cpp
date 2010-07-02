@@ -31,6 +31,9 @@
 #include <MLabelHighlighter>
 #include <MPopupList>
 
+typedef QPair<QString, QRegExp> MimeAndRegexp;
+typedef QList<MimeAndRegexp> MimesAndRegexps;
+
 namespace {
 
 using namespace ContentAction;
@@ -40,22 +43,35 @@ class LCALabelHighlighter: public MCommonLabelHighlighter
 {
     Q_OBJECT
 public:
-    LCALabelHighlighter(const QRegExp& regexp,
-                        const QString& mime,
+    LCALabelHighlighter(const MimesAndRegexps &mars_,
                         QObject *parent = 0);
 private slots:
     void doDefaultAction(const QString& match);
     void doPopupActions(const QString& match);
     void doAction(const QModelIndex& ix);
 private:
-    QString mime;
+    QStringList matchingMimes(const QString &str) const;
+    MimesAndRegexps mars;
 };
 
-LCALabelHighlighter::LCALabelHighlighter(const QRegExp& regexp,
-                                         const QString& mime,
+static QRegExp combine(const MimesAndRegexps &mars)
+{
+    QString re("(?:");
+    bool first = true;
+    foreach (const MimeAndRegexp &mr, mars) {
+        if (!first)
+            re += '|';
+        re += mr.second.pattern();
+        first = false;
+    }
+    re += ")";
+    return QRegExp(re);
+}
+
+LCALabelHighlighter::LCALabelHighlighter(const MimesAndRegexps &mars_,
                                          QObject *parent) :
-    MCommonLabelHighlighter(regexp),
-    mime(mime)
+    MCommonLabelHighlighter(combine(mars_)),
+    mars(mars_)
 {
     if (parent)
         setParent(parent);
@@ -65,11 +81,33 @@ LCALabelHighlighter::LCALabelHighlighter(const QRegExp& regexp,
                      this, SLOT(doPopupActions(const QString&)));
 }
 
+QStringList LCALabelHighlighter::matchingMimes(const QString &str) const
+{
+    QStringList ret;
+    foreach (const MimeAndRegexp &mr, mars)
+        if (mr.second.exactMatch(str))
+            ret.append(mr.first);
+    return ret;
+}
+
 void LCALabelHighlighter::doDefaultAction(const QString& match)
 {
-    QString app = defaultAppForContentType(mime);
-    Action defAction = createAction(findDesktopFile(app), QStringList() << match);
-    defAction.trigger();
+    QStringList mimes = matchingMimes(match);
+    QString app;
+    foreach (const QString &mime, mimes) {
+        app = defaultAppForContentType(mime);
+        if (!app.isEmpty()) {
+            createAction(findDesktopFile(app), QStringList() << match).trigger();
+            return;
+        }
+    }
+    foreach (const QString &mime, mimes) {
+        QStringList apps = appsForContentType(mime);
+        if (!apps.isEmpty()) {
+            createAction(findDesktopFile(apps[0]), QStringList() << match).trigger();
+            return;
+        }
+    }
 }
 
 struct ActionListModel: public QAbstractListModel
@@ -113,10 +151,12 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 {
     qRegisterMetaType<Action>();
     QList<Action> alist;
-    QStringList apps = appsForContentType(mime);
-    foreach (const QString& app, apps) {
-        alist << createAction(findDesktopFile(app), QStringList() << match);
+    QStringList mimes = matchingMimes(match);
+    foreach (const QString &mime, mimes) {
+        foreach (const QString &app, appsForContentType(mime))
+            alist << createAction(findDesktopFile(app), QStringList() << match);
     }
+
     MPopupList *popuplist = new MPopupList();
     popuplist->setItemModel(new ActionListModel(alist, popuplist));
     popuplist->setTitle(match);
@@ -130,41 +170,24 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 
 } // end anon namespace
 
-static void hiLabel(MLabel *label,
-                    const QHash<QString, QString>& cfg)
+static void hiLabel(MLabel *label, const MimesAndRegexps &mars)
 {
-    QHashIterator<QString, QString> iter(cfg);
-    QObjectList hiliters;
-
-    if (label->property("_lca_highlighters").isValid())
+    if (label->property("_lca_highlighter").isValid())
         return;
-    while (iter.hasNext()) {
-        iter.next();
-        // iter.key == mime type, iter.value == regexp
-        if (!appsForContentType(iter.key()).isEmpty() &&
-            !defaultAppForContentType(iter.key()).isEmpty()) {
-            LCALabelHighlighter *hl = new LCALabelHighlighter(QRegExp(iter.value()),
-                                                              iter.key(),
-                                                              label);
-            hiliters.append(hl);
-            label->addHighlighter(hl);
-        }
-    }
-    label->setProperty("_lca_highlighters", QVariant::fromValue(hiliters));
+    LCALabelHighlighter *hl = new LCALabelHighlighter(mars, label);
+    label->addHighlighter(hl);
+    label->setProperty("_lca_highlighter", QVariant::fromValue<void *>(hl));
 }
 
 static void unhiliteLabel(MLabel *label)
 {
-    QVariant prop = label->property("_lca_highlighters");
+    QVariant prop = label->property("_lca_highlighter");
     if (!prop.isValid())
         return;
-    QObjectList hiliters = prop.value<QObjectList>();
-    foreach (QObject *hl, hiliters) {
-        LCALabelHighlighter *lcahl = static_cast<LCALabelHighlighter *>(hl);
-        label->removeHighlighter(lcahl);
-        delete lcahl;
-    }
-    label->setProperty("_lca_highlighters", QVariant());
+    LCALabelHighlighter *hl = static_cast<LCALabelHighlighter *>(prop.value<void *>());
+    label->removeHighlighter(hl);
+    delete hl;
+    label->setProperty("_lca_highlighter", QVariant());
 }
 
 /// Attaches possibly several MLabelHighlighter:s to the label, based on the
@@ -174,24 +197,32 @@ static void unhiliteLabel(MLabel *label)
 /// choose one.
 void ContentAction::highlightLabel(MLabel *label)
 {
-    const QHash<QString, QString>& cfg = highlighterConfig();
-    hiLabel(label, cfg);
+    MimesAndRegexps mars;
+    QHashIterator<QString, QString> iter(highlighterConfig());
+    while (iter.hasNext()) {
+        iter.next();
+        // iter.key == mime type, iter.value == regexp
+        if (!appsForContentType(iter.key()).isEmpty())
+            mars += qMakePair(iter.key(), QRegExp(iter.value()));
+    }
+    hiLabel(label, mars);
 }
 
 /// Similar to highlightLabel() but allows specifying which regexp-types to
 /// highlight (e.g. only \c "x-maemo-highlight/mailto").
 void ContentAction::highlightLabel(MLabel *label,
-                                        QStringList typesToHighlight)
+                                   QStringList typesToHighlight)
 {
+    MimesAndRegexps mars;
     const QHash<QString, QString>& cfg = highlighterConfig();
-    QHash<QString, QString> filtered;
     foreach (const QString& k, typesToHighlight) {
         QString re(cfg.value(k, QString()));
         if (re.isEmpty())
             continue;
-        filtered.insert(k, re);
+        if (!appsForContentType(k).isEmpty())
+            mars += qMakePair(k, QRegExp(re));
     }
-    hiLabel(label, filtered);
+    hiLabel(label, mars);
 }
 
 /// Removes all highlighters attached by highlightLabel() from \a label.
