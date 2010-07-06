@@ -88,6 +88,21 @@ static bool mimeAndUriFromTracker(const QStringList& uris, QStringList &urlsAndM
     return true;
 }
 
+static bool bookmarkFromTracker(const QStringList& uris, QStringList &urls)
+{
+    QString query("SELECT ");
+    foreach (const QString& uri, uris)
+        query += QString("nfo:bookmarks(<%1>) ").arg(uri);
+    query += " {}";
+    QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query);
+    if (!reply.isValid())
+        return false;
+    urls = reply.value()[0];
+    foreach (const QString& x, urls)
+        if (x.isEmpty()) return false;
+    return true;
+}
+
 // Queries tracker whether \a condition applies to \a uri.
 static bool checkTrackerCondition(const QString& condition, const QString& uri)
 {
@@ -179,6 +194,14 @@ Action Action::defaultAction(const QString& uri)
         LCA_DEBUG << "real url and mimetype" << urlAndMime;
         return defaultActionForFile(urlAndMime[0], urlAndMime[1]);
     }
+
+    // FIXME: this is a hack for converting nfo:Bookmark into a url.
+    QStringList bookmarkUrl;
+    if (bookmarkFromTracker(QStringList() << uri, bookmarkUrl)) {
+        LCA_DEBUG << "bookmark url" << bookmarkUrl;
+        return defaultActionForScheme(bookmarkUrl[0]);
+    }
+
     // Fall back to one of the existing actions (if there are some)
     LCA_DEBUG << "fallback to actions()";
     QList<Action> acts = actions(uri);
@@ -198,6 +221,11 @@ Action Action::defaultAction(const QString& uri)
 /// an invalid Action is returned.
 Action Action::defaultAction(const QStringList& uris)
 {
+    if (uris.isEmpty())
+        return Action();
+
+    // FIXME: this function doesn't include the hack for nfo:Bookmark.
+
     QList<QStringList> mimeTypes = mimeTypesForUris(uris);
     LCA_DEBUG << "pseudo mimes per uri" << mimeTypes;
     QSet<QString> defApps;
@@ -279,6 +307,14 @@ QList<Action> Action::actions(const QString& uri)
         LCA_DEBUG << "real url and mimetype" << urlAndMime;
         result << actionsForFile(urlAndMime[0], urlAndMime[1]);
     }
+    // And still others, if it happens to be a nfo:Bookmark.
+    // FIXME: this is a hack for converting nfo:Bookmark into a url.
+    QStringList bookmarkUrl;
+    if (bookmarkFromTracker(QStringList() << uri, bookmarkUrl)) {
+        LCA_DEBUG << "bookmark url" << bookmarkUrl;
+        result << actionsForScheme(bookmarkUrl[0]);
+    }
+
     // TODO: sort the result
     return result;
 }
@@ -294,7 +330,13 @@ QList<Action> Action::actions(const QString& uri)
 QList<Action> Action::actions(const QStringList& uris)
 {
     QList<Action> result;
+
+    if (uris.isEmpty())
+        return result;
+
     QList<QStringList> mimeTypes = mimeTypesForUris(uris);
+
+    // FIXME: this function doesn't include the hack for nfo:Bookmark.
 
     LCA_DEBUG << "pseudo mimes per uri" << mimeTypes;
     QStringList commonApps;
