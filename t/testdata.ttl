@@ -103,6 +103,9 @@
 	nfo:domain "http://slashdot.org";
 	nfo:uri "http://slashdot.org/68571".
 
-<urn:uuid:562340913> a nfo:Bookmark ;
-		     nfo:bookmarks <mailto:foo@bar.com> .
+<urn:test:bookmark> a nfo:Bookmark ;
+        nfo:bookmarks <mailto:foo@bar.com> .
+
+<urn:test:webhistory> a nfo:WebHistory ;
+	nfo:uri "mailto:foo@bar.com" .
 
