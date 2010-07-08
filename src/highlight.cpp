@@ -172,6 +172,8 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 
 static void hiLabel(MLabel *label, const MimesAndRegexps &mars)
 {
+    if (mars.isEmpty())
+        return;
     if (label->property("_lca_highlighter").isValid())
         return;
     LCALabelHighlighter *hl = new LCALabelHighlighter(mars, label);
