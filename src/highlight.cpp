@@ -233,7 +233,6 @@ void ContentAction::dehighlightLabel(MLabel *label)
     unhiliteLabel(label);
 }
 
-Q_DECLARE_METATYPE(QObjectList);
 Q_DECLARE_METATYPE(ContentAction::Action);
 
 #include "highlight.moc"

@@ -106,6 +106,6 @@ TESTS = \
 	stop-sandbox.sh
 
 clean-local:
-	rm -f *.pyc;
+	rm -f *.py?;
 
 CLEANFILES += servicelistener.moc
