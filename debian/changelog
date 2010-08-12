@@ -1,8 +1,11 @@
-libcontentaction (0.1.14~unreleased) unstable; urgency=low
+libcontentaction (0.1.14) unstable; urgency=low
 
-  * 
+  * Removed a few useless pseudo-mime-based defaults.
+  * Fix l10n test to reset locale.
+  * Fixes: NB#176951
+  * Fixes: NB#182502
 
- -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Tue, 13 Jul 2010 14:19:00 +0300
+ -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Thu, 12 Aug 2010 09:55:20 +0300
 
 libcontentaction (0.1.13) unstable; urgency=low
 
