@@ -1,8 +1,9 @@
-libcontentaction (0.1.15~unreleased) unstable; urgency=low
+libcontentaction (0.1.15) unstable; urgency=low
 
-  * :)
+  * Added an API file, whatever it is.
+  * Fixes: NB#178110
 
- -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Thu, 12 Aug 2010 10:48:40 +0300
+ -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Thu, 12 Aug 2010 13:05:22 +0300
 
 libcontentaction (0.1.14) unstable; urgency=low
 
