@@ -9,6 +9,9 @@ setlocale() {
     gconftool-2 -t string -s /meegotouch/i18n/language "$LANG";
 }
 
+original_locale=$(gconftool-2 -g /meegotouch/i18n/language)
+atexit "setlocale $original_locale"
+
 #lca-tool adds these as translation paths
 export CONTENTACTION_L10N_PATH=test-l10n-data
 
