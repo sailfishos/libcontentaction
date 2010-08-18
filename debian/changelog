@@ -1,8 +1,8 @@
-libcontentaction (0.1.16~unreleased) unstable; urgency=low
+libcontentaction (0.1.16) unstable; urgency=low
 
-  * :)
+  * Return Icon and Name even for invalid actions.
 
- -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Thu, 12 Aug 2010 13:08:13 +0300
+ -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Wed, 18 Aug 2010 12:49:36 +0300
 
 libcontentaction (0.1.15) unstable; urgency=low
 
