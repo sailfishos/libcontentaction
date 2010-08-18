@@ -30,7 +30,8 @@ struct ActionPrivate
 
 struct DefaultPrivate : public ActionPrivate
 {
-    DefaultPrivate(MDesktopEntry* desktopEntry, const QStringList& params);
+    DefaultPrivate(MDesktopEntry* desktopEntry, const QStringList& params,
+        bool valid = true);
     virtual ~DefaultPrivate();
     virtual bool isValid() const;
     virtual QString name() const;
@@ -38,6 +39,7 @@ struct DefaultPrivate : public ActionPrivate
     virtual QString icon() const;
     MDesktopEntry* desktopEntry;
     QStringList params;
+    bool valid;
 };
 
 struct ServiceFwPrivate : public DefaultPrivate {

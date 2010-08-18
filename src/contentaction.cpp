@@ -95,8 +95,8 @@ void ActionPrivate::trigger() const
     LCA_WARNING << "triggered an invalid action, not doing anything.";
 }
 
-DefaultPrivate::DefaultPrivate(MDesktopEntry* desktopEntry, const QStringList& params)
-    : desktopEntry(desktopEntry), params(params)
+  DefaultPrivate::DefaultPrivate(MDesktopEntry* desktopEntry, const QStringList& params, bool valid)
+    : desktopEntry(desktopEntry), params(params), valid(valid)
 {
 }
 
@@ -107,7 +107,7 @@ DefaultPrivate::~DefaultPrivate()
 
 bool DefaultPrivate::isValid() const
 {
-    return true;
+    return valid;
 }
 
 QString DefaultPrivate::name() const
@@ -161,9 +161,8 @@ Action createAction(const QString& desktopFile, const QStringList& params)
         return Action(new ExecPrivate(desktopEntry, params));
     }
     else {
-        delete desktopEntry;
         // We don't know how to launch
-        return Action(new ActionPrivate());
+        return Action(new DefaultPrivate(desktopEntry, params, false));
     }
 }
 
