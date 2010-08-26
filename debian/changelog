@@ -1,8 +1,10 @@
-libcontentaction (0.1.17~unreleased) unstable; urgency=low
+libcontentaction (0.1.17) unstable; urgency=low
 
-  * eleven halak usznak a viz alatt
+  * Assume "file" scheme if none given.
+  * Fixes: NB#180448
+  * Fixes: NB#187474
 
- -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Wed, 18 Aug 2010 12:52:54 +0300
+ -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Thu, 26 Aug 2010 10:38:29 +0300
 
 libcontentaction (0.1.16) unstable; urgency=low
 
