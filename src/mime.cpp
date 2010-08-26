@@ -64,9 +64,13 @@ static QString generalizeMimeType(const QString &mime)
 
 /// Returns the content type of the given file, or an empty string if it cannot
 /// be retrieved.
-QString Internal::mimeForFile(const QUrl& fileUri)
+QString Internal::mimeForFile(const QUrl& uri)
 {
     g_type_init();
+    // assume "file" scheme if the uri had nothing
+    QUrl fileUri(uri);
+    if (fileUri.scheme().isEmpty())
+        fileUri.setScheme("file");
     QByteArray filename = fileUri.toEncoded();
     GFile *file = g_file_new_for_uri(filename.constData());
 
