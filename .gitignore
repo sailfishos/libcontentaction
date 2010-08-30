@@ -33,6 +33,7 @@ t/servicetest
 t/hldemo
 t/hl1
 t/l10ntest
+t/*.pyo
 
 t/test-l10n-data/test_en.qm
 t/test-l10n-data/test_hu.qm
