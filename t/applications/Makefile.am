@@ -16,4 +16,5 @@ dist_citestapp_DATA = \
 	fixedparams.desktop \
 	plainimageviewer.desktop \
 	trackerimageviewer.desktop \
-	plainmusicplayer.desktop
+	plainmusicplayer.desktop \
+	complexmusic.desktop
