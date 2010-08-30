@@ -70,11 +70,6 @@
     { ?uri a nmo:IMMessage . }
   </tracker-condition>
 
-  <!-- dont use this, use music-piece instead -->
-  <tracker-condition name="musicpiece"> 
-    { ?uri a nmm:MusicPiece . }
-  </tracker-condition>
-
   <tracker-condition name="music-piece"> 
     { ?uri a nmm:MusicPiece . }
   </tracker-condition>
