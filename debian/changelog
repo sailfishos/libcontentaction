@@ -1,9 +1,10 @@
 libcontentaction (0.1.18~unreleased) unstable; urgency=low
 
-  * eleven halak usznak viz alatt
-  * elavat kalat uivat veden alla
-
- -- Akos PASZTORY <ext-akos.pasztory@nokia.com>  Thu, 26 Aug 2010 10:41:31 +0300
+  * Remove duplicate actions: now it's ok to declare both x-maemo-nepomuk
+    mime types and the corresponding real mime types in a .desktop file.
+  * Fixes: NB#186435
+  
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 30 Aug 2010 10:39:56 +0300
 
 libcontentaction (0.1.17) unstable; urgency=low
 

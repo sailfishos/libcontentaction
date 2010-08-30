@@ -24,6 +24,9 @@
 <a.music> a nmm:MusicPiece, nie:DataObject ;
 	nie:url "file:///tmp/aaa.mp3" ;
 	nie:mimeType "audio/mpeg" .
+<a2.music> a nmm:MusicPiece, nie:DataObject ;
+	nie:url "file:///tmp/aaa2.mp3" ;
+	nie:mimeType "audio/mpeg" .
 <b.music> a nmm:MusicPiece, nie:DataObject ;
 	nie:url "file:///tmp/bbb.wav" ;
 	nie:mimeType "audio/wav" .

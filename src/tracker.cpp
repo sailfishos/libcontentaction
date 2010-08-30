@@ -296,6 +296,7 @@ QList<Action> Action::actions(const QString& uri)
 
     QStringList mimeTypes = mimeForTrackerObject(uri);
     LCA_DEBUG << "pseudo mimes" << mimeTypes;
+    QSet<QString> blackList; // for adding each action only once
     foreach (const QString& mimeType, mimeTypes) {
         QStringList apps = appsForContentType(mimeType);
         if (mimeType == SoftwareApplicationMimeType)
@@ -303,14 +304,22 @@ QList<Action> Action::actions(const QString& uri)
         foreach (const QString& app, apps) {
             result << createAction(findDesktopFile(app),
                                    QStringList() << uri);
+            blackList.insert(result.last().name());
         }
     }
     // Construct additional actions based on nie:mimeType(uri), passing
-    // nie:url(uri) as argument.
+    // nie:url(uri) as argument. However, don't add actions for those
+    // applications which already are in the list (because they declare handling
+    // the x-maemo-nepomuk mime type).
     QStringList urlAndMime;
     if (mimeAndUriFromTracker(QStringList() << uri, urlAndMime)) {
         LCA_DEBUG << "real url and mimetype" << urlAndMime;
-        result << actionsForFile(urlAndMime[0], urlAndMime[1]);
+        QList<Action> actions = actionsForFile(urlAndMime[0], urlAndMime[1]);
+        foreach (const Action& a, actions) {
+            if (!blackList.contains(a.name())) {
+                result << a;
+            }
+        }
     }
     // And still others, if it happens to be a nfo:Bookmark or nfo:WebHistory.
     // FIXME: this is a hack for converting nfo:Bookmark and nfo:WebHistory into
@@ -362,8 +371,11 @@ QList<Action> Action::actions(const QStringList& uris)
         }
     }
     LCA_DEBUG << "commonApps" << commonApps;
-    foreach (const QString& app, commonApps)
+    QSet<QString> blackList; // for adding each action only once
+    foreach (const QString& app, commonApps) {
         result << createAction(findDesktopFile(app), uris);
+        blackList.insert(result.last().name());
+    }
 
     QStringList urlsAndMimes;
     if (mimeAndUriFromTracker(uris, urlsAndMimes)) {
@@ -385,8 +397,12 @@ QList<Action> Action::actions(const QStringList& uris)
             }
         }
         LCA_DEBUG << "real-mime commonApps" << commonApps;
-        foreach (const QString& app, commonApps)
-            result << createAction(findDesktopFile(app), fileUris);
+        foreach (const QString& app, commonApps) {
+            Action a = createAction(findDesktopFile(app), fileUris);
+            if (!blackList.contains(a.name())) {
+                result << a;
+            }
+        }
     }
     // TODO: sort the result
     return result;

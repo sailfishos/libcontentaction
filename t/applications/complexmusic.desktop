@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=complex_musicplayer
+GenericName=A complex music player
+Icon=execicon
+Comment=Views audio
+Exec=echo complex_musicplayer %U
+Terminal=false
+Type=Application
+MimeType=x-maemo-nepomuk/music-piece;audio/mpeg;
+NotShowIn=X-MeeGo;
