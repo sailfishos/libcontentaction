@@ -1,3 +1,9 @@
+libcontentaction (0.1.19~unreleased) unstable; urgency=low
+
+  * 
+
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 30 Aug 2010 12:15:43 +0300
+
 libcontentaction (0.1.18) unstable; urgency=low
 
   * Remove duplicate actions: now it's ok to declare both x-maemo-nepomuk
