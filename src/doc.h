@@ -62,8 +62,8 @@ NotShowIn=X-MeeGo;
 
 ;; Defining a localization method:
 ;; 1. MeeGoTouch-based
-X-MeeGo-translation-catalog=gallery_catalog
-X-MeeGo-logical-id=view_logical_id
+X-MeeGo-Translation-Catalog=gallery_catalog
+X-MeeGo-Logical-Id=view_logical_id
 ;; 2. XDG style
 Name=View in gallery
 Name[fi]=Näytä galleriassa
