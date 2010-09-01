@@ -1,8 +1,8 @@
-libcontentaction (0.1.19~unreleased) unstable; urgency=low
+libcontentaction (0.1.19) unstable; urgency=low
 
-  * 
+  * Small doc fix: .desktop keys were out of date.
 
- -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 30 Aug 2010 12:15:43 +0300
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Wed, 01 Sep 2010 11:50:39 +0300
 
 libcontentaction (0.1.18) unstable; urgency=low
 
