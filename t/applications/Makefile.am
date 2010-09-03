@@ -17,4 +17,7 @@ dist_citestapp_DATA = \
 	plainimageviewer.desktop \
 	trackerimageviewer.desktop \
 	plainmusicplayer.desktop \
-	complexmusic.desktop
+	complexmusic.desktop \
+	uriprinter.desktop \
+	gallerywithfilename.desktop
+

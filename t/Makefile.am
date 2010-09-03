@@ -31,7 +31,8 @@ citest_SCRIPTS = \
 	test-desktop-launching.py \
 	test-l10n.sh \
 	test-fixed-params.py \
-	test-schemes.sh
+	test-schemes.sh \
+	test-special-chars.py
 
 noinst_SCRIPTS = \
 	start-sandbox.sh \
@@ -103,6 +104,7 @@ TESTS = \
 	test-l10n.sh \
 	test-fixed-params.py \
 	test-schemes.sh \
+	test-special-chars.py \
 	stop-sandbox.sh
 
 clean-local:

@@ -195,7 +195,9 @@ Action Action::defaultAction(const QString& uri)
     QStringList urlAndMime;
     if (mimeAndUriFromTracker(QStringList() << uri, urlAndMime)) {
         LCA_DEBUG << "real url and mimetype" << urlAndMime;
-        return defaultActionForFile(urlAndMime[0], urlAndMime[1]);
+        // Tracker has the filename %-encoded, don't encode it again
+        QUrl fileUrl = QUrl::fromEncoded(urlAndMime[0].toUtf8());
+        return defaultActionForFile(fileUrl, urlAndMime[1]);
     }
 
     // FIXME: this is a hack for converting nfo:Bookmark and nfo:WebHistory into
@@ -314,7 +316,9 @@ QList<Action> Action::actions(const QString& uri)
     QStringList urlAndMime;
     if (mimeAndUriFromTracker(QStringList() << uri, urlAndMime)) {
         LCA_DEBUG << "real url and mimetype" << urlAndMime;
-        QList<Action> actions = actionsForFile(urlAndMime[0], urlAndMime[1]);
+        // Tracker has the filename %-encoded, don't encode it again
+        QUrl fileUrl = QUrl::fromEncoded(urlAndMime[0].toUtf8());
+        QList<Action> actions = actionsForFile(fileUrl, urlAndMime[1]);
         foreach (const Action& a, actions) {
             if (!blackList.contains(a.name())) {
                 result << a;

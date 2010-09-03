@@ -46,6 +46,10 @@
           nie:url "file:///tmp/bbb.png" ;
           nie:mimeType "image/png" .
 
+<specialchars.image> a nfo:Image, nie:DataObject ;
+          nie:url "file:///tmp/%5Bspecial%5B.png" ;
+          nie:mimeType "image/png" .
+
 <urn:uuid:1930642225> a nfo:WebHistory;
 	nie:title "www.piratebay.org 0";
 	nie:contentCreated "2009-04-23T17:02:08";

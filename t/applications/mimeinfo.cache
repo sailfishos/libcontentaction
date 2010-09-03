@@ -3,6 +3,7 @@ x-maemo-nepomuk/person-contact=contacthandler.desktop
 x-maemo-highlight/url=caller.desktop
 text/*=fixedparams.desktop
 x-maemo-highlight/ovoda=ovoda.desktop
+image/png=gallerywithfilename.desktop;uriprinter.desktop;
 image/*=plainimageviewer.desktop
 x-maemo-nepomuk/image=galleryserviceinterface.desktop;trackerimageviewer.desktop;other.desktop;upload.desktop;show.desktop;
 x-maemo-highlight/phone=addcontact.desktop;caller.desktop;
