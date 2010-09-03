@@ -3,6 +3,6 @@
 
   <highlight regexp="[^\s@]+@([^\s.]+)(\.[^\s.]+)*" name="email-address"/>
   <highlight regexp="\+?\d+([- ]\d+)*" name="phone-number"/>
-  <highlight regexp="http://(\w+((:\w+)?)@)?(\w+\.)+\w+(:\d+)?(/[\w ./?%&amp;=]*)?" name="http-url"/>
+  <highlight regexp="(https?://|www\.)(\w+((:\w+)?)@)?(\w+\.)+\w+(:\d+)?(/[\w ./?%&amp;=]*)?" name="http-url"/>
 
 </actions>
