@@ -1,8 +1,8 @@
-libcontentaction (0.1.21~unreleased) unstable; urgency=low
+libcontentaction (0.1.21) unstable; urgency=low
 
-  *
+  * Configuration update: http-url regexp.
 
- -- Marja Hassinen <marja.hassinen@nokia.com>  Fri, 03 Sep 2010 09:57:31 +0300
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Fri, 03 Sep 2010 12:19:00 +0300
 
 libcontentaction (0.1.20) unstable; urgency=low
 
