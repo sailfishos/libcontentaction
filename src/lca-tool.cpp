@@ -292,7 +292,7 @@ int main(int argc, char **argv)
                 return 0;
             }
         }
-        err << actionName << "is not applicable" << endl;
+        err << actionName << " is not applicable" << endl;
         return 3;
         break;
     case PrintDefaultAction:
