@@ -52,6 +52,8 @@ QList<Match> Action::highlight(const QString& text)
             }
             result << m;
             pos += l;
+            if (l == 0)
+                ++pos;
         }
     }
     return result;
