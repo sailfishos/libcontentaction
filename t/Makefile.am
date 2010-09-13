@@ -32,7 +32,8 @@ citest_SCRIPTS = \
 	test-l10n.sh \
 	test-fixed-params.py \
 	test-schemes.sh \
-	test-special-chars.py
+	test-special-chars.py \
+	test-invalid-defaults.py
 
 noinst_SCRIPTS = \
 	start-sandbox.sh \
@@ -44,6 +45,7 @@ citest_DATA = \
 	service.map \
 	testdata.ttl \
 	plaintext \
+	empty.pdf \
 	launchme.desktop
 
 check_PROGRAMS = \
@@ -86,6 +88,7 @@ EXTRA_DIST = \
 	$(noinst_SCRIPTS) \
 	hlinput.txt \
 	plaintext \
+	empty.pdf \
 	launchme.desktop
 
 # NOTE: we depend on automake executing $(TESTS) in order.  Should this
@@ -105,6 +108,7 @@ TESTS = \
 	test-fixed-params.py \
 	test-schemes.sh \
 	test-special-chars.py \
+	test-invalid-defaults.py \
 	stop-sandbox.sh
 
 clean-local:

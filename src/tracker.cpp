@@ -185,9 +185,9 @@ Action Action::defaultAction(const QString& uri)
     foreach (const QString& mimeType, mimeTypes) {
         if (mimeType == SoftwareApplicationMimeType)
             return createSoftwareAction(uri);
-        QString def = defaultAppForContentType(mimeType);
+        QString def = findDesktopFile(defaultAppForContentType(mimeType));
         if (!def.isEmpty())
-            return createAction(findDesktopFile(def),
+            return createAction(def,
                                 QStringList() << uri);
     }
     // If the resource is a file-based one, query its url and mimetype, and
@@ -251,8 +251,11 @@ Action Action::defaultAction(const QStringList& uris)
     LCA_DEBUG << "defApps" << defApps;
     // If there are multiple possible default applications, the choice is
     // arbitrary.
-    if (!defApps.empty())
-        return createAction(findDesktopFile(*defApps.begin()), uris);
+    foreach (const QString& appid, defApps) {
+        QString app = findDesktopFile(appid);
+        if (!app.isEmpty())
+            return createAction(app, uris);
+    }
 
     // Try mimetype based handlers for real things.
     QStringList urlsAndMimes;
@@ -271,8 +274,9 @@ Action Action::defaultAction(const QStringList& uris)
             }
         }
         LCA_DEBUG << "defApp" << defApp;
-        if (!defApp.isEmpty())
-            return createAction(findDesktopFile(defApp), fileUris);
+        QString app = findDesktopFile(defApp);
+        if (app.isEmpty())
+            return createAction(app, fileUris);
     }
     // Fall back to one of the existing actions (if there are some)
     LCA_DEBUG << "fallback to actions()";
@@ -303,10 +307,13 @@ QList<Action> Action::actions(const QString& uri)
         QStringList apps = appsForContentType(mimeType);
         if (mimeType == SoftwareApplicationMimeType)
             result << createSoftwareAction(uri);
-        foreach (const QString& app, apps) {
-            result << createAction(findDesktopFile(app),
-                                   QStringList() << uri);
-            blackList.insert(result.last().name());
+        foreach (const QString& appid, apps) {
+            QString app = findDesktopFile(appid);
+            if (!app.isEmpty()) {
+                result << createAction(app,
+                                       QStringList() << uri);
+                blackList.insert(result.last().name());
+            }
         }
     }
     // Construct additional actions based on nie:mimeType(uri), passing
@@ -376,9 +383,12 @@ QList<Action> Action::actions(const QStringList& uris)
     }
     LCA_DEBUG << "commonApps" << commonApps;
     QSet<QString> blackList; // for adding each action only once
-    foreach (const QString& app, commonApps) {
-        result << createAction(findDesktopFile(app), uris);
-        blackList.insert(result.last().name());
+    foreach (const QString& appid, commonApps) {
+        QString app = findDesktopFile(appid);
+        if (!app.isEmpty()) {
+            result << createAction(app, uris);
+            blackList.insert(result.last().name());
+        }
     }
 
     QStringList urlsAndMimes;
@@ -401,8 +411,11 @@ QList<Action> Action::actions(const QStringList& uris)
             }
         }
         LCA_DEBUG << "real-mime commonApps" << commonApps;
-        foreach (const QString& app, commonApps) {
-            Action a = createAction(findDesktopFile(app), fileUris);
+        foreach (const QString& appid, commonApps) {
+            QString app = findDesktopFile(appid);
+            if (app.isEmpty())
+                continue;
+            Action a = createAction(app, fileUris);
             if (!blackList.contains(a.name())) {
                 result << a;
             }

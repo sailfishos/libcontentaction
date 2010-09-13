@@ -209,6 +209,8 @@ void resetMimeDefault(const QString& mimeType)
 // ("something.desktop"), and returns the first hit.
 QString Internal::findDesktopFile(const QString& id)
 {
+    if (id.isEmpty())
+        return QString();
     QStringList dirs = xdgDataDirs();
     for (int i = 0; i < dirs.size(); ++i) {
         QFile f(dirs[i] + "/applications/" + id);
@@ -318,10 +320,11 @@ Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType
     // actually) is to launch the application it describes.
     if (mimeType == DesktopFileMimeType)
         return createAction(fileUri.toLocalFile(), QStringList());
-    QString appid = defaultAppForContentType(mimeType);
-    if (!appid.isEmpty())
-        return createAction(findDesktopFile(appid),
-                        QStringList() << fileUri.toEncoded());
+    QString app = findDesktopFile(defaultAppForContentType(mimeType));
+    if (!app.isEmpty()) {
+        return createAction(app,
+                            QStringList() << fileUri.toEncoded());
+    }
     // Fall back to one of the existing actions (if there are some)
     QList<Action> acts = actionsForUri(fileUri.toEncoded(), mimeType);
     if (acts.size() >= 1)
@@ -338,8 +341,10 @@ QList<Action> Internal::actionsForUri(const QString& uri, const QString& mimeTyp
 
     QStringList appIds = appsForContentType(mimeType);
     foreach (const QString& id, appIds) {
-        result << createAction(findDesktopFile(id),
-                               QStringList() << uri);
+        QString app = findDesktopFile(id);
+        if (!app.isEmpty())
+            result << createAction(app,
+                                   QStringList() << uri);
     }
     return result;
 }
@@ -380,9 +385,9 @@ QString Internal::mimeForScheme(const QString& uri)
 Action Action::defaultActionForScheme(const QString& uri)
 {
     QString mimeType = mimeForScheme(uri);
-    QString defApp = defaultAppForContentType(mimeType);
+    QString defApp = findDesktopFile(defaultAppForContentType(mimeType));
     if (!defApp.isEmpty())
-        return createAction(findDesktopFile(defApp), QStringList() << uri);
+        return createAction(defApp, QStringList() << uri);
 
     // Fall back to one of the existing actions (if there are some)
     QList<Action> acts = actionsForUri(uri, mimeType);
@@ -418,9 +423,9 @@ QList<Action> actionsForMime(const QString& mimeType)
 
 Action defaultActionForMime(const QString& mimeType)
 {
-    QString appid = defaultAppForContentType(mimeType);
-    if (!appid.isEmpty())
-        return createAction(findDesktopFile(appid),
+    QString app = findDesktopFile(defaultAppForContentType(mimeType));
+    if (!app.isEmpty())
+        return createAction(app,
                             QStringList());
     return Action();
 }

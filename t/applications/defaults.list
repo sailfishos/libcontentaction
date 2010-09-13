@@ -4,5 +4,7 @@ x-maemo-highlight/phone=caller.desktop
 x-maemo-highlight/url=caller.desktop
 x-maemo-highlight/ovoda=ovoda.desktop
 x-maemo-nepomuk/image=galleryserviceinterface.desktop
+x-maemo-nepomuk/calendar-event=nonexistent.desktop
+application/pdf=nonexistent.desktop
 image/*=plainimageviewer.desktop
 audio/*=plainmusicplayer.desktop

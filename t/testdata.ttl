@@ -116,3 +116,4 @@
 <urn:test:webhistory> a nfo:WebHistory ;
 	nfo:uri "mailto:foo@bar.com" .
 
+<urn:test:calendarevent> a ncal:Event .

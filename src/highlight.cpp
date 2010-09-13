@@ -95,17 +95,20 @@ void LCALabelHighlighter::doDefaultAction(const QString& match)
     QStringList mimes = matchingMimes(match);
     QString app;
     foreach (const QString &mime, mimes) {
-        app = defaultAppForContentType(mime);
+        app = findDesktopFile(defaultAppForContentType(mime));
         if (!app.isEmpty()) {
-            createAction(findDesktopFile(app), QStringList() << match).trigger();
+            createAction(app, QStringList() << match).trigger();
             return;
         }
     }
     foreach (const QString &mime, mimes) {
         QStringList apps = appsForContentType(mime);
-        if (!apps.isEmpty()) {
-            createAction(findDesktopFile(apps[0]), QStringList() << match).trigger();
-            return;
+        foreach (const QString& appid, apps) {
+            app = findDesktopFile(appid);
+            if (!app.isEmpty()) {
+                createAction(app, QStringList() << match).trigger();
+                return;
+            }
         }
     }
 }
@@ -152,9 +155,13 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
     qRegisterMetaType<Action>();
     QList<Action> alist;
     QStringList mimes = matchingMimes(match);
+    QString app;
     foreach (const QString &mime, mimes) {
-        foreach (const QString &app, appsForContentType(mime))
-            alist << createAction(findDesktopFile(app), QStringList() << match);
+        foreach (const QString &appid, appsForContentType(mime)) {
+            app = findDesktopFile(appid);
+            if (!app.isEmpty())
+                alist << createAction(app, QStringList() << match);
+        }
     }
 
     MPopupList *popuplist = new MPopupList();
