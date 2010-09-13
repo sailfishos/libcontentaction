@@ -2,9 +2,6 @@
 <actions>
   <!-- the following highlight rules are just examples -->
 
-  <highlight regexp="[^\s@]+@([^\s.]+)(\.[^\s.]+)*" name="email"/>
-  <highlight regexp="\+?\d+([- ]\d+)*" name="phone"/>
-  <highlight regexp="http://(\w+((:\w+)?)@)?(\w+\.)+\w+(:\d+)?(/[\w ./?%&amp;=]*)?" name="url"/>
-  <highlight regexp="http://(\w+((:\w+)?)@)?example.com(:\d+)?(/[\w ./?%&amp;=]*)?" name="ovoda"/>
+  <highlight regexp="http://(\w+((:\w+)?)@)?example.com(:\d+)?(/[\w ./?%&amp;=]*)?" name="special-url"/>
 
 </actions>

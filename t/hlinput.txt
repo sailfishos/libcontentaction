@@ -3,4 +3,4 @@ but you should rather call +44 433 2236
 or 911
 ooaoa+foo@motherland.ru
 normal uri http://foo.bar.ru
-ovoda http://example.com/quux/323
+special url http://example.com/quux/323

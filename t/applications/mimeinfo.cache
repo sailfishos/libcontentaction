@@ -1,15 +1,15 @@
 [MIME Cache]
 x-maemo-nepomuk/person-contact=contacthandler.desktop
-x-maemo-highlight/url=caller.desktop
 text/*=fixedparams.desktop
-x-maemo-highlight/ovoda=ovoda.desktop
 image/png=gallerywithfilename.desktop;uriprinter.desktop;
 image/*=plainimageviewer.desktop
 x-maemo-nepomuk/image=galleryserviceinterface.desktop;trackerimageviewer.desktop;other.desktop;upload.desktop;show.desktop;
-x-maemo-highlight/phone=addcontact.desktop;caller.desktop;
 text/plain=uberexec.desktop;ubermeego.desktop;ubermimeopen.desktop;
 audio/mpeg=complexmusic.desktop
 audio/*=plainmusicplayer.desktop
 x-maemo-nepomuk/music-piece=complexmusic.desktop
-x-maemo-highlight/email=emailer.desktop
 x-maemo-urischeme/mailto=emailer.desktop
+x-maemo-highlight/email-address=emailer.desktop;
+x-maemo-highlight/http-url=browser.desktop;
+x-maemo-highlight/phone-number=caller.desktop;
+x-maemo-highlight/special-url=special-browser.desktop;

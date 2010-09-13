@@ -5,4 +5,4 @@ Exec=echo "adding contact, params:" %U
 Terminal=false
 Type=Application
 NotShowIn=X-MeeGo;
-MimeType=x-maemo-highlight/phone;
+MimeType=x-maemo-highlight/phone-number;

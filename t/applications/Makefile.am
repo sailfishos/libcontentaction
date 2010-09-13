@@ -19,5 +19,6 @@ dist_citestapp_DATA = \
 	plainmusicplayer.desktop \
 	complexmusic.desktop \
 	uriprinter.desktop \
-	gallerywithfilename.desktop
-
+	gallerywithfilename.desktop \
+	browser.desktop \
+	special-browser.desktop
