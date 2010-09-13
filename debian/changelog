@@ -1,8 +1,9 @@
-libcontentaction (0.1.23~unreleased) unstable; urgency=low
+libcontentaction (0.1.23) unstable; urgency=low
 
-  * 
+  * Fixes: NB#190808
+  * lca doesn't get confused if defaults.list contains nonexistent applications
 
- -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 06 Sep 2010 11:11:50 +0300
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 13 Sep 2010 09:36:06 +0300
 
 libcontentaction (0.1.22) unstable; urgency=low
 
