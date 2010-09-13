@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <actions>
-
-  <highlight regexp="[^\s@]+@([^\s.]+)(\.[^\s.]+)*" name="email-address"/>
-  <highlight regexp="\+?\d+([- ]\d+)*" name="phone-number"/>
+  <highlight regexp="[^\s@]+@([^\s@.]+)(\.[^\s@.]+)+" name="email-address"/>
+  <highlight regexp="(\+?\d|\(\d+\))(\(\d+\)|[-.pwxPWX# ]?\d+)*" name="phone-number"/>
   <highlight regexp="(https?://|www\.)(\w+((:\w+)?)@)?(\w+\.)+\w+(:\d+)?(/[\w ./?%&amp;=]*)?" name="http-url"/>
 
 </actions>

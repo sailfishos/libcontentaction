@@ -4,3 +4,37 @@ or 911
 ooaoa+foo@motherland.ru
 normal uri http://foo.bar.ru
 special url http://example.com/quux/323
+
+These should be valid phone numbers:
+1234567
+(303)499-7111
++13034997111
+303-499-7111
++1(303)499-7111
+303.499.7111,
+(3034997111)
++48 123.12-3 123
++481234p12345
++481234#12345
+
+These should be valid web addresses:
+http://us.m.yahoo.com
+http://www.google.com/m
+www.google.com/m
+<http://us.m.yahoo.com>
+
+These should be valid e-mail addresses:
+Address with an extra dot: john.doe@att.com.
+<mailto:john_doe2@att.com>
+
+These are suspicious phone numbers:
+sometextbefore333222111444sometextafter
++(((((
++358+7777
+
+These are suspicious e-mail addresses:
+double@atsign@bar.com
+
+These are suspicious web addresses:
+http://http://double.http.com
+
