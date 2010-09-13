@@ -1,3 +1,9 @@
+libcontentaction (0.1.25~unreleased) unstable; urgency=low
+
+  *
+
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 13 Sep 2010 14:25:13 +0300
+
 libcontentaction (0.1.24) unstable; urgency=low
 
   * Configuration update: regexps
