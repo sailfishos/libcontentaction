@@ -265,10 +265,17 @@ int main(int argc, char **argv)
     case FileMode:
     {
         QFileInfo fileInfo(args[0]);
-        if (fileInfo.exists())
-            args[0] = fileInfo.absoluteFilePath().prepend("file://");
-        actions = Action::actionsForFile(QUrl(args[0]));
-        defAction = Action::defaultActionForFile(QUrl(args[0]));
+        QUrl fileUrl;
+        if (fileInfo.exists()) {
+            // the user gave: /home/me/somefile#canhavespecialchars.txt
+            fileUrl = QUrl::fromLocalFile(fileInfo.absoluteFilePath());
+        }
+        else {
+            // the user gave: file:///home/me/mustbe%23excapedproperly.txt
+            fileUrl = QUrl::fromEncoded(args[0].toLatin1());
+        }
+        actions = Action::actionsForFile(fileUrl);
+        defAction = Action::defaultActionForFile(fileUrl);
     }
     break;
     case SchemeMode:

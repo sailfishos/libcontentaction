@@ -35,9 +35,12 @@ class SpecialChars(unittest.TestCase):
         # start a fake gallery service
         self.gallery = CLTool("gallery.py")
         self.assert_(self.gallery.expect("started"))
+        (status, output) = getstatusoutput("touch /tmp/some#file.mp3")
+        (status, output) = getstatusoutput("ls /tmp/some#file.mp3")
 
     def tearDown(self):
         self.gallery.kill()
+        (status, output) = getstatusoutput("rm /tmp/some#file.mp3")
 
     def testDBusWithSpecialChars(self):
         (status, output) = getstatusoutput("lca-tool --tracker --trigger gallerywithfilename specialchars.image")
@@ -53,6 +56,18 @@ class SpecialChars(unittest.TestCase):
         f.close()
         os.remove("./executedAction")
         self.assert_(content.find("'/tmp/[special[.png'") != -1)
+
+    def testActionsForFileWithSpecialChars(self):
+        filename = "file:///tmp/some%23file.mp3"
+        (status, output) = getstatusoutput("lca-tool --file --print " + filename)
+        self.assert_(status == 0)
+        self.assert_(output.find("plainmusicplayer") != -1)
+
+    def testActionsForFileWithSpecialChars2(self):
+        filename = "/tmp/some#file.mp3"
+        (status, output) = getstatusoutput("lca-tool --file --print " + filename)
+        self.assert_(status == 0)
+        self.assert_(output.find("plainmusicplayer") != -1)
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(SpecialChars)
