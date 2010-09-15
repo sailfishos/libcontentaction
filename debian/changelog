@@ -1,8 +1,8 @@
-libcontentaction (0.1.26~unreleased) unstable; urgency=low
+libcontentaction (0.1.26) unstable; urgency=low
 
-  *
+  * Fixes: NB#191945
 
- -- Marja Hassinen <marja.hassinen@nokia.com>  Tue, 14 Sep 2010 15:23:10 +0300
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Wed, 15 Sep 2010 10:14:26 +0300
 
 libcontentaction (0.1.25) unstable; urgency=low
 
