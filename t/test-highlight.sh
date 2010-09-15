@@ -15,6 +15,8 @@ strstr "$res" ".*77 80 '911' caller" || exit 1
 strstr "$res" ".*15 33 'email@address.here' emailer" || exit 1 
 strstr "$res" ".*81 104 'ooaoa+foo@motherland.ru' emailer" || exit 1
 
+# phone numbers
+
 strstr "$res" ".*'1234567' caller" || exit 2
 strstr "$res" ".*'(303)499-7111' caller" || exit 2
 strstr "$res" ".*'+13034997111' caller" || exit 2
@@ -26,16 +28,22 @@ strstr "$res" ".*'+48 123.12-3 123' caller" || exit 2
 strstr "$res" ".*'+481234p12345' caller" || exit 2
 strstr "$res" ".*'+481234#12345' caller" || exit 2
 
+# web addresses
+
 strstr "$res" ".*'http://us.m.yahoo.com' browser" || exit 3
 strstr "$res" ".*'http://www.google.com/m' browser" || exit 3
 strstr "$res" ".*'www.google.com/m' browser" || exit 3
 strstr "$res" ".*'http://us.m.yahoo.com' browser" || exit 3
+strstr "$res" ".*'http://maps.google.com/maps?f=d&source=s_d&saddr=Nieznana+droga&daddr=krak%C3%B3w&hl&geocode=Fa5h9wIdlq87Aq%3BFQrt-wIdFFYwASnRGE41wEQWRzG_ikd2tbZrtA&mra=ls&sll=49.915862,20.323334&sspn=0.505808,1.234589&ie=UTF8&t=h&z=10' browser" || exit 3
+strstr "$res" ".*'http://host-with-dash.com/path?%:@&=+\\$,-!~\\*'with(special)chars' browser" || exit 3
+
+# email addresses
 
 strstr "$res" ".*'john.doe@att.com' emailer" || exit 4
 strstr "$res" ".*'<mailto:john_doe2@att.com>' emailer" || exit 4
 
 # invalid and almost-invalid cases
-#strstr "$res" ".*'333222111444' caller" && exit 5
+strstr "$res" ".*'333222111444' caller" && exit 5
 strstr "$res" ".*'+((((' caller" && exit 5
 strstr "$res" ".*'+358+7777' caller" && exit 5
 
