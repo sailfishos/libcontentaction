@@ -1,5 +1,5 @@
 AC_PREREQ([2.61])
-AC_INIT([libcontentaction], [0.1.26], [marius.vollmer@nokia.com], libcontentaction)
+AC_INIT([libcontentaction], [0.1.27~unreleased], [marius.vollmer@nokia.com], libcontentaction)
 
 AC_CONFIG_SRCDIR([Makefile.am])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
