@@ -1,6 +1,6 @@
 interface: libcontentaction
 type: library
-scope: Nokia MeeGo
+scope: Platform
 state: experimental
 libs-pkg: libcontentaction0
 dev-pkg: libcontentaction-dev
