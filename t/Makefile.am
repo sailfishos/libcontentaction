@@ -49,8 +49,7 @@ citest_DATA = \
 	launchme.desktop
 
 check_PROGRAMS = \
-	linktest \
-	hl1
+	linktest
 
 noinst_PROGRAMS = hldemo
 hldemo_SOURCES = hldemo.cpp
@@ -67,7 +66,6 @@ testhelperdir = $(libdir)/libcontentaction-tests
 testhelper_PROGRAMS = \
 	servicetest
 
-hl1_SOURCES = hl1.cpp
 linktest_SOURCES = linktest.cpp
 linktest_CPPFLAGS = \
 	$(AM_CPPFLAGS) \

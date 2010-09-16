@@ -62,6 +62,7 @@ static const char help[] = \
 "                                  mimetype\n"
 "  --setmimedefault MIME ACTION    set ACTION as default for the given mimetype\n"
 "  --resetmimedefault MIME         remove the user-defined default from the given mimetype\n"
+"  --highlight                     will read text from stdin and find actions for items in it\n"
 "\n"
 "Return values:\n"
 "  0   success\n"
@@ -74,7 +75,8 @@ static const char help[] = \
 "  $ lca-tool --tracker --triggerdefault urn:1246934-4213\n"
 "  $ lca-tool --file --print file://$HOME/plaintext\n"
 "  $ lca-tool --scheme --triggerdefault mailto:someone@example.com\n"
-"  $ lca-tool --setmimedefault image/jpeg imageviewer\n";
+"  $ lca-tool --setmimedefault image/jpeg imageviewer\n"
+"  $ lca-tool --highlight < myinput.txt\n";
 
 enum UriMode {
     NoMode = 0,
@@ -107,6 +109,72 @@ enum ActionToDo {
             return 2;                           \
         }                                       \
     } while (0)
+
+// The highlighter part:
+
+QDebug operator<<(QDebug dbg, const Match& m) {
+    dbg.nospace() << "match at ("
+                  << m.start << ", " << m.end << "): ";
+    foreach (const Action& a, m.actions) {
+        dbg.space() << a.name();
+    }
+    dbg.nospace() << "\n";
+    return dbg;
+}
+
+QDebug operator<<(QDebug dbg, const QList<Match>& ms) {
+    foreach (const Match& m, ms) {
+        dbg.space() << m;
+    }
+    return dbg;
+}
+
+/*
+ * Reads text from the standard input, highlight rules from the usual place
+ * (ie. xml files in $CONTENTACTION_ACTIONS) and then prints match results on
+ * the standard output.  If the terminal is a tty, the results are printed on
+ * stderr, and on stdout a beautifully colored version of the text is shown.
+ */
+void doHighlight()
+{
+    QTextStream out(isatty(1) ? stderr : stdout);
+    QTextStream textout(isatty(1) > 0 ? stdout : fopen("/dev/null", "w"));
+    QTextStream in(stdin);
+    QString text = in.readAll();
+
+    QList<Match> ms = Action::highlight(text);
+    foreach (const Match& m, ms) {
+        QStringList actions;
+        foreach (const Action& a, m.actions)
+            actions << a.name();
+        out << QString("%1 %2 '%3' %4\n").arg(QString::number(m.start),
+                                              QString::number(m.end),
+                                              text.mid(m.start, m.end - m.start),
+                                              actions.join(" "));
+    }
+    QString hltext(text);
+    if (isatty(1)) {
+        qSort(ms.begin(), ms.end());
+        QString color[] = {
+            "\e[1;37;41m",
+            "\e[1;37;42m",
+            "\e[1;37;43m",
+            "\e[1;37;44m",
+            "\e[1;37;45m",
+            "\e[1;37;46m",
+        };
+        int i = 0;
+        int d = 0;
+        foreach (const Match& m, ms) {
+            hltext.insert(d + m.start, color[i]);
+            d += color[i].length();
+            i = (i + 1) % (sizeof(color) / sizeof(color[0]));
+            hltext.insert(d + m.end, "\e[0m");
+            d += 4;
+        }
+        textout << hltext;
+    }
+}
 
 int main(int argc, char **argv)
 {
@@ -155,6 +223,10 @@ int main(int argc, char **argv)
             newmode = FileMode;
         else if (arg == "--scheme")
             newmode = SchemeMode;
+        else if (arg == "--highlight") {
+            doHighlight();
+            return 0;
+        }
         if (newmode != NoMode) {
             if (mode != NoMode) {
                 err << "only a single MODE may be specified" << endl;

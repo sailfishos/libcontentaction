@@ -8,7 +8,7 @@ strstr() {
     expr "$1" : "$2" >/dev/null;
 }
 
-res=$(./hl1 < $srcdir/hlinput.txt)
+res=$(lca-tool --highlight < $srcdir/hlinput.txt)
 
 strstr "$res" ".*61 73 '+44 433 2236' caller" || exit 1
 strstr "$res" ".*77 80 '911' caller" || exit 1 
