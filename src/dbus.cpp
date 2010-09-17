@@ -33,7 +33,8 @@ namespace ContentAction {
 
 const QString XMaemoFixedArgsKey("Desktop Entry/X-Maemo-Fixed-Args");
 
-DBusPrivate::DBusPrivate(MDesktopEntry* desktopEntry, const QStringList& _params)
+DBusPrivate::DBusPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
+                         const QStringList& _params)
     : DefaultPrivate(desktopEntry, _params), varArgs(false)
 {
     // mime_open  X-Osso-Service

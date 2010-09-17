@@ -31,7 +31,8 @@
 
 namespace ContentAction {
 
-ExecPrivate::ExecPrivate(MDesktopEntry* desktopEntry, const QStringList& params)
+ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
+                         const QStringList& params)
     : DefaultPrivate(desktopEntry, params)
 {
     g_type_init();

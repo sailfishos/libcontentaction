@@ -69,7 +69,10 @@ testhelper_PROGRAMS = \
 linktest_SOURCES = linktest.cpp
 linktest_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
-	$(GIO_CFLAGS)
+	$(GIO_CFLAGS) \
+	$(MT_CFLAGS)
+linktest_LDADD = \
+	$(MT_LIBS)
 
 servicetest_SOURCES = servicelistener.cpp
 

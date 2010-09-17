@@ -30,27 +30,30 @@ struct ActionPrivate
 
 struct DefaultPrivate : public ActionPrivate
 {
-    DefaultPrivate(MDesktopEntry* desktopEntry, const QStringList& params,
+    DefaultPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
+                   const QStringList& params,
         bool valid = true);
     virtual ~DefaultPrivate();
     virtual bool isValid() const;
     virtual QString name() const;
     virtual QString localizedName() const;
     virtual QString icon() const;
-    MDesktopEntry* desktopEntry;
+    QSharedPointer<MDesktopEntry> desktopEntry;
     QStringList params;
     bool valid;
 };
 
 struct ServiceFwPrivate : public DefaultPrivate {
-    ServiceFwPrivate(MDesktopEntry* desktopEntry, const QStringList& params);
+    ServiceFwPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
+                     const QStringList& params);
     virtual void trigger() const;
 
     QString serviceFwMethod;
 };
 
 struct DBusPrivate : public DefaultPrivate {
-    DBusPrivate(MDesktopEntry* desktopEntry, const QStringList& params);
+    DBusPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
+                const QStringList& params);
     virtual void trigger() const;
 
     QString busName;
@@ -61,14 +64,18 @@ struct DBusPrivate : public DefaultPrivate {
 };
 
 struct ExecPrivate : public DefaultPrivate {
-    ExecPrivate(MDesktopEntry* desktopEntry, const QStringList& params);
+    ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
+                const QStringList& params);
     virtual ~ExecPrivate();
     virtual void trigger() const;
 
     GAppInfo *appInfo;
 };
 
-Action createAction(const QString& desktopFileId, const QStringList& params);
+Action createAction(const QString& desktopFilePath,
+                    const QStringList& params);
+Action createAction(QSharedPointer<MDesktopEntry> desktopEntry,
+                    const QStringList& params);
 
 // our pseudo mimetype classes
 extern const QString OntologyMimeClass;

@@ -95,14 +95,14 @@ void ActionPrivate::trigger() const
     LCA_WARNING << "triggered an invalid action, not doing anything.";
 }
 
-  DefaultPrivate::DefaultPrivate(MDesktopEntry* desktopEntry, const QStringList& params, bool valid)
+DefaultPrivate::DefaultPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
+                               const QStringList& params, bool valid)
     : desktopEntry(desktopEntry), params(params), valid(valid)
 {
 }
 
 DefaultPrivate::~DefaultPrivate()
 {
-    delete desktopEntry;
 }
 
 bool DefaultPrivate::isValid() const
@@ -146,9 +146,16 @@ Action::Action(ActionPrivate* priv)
 {
 }
 
-Action createAction(const QString& desktopFile, const QStringList& params)
+Action createAction(const QString& desktopFilePath, const QStringList& params)
 {
-    MDesktopEntry* desktopEntry = new MDesktopEntry(desktopFile);
+    QSharedPointer<MDesktopEntry> desktopEntry(new MDesktopEntry(
+                                                   desktopFilePath));
+    return createAction(desktopEntry, params);
+}
+
+Action createAction(QSharedPointer<MDesktopEntry> desktopEntry,
+                    const QStringList& params)
+{
     if (desktopEntry->contains(XMaemoMethodKey) &&
         !desktopEntry->contains(XMaemoServiceKey)) {
         return Action(new ServiceFwPrivate(desktopEntry, params));
@@ -202,6 +209,27 @@ QString Action::localizedName() const
 QString Action::icon() const
 {
     return d->icon();
+}
+
+/// Creates an action that will launch the given application (specified by
+/// .desktop file name) with the \a params the way the application specifies in
+/// their .desktop file. \a app is the name of the .desktop file (with the
+/// .desktop extension). It is looked for in the standard locations.
+Action Action::launcherAction(const QString& app, const QStringList& params)
+{
+    QString appDesktop = findDesktopFile(app);
+    if (!appDesktop.isEmpty()) {
+        return createAction(appDesktop, params);
+    }
+    return Action();
+}
+
+/// Creates an action that will launch the given application (specified by
+/// MDesktopEntry) with the \a params the way the application specifies in
+/// their .desktop file.
+Action Action::launcherAction(QSharedPointer<MDesktopEntry> mDesktop, const QStringList& params)
+{
+    return createAction(mDesktop, params);
 }
 
 } // end namespace

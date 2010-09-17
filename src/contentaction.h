@@ -37,6 +37,7 @@
 #endif
 
 class MLabel;
+class MDesktopEntry;
 
 namespace ContentAction
 {
@@ -64,6 +65,10 @@ public:
     static QList<Action> actionsForFile(const QUrl& fileUri, const QString& mimeType);
     static QList<Action> actionsForScheme(const QString& uri);
 
+    static Action launcherAction(const QString& app, const QStringList& params);
+    static Action launcherAction(QSharedPointer<MDesktopEntry>,
+                                 const QStringList& params);
+
     static QList<Match> highlight(const QString& text);
 
     Action();
@@ -78,7 +83,10 @@ private:
 
     QSharedPointer<ActionPrivate> d;
 
-    friend Action createAction(const QString& desktopFileId, const QStringList& params);
+    friend Action createAction(const QString& desktopFilePath,
+                               const QStringList& params);
+    friend Action createAction(QSharedPointer<MDesktopEntry> desktopEntry,
+                               const QStringList& params);
 };
 
 struct LCA_EXPORT Match {

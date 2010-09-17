@@ -55,6 +55,15 @@ class Launching(unittest.TestCase):
         os.remove("./launchedAction")
         self.assert_(content.find("I was launched") != -1)
 
+    def testLaunchWithParams(self):
+        (status, output) = getstatusoutput("lca-tool --triggerdesktop uriprinter.desktop param1 param2 param3")
+        f = open("./executedAction")
+        content = f.read()
+        f.close()
+        os.remove("./executedAction")
+        self.assert_(status == 0)
+        self.assert_(content.find("'param1' 'param2' 'param3'") != -1)
+
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Launching)
     result = unittest.TextTestRunner(verbosity=2).run(suite)

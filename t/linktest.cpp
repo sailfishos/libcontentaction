@@ -3,6 +3,8 @@
 #include "contentaction.h"
 #include "internal.h"
 
+#include <MDesktopEntry>
+
 using namespace ContentAction;
 using namespace ContentAction::Internal;
 
@@ -29,6 +31,11 @@ void everything()
     setMimeDefault("foo", "bar");
     QList<Action> list = actionsForMime("foo");
     setMimeDefault("foo", list[0]);
+
+    QSharedPointer<MDesktopEntry> m(new MDesktopEntry("some.desktop"));
+    Action d = Action::launcherAction(m, QStringList() << "param1" << "param2");
+
+    Action e = Action::launcherAction("some.desktop", QStringList() << "param1" << "param2");
 }
 
 int main(int argc, char **argv)

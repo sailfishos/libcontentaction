@@ -63,6 +63,8 @@ static const char help[] = \
 "  --setmimedefault MIME ACTION    set ACTION as default for the given mimetype\n"
 "  --resetmimedefault MIME         remove the user-defined default from the given mimetype\n"
 "  --highlight                     will read text from stdin and find actions for items in it\n"
+"  --triggerdesktop DESKTOPFILE PARAMS   will launch the application defined by DESKTOPFILE with the given PARAMS\n"
+
 "\n"
 "Return values:\n"
 "  0   success\n"
@@ -70,13 +72,15 @@ static const char help[] = \
 "  2   problems with the arguments\n"
 "  3   triggered an action not applicable to the given URIS\n"
 "  4   no default action exists for the given URIS\n"
+"  5   desktop file not found\n"
 "\n"
 "Examples:\n"
 "  $ lca-tool --tracker --triggerdefault urn:1246934-4213\n"
 "  $ lca-tool --file --print file://$HOME/plaintext\n"
 "  $ lca-tool --scheme --triggerdefault mailto:someone@example.com\n"
 "  $ lca-tool --setmimedefault image/jpeg imageviewer\n"
-"  $ lca-tool --highlight < myinput.txt\n";
+"  $ lca-tool --highlight < myinput.txt\n"
+"  $ lca-tool --triggerdesktop myapp.desktop param1 param2\n";
 
 enum UriMode {
     NoMode = 0,
@@ -100,6 +104,8 @@ enum ActionToDo {
     PrintMimeDefault,
     SetMimeDefault,
     ResetMimeDefault,
+    Highlight,
+    TriggerDesktop
 };
 
 #define NEEDARG(errmsg)                         \
@@ -223,10 +229,6 @@ int main(int argc, char **argv)
             newmode = FileMode;
         else if (arg == "--scheme")
             newmode = SchemeMode;
-        else if (arg == "--highlight") {
-            doHighlight();
-            return 0;
-        }
         if (newmode != NoMode) {
             if (mode != NoMode) {
                 err << "only a single MODE may be specified" << endl;
@@ -263,6 +265,14 @@ int main(int argc, char **argv)
             todo = ResetMimeDefault;
             NEEDARG("a MIME must be given when using --setmimedefault");
             mime = args.takeFirst();
+        }
+        else if (arg == "--highlight") {
+            todo = Highlight;
+        }
+        else if (arg == "--triggerdesktop") {
+            todo = TriggerDesktop;
+            NEEDARG("a DESKTOPFILE must be given when using --triggerdesktop");
+            actionName = args.takeFirst();
         }
         // modal actions
         else if (arg == "--print") {
@@ -311,6 +321,18 @@ int main(int argc, char **argv)
         resetMimeDefault(mime);
         return 0;
         break;
+    case Highlight:
+        doHighlight();
+        return 0;
+        break;
+    case TriggerDesktop:
+    {
+        Action a = Action::launcherAction(actionName, args);
+        if (!a.isValid())
+            return 5;
+        a.trigger();
+        return 0;
+    }
     default:
         break;
     }

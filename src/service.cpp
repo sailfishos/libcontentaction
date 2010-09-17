@@ -33,7 +33,8 @@ using namespace ContentAction::Internal;
 namespace ContentAction
 {
 
-ServiceFwPrivate::ServiceFwPrivate(MDesktopEntry* desktopEntry, const QStringList& params)
+ServiceFwPrivate::ServiceFwPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
+                                   const QStringList& params)
     : DefaultPrivate(desktopEntry, params),
       serviceFwMethod(desktopEntry->value(XMaemoMethodKey))
 {
