@@ -1,7 +1,7 @@
 interface: libcontentaction
 type: library
 scope: Platform
-state: experimental
+state: stable
 libs-pkg: libcontentaction0
 dev-pkg: libcontentaction-dev
 doc-type: doxygen

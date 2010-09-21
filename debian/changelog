@@ -1,6 +1,6 @@
 libcontentaction (0.1.29~unreleased) unstable; urgency=low
 
-  *
+  * Fixes: NB#191392
 
  -- Marja Hassinen <marja.hassinen@nokia.com>  Fri, 17 Sep 2010 14:02:27 +0300
 
