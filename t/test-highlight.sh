@@ -50,4 +50,8 @@ strstr "$res" ".*'+358+7777' caller" && exit 5
 strstr "$res" ".*'http://http://double.http.com' browser" && exit 6
 strstr "$res" ".*'http://double.http.com' browser" || exit 6
 
+# previous bugs
+strstr "$res" ".*'www.myurl.com/foo/bar' browser" || exit 7
+strstr "$res" ".*'first@home.com' emailer" || exit 7
+
 exit 0

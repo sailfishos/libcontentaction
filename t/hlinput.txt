@@ -40,3 +40,5 @@ double@atsign@bar.com
 These are suspicious web addresses:
 http://http://double.http.com
 
+These are some previous error cases:
+this is an url www.myurl.com/foo/bar and e-mail first@home.com
