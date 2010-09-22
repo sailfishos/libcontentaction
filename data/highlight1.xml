@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <actions>
-  <highlight regexp="(mailto:)?[\w!#$%&amp;'*+/=?^`{|}~-]+(?:\.[\w!#$%&amp;'*+/=?^`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" name="email-address"/>
+  <highlight regexp="(mailto:)?[\w!#$%&amp;'*+/=?^`{|}~-]+(\.[\w!#$%&amp;'*+/=?^`{|}~-]+)*@([\w-]+\.)+[\w-]+" name="email-address"/>
   <highlight regexp="((\+|\b)\d|\(\d+\))(\(\d+\)|[-.pwxPWX# ]?\d+)*" name="phone-number"/>
   <highlight regexp="(https?://|www\.)(\w+((:\w+)?)@)?([\w\-]+\.)+[\w\-]+(:\d+)?(/[\w/?%:;@&amp;=+$,\-.!~*'()]*)?" name="http-url"/>
 

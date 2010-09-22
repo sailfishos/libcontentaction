@@ -38,6 +38,7 @@ These are suspicious e-mail addresses:
 double@atsign@bar.com
 onlyuser@andhostname
 onlyuser2@andhostname2.
+USERNAME@ALLUPPERCASE.COM
 
 These are suspicious web addresses:
 http://http://double.http.com

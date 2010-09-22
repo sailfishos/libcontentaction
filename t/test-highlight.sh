@@ -48,6 +48,7 @@ strstr "$res" ".*'+358+7777' caller" && exit 5
 strstr "$res" ".*'double@atsign@bar.com' emailer" && exit 5
 strstr "$res" ".*'onlyuser@andhostname' emailer" && exit 5
 strstr "$res" ".*'onlyuser2@andhostname2.' emailer" && exit 5
+strstr "$res" ".*'USERNAME@ALLUPPERCASE.COM' emailer" || exit 5
 
 strstr "$res" ".*'http://http://double.http.com' browser" && exit 6
 strstr "$res" ".*'http://double.http.com' browser" || exit 6
