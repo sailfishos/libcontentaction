@@ -56,5 +56,10 @@ strstr "$res" ".*'http://double.http.com' browser" || exit 6
 # previous bugs
 strstr "$res" ".*'www.myurl.com/foo/bar' browser" || exit 7
 strstr "$res" ".*'first@home.com' emailer" || exit 7
+strstr "$res" ".*'1112223338' caller" || exit 7
+strstr "$res" ".*'email@domain.org' emailer" || exit 7
+strstr "$res" ".*'4445556668' caller" || exit 7
+strstr "$res" ".*'email2@domain.org' emailer" || exit 7
+
 
 exit 0
