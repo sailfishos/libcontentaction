@@ -8,7 +8,8 @@ Build-Depends: debhelper (>= 5),
                libmeegotouch-dev,
                doxygen (>= 1.5.9),
                pkg-config,
-               autoconf, automake, libtool
+               autoconf, automake, libtool,
+               aegis-builder (>= 1.4)
 Standards-Version: 3.8.0
 
 Package: libcontentaction0
