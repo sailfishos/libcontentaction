@@ -36,6 +36,8 @@ sometextbefore333222111444sometextafter
 
 These are suspicious e-mail addresses:
 double@atsign@bar.com
+onlyuser@andhostname
+onlyuser2@andhostname2.
 
 These are suspicious web addresses:
 http://http://double.http.com

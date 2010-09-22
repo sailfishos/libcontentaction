@@ -38,14 +38,16 @@ strstr "$res" ".*'http://maps.google.com/maps?f=d&source=s_d&saddr=Nieznana+drog
 strstr "$res" ".*'http://host-with-dash.com/path?%:@&=+\\$,-!~\\*'with(special)chars' browser" || exit 3
 
 # email addresses
-
 strstr "$res" ".*'john.doe@att.com' emailer" || exit 4
-strstr "$res" ".*'<mailto:john_doe2@att.com>' emailer" || exit 4
+strstr "$res" ".*'mailto:john_doe2@att.com' emailer" || exit 4
 
 # invalid and almost-invalid cases
 strstr "$res" ".*'333222111444' caller" && exit 5
 strstr "$res" ".*'+((((' caller" && exit 5
 strstr "$res" ".*'+358+7777' caller" && exit 5
+strstr "$res" ".*'double@atsign@bar.com' emailer" && exit 5
+strstr "$res" ".*'onlyuser@andhostname' emailer" && exit 5
+strstr "$res" ".*'onlyuser2@andhostname2.' emailer" && exit 5
 
 strstr "$res" ".*'http://http://double.http.com' browser" && exit 6
 strstr "$res" ".*'http://double.http.com' browser" || exit 6
