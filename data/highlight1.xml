@@ -2,6 +2,7 @@
 <actions>
   <highlight regexp="(mailto:)?[\w!#$%&amp;'*+/=?^`{|}~-]+(\.[\w!#$%&amp;'*+/=?^`{|}~-]+)*@([\w-]+\.)+[\w-]+" name="email-address"/>
   <highlight regexp="((\+|\b)\d|\(\d+\))(\(\d+\)|[-.pwxPWX# ]?\d+)*" name="phone-number"/>
+  <highlight regexp="(https?://)?music\.ovi\.com(/[\w/?%:;@&amp;=+$,\-.!~*'()]*)?" name="ovi-music-url"/>
   <highlight regexp="(https?://|www\.)(\w+((:\w+)?)@)?([\w\-]+\.)+[\w\-]+(:\d+)?(/[\w/?%:;@&amp;=+$,\-.!~*'()]*)?" name="http-url"/>
 
 </actions>
