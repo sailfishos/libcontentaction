@@ -32,6 +32,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QDateTime>
 #include <QTextStream>
 #include <QDebug>
 #include <QFile>
@@ -247,14 +248,28 @@ QString Internal::defaultAppForContentType(const QString& contentType)
 }
 
 // Reads the mimeinfo.cache files and returns the mapping from mime types to
-// desktop entries.
+// desktop entries. Tries to decide cleverly whether to re-read the files if
+// they might have changed.
 const QHash<QString, QStringList>& Internal::mimeApps()
 {
-    static bool read = false;
     static QHash<QString, QStringList> mimecache;
+    // When have we last consider reading various mimeinfo.cache files
+    static uint lastTime = 0;
+    // What were the "last modified" times of them when they were read
+    static QHash<QString, uint> lastModified;
 
-    if (read)
+    // Read each mimeinfo.cache if 1) it has never been read or 2) 1 min has
+    // passed since our previous timestamp check && timestamp shows it has
+    // changed.
+
+    // This is a hack but so is trying to use QFileSystemWatcher from a library
+    // without a LifeTimeManager object. Deleting the QFileSystemWatcher at the
+    // right moment is tricky and cannot be enforced by the library.
+
+    uint currentTime = QDateTime::currentDateTime().toTime_t();
+    if (currentTime - lastTime < 60)
         return mimecache;
+    lastTime = currentTime;
 
     QStringList dirs = xdgDataDirs();
     QHash<QString, QString> temp;
@@ -262,14 +277,20 @@ const QHash<QString, QStringList>& Internal::mimeApps()
         QFile f(dirs[i] + "/applications/mimeinfo.cache");
         if (!f.exists())
             continue;
+        // Check the "last modified" time of the file
+        uint lm = QFileInfo(f.fileName()).lastModified().toTime_t();
+        if (lastModified.contains(dirs[i]) &&
+            lm == lastModified[dirs[i]])
+            continue;
+
         readKeyValues(f, temp);
+        lastModified[dirs[i]] = lm;
     }
     QHashIterator<QString, QString> it(temp);
     while (it.hasNext()) {
         it.next();
         mimecache.insert(it.key(), it.value().split(";", QString::SkipEmptyParts));
     }
-    read = true;
     return mimecache;
 }
 
