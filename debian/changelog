@@ -1,8 +1,9 @@
-libcontentaction (0.1.30~unreleased) unstable; urgency=low
+libcontentaction (0.1.30) unstable; urgency=low
 
-  *
+  * Configuration update: regexp for ovi music urls
+  * Re-reading mimeinfo.cache
 
- -- Marja Hassinen <marja.hassinen@nokia.com>  Thu, 23 Sep 2010 11:52:52 +0300
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Fri, 24 Sep 2010 14:53:02 +0300
 
 libcontentaction (0.1.29) unstable; urgency=low
 
