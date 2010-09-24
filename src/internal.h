@@ -102,7 +102,7 @@ LCA_EXPORT QString mimeForFile(const QUrl& fileUri);
 LCA_EXPORT QStringList mimeForTrackerObject(const QString& uri);
 
 const QHash<QString, QStringList>& mimeApps();
-const QHash<QString, QString>& highlighterConfig();
+const QList<QPair<QString, QString> >& highlighterConfig();
 const QHash<QString, QString>& trackerConditions();
 
 } // end namespace Internal

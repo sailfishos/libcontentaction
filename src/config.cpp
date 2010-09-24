@@ -36,7 +36,7 @@ using namespace ContentAction;
 using namespace ContentAction::Internal;
 
 // mime type -> regexp
-static QHash<QString, QString> Highlighter_cfg;
+static QList<QPair<QString, QString> > Highlighter_cfg;
 // friendly tracker condition name => sparql snippet
 static QHash<QString, QString> Tracker_cfg;
 
@@ -101,7 +101,8 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
             QString mime = atts.value("name").trimmed();
             if (mime.isEmpty())
                 fail("expected a nonempy mimetype");
-            Highlighter_cfg[mime.prepend(HighlighterMimeClass)] = regexp;
+            Highlighter_cfg.append(
+                qMakePair(mime.prepend(HighlighterMimeClass), regexp));
         }
         else if (qname == "tracker-condition") {
             state = inTrackerCondition;
@@ -188,7 +189,7 @@ static void readConfig()
 
 /// Returns the highlighter configuration map of (mimetype, regexp) read from
 /// the configuration files.
-const QHash<QString, QString>& ContentAction::Internal::highlighterConfig()
+const QList<QPair<QString, QString> >& ContentAction::Internal::highlighterConfig()
 {
     readConfig();
     return Highlighter_cfg;

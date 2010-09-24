@@ -207,25 +207,29 @@ static void unhiliteLabel(MLabel *label)
 void ContentAction::highlightLabel(MLabel *label)
 {
     MimesAndRegexps mars;
-    QHashIterator<QString, QString> iter(highlighterConfig());
+    QListIterator<QPair<QString, QString> > iter(highlighterConfig());
     while (iter.hasNext()) {
-        iter.next();
-        // iter.key == mime type, iter.value == regexp
-        if (!appsForContentType(iter.key()).isEmpty())
-            mars += qMakePair(iter.key(), QRegExp(iter.value()));
+        QPair<QString, QString> mar = iter.next();
+        if (!appsForContentType(mar.first).isEmpty())
+            mars += qMakePair(mar.first, QRegExp(mar.second));
     }
     hiLabel(label, mars);
 }
 
 /// Similar to highlightLabel() but allows specifying which regexp-types to
-/// highlight (e.g. only \c "x-maemo-highlight/mailto").
+/// highlight (e.g. only \c "x-maemo-highlight/mailto"). The order of the \a
+/// typesOfHighlight is honoured; the regexps appearing first get the priority
+/// when deciding the default action and the order of the actions.
 void ContentAction::highlightLabel(MLabel *label,
                                    QStringList typesToHighlight)
 {
     MimesAndRegexps mars;
-    const QHash<QString, QString>& cfg = highlighterConfig();
+    const QList<QPair<QString, QString> >& cfgList = highlighterConfig();
+    QMap<QString, QString> cfgMap;
+    for (int i = 0; i < cfgList.size(); ++i)
+        cfgMap[cfgList[i].first] = cfgList[i].second;
     foreach (const QString& k, typesToHighlight) {
-        QString re(cfg.value(k, QString()));
+        QString re(cfgMap.value(k, QString()));
         if (re.isEmpty())
             continue;
         if (!appsForContentType(k).isEmpty())

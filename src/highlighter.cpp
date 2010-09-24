@@ -34,12 +34,12 @@ using namespace ContentAction::Internal;
 /// list of Match objects.
 QList<Match> Action::highlight(const QString& text)
 {
-    const QHash<QString, QString>& cfg = highlighterConfig();
+    const QList<QPair<QString, QString> >& cfg = highlighterConfig();
     QList<Match> result;
 
-    foreach (const QString& mime, cfg.keys()) {
-        QRegExp re(cfg[mime]);
-        QStringList apps = appsForContentType(mime);
+    for (int i = 0; i < cfg.size(); ++i) {
+        QRegExp re(cfg[i].second);
+        QStringList apps = appsForContentType(cfg[i].first);
         int pos = 0;
         while ((pos = re.indexIn(text, pos)) != -1) {
             int l = re.matchedLength();
