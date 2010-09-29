@@ -64,6 +64,7 @@ binary-arch: build install
 	dh_md5sums -a
 	dh_builddeb -a
 	aegis-deb-add -control debian/libcontentaction0/DEBIAN/control .. debian/libcontentaction0.aegis=_aegis
+	aegis-deb-add -control debian/libcontentaction-tests/DEBIAN/control .. debian/libcontentaction-tests.aegis=_aegis
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install
