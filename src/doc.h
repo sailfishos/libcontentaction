@@ -158,9 +158,16 @@ Example:
 
 \section highlighter Free-text highlighter
 
-Passing a string to highlight() can be used to discover interesting parts of
-the text.  It returns Match objects identifying the position of the match
-and the possible actions.
+Passing a string to highlight() can be used to discover interesting elements
+(phone numbers, e-mail addresses etc.) in it.  It returns Match objects
+identifying the position of the match and the possible actions.
+
+Passing a MLabel* to highlightLabel() will add a MLabelHighlighter highlighting
+interesting elements inside the label.  When the user clicks a highlighted
+element, the default action for it is launched.  When the user long-clicks a
+highlighted element, a pop-up menu containing the applicable actions is
+shown. When the user clicks an item in the menu, the corresponding action is
+launched.
 
 \note
 These actions have different semantics than ordinary Actions.  When
@@ -173,7 +180,8 @@ matched text (as UTF-8).  These are very likely _not_ valid URIs!
 The following section may be subject to changes!
 
 Similarly to Tracker-query based conditions, regexps are also defined in XML
-files residing in \c /etc/contentaction:
+files residing in \c /usr/share/contentaction (unless overridden with
+$CONTENTACTION_ACTIONS):
 
 \code
 <actions>
