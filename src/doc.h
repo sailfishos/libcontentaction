@@ -90,9 +90,7 @@ image/jpeg=someotherviewer.desktop
 image/png=myimageviewer.desktop
 \endverbatim
 
-defaults.list is installed by libcontentaction-data.  If you want your
-application to be the default application for some mime types, contact the
-libcontentaction implementors.
+defaults.list is installed by the package libcontentaction-data.
 
 Libcontentaction is compatible with XDG mime type handling.  If you install
 the example file myimageviewer.desktop into /usr/share/applications,
@@ -347,8 +345,16 @@ More information:
 \section lcatool lca-tool
 
 lca-tool is a command-line utility which can be used as a development and
-testing tool by action implementors.  It is installed by the libcontentaction0
-package.  Run lca-tool without parameters to display the help message.
+testing tool by action implementors.
+
+lca-tool can:
+- list the applicable actions for a file, Tracker URI or a string with a scheme
+- trigger an applicable action for a file, Tracker URI or a string with a scheme
+- launch an application (given its .desktop file) with parameters
+- search for interesting items to highlight in free text
+
+lca-tool is installed by the libcontentaction0 package.  Run lca-tool without
+parameters to display the help message.
 
 An example workflow for testing whether an image viewer has successfully
 declared the \c image/jpeg mime type:
