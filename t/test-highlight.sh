@@ -61,5 +61,7 @@ strstr "$res" ".*'email@domain.org' emailer" || exit 7
 strstr "$res" ".*'4445556668' caller" || exit 7
 strstr "$res" ".*'email2@domain.org' emailer" || exit 7
 
+strstr "$res" ".*'Http://www.capital.com' browser" || exit 8
+strstr "$res" ".*'hTTp://www.capital.com' browser" || exit 8
 
 exit 0

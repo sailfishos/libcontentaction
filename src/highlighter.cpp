@@ -38,7 +38,7 @@ QList<Match> Action::highlight(const QString& text)
     QList<Match> result;
 
     for (int i = 0; i < cfg.size(); ++i) {
-        QRegExp re(cfg[i].second);
+        QRegExp re(cfg[i].second, Qt::CaseInsensitive);
         QStringList apps = appsForContentType(cfg[i].first);
         int pos = 0;
         while ((pos = re.indexIn(text, pos)) != -1) {
