@@ -361,7 +361,7 @@ QList<Action> Internal::actionsForUri(const QString& uri, const QString& mimeTyp
         return result << createAction(uri, QStringList());
 
     QStringList appIds = appsForContentType(mimeType);
-    foreach (const QString& id, appIds) {
+    Q_FOREACH (const QString& id, appIds) {
         QString app = findDesktopFile(id);
         if (!app.isEmpty())
             result << createAction(app,
@@ -425,7 +425,7 @@ Action Action::defaultActionForScheme(const QString& uri)
 QList<Action> Action::actionsForScheme(const QString& uri)
 {
     QList<Action> result;
-    foreach (const QString& app, appsForContentType(mimeForScheme(uri))) {
+    Q_FOREACH (const QString& app, appsForContentType(mimeForScheme(uri))) {
         result << createAction(findDesktopFile(app), QStringList() << uri);
     }
     return result;
@@ -435,7 +435,7 @@ QList<Action> actionsForMime(const QString& mimeType)
 {
     QList<Action> result;
     QStringList appIds = appsForContentType(mimeType);
-    foreach (const QString& id, appIds) {
+    Q_FOREACH (const QString& id, appIds) {
         result << createAction(findDesktopFile(id),
                                QStringList());
     }

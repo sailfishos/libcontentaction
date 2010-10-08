@@ -73,7 +73,7 @@ ServiceResolver::ServiceResolver()
 
 ServiceResolver::~ServiceResolver()
 {
-    foreach (QDBusInterface* proxy, proxies)
+    Q_FOREACH (QDBusInterface* proxy, proxies)
         delete proxy;
     proxies.clear();
     delete mapperProxy;
@@ -103,7 +103,7 @@ void ServiceResolver::onServiceUnavailable(QString implementor)
 {
     // Check which interfaces now become unusable
     QStringList interfaces = resolved.keys(implementor);
-    foreach (const QString& interface, interfaces)
+    Q_FOREACH (const QString& interface, interfaces)
         resolved.remove(interface);
     if (proxies.contains(implementor))
         delete proxies.take(implementor);

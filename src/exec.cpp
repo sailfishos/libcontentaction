@@ -49,7 +49,7 @@ void ExecPrivate::trigger() const
     GError *error = 0;
     GList *uris = NULL;
 
-    foreach (const QString& param, params)
+    Q_FOREACH (const QString& param, params)
         uris = g_list_append(uris, g_strdup(param.toAscii().constData()));
 
     g_app_info_launch_uris(appInfo, uris, NULL, &error);

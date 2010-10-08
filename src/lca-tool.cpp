@@ -121,7 +121,7 @@ enum ActionToDo {
 QDebug operator<<(QDebug dbg, const Match& m) {
     dbg.nospace() << "match at ("
                   << m.start << ", " << m.end << "): ";
-    foreach (const Action& a, m.actions) {
+    Q_FOREACH (const Action& a, m.actions) {
         dbg.space() << a.name();
     }
     dbg.nospace() << "\n";
@@ -129,7 +129,7 @@ QDebug operator<<(QDebug dbg, const Match& m) {
 }
 
 QDebug operator<<(QDebug dbg, const QList<Match>& ms) {
-    foreach (const Match& m, ms) {
+    Q_FOREACH (const Match& m, ms) {
         dbg.space() << m;
     }
     return dbg;
@@ -149,9 +149,9 @@ void doHighlight()
     QString text = in.readAll();
 
     QList<Match> ms = Action::highlight(text);
-    foreach (const Match& m, ms) {
+    Q_FOREACH (const Match& m, ms) {
         QStringList actions;
-        foreach (const Action& a, m.actions)
+        Q_FOREACH (const Action& a, m.actions)
             actions << a.name();
         out << QString("%1 %2 '%3' %4\n").arg(QString::number(m.start),
                                               QString::number(m.end),
@@ -171,7 +171,7 @@ void doHighlight()
         };
         int i = 0;
         int d = 0;
-        foreach (const Match& m, ms) {
+        Q_FOREACH (const Match& m, ms) {
             hltext.insert(d + m.start, color[i]);
             d += color[i].length();
             i = (i + 1) % (sizeof(color) / sizeof(color[0]));
@@ -194,7 +194,7 @@ int main(int argc, char **argv)
 
     char *l10npaths = getenv("CONTENTACTION_L10N_PATH");
     if (l10npaths) {
-        foreach (const QString& p, QString::fromLocal8Bit(l10npaths).split(':')) {
+        Q_FOREACH (const QString& p, QString::fromLocal8Bit(l10npaths).split(':')) {
             qDebug() << "adding path:" << p;
             MLocale::addTranslationPath(p);
         }
@@ -304,7 +304,7 @@ int main(int argc, char **argv)
     // handle modeless actions first
     switch (todo) {
     case PrintActionsForMime:
-        foreach (const Action& a, actionsForMime(mime)) {
+        Q_FOREACH (const Action& a, actionsForMime(mime)) {
             out << a.name() << endl;
         }
         return 0;
@@ -382,12 +382,12 @@ int main(int argc, char **argv)
 
     switch (todo) {
     case PrintActions:
-        foreach (const Action& a, actions) {
+        Q_FOREACH (const Action& a, actions) {
             out << (use_l10n ? a.localizedName() : a.name()) << endl;
         }
         break;
     case TriggerAction:
-        foreach (const Action& a, actions) {
+        Q_FOREACH (const Action& a, actions) {
             if (a.name() == actionName) {
                 a.trigger();
                 return 0;
@@ -410,7 +410,7 @@ int main(int argc, char **argv)
     case PrintMimes: {
         switch (mode) {
         case TrackerMode:
-            foreach (const QString& mime, mimeForTrackerObject(args[0])) {
+            Q_FOREACH (const QString& mime, mimeForTrackerObject(args[0])) {
                 out << mime << endl;
             }
             break;

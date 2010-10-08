@@ -45,7 +45,7 @@ class LCALabelHighlighter: public MCommonLabelHighlighter
 public:
     LCALabelHighlighter(const MimesAndRegexps &mars_,
                         QObject *parent = 0);
-private slots:
+private Q_SLOTS:
     void doDefaultAction(const QString& match);
     void doPopupActions(const QString& match);
     void doAction(const QModelIndex& ix);
@@ -58,7 +58,7 @@ static QRegExp combine(const MimesAndRegexps &mars)
 {
     QString re("(?:");
     bool first = true;
-    foreach (const MimeAndRegexp &mr, mars) {
+    Q_FOREACH (const MimeAndRegexp &mr, mars) {
         if (!first)
             re += '|';
         re += mr.second.pattern();
@@ -84,7 +84,7 @@ LCALabelHighlighter::LCALabelHighlighter(const MimesAndRegexps &mars_,
 QStringList LCALabelHighlighter::matchingMimes(const QString &str) const
 {
     QStringList ret;
-    foreach (const MimeAndRegexp &mr, mars)
+    Q_FOREACH (const MimeAndRegexp &mr, mars)
         if (mr.second.exactMatch(str))
             ret.append(mr.first);
     return ret;
@@ -94,16 +94,16 @@ void LCALabelHighlighter::doDefaultAction(const QString& match)
 {
     QStringList mimes = matchingMimes(match);
     QString app;
-    foreach (const QString &mime, mimes) {
+    Q_FOREACH (const QString &mime, mimes) {
         app = findDesktopFile(defaultAppForContentType(mime));
         if (!app.isEmpty()) {
             createAction(app, QStringList() << match).trigger();
             return;
         }
     }
-    foreach (const QString &mime, mimes) {
+    Q_FOREACH (const QString &mime, mimes) {
         QStringList apps = appsForContentType(mime);
-        foreach (const QString& appid, apps) {
+        Q_FOREACH (const QString& appid, apps) {
             app = findDesktopFile(appid);
             if (!app.isEmpty()) {
                 createAction(app, QStringList() << match).trigger();
@@ -156,8 +156,8 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
     QList<Action> alist;
     QStringList mimes = matchingMimes(match);
     QString app;
-    foreach (const QString &mime, mimes) {
-        foreach (const QString &appid, appsForContentType(mime)) {
+    Q_FOREACH (const QString &mime, mimes) {
+        Q_FOREACH (const QString &appid, appsForContentType(mime)) {
             app = findDesktopFile(appid);
             if (!app.isEmpty())
                 alist << createAction(app, QStringList() << match);
@@ -228,7 +228,7 @@ void ContentAction::highlightLabel(MLabel *label,
     QMap<QString, QString> cfgMap;
     for (int i = 0; i < cfgList.size(); ++i)
         cfgMap[cfgList[i].first] = cfgList[i].second;
-    foreach (const QString& k, typesToHighlight) {
+    Q_FOREACH (const QString& k, typesToHighlight) {
         QString re(cfgMap.value(k, QString()));
         if (re.isEmpty())
             continue;

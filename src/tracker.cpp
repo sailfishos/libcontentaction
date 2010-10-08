@@ -76,14 +76,14 @@ static QDBusInterface *tracker()
 static bool mimeAndUriFromTracker(const QStringList& uris, QStringList &urlsAndMimes)
 {
     QString query("SELECT ");
-    foreach (const QString& uri, uris)
+    Q_FOREACH (const QString& uri, uris)
         query += QString("nie:url(<%1>) nie:mimeType(<%1>) ").arg(uri);
     query += " {}";
     QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query);
     if (!reply.isValid())
         return false;
     urlsAndMimes = reply.value()[0];
-    foreach (const QString& x, urlsAndMimes)
+    Q_FOREACH (const QString& x, urlsAndMimes)
         if (x.isEmpty()) return false;
     return true;
 }
@@ -94,14 +94,14 @@ static bool mimeAndUriFromTracker(const QStringList& uris, QStringList &urlsAndM
 static bool hactionFromTracker(const QStringList& uris, QStringList &urls)
 {
     QString query("SELECT ");
-    foreach (const QString& uri, uris)
+    Q_FOREACH (const QString& uri, uris)
         query += QString("tracker:coalesce(nfo:bookmarks(<%1>), nfo:uri(<%1>)) ").arg(uri);
     query += " {}";
     QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query);
     if (!reply.isValid())
         return false;
     urls = reply.value()[0];
-    foreach (const QString& x, urls)
+    Q_FOREACH (const QString& x, urls)
         if (x.isEmpty()) return false;
     return true;
 }
@@ -126,7 +126,7 @@ QStringList Internal::mimeForTrackerObject(const QString& uri)
     QStringList mimeTypes;
     QHash<QString, QString> conditions = trackerConditions();
     // TODO: evaluate them at once.
-    foreach (const QString& mimeType, conditions.keys()) {
+    Q_FOREACH (const QString& mimeType, conditions.keys()) {
         // Don't consider mime types for which nobody defines an action,
         // except if it is `software-application' which is special case.
         QString pseudoMimeType(OntologyMimeClass + mimeType);
@@ -145,7 +145,7 @@ QStringList Internal::mimeForTrackerObject(const QString& uri)
 static QList<QStringList> mimeTypesForUris(const QStringList& uris)
 {
     QList<QStringList> allMimeTypes;
-    foreach (const QString& uri, uris) {
+    Q_FOREACH (const QString& uri, uris) {
         if (!isValidIRI(uri)) return QList<QStringList>();
         allMimeTypes << mimeForTrackerObject(uri);
     }
@@ -182,7 +182,7 @@ Action Action::defaultAction(const QString& uri)
     if (!isValidIRI(uri)) return Action();
     QStringList mimeTypes = mimeForTrackerObject(uri);
     LCA_DEBUG << "pseudo-mimes" << mimeTypes;
-    foreach (const QString& mimeType, mimeTypes) {
+    Q_FOREACH (const QString& mimeType, mimeTypes) {
         if (mimeType == SoftwareApplicationMimeType)
             return createSoftwareAction(uri);
         QString def = findDesktopFile(defaultAppForContentType(mimeType));
@@ -238,7 +238,7 @@ Action Action::defaultAction(const QStringList& uris)
     QSet<QString> defApps;
     for (int i = 0; i < mimeTypes.size(); ++i) {
         QSet<QString> defs;
-        foreach (const QString& mimeType, mimeTypes[i]) {
+        Q_FOREACH (const QString& mimeType, mimeTypes[i]) {
             QString def = defaultAppForContentType(mimeType);
             if (!def.isEmpty())
                 defs << def;
@@ -251,7 +251,7 @@ Action Action::defaultAction(const QStringList& uris)
     LCA_DEBUG << "defApps" << defApps;
     // If there are multiple possible default applications, the choice is
     // arbitrary.
-    foreach (const QString& appid, defApps) {
+    Q_FOREACH (const QString& appid, defApps) {
         QString app = findDesktopFile(appid);
         if (!app.isEmpty())
             return createAction(app, uris);
@@ -303,11 +303,11 @@ QList<Action> Action::actions(const QString& uri)
     QStringList mimeTypes = mimeForTrackerObject(uri);
     LCA_DEBUG << "pseudo mimes" << mimeTypes;
     QSet<QString> blackList; // for adding each action only once
-    foreach (const QString& mimeType, mimeTypes) {
+    Q_FOREACH (const QString& mimeType, mimeTypes) {
         QStringList apps = appsForContentType(mimeType);
         if (mimeType == SoftwareApplicationMimeType)
             result << createSoftwareAction(uri);
-        foreach (const QString& appid, apps) {
+        Q_FOREACH (const QString& appid, apps) {
             QString app = findDesktopFile(appid);
             if (!app.isEmpty()) {
                 result << createAction(app,
@@ -326,7 +326,7 @@ QList<Action> Action::actions(const QString& uri)
         // Tracker has the filename %-encoded, don't encode it again
         QUrl fileUrl = QUrl::fromEncoded(urlAndMime[0].toUtf8());
         QList<Action> actions = actionsForFile(fileUrl, urlAndMime[1]);
-        foreach (const Action& a, actions) {
+        Q_FOREACH (const Action& a, actions) {
             if (!blackList.contains(a.name())) {
                 result << a;
             }
@@ -368,13 +368,13 @@ QList<Action> Action::actions(const QStringList& uris)
     QStringList commonApps;
     for (int i = 0; i < mimeTypes.size(); ++i) {
         QStringList apps;
-        foreach (const QString& mime, mimeTypes[i])
+        Q_FOREACH (const QString& mime, mimeTypes[i])
             apps += appsForContentType(mime);
         if (i == 0) {
             commonApps = apps;
         } else {
             QStringList intersection;
-            foreach (const QString& commonApp, commonApps) {
+            Q_FOREACH (const QString& commonApp, commonApps) {
                 if (apps.contains(commonApp))
                     intersection << commonApp;
             }
@@ -383,7 +383,7 @@ QList<Action> Action::actions(const QStringList& uris)
     }
     LCA_DEBUG << "commonApps" << commonApps;
     QSet<QString> blackList; // for adding each action only once
-    foreach (const QString& appid, commonApps) {
+    Q_FOREACH (const QString& appid, commonApps) {
         QString app = findDesktopFile(appid);
         if (!app.isEmpty()) {
             result << createAction(app, uris);
@@ -403,7 +403,7 @@ QList<Action> Action::actions(const QStringList& uris)
                 commonApps = apps;
             } else {
                 QStringList intersection;
-                foreach (const QString& commonApp, commonApps) {
+                Q_FOREACH (const QString& commonApp, commonApps) {
                     if (apps.contains(commonApp))
                         intersection << commonApp;
                 }
@@ -411,7 +411,7 @@ QList<Action> Action::actions(const QStringList& uris)
             }
         }
         LCA_DEBUG << "real-mime commonApps" << commonApps;
-        foreach (const QString& appid, commonApps) {
+        Q_FOREACH (const QString& appid, commonApps) {
             QString app = findDesktopFile(appid);
             if (app.isEmpty())
                 continue;

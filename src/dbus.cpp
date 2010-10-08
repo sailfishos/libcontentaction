@@ -85,7 +85,7 @@ void DBusPrivate::trigger() const
     if (varArgs) {
         // Call a D-Bus function with a variable length argument list
         QVariantList vargs;
-        foreach (const QString& param, params)
+        Q_FOREACH (const QString& param, params)
             vargs << param;
         QDBusInterface launcher(busName, objectPath, iface);
         launcher.callWithArgumentList(QDBus::NoBlock, method, vargs);

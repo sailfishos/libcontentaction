@@ -171,7 +171,7 @@ static void readConfig()
     }
     dir.setNameFilters(QStringList("*.xml"));
     QStringList confFiles = dir.entryList(QDir::Files);
-    foreach (const QString& confFile, confFiles) {
+    Q_FOREACH (const QString& confFile, confFiles) {
         QFile file(dir.filePath(confFile));
 
         ConfigReader handler;

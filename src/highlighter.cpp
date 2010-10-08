@@ -47,7 +47,7 @@ QList<Match> Action::highlight(const QString& text)
             m.start = pos;
             m.end = pos + l;
 
-            foreach (const QString& app, apps) {
+            Q_FOREACH (const QString& app, apps) {
                 m.actions << createAction(findDesktopFile(app), QStringList() << re.cap());
             }
             result << m;

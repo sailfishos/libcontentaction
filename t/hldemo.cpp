@@ -23,7 +23,7 @@ public:
     Us();
     ~Us();
 
-private slots:
+private Q_SLOTS:
     void doHilite();
     void doUnHilite();
 
