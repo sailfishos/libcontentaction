@@ -1,6 +1,6 @@
 libcontentaction (0.1.33~unreleased) unstable; urgency=low
 
-  *
+  * QT_NO_KEYWORDS
 
  -- Marja Hassinen <marja.hassinen@nokia.com>  Thu, 07 Oct 2010 11:27:35 +0300
 
