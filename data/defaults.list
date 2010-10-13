@@ -24,6 +24,7 @@ application/x-vnd.oasis.opendocument.spreadsheet=office-tools.desktop
 application/x-vnd.oasis.opendocument.text=office-tools.desktop
 audio/AMR-WB=musicsuiteinterface.desktop
 audio/AMR=musicsuiteinterface.desktop
+audio/aac=musicsuiteinterface.desktop
 audio/mp2=musicsuiteinterface.desktop
 audio/mp3=musicsuiteinterface.desktop
 audio/mp4=musicsuiteinterface.desktop
