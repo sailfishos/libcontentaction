@@ -146,6 +146,8 @@ Action::Action(ActionPrivate* priv)
 {
 }
 
+/// Creates an Action object which will launch the application defined by \a
+/// desktopFilePath with the given \a params when triggered.
 Action createAction(const QString& desktopFilePath, const QStringList& params)
 {
     QSharedPointer<MDesktopEntry> desktopEntry(new MDesktopEntry(
@@ -153,6 +155,8 @@ Action createAction(const QString& desktopFilePath, const QStringList& params)
     return createAction(desktopEntry, params);
 }
 
+/// Creates an Action object which will launch the application defined by \a
+/// desktopEntry with the given \a params when triggered.
 Action createAction(QSharedPointer<MDesktopEntry> desktopEntry,
                     const QStringList& params)
 {
