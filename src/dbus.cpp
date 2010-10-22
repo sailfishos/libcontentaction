@@ -24,7 +24,8 @@
 #include <MDesktopEntry>
 
 #include <QVariantList>
-#include <QDBusInterface>
+#include <QDBusConnection>
+#include <QDBusMessage>
 #include <QDBusPendingCall>
 
 using namespace ContentAction::Internal;
@@ -82,18 +83,26 @@ DBusPrivate::DBusPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
 
 void DBusPrivate::trigger() const
 {
+    // Call a D-Bus function asynchronously.  Don't use a QDBusInterface because
+    // it creates a blocking Introspect call, see
+    // http://bugreports.qt.nokia.com/browse/QTBUG-14485
+
     if (varArgs) {
         // Call a D-Bus function with a variable length argument list
         QVariantList vargs;
         Q_FOREACH (const QString& param, params)
             vargs << param;
-        QDBusInterface launcher(busName, objectPath, iface);
-        launcher.callWithArgumentList(QDBus::NoBlock, method, vargs);
+        QDBusMessage message = QDBusMessage::createMethodCall(busName, objectPath, iface, method);
+        message.setArguments(vargs);
+        QDBusConnection::sessionBus().asyncCall(message);
     }
     else {
         // Call a D-Bus function with a string list
-        QDBusInterface launcher(busName, objectPath, iface);
-        launcher.asyncCall(method, params);
+
+        QDBusMessage message = QDBusMessage::createMethodCall(busName, objectPath, iface, method);
+        message.setArguments(QVariantList() << params);
+        QDBusConnection::sessionBus().asyncCall(message);
+
         // FIXME: What if we're launching a non-meegotouch desktop file, and we don't
         // have any func taking a string list; only a func taking nothing?
     }
