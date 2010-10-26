@@ -11,7 +11,7 @@ strstr() {
 res=$(lca-tool --highlight < $srcdir/hlinput.txt)
 
 strstr "$res" ".*61 73 '+44 433 2236' caller" || exit 1
-strstr "$res" ".*77 80 '911' caller" || exit 1 
+strstr "$res" ".*77 80 '911' caller" || exit 1
 strstr "$res" ".*15 33 'email@address.here' emailer" || exit 1 
 strstr "$res" ".*81 104 'ooaoa+foo@motherland.ru' emailer" || exit 1
 
@@ -23,10 +23,11 @@ strstr "$res" ".*'+13034997111' caller" || exit 2
 strstr "$res" ".*'303-499-7111' caller" || exit 2
 strstr "$res" ".*'+1(303)499-7111' caller" || exit 2
 strstr "$res" ".*'303.499.7111' caller" || exit 2
-strstr "$res" ".*'(3034997111)' caller" || exit 2
+strstr "$res" ".*'3034997111' caller" || exit 2
 strstr "$res" ".*'+48 123.12-3 123' caller" || exit 2
 strstr "$res" ".*'+481234p12345' caller" || exit 2
 strstr "$res" ".*'+481234#12345' caller" || exit 2
+strstr "$res" ".*'+358 (9) 123 456' caller" || exit 2
 
 # web addresses
 
@@ -44,7 +45,16 @@ strstr "$res" ".*'mailto:john_doe2@att.com' emailer" || exit 4
 # invalid and almost-invalid cases
 strstr "$res" ".*'333222111444' caller" && exit 5
 strstr "$res" ".*'+((((' caller" && exit 5
+#+358 and +7777 will be recognized separately, though
 strstr "$res" ".*'+358+7777' caller" && exit 5
+#strstr "$res" ".*'+358' caller" && exit 5
+#strstr "$res" ".*'+7777' caller" && exit 5
+strstr "$res" ".*'13' caller" && exit 5
+strstr "$res" ".*'14' caller" && exit 5
+strstr "$res" ".*'141414141414141414141' caller" && exit 5
+strstr "$res" ".*'141' caller" || exit 5
+strstr "$res" ".*'14141414141414141414' caller" || exit 5
+
 strstr "$res" ".*'double@atsign@bar.com' emailer" && exit 5
 strstr "$res" ".*'onlyuser@andhostname' emailer" && exit 5
 strstr "$res" ".*'onlyuser2@andhostname2.' emailer" && exit 5
