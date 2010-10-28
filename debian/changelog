@@ -1,10 +1,11 @@
-libcontentaction (0.1.33~unreleased) unstable; urgency=low
+libcontentaction (0.1.33) unstable; urgency=low
 
   * QT_NO_KEYWORDS
   * Configuration update: regexp for phone number
   * Fixes: NB#191300
+  * Don't use QDBusInterface when triggering D-Bus actions (workaround, QTBUG-14485)
   
- -- Marja Hassinen <marja.hassinen@nokia.com>  Tue, 26 Oct 2010 10:40:19 +0300
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Thu, 28 Oct 2010 13:59:32 +0300
 
 libcontentaction (0.1.32) unstable; urgency=low
 
