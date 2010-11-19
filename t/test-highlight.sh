@@ -51,7 +51,10 @@ strstr "$res" ".*'+358+7777' caller" && exit 5
 #strstr "$res" ".*'+7777' caller" && exit 5
 strstr "$res" ".*'13' caller" && exit 5
 strstr "$res" ".*'14' caller" && exit 5
-strstr "$res" ".*'141414141414141414141' caller" && exit 5
+# a long phone number
+strstr "$res" ".*'151515151515151515151' caller" && exit 5
+# also: it's prefix shouldn't be recognized
+strstr "$res" ".*'15151515151515151515' caller" && exit 5
 strstr "$res" ".*'141' caller" || exit 5
 strstr "$res" ".*'14141414141414141414' caller" || exit 5
 

@@ -36,7 +36,7 @@ sometextbefore333222111444sometextafter
 +358+7777
 i bought 13 bananas
 too short phone number: 14
-too long phone number: 141414141414141414141
+too long phone number: 151515151515151515151
 but these are ok: 141 and 14141414141414141414
 
 These are suspicious e-mail addresses:
