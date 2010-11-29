@@ -27,8 +27,9 @@ http://maps.google.com/maps?f=d&source=s_d&saddr=Nieznana+droga&daddr=krak%C3%B3
 http://host-with-dash.com/path?%:@&=+$,-!~*'with(special)chars
 
 And other browsable urls:
-feed://browsefeed
-ftp://browseftp
+feed://browsefeed.com
+feed:browsefeed.com
+ftp://browseftp.com
 
 These should be valid e-mail addresses:
 Address with an extra dot: john.doe@att.com.

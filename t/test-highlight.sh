@@ -38,8 +38,9 @@ strstr "$res" ".*'http://us.m.yahoo.com' browser" || exit 3
 strstr "$res" ".*'http://maps.google.com/maps?f=d&source=s_d&saddr=Nieznana+droga&daddr=krak%C3%B3w&hl&geocode=Fa5h9wIdlq87Aq%3BFQrt-wIdFFYwASnRGE41wEQWRzG_ikd2tbZrtA&mra=ls&sll=49.915862,20.323334&sspn=0.505808,1.234589&ie=UTF8&t=h&z=10' browser" || exit 3
 strstr "$res" ".*'http://host-with-dash.com/path?%:@&=+\\$,-!~\\*'with(special)chars' browser" || exit 3
 
-strstr "$res" ".*feed://browsefeed' browser" || exit 3
-strstr "$res" ".*ftp://browseftp' browser" || exit 3
+strstr "$res" ".*feed://browsefeed.com' browser" || exit 3
+strstr "$res" ".*feed:browsefeed.com' browser" || exit 3
+strstr "$res" ".*ftp://browseftp.com' browser" || exit 3
 
 # email addresses
 strstr "$res" ".*'john.doe@att.com' emailer" || exit 4
