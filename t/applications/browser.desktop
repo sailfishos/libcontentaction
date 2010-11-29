@@ -5,4 +5,4 @@ Exec=echo "browser with params:" %U
 Terminal=false
 Type=Application
 NotShowIn=X-MeeGo;
-MimeType=x-maemo-highlight/http-url;
+MimeType=x-maemo-highlight/http-url;x-maemo-highlight/browsable-url;

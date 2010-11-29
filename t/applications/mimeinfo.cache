@@ -11,5 +11,6 @@ x-maemo-nepomuk/music-piece=complexmusic.desktop
 x-maemo-urischeme/mailto=emailer.desktop
 x-maemo-highlight/email-address=emailer.desktop;
 x-maemo-highlight/http-url=browser.desktop;
+x-maemo-highlight/browsable-url=browser.desktop;
 x-maemo-highlight/phone-number=caller.desktop;
 x-maemo-highlight/special-url=special-browser.desktop;

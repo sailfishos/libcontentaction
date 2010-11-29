@@ -26,6 +26,10 @@ www.google.com/m
 http://maps.google.com/maps?f=d&source=s_d&saddr=Nieznana+droga&daddr=krak%C3%B3w&hl&geocode=Fa5h9wIdlq87Aq%3BFQrt-wIdFFYwASnRGE41wEQWRzG_ikd2tbZrtA&mra=ls&sll=49.915862,20.323334&sspn=0.505808,1.234589&ie=UTF8&t=h&z=10
 http://host-with-dash.com/path?%:@&=+$,-!~*'with(special)chars
 
+And other browsable urls:
+feed://browsefeed
+ftp://browseftp
+
 These should be valid e-mail addresses:
 Address with an extra dot: john.doe@att.com.
 <mailto:john_doe2@att.com>
