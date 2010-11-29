@@ -1,9 +1,10 @@
-libcontentaction (0.1.34~unreleased) unstable; urgency=low
+libcontentaction (0.1.34) unstable; urgency=low
 
   * Configuration update: regexp for phone number
+  * Configuration update: added feed-url, ftp-url, ovi-store-url
   * Fixes: NB#191300
 
- -- Marja Hassinen <marja.hassinen@nokia.com>  Fri, 29 Oct 2010 08:53:45 +0300
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 29 Nov 2010 12:00:30 +0200
 
 libcontentaction (0.1.33) unstable; urgency=low
 
