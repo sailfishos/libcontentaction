@@ -1,3 +1,9 @@
+libcontentaction (0.1.35~unreleased) unstable; urgency=low
+
+  *
+
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 29 Nov 2010 17:47:14 +0200
+
 libcontentaction (0.1.34) unstable; urgency=low
 
   * Configuration update: regexp for phone number
