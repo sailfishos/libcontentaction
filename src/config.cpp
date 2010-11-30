@@ -37,6 +37,9 @@ using namespace ContentAction::Internal;
 
 // mime type -> regexp
 static QList<QPair<QString, QString> > Highlighter_cfg;
+// raw data for Highlighter_cfg
+static QHash<QString, QString> mimeToRegexp;
+static QHash<QString, QString> mimeToParent;
 // friendly tracker condition name => sparql snippet
 static QHash<QString, QString> Tracker_cfg;
 
@@ -101,8 +104,10 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
             QString mime = atts.value("name").trimmed();
             if (mime.isEmpty())
                 fail("expected a nonempy mimetype");
-            Highlighter_cfg.append(
-                qMakePair(mime.prepend(HighlighterMimeClass), regexp));
+            mimeToRegexp.insert(mime, regexp);
+            QString parentRegexp = atts.value("specialCaseOf");
+            if (!parentRegexp.isEmpty())
+                mimeToParent.insert(mime, parentRegexp);
         }
         else if (qname == "tracker-condition") {
             state = inTrackerCondition;
@@ -156,6 +161,39 @@ bool ConfigReader::endElement(const QString& nsuri, const QString& name,
 
 #undef fail
 
+// Constructs Highlighter_cfg from mimeToRegexp and mimeToParent.  Sorts the
+// regexps topologically so that the special cases appear before the general
+// cases.
+static void sortRegexps()
+{
+    // Insert the regexps in the wrong order (parent first, parent is the more
+    // general regexp).  But always prepend, so the list will be in the right
+    // order (special case before the general case).
+    QString toInsert;
+    QString original;
+    while (!mimeToRegexp.isEmpty()) {
+        // Take any regexp
+        toInsert = mimeToRegexp.begin().key();
+        original = toInsert; // store the starting point (for loop detection)
+        while (mimeToParent.contains(toInsert)
+               && mimeToRegexp.contains(mimeToParent.value(toInsert))) {
+            // There is a parent and parent not yet inserted
+            toInsert = mimeToParent.value(toInsert);
+
+            if (toInsert == original) {
+                LCA_WARNING << "Loop in regexp specialization:" << toInsert;
+                // a loop
+                break;
+            }
+        }
+        // Insert, and also remove from mimeToRegexp to note it has been
+        // inserted.
+        Highlighter_cfg.prepend(
+            qMakePair(toInsert.prepend(HighlighterMimeClass),
+                      mimeToRegexp.take(toInsert)));
+    }
+}
+
 static void readConfig()
 {
     static bool read = false;
@@ -183,6 +221,12 @@ static void readConfig()
             continue;
         }
     }
+
+    // Sort the regexps topologially: each regexp (e.g., a specialized url)
+    // before its parent (e.g., a more general url)
+    sortRegexps();
+    mimeToRegexp.clear();
+    mimeToParent.clear();
 }
 
 } // end anon namespace
