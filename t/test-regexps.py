@@ -90,6 +90,27 @@ class Regexps(unittest.TestCase):
         self.assert_(output.find("special-2") < output.find("general-2"))
         self.assert_(output.find("superspecial-2") < output.find("special-2"))
 
+    def testActionsForString(self):
+        (status, output) = getstatusoutput("lca-tool --string --print www.foo.com")
+        self.assert_(status == 0)
+        self.assert_(output.find("browser") != -1)
+        self.assert_(output.find("special-browser") == -1)
+
+        (status, output) = getstatusoutput("lca-tool --string --print http://example.com")
+        self.assert_(status == 0)
+        self.assert_(output.find("special-browser") != -1)
+        self.assert_(output.find("browser") != -1)
+        self.assert_(output.find("special-browser") < output.find("browser"))
+
+    def testDefaultActionForString(self):
+        (status, output) = getstatusoutput("lca-tool --string --printdefault www.foo.com")
+        self.assert_(status == 0)
+        self.assert_(output.find("browser") != -1)
+
+        (status, output) = getstatusoutput("lca-tool --string --printdefault http://example.com")
+        self.assert_(status == 0)
+        self.assert_(output.find("special-browser") != -1)
+
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Regexps)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
