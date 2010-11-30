@@ -36,7 +36,12 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
     : DefaultPrivate(desktopEntry, params)
 {
     g_type_init();
-    appInfo = G_APP_INFO(g_desktop_app_info_new_from_filename(desktopEntry->fileName().toLocal8Bit().constData()));
+    appInfo = G_APP_INFO(
+        g_desktop_app_info_new_from_filename(
+            desktopEntry->fileName().toLocal8Bit().constData()));
+    if (appInfo == 0) {
+        LCA_WARNING << "invalid desktop file" << desktopEntry->fileName();
+    }
 }
 
 ExecPrivate::~ExecPrivate()
