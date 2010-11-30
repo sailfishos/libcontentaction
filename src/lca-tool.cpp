@@ -33,24 +33,25 @@ using namespace ContentAction;
 using namespace ContentAction::Internal;
 
 static const char help[] = \
-"Usage: lca-tool [OPTIONS] MODE MODALCOMMAND URIS\n"
+"Usage: lca-tool [OPTIONS] MODE MODALCOMMAND PARAMS\n"
 "       lca-tool [OPTIONS] OTHERCOMMAND ARGS\n"
 "OPTION can be:\n"
 "  --l10n              use localized names when printing actions\n"
 "\n"
 "MODE is one of:\n"
-"  --tracker           URIS are representing objects stored in Tracker,\n"
+"  --tracker           PARAMS are representing objects stored in Tracker,\n"
 "                      dispatched using Tracker-query based conditions\n"
-"  --file              URI is a file (or other resource), dispatched based on\n"
+"  --file              PARAMS is a file (or other resource), dispatched based on\n"
 "                      its content type\n"
-"  --scheme            URIS are dispatched based on their scheme only\n"
+"  --scheme            PARAMS are dispatched based on their scheme only\n"
+"  --string            PARAMS are dispatched based on regexp matches\n"
 "\n"
 "In modal use, the following commands are available:\n"
-"  --print             prints actions applicable to URIS\n"
-"  --trigger ACTION    trigger ACTION with the given URIS\n"
-"  --printdefault      print the default action for URIS\n"
-"  --triggerdefault    trigger the default action for the given URIS\n"
-"  --printmimes        print the (pseudo) mimetypes of URIS\n"
+"  --print             prints actions applicable to PARAMS\n"
+"  --trigger ACTION    trigger ACTION with the given PARAMS\n"
+"  --printdefault      print the default action for PARAMS\n"
+"  --triggerdefault    trigger the default action for the given PARAMS\n"
+"  --printmimes        print the (pseudo) mimetypes of PARAMS\n"
 "\n"
 "ACTION is the basename of the action's .desktop file (both when printing and\n"
 "when invoking).\n"
@@ -78,6 +79,7 @@ static const char help[] = \
 "  $ lca-tool --tracker --triggerdefault urn:1246934-4213\n"
 "  $ lca-tool --file --print file://$HOME/plaintext\n"
 "  $ lca-tool --scheme --triggerdefault mailto:someone@example.com\n"
+"  $ lca-tool --string print \"myaddress@email.com\""
 "  $ lca-tool --setmimedefault image/jpeg imageviewer\n"
 "  $ lca-tool --highlight < myinput.txt\n"
 "  $ lca-tool --triggerdesktop myapp.desktop param1 param2\n";
@@ -87,6 +89,7 @@ enum UriMode {
     TrackerMode,
     FileMode,
     SchemeMode,
+    StringMode,
 };
 
 enum ActionToDo {
@@ -229,6 +232,8 @@ int main(int argc, char **argv)
             newmode = FileMode;
         else if (arg == "--scheme")
             newmode = SchemeMode;
+        else if (arg == "--string")
+            newmode = StringMode;
         if (newmode != NoMode) {
             if (mode != NoMode) {
                 err << "only a single MODE may be specified" << endl;
@@ -382,6 +387,10 @@ int main(int argc, char **argv)
         actions = Action::actionsForScheme(args[0]);
         defAction = Action::defaultActionForScheme(args[0]);
         break;
+    case StringMode:
+        actions = Action::actionsForString(args[0]);
+        defAction = Action::defaultActionForString(args[0]);
+        break;
     default:
         break;
     }
@@ -407,7 +416,7 @@ int main(int argc, char **argv)
         break;
     case TriggerDefaultAction:
         if (!defAction.isValid()) {
-            err << "no default action for the given URIs" << endl;
+            err << "no default action for the given PARAMS" << endl;
             return 4;
         }
         defAction.trigger();
@@ -425,6 +434,11 @@ int main(int argc, char **argv)
             break;
         case SchemeMode:
             out << mimeForScheme(args[0]) << endl;
+            break;
+        case StringMode:
+            Q_FOREACH (const QString& mime, mimeForString(args[0])) {
+                out << mime << endl;
+            }
             break;
         default:
             break;

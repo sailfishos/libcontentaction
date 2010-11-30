@@ -5,14 +5,14 @@
   <highlight regexp="http://(\w+((:\w+)?)@)?example.com(:\d+)?(/[\w ./?%&amp;=]*)?" name="special-url"/>
 
   <!-- testing the special case relationships: general case + 2 specializations -->
-  <highlight regexp="foobar" name="special-1a" specialCaseOf="general-1"/>
-  <highlight regexp="foo" name="general-1"/>
-  <highlight regexp="foobaz" name="special-1b" specialCaseOf="general-1"/>
+  <highlight regexp="foobar\w*" name="special-1a" specialCaseOf="general-1"/>
+  <highlight regexp="foo\w*" name="general-1"/>
+  <highlight regexp="foobaz\w*" name="special-1b" specialCaseOf="general-1"/>
 
   <!-- testing the special case relationships: general case + specialization + its specialization -->
-  <highlight regexp="cat" name="general-2"/>
-  <highlight regexp="catdogzebra" name="superspecial-2" specialCaseOf="special-2"/>
-  <highlight regexp="catdog" name="special-2" specialCaseOf="general-2"/>
+  <highlight regexp="cat\w*" name="general-2"/>
+  <highlight regexp="catdogzebra\w*" name="superspecial-2" specialCaseOf="special-2"/>
+  <highlight regexp="catdog\w*" name="special-2" specialCaseOf="general-2"/>
 
   <!-- testing the special case relationships: even the circular case shouldn't confuse the computation -->
   <highlight regexp="circ" name="circular-1" specialCaseOf="circular-2"/>

@@ -401,6 +401,20 @@ QString Internal::mimeForScheme(const QString& uri)
     return mime;
 }
 
+/// Returns the pseudo-mimetypes of the \a param string.  Mime types are found
+/// based on exact matching against regexps in the highlighter configuration.
+QStringList Internal::mimeForString(const QString& param)
+{
+    QStringList mimes;
+    const QList<QPair<QString, QString> >& cfgList = highlighterConfig();
+    for (int i = 0; i < cfgList.size(); ++i) {
+        if (QRegExp(cfgList[i].second, Qt::CaseInsensitive).exactMatch(param)) {
+            mimes << cfgList[i].first;
+        }
+    }
+    return mimes;
+}
+
 /// Returns the default action for handling the scheme of the passed \a uri.
 /// \sa actionsForScheme().
 Action Action::defaultActionForScheme(const QString& uri)
@@ -427,6 +441,43 @@ QList<Action> Action::actionsForScheme(const QString& uri)
     QList<Action> result;
     Q_FOREACH (const QString& app, appsForContentType(mimeForScheme(uri))) {
         result << createAction(findDesktopFile(app), QStringList() << uri);
+    }
+    return result;
+}
+
+/// Returns the default action for handling the passed \a param.
+/// \sa actionsForString().
+Action Action::defaultActionForString(const QString& param)
+{
+    QStringList mimeTypes = mimeForString(param);
+    Q_FOREACH (const QString& mimeType, mimeTypes) {
+        QString def = findDesktopFile(defaultAppForContentType(mimeType));
+        if (!def.isEmpty())
+            return createAction(def,
+                                QStringList() << param);
+    }
+    // Fall back to one of the existing actions (if there are some)
+    QList<Action> acts = actionsForString(param);
+    if (acts.size() >= 1)
+        return acts[0];
+    return Action();
+}
+
+/// Returns all actions handling the given string \a param.  Dispatching is done
+/// based on exact matching against the regexpx of highlighter configuration.
+QList<Action> Action::actionsForString(const QString& param)
+{
+    QStringList mimeTypes = mimeForString(param);
+    QList<Action> result;
+    Q_FOREACH (const QString& mimeType, mimeTypes) {
+        QStringList apps = appsForContentType(mimeType);
+        Q_FOREACH (const QString& appid, apps) {
+            QString app = findDesktopFile(appid);
+            if (!app.isEmpty()) {
+                result << createAction(app,
+                                       QStringList() << param);
+            }
+        }
     }
     return result;
 }

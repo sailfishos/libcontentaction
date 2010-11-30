@@ -33,7 +33,8 @@ citest_SCRIPTS = \
 	test-fixed-params.py \
 	test-schemes.sh \
 	test-special-chars.py \
-	test-invalid-defaults.py
+	test-invalid-defaults.py \
+	test-regexps.py
 
 noinst_SCRIPTS = \
 	start-sandbox.sh \
@@ -110,6 +111,7 @@ TESTS = \
 	test-schemes.sh \
 	test-special-chars.py \
 	test-invalid-defaults.py \
+	test-regexps.py \
 	stop-sandbox.sh
 
 clean-local:

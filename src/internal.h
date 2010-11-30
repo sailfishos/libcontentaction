@@ -100,6 +100,7 @@ QString findDesktopFile(const QString& id);
 LCA_EXPORT QString mimeForScheme(const QString& uri);
 LCA_EXPORT QString mimeForFile(const QUrl& fileUri);
 LCA_EXPORT QStringList mimeForTrackerObject(const QString& uri);
+LCA_EXPORT QStringList mimeForString(const QString& param);
 
 const QHash<QString, QStringList>& mimeApps();
 const QList<QPair<QString, QString> >& highlighterConfig();
