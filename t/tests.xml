@@ -90,6 +90,13 @@
           PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-special-chars.py
         </step>
       </case>
+      <case name="test-regexps" description="A test of questionable value.">
+        <step expected_result="0">
+          . /tmp/session_bus_address.user; \
+          cd /usr/share/libcontentaction-tests; \
+          PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests CONTENTACTION_ACTIONS=/usr/share/libcontentaction-tests/data ./test-regexps.py
+        </step>
+      </case>
 
       <environments>
         <scratchbox>true</scratchbox>

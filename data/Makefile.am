@@ -3,7 +3,9 @@ dist_actions_DATA = \
 	tracker1.xml \
 	highlight1.xml
 
-EXTRA_DIST = \
+testdatadir = $(datadir)/libcontentaction-tests/data
+dist_testdata_DATA = \
+	highlight1.xml \
 	hl-examples.xml
 
 applicationsdir = $(datadir)/applications
