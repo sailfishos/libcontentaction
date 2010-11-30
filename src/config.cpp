@@ -189,7 +189,7 @@ static void sortRegexps()
         // Insert, and also remove from mimeToRegexp to note it has been
         // inserted.
         Highlighter_cfg.prepend(
-            qMakePair(toInsert.prepend(HighlighterMimeClass),
+            qMakePair(QString(HighlighterMimeClass) + toInsert,
                       mimeToRegexp.take(toInsert)));
     }
 }
