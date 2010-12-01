@@ -1,10 +1,10 @@
 [Default Applications]
-application/atom+xml=feedreader.desktop
+application/atom+xml=feedreader-subscribefeed-service.desktop
 application/excel=office-tools.desktop
 application/mspowerpoint=office-tools.desktop
 application/msword=office-tools.desktop
 application/pdf=office-tools.desktop
-application/rss+xml=feedreader.desktop
+application/rss+xml=feedreader-subscribefeed-service.desktop
 application/smil=musicsuiteplaylistinterface.desktop
 application/vnd.ms-powerpoint=office-tools.desktop
 application/vnd.oasis.opendocument.presentation=office-tools.desktop
