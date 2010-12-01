@@ -31,6 +31,10 @@ from commands import getstatusoutput
 from cltool import CLTool
 from tempfile import mkdtemp
 
+# Killing XDG_DATA_DIRS is normally not a good idea, but here we don't need
+# any "determining mime type of file" functionalities.
+os.environ["XDG_DATA_DIRS"] = os.environ["XDG_DATA_HOME"]
+
 class Regexps(unittest.TestCase):
     def setUp(self):
         pass
