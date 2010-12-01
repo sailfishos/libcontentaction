@@ -1,6 +1,8 @@
 libcontentaction (0.1.35~unreleased) unstable; urgency=low
 
-  *
+  * API addition: Action::actionsForString(const QString&)
+  * API addition: Action::defaultActionForString(const QString&)
+  * Enabling defining regexps specialCaseOf="another-regexp"
 
  -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 29 Nov 2010 17:47:14 +0200
 
