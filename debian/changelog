@@ -1,9 +1,9 @@
-libcontentaction (0.1.36~unreleased) unstable; urgency=low
+libcontentaction (0.1.36) unstable; urgency=low
 
   * Fixes: NB#207895
   * Added x-maemo-nepomuk/device-captured-video
 
- -- Marja Hassinen <marja.hassinen@nokia.com>  Thu, 02 Dec 2010 08:58:13 +0200
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Thu, 02 Dec 2010 13:27:08 +0200
 
 libcontentaction (0.1.35) unstable; urgency=low
 
