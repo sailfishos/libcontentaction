@@ -98,6 +98,11 @@
     { ?uri a nfo:Video . }
   </tracker-condition>
 
+  <tracker-condition name="device-captured-video">
+    { ?uri a nfo:Video ;
+    nfo:equipment "urn:equipment:booti:008:" . }
+  </tracker-condition>
+
   <tracker-condition name="web-history">
     { ?uri a nfo:WebHistory . }
   </tracker-condition>
