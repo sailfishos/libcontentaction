@@ -81,8 +81,13 @@ LCALabelHighlighter::LCALabelHighlighter(const MimesAndRegexps &mars_,
                      this, SLOT(doPopupActions(const QString&)));
 }
 
+/// Returns the mimes that match the given string, and are processed by this
+/// LCALabelHighlighter.  (Note that the LCALabelHighlighter doesn't necessarily
+/// handle all regexps.)
 QStringList LCALabelHighlighter::matchingMimes(const QString &str) const
 {
+    // TODO: the code is a bit duplicate with Internal::mimeForString but not
+    // quite.
     QStringList ret;
     Q_FOREACH (const MimeAndRegexp &mr, mars)
         if (mr.second.exactMatch(str))
@@ -211,7 +216,7 @@ void ContentAction::highlightLabel(MLabel *label)
     while (iter.hasNext()) {
         QPair<QString, QString> mar = iter.next();
         if (!appsForContentType(mar.first).isEmpty())
-            mars += qMakePair(mar.first, QRegExp(mar.second));
+            mars += qMakePair(mar.first, QRegExp(mar.second, Qt::CaseInsensitive));
     }
     hiLabel(label, mars);
 }
@@ -233,7 +238,7 @@ void ContentAction::highlightLabel(MLabel *label,
         if (re.isEmpty())
             continue;
         if (!appsForContentType(k).isEmpty())
-            mars += qMakePair(k, QRegExp(re));
+            mars += qMakePair(k, QRegExp(re, Qt::CaseInsensitive));
     }
     hiLabel(label, mars);
 }
