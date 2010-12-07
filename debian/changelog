@@ -1,11 +1,11 @@
-libcontentaction (0.1.37~unreleased) unstable; urgency=low
+libcontentaction (0.1.37) unstable; urgency=low
 
   * Fixes: NB#203949
   * Added Action::triggerWithWait() which will wait until the reply comes
     when launching actions via D-Bus. Work-around for a D-Bus bug,
     https://bugs.freedesktop.org/show_bug.cgi?id=896.
 
- -- Marja Hassinen <marja.hassinen@nokia.com>  Fri, 03 Dec 2010 10:48:28 +0200
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Tue, 07 Dec 2010 15:56:28 +0200
 
 libcontentaction (0.1.36) unstable; urgency=low
 
