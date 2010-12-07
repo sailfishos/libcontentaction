@@ -335,7 +335,7 @@ int main(int argc, char **argv)
         Action a = Action::launcherAction(actionName, args);
         if (!a.isValid())
             return 5;
-        a.trigger();
+        a.triggerAndWait();
         return 0;
     }
     default:
@@ -404,7 +404,7 @@ int main(int argc, char **argv)
     case TriggerAction:
         Q_FOREACH (const Action& a, actions) {
             if (a.name() == actionName) {
-                a.trigger();
+                a.triggerAndWait();
                 return 0;
             }
         }
@@ -419,7 +419,7 @@ int main(int argc, char **argv)
             err << "no default action for the given PARAMS" << endl;
             return 4;
         }
-        defAction.trigger();
+        defAction.triggerAndWait();
         return 0;
         break;
     case PrintMimes: {

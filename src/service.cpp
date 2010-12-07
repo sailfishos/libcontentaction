@@ -27,6 +27,7 @@
 #include <QDBusInterface>
 #include <QDBusMessage>
 #include <QStringList>
+#include <QDBusPendingCallWatcher>
 
 using namespace ContentAction::Internal;
 
@@ -40,17 +41,23 @@ ServiceFwPrivate::ServiceFwPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
 {
 }
 
-void ServiceFwPrivate::trigger() const
+void ServiceFwPrivate::trigger(bool wait) const
 {
     QString method;
     QDBusInterface *proxy = resolver().implementorForAction(serviceFwMethod, method);
     if (!proxy)
         return;
-    QDBusMessage reply = proxy->call(method, params);
-    if (reply.type() != QDBusMessage::ReplyMessage)
-        LCA_WARNING << "error reply from service implementor" << reply.errorName()
-                    << "when trying to call" << serviceFwMethod
-                    << "on" << proxy->service();
+    QDBusPendingCallWatcher watcher(proxy->asyncCall(method, params));
+
+    if (wait) {
+        watcher.waitForFinished();
+        if (watcher.isError()) {
+            LCA_WARNING << "error reply from service implementor"
+                        << watcher.error().message()
+                        << "when trying to call" << serviceFwMethod
+                        << "on" << proxy->service();
+        }
+    }
 }
 
 ServiceResolver& resolver()

@@ -90,7 +90,7 @@ QString ActionPrivate::icon() const
     return "NOT_IMPLEMENTED";
 }
 
-void ActionPrivate::trigger() const
+void ActionPrivate::trigger(bool) const
 {
     LCA_WARNING << "triggered an invalid action, not doing anything.";
 }
@@ -185,7 +185,16 @@ Action::~Action()
 /// by the Action object.
 void Action::trigger() const
 {
-    d->trigger();
+    d->trigger(false);
+}
+
+/// Triggers the action represented by this object, using the URIs contained by
+/// the Action object.  Waits for the application handling the message to
+/// respond, if possible.  Otherwise, does the same as trigger().  Waiting is
+/// only possible when the application is launched via D-Bus.
+void Action::triggerAndWait() const
+{
+    d->trigger(true);
 }
 
 /// Returns \a true if the Action object represents an action which can be

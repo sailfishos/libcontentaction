@@ -79,6 +79,7 @@ public:
     Action& operator=(const Action& other);
 
     void trigger() const;
+    void triggerAndWait() const;
 
 private:
     Action(ActionPrivate* priv);

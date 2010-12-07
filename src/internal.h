@@ -25,7 +25,7 @@ struct ActionPrivate
     virtual QString name() const;
     virtual QString localizedName() const;
     virtual QString icon() const;
-    virtual void trigger() const;
+    virtual void trigger(bool wait) const;
 };
 
 struct DefaultPrivate : public ActionPrivate
@@ -46,7 +46,7 @@ struct DefaultPrivate : public ActionPrivate
 struct ServiceFwPrivate : public DefaultPrivate {
     ServiceFwPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
                      const QStringList& params);
-    virtual void trigger() const;
+    virtual void trigger(bool) const;
 
     QString serviceFwMethod;
 };
@@ -54,7 +54,7 @@ struct ServiceFwPrivate : public DefaultPrivate {
 struct DBusPrivate : public DefaultPrivate {
     DBusPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
                 const QStringList& params);
-    virtual void trigger() const;
+    virtual void trigger(bool) const;
 
     QString busName;
     QString objectPath;
@@ -67,7 +67,7 @@ struct ExecPrivate : public DefaultPrivate {
     ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
                 const QStringList& params);
     virtual ~ExecPrivate();
-    virtual void trigger() const;
+    virtual void trigger(bool) const;
 
     GAppInfo *appInfo;
 };

@@ -49,8 +49,9 @@ ExecPrivate::~ExecPrivate()
     g_object_unref(appInfo);
 }
 
-void ExecPrivate::trigger() const
+void ExecPrivate::trigger(bool) const
 {
+    // Ignore whether the user wanted to wait for the application to start.
     GError *error = 0;
     GList *uris = NULL;
 
