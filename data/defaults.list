@@ -56,6 +56,7 @@ video/x-ms-wmv=videosuiteinterface.desktop
 video/x-msvideo=videosuiteinterface.desktop
 video/x-xvid=videosuiteinterface.desktop
 x-maemo-highlight/http-url=fennec.desktop
+x-maemo-highlight/email-address=mail.desktop
 x-maemo-nepomuk/contact=opencontactcard.desktop
 x-maemo-nepomuk/email=mail.desktop
 x-maemo-urischeme/file=fennec.desktop
