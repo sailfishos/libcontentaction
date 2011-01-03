@@ -59,6 +59,7 @@ x-maemo-highlight/email-address=mail.desktop
 x-maemo-highlight/feed-url=browser.desktop
 x-maemo-highlight/ftp-url=browser.desktop
 x-maemo-highlight/http-url=browser.desktop
+x-maemo-highlight/ovi-store-url=ovistoreclient.desktop
 x-maemo-nepomuk/contact=opencontactcard.desktop
 x-maemo-nepomuk/email=mail.desktop
 x-maemo-urischeme/about=browser.desktop
