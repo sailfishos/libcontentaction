@@ -1,6 +1,7 @@
 libcontentaction (0.1.39~unreleased) unstable; urgency=low
 
-  *
+  * Configuration update: sparql snippet for software-application
+  * Fixes: NB#208279
 
  -- Marja Hassinen <marja.hassinen@nokia.com>  Tue, 04 Jan 2011 14:52:18 +0200
 

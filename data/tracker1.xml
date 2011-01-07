@@ -11,7 +11,7 @@
   </tracker-condition>
 
   <tracker-condition name="software-application">
-    { ?uri a nfo:SoftwareApplication . }
+    { ?uri a nfo:Software . }
   </tracker-condition>
 
   <tracker-condition name="calendar-event">
