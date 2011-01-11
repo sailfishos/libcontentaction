@@ -335,6 +335,7 @@ X-Maemo-Fixed-Args=foo;bar;baz;
 ;; NOTE in this case you must not define X-Maemo-Service!
 X-Maemo-Method=com.nokia.imageviewerinterface.showImage
 ;; 4. Plain old exec
+;; If you use this launch method, you need to have also Type=Application
 Exec=/usr/bin/gallery %U
 ;; 5. the legacy mime_open method, provided only to wrap old programs into
 ;; actions, do not use it in new applications
