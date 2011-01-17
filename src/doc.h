@@ -130,6 +130,7 @@ the application.  The launch methods supported by libcontentaction are:
 -# executing a binary
   - Define: \c Exec=command-to-execute fixedarg1 \%U fixedarg2
   - No need for \c X-Maemo-Fixed-Args
+  - Must have Type=Application
 -# calling the legacy mime_open method
   - Define: \c X-Osso-Service=my.bus.name
 
