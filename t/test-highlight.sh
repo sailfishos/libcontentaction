@@ -42,6 +42,27 @@ strstr "$res" ".*feed://browsefeed.com' browser" || exit 3
 strstr "$res" ".*feed:browsefeed.com' browser" || exit 3
 strstr "$res" ".*ftp://browseftp.com' browser" || exit 3
 
+# parens and dots...
+
+strstr "$res" ".*http://mydomain00.com' browser" || exit 30
+strstr "$res" ".*http://mydomain01.com/' browser" || exit 30
+strstr "$res" ".*http://mydomain02.com/file' browser" || exit 30
+strstr "$res" ".*http://mydomain03.com/file/' browser" || exit 30
+strstr "$res" ".*http://mydomain04.com' browser" || exit 30
+strstr "$res" ".*http://mydomain05.com/' browser" || exit 30
+strstr "$res" ".*http://mydomain06.com/file' browser" || exit 30
+strstr "$res" ".*http://mydomain07.com/file/' browser" || exit 30
+
+strstr "$res" ".*http://mydomain08.com' browser" || exit 31
+strstr "$res" ".*http://mydomain09.com/' browser" || exit 31
+strstr "$res" ".*http://mydomain10.com/file' browser" || exit 31
+strstr "$res" ".*http://mydomain11.com/file/' browser" || exit 31
+
+strstr "$res" ".*http://paren.com/something_(one_%26_two)' browser" || exit 32
+strstr "$res" ".*http://paren.com/something_(three_%26_four)' browser" || exit 32
+strstr "$res" ".*http://paren.com/something_(five_%26_six)' browser" || exit 32
+strstr "$res" ".*www.foo.com/(bar)baz(bar)bar' browser" || exit 32
+
 # email addresses
 strstr "$res" ".*'john.doe@att.com' emailer" || exit 4
 strstr "$res" ".*'mailto:john_doe2@att.com' emailer" || exit 4

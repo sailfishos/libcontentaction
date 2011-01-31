@@ -26,6 +26,28 @@ www.google.com/m
 http://maps.google.com/maps?f=d&source=s_d&saddr=Nieznana+droga&daddr=krak%C3%B3w&hl&geocode=Fa5h9wIdlq87Aq%3BFQrt-wIdFFYwASnRGE41wEQWRzG_ikd2tbZrtA&mra=ls&sll=49.915862,20.323334&sspn=0.505808,1.234589&ie=UTF8&t=h&z=10
 http://host-with-dash.com/path?%:@&=+$,-!~*'with(special)chars
 
+Skipping dots and parentheses next to web addresses:
+
+xxx (see also: http://mydomain00.com) ending ) should not be included
+xxx (see also: http://mydomain01.com/) ending ) should not be included
+xxx (see also: http://mydomain02.com/file) ending ) should not be included
+xxx (see also: http://mydomain03.com/file/) ending ) should not be included
+xxx (see also: http://mydomain04.com). note, dot should not be included
+xxx (see also: http://mydomain05.com/). ending ) should not be included
+xxx (see also: http://mydomain06.com/file). ending ) should not be included
+xxx (see also: http://mydomain07.com/file/). xxx
+
+xxx see also: http://mydomain08.com. dot should not be included
+xxx see also: http://mydomain09.com/. dot should not be included
+xxx see also: http://mydomain10.com/file. dot should not be included
+xxx see also: http://mydomain11.com/file/. dot should not be included
+
+xxxx See also: http://paren.com/something_(one_%26_two) parens included in the address...
+xxxx See also: http://paren.com/something_(three_%26_four). ... but dot is not
+
+xxxx (See also: http://paren.com/something_(five_%26_six)) this might be tricky
+testing also www.foo.com/(bar)baz(bar)bar.
+
 And other browsable urls:
 feed://browsefeed.com
 feed:browsefeed.com
