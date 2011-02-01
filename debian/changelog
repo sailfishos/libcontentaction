@@ -1,3 +1,9 @@
+libcontentaction (0.1.41~unreleased) unstable; urgency=low
+
+  *
+
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Tue, 01 Feb 2011 09:17:04 +0200
+
 libcontentaction (0.1.40) unstable; urgency=low
 
   * Regexp update
