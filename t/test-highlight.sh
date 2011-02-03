@@ -29,6 +29,16 @@ strstr "$res" ".*'+481234p12345' caller" || exit 2
 strstr "$res" ".*'+481234#12345' caller" || exit 2
 strstr "$res" ".*'+358 (9) 123 456' caller" || exit 2
 
+# phone number uris
+strstr "$res" ".*'callto:100000' caller" || exit 2
+strstr "$res" ".*'tel:100000' caller" || exit 2
+strstr "$res" ".*'sms:100000' caller" || exit 2
+strstr "$res" ".*'sip:100000' caller" || exit 2
+
+# suspicious phone uris with spaces:
+strstr "$res" ".*'callto:+100 000 001' caller" || exit 2
+strstr "$res" ".*'tel:+100 (000) 001' caller" || exit 2
+
 # web addresses
 
 strstr "$res" ".*'http://us.m.yahoo.com' browser" || exit 3
@@ -68,7 +78,7 @@ strstr "$res" ".*'john.doe@att.com' emailer" || exit 4
 strstr "$res" ".*'mailto:john_doe2@att.com' emailer" || exit 4
 
 # invalid and almost-invalid cases
-strstr "$res" ".*'333222111444' caller" && exit 5
+strstr "$res" ".*'333222111444' caller" || exit 5 # changed to be valid
 strstr "$res" ".*'+((((' caller" && exit 5
 #+358 and +7777 will be recognized separately, though
 strstr "$res" ".*'+358+7777' caller" && exit 5

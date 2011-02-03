@@ -17,6 +17,8 @@ number +48 123.12-3 123 is here
 number +481234p12345 is here
 number +481234#12345 is here
 number +358 (9) 123 456 is here
+uris: callto:100000, tel:100000, sms:100000 sip:100000
+suspicious uris: callto:+100 000 001 tel:+100 (000) 001
 
 These should be valid web addresses:
 http://us.m.yahoo.com
@@ -58,7 +60,7 @@ Address with an extra dot: john.doe@att.com.
 <mailto:john_doe2@att.com>
 
 These are suspicious phone numbers:
-sometextbefore333222111444sometextafter
+sometextbefore333222111444sometextafter (grr, they want this to be recognized as a phone number)
 +(((((
 +358+7777
 i bought 13 bananas
