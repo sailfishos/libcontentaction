@@ -17,7 +17,7 @@ number +48 123.12-3 123 is here
 number +481234p12345 is here
 number +481234#12345 is here
 number +358 (9) 123 456 is here
-uris: callto:100000, tel:100000, sms:100000 sip:100000 sips:100000
+uris: callto:100000, tel:100000, sms:100000
 suspicious uris: callto:+100 000 001 tel:+100 (000) 001
 
 These should be valid web addresses:

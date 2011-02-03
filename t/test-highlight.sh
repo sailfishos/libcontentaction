@@ -33,8 +33,6 @@ strstr "$res" ".*'+358 (9) 123 456' caller" || exit 2
 strstr "$res" ".*'callto:100000' caller" || exit 2
 strstr "$res" ".*'tel:100000' caller" || exit 2
 strstr "$res" ".*'sms:100000' caller" || exit 2
-strstr "$res" ".*'sip:100000' caller" || exit 2
-strstr "$res" ".*'sips:100000' caller" || exit 2
 
 # suspicious phone uris with spaces:
 strstr "$res" ".*'callto:+100 000 001' caller" || exit 2
