@@ -63,6 +63,8 @@ const QString XOssoServiceKey("Desktop Entry/X-Osso-Service");
 const QString XMaemoMethodKey("Desktop Entry/X-Maemo-Method");
 const QString XMaemoObjectPathKey("Desktop Entry/X-Maemo-Object-Path");
 const QString ExecKey("Desktop Entry/Exec");
+const QString URLKey("Desktop Entry/URL");
+const QString TypeKeyValueLink("Link");
 }
 
 ActionPrivate::~ActionPrivate()
@@ -148,6 +150,10 @@ Action::Action(ActionPrivate* priv)
 
 /// Creates an Action object which will launch the application defined by \a
 /// desktopFilePath with the given \a params when triggered.
+///
+/// This function supports both desktop entries of type "Application"
+/// and "Link".  A "Link" is launched via
+/// Action::defaultActionForScheme.
 Action createAction(const QString& desktopFilePath, const QStringList& params)
 {
     QSharedPointer<MDesktopEntry> desktopEntry(new MDesktopEntry(
@@ -157,10 +163,17 @@ Action createAction(const QString& desktopFilePath, const QStringList& params)
 
 /// Creates an Action object which will launch the application defined by \a
 /// desktopEntry with the given \a params when triggered.
+///
+/// This function supports both desktop entries of type "Application"
+/// and "Link".  A "Link" is launched via
+/// Action::defaultActionForScheme.
 Action createAction(QSharedPointer<MDesktopEntry> desktopEntry,
                     const QStringList& params)
 {
-    if (desktopEntry->contains(XMaemoMethodKey) &&
+    if (desktopEntry->type() == TypeKeyValueLink &&
+        desktopEntry->contains(URLKey)) {
+        return Action::defaultActionForScheme(desktopEntry->url());
+    } else if (desktopEntry->contains(XMaemoMethodKey) &&
         !desktopEntry->contains(XMaemoServiceKey)) {
         return Action(new ServiceFwPrivate(desktopEntry, params));
     }
