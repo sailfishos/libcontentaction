@@ -1,8 +1,8 @@
 libcontentaction (0.1.42~unreleased) unstable; urgency=low
 
-  * 
+  * Fixes: NB#222000
 
- -- Marius Vollmer <marius.vollmer@nokia.com>  Mon, 07 Feb 2011 10:53:25 +0200
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 07 Feb 2011 15:42:54 +0200
 
 libcontentaction (0.1.41) unstable; urgency=low
 
