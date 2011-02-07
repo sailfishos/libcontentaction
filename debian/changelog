@@ -1,4 +1,4 @@
-libcontentaction (0.1.42~unreleased) unstable; urgency=low
+libcontentaction (0.1.42) unstable; urgency=low
 
   * Fixes: NB#222000
 
