@@ -1,3 +1,9 @@
+libcontentaction (0.1.42~unreleased) unstable; urgency=low
+
+  * 
+
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Mon, 07 Feb 2011 10:53:25 +0200
+
 libcontentaction (0.1.41) unstable; urgency=low
 
   * Added support for Type=Link *.desktop entries.
