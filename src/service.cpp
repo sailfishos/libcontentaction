@@ -29,6 +29,10 @@
 #include <QStringList>
 #include <QDBusPendingCallWatcher>
 
+#define MAPPER_SERVICENAME "com.nokia.MServiceFw"
+#define MAPPER_PATH "/"
+#define MAPPER_INTERFACE "com.nokia.MServiceFwIf"
+
 using namespace ContentAction::Internal;
 
 namespace ContentAction
@@ -67,15 +71,21 @@ ServiceResolver& resolver()
 }
 
 ServiceResolver::ServiceResolver()
-    : mapperProxy(new QDBusInterface("com.nokia.MServiceFw", "/",
-                                     "com.nokia.MServiceFwIf",
-                                     QDBusConnection::sessionBus()))
 {
-    connect(mapperProxy, SIGNAL(serviceAvailable(QString,QString)),
-            this, SLOT(onServiceAvailable(QString,QString)));
+    QDBusConnection conn = QDBusConnection::sessionBus();
 
-    connect(mapperProxy, SIGNAL(serviceUnavailable(QString)),
-            this, SLOT(onServiceUnavailable(QString)));
+    conn.connect(MAPPER_SERVICENAME,
+                 MAPPER_PATH,
+                 MAPPER_INTERFACE,
+                 "serviceAvailable",
+                 this,
+                 SLOT(onServiceAvailable(QString,QString)));
+    conn.connect(MAPPER_SERVICENAME,
+                 MAPPER_PATH,
+                 MAPPER_INTERFACE,
+                 "serviceUnavailable",
+                 this,
+                 SLOT(onServiceUnavailable(QString,QString)));
 }
 
 ServiceResolver::~ServiceResolver()
@@ -83,7 +93,6 @@ ServiceResolver::~ServiceResolver()
     Q_FOREACH (QDBusInterface* proxy, proxies)
         delete proxy;
     proxies.clear();
-    delete mapperProxy;
 }
 
 /// A slot connected to the serviceAvailable signal from Meego service mapper.
@@ -124,18 +133,22 @@ QString ServiceResolver::implementorName(const QString& interface)
     if (resolved.contains(interface))
         return resolved[interface];
 
-    if (!mapperProxy->isValid()) {
-        LCA_WARNING << "cannot connect to service mapper";
-        return "";
-    }
-
     // A blocking call
-    QDBusMessage reply = mapperProxy->call("serviceName", interface);
+    QDBusMessage message =
+        QDBusMessage::createMethodCall(MAPPER_SERVICENAME, MAPPER_PATH,
+                                       MAPPER_INTERFACE, "serviceName");
+    message.setArguments(QVariantList() << interface);
+
+    QDBusMessage reply = QDBusConnection::sessionBus().call(message);
     if (reply.type() != QDBusMessage::ReplyMessage || reply.arguments().size() == 0) {
         LCA_WARNING << "invalid reply from service mapper" << reply.errorName();
         return "";
     }
     QString service = reply.arguments()[0].toString();
+    if (service.size() == 0) {
+        // don't insert to the "resolved" map
+        return "";
+    }
     resolved.insert(interface, service);
     return service;
 }

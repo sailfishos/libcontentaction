@@ -48,7 +48,6 @@ private:
 
     QHash<QString, QString> resolved;
     QHash<QString, QDBusInterface*> proxies;
-    QDBusInterface* mapperProxy;
 };
 
 ServiceResolver& resolver();
