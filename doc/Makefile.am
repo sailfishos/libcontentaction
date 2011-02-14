@@ -11,6 +11,9 @@ html/index.html: $(srcdir)/../src/*.cpp $(srcdir)/../src/*.h $(DOXYCFG)
 
 EXTRA_DIST = $(DOXYCFG)
 
+html_docsdir = $(datadir)/doc/libcontentaction-doc/html
+html_docs_DATA = $(wildcard $(builddir)/html/*)
+
 clean-local:
 	rm -f doxygen.log
 	rm -rf html
