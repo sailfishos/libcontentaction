@@ -31,7 +31,7 @@
 #include <MLabelHighlighter>
 #include <MPopupList>
 
-typedef QPair<QString, QRegExp> MimeAndRegexp;
+typedef QPair<QString, const QRegExp &> MimeAndRegexp;
 typedef QList<MimeAndRegexp> MimesAndRegexps;
 
 namespace {
@@ -212,11 +212,11 @@ static void unhiliteLabel(MLabel *label)
 void ContentAction::highlightLabel(MLabel *label)
 {
     MimesAndRegexps mars;
-    QListIterator<QPair<QString, QString> > iter(highlighterConfig());
+    QListIterator<QPair<QString, QRegExp> > iter(highlighterConfig());
     while (iter.hasNext()) {
-        QPair<QString, QString> mar = iter.next();
+        const QPair<QString, QRegExp> &mar = iter.next();
         if (!appsForContentType(mar.first).isEmpty())
-            mars += qMakePair(mar.first, QRegExp(mar.second, Qt::CaseInsensitive));
+            mars += MimeAndRegexp(mar.first, mar.second);
     }
     hiLabel(label, mars);
 }
@@ -229,16 +229,16 @@ void ContentAction::highlightLabel(MLabel *label,
                                    QStringList typesToHighlight)
 {
     MimesAndRegexps mars;
-    const QList<QPair<QString, QString> >& cfgList = highlighterConfig();
-    QMap<QString, QString> cfgMap;
+    const QList<QPair<QString, QRegExp> >& cfgList = highlighterConfig();
+    QMap<QString, const QRegExp *> cfgMap;
     for (int i = 0; i < cfgList.size(); ++i)
-        cfgMap[cfgList[i].first] = cfgList[i].second;
+	cfgMap.insert(cfgList[i].first, &cfgList[i].second);
     Q_FOREACH (const QString& k, typesToHighlight) {
-        QString re(cfgMap.value(k, QString()));
-        if (re.isEmpty())
-            continue;
+	QMap<QString, const QRegExp *>::const_iterator it(cfgMap.find(k));
+	if (it == cfgMap.end())
+	    continue;
         if (!appsForContentType(k).isEmpty())
-            mars += qMakePair(k, QRegExp(re, Qt::CaseInsensitive));
+            mars += MimeAndRegexp(k, **it);
     }
     hiLabel(label, mars);
 }

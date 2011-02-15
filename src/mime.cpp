@@ -406,9 +406,9 @@ QString Internal::mimeForScheme(const QString& uri)
 QStringList Internal::mimeForString(const QString& param)
 {
     QStringList mimes;
-    const QList<QPair<QString, QString> >& cfgList = highlighterConfig();
+    const QList<QPair<QString, QRegExp> >& cfgList = highlighterConfig();
     for (int i = 0; i < cfgList.size(); ++i) {
-        if (QRegExp(cfgList[i].second, Qt::CaseInsensitive).exactMatch(param)) {
+        if (cfgList[i].second.exactMatch(param)) {
             mimes << cfgList[i].first;
         }
     }

@@ -36,7 +36,7 @@ using namespace ContentAction;
 using namespace ContentAction::Internal;
 
 // mime type -> regexp
-static QList<QPair<QString, QString> > Highlighter_cfg;
+static QList<QPair<QString, QRegExp> > Highlighter_cfg;
 // raw data for Highlighter_cfg
 static QHash<QString, QString> mimeToRegexp;
 static QHash<QString, QString> mimeToParent;
@@ -190,7 +190,7 @@ static void sortRegexps()
         // inserted.
         Highlighter_cfg.prepend(
             qMakePair(QString(HighlighterMimeClass) + toInsert,
-                      mimeToRegexp.take(toInsert)));
+                      QRegExp(mimeToRegexp.take(toInsert), Qt::CaseInsensitive)));
     }
 }
 
@@ -233,7 +233,7 @@ static void readConfig()
 
 /// Returns the highlighter configuration map of (mimetype, regexp) read from
 /// the configuration files.
-const QList<QPair<QString, QString> >& ContentAction::Internal::highlighterConfig()
+const QList<QPair<QString, QRegExp> >& ContentAction::Internal::highlighterConfig()
 {
     readConfig();
     return Highlighter_cfg;
