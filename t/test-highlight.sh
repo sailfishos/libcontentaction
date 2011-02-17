@@ -76,6 +76,11 @@ strstr "$res" ".*http://paren.com/something_(three_%26_four)' browser" || exit 3
 strstr "$res" ".*http://paren.com/something_(five_%26_six)' browser" || exit 32
 strstr "$res" ".*www.foo.com/(bar)baz(bar)bar' browser" || exit 32
 
+# allowing #
+strstr "$res" ".*http://www.foo.com/page#fragment' browser" || exit 33
+strstr "$res" ".*feed://browsefeed.com/page#fragment' browser" || exit 33
+strstr "$res" ".*ftp://browseftp.com/page#fragment' browser" || exit 33
+
 # email addresses
 strstr "$res" ".*'john.doe@att.com' emailer" || exit 4
 strstr "$res" ".*'mailto:john_doe2@att.com' emailer" || exit 4
