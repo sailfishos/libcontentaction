@@ -5,4 +5,4 @@ Exec=echo "caller with params:" %U
 Terminal=false
 Type=Application
 NotShowIn=X-MeeGo;
-MimeType=x-maemo-highlight/phone-number;
+MimeType=x-maemo-highlight/phone-number;x-maemo-highligh/sip-url;

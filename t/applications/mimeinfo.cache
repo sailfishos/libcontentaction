@@ -14,4 +14,5 @@ x-maemo-highlight/http-url=browser.desktop;
 x-maemo-highlight/ftp-url=browser.desktop;
 x-maemo-highlight/feed-url=browser.desktop;
 x-maemo-highlight/phone-number=caller.desktop;
+x-maemo-highlight/sip-url=caller.desktop;
 x-maemo-highlight/special-url=special-browser.desktop;

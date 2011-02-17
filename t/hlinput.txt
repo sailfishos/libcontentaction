@@ -19,6 +19,7 @@ number +481234#12345 is here
 number +358 (9) 123 456 is here
 uris: callto:100000, tel:100000, sms:100000
 suspicious uris: callto:+100 000 001 tel:+100 (000) 001
+sip uris: sip:thisissip@sip.com sip:8071870pp20326#pp12397#
 
 These should be valid web addresses:
 http://us.m.yahoo.com

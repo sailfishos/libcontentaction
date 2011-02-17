@@ -38,6 +38,10 @@ strstr "$res" ".*'sms:100000' caller" || exit 2
 strstr "$res" ".*'callto:+100 000 001' caller" || exit 2
 strstr "$res" ".*'tel:+100 (000) 001' caller" || exit 2
 
+# sip uris
+strstr "$res" ".*'sip:thisissip@sip.com' caller" || exit 2
+strstr "$res" ".*'sip:8071870pp20326#pp12397#' caller" || exit 2
+
 # web addresses
 
 strstr "$res" ".*'http://us.m.yahoo.com' browser" || exit 3
