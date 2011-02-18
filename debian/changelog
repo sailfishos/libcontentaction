@@ -1,8 +1,10 @@
-libcontentaction (0.1.43~unreleased) unstable; urgency=low
+libcontentaction (0.1.43) unstable; urgency=low
 
-  *
+  * Added regexp for sip urls
+  * Highlighter: creating only one MLabelHighlighter for the common use
+    case (highlighting with all possible regexps)
 
- -- Marja Hassinen <marja.hassinen@nokia.com>  Mon, 07 Feb 2011 17:44:46 +0200
+ -- Marja Hassinen <marja.hassinen@nokia.com>  Fri, 18 Feb 2011 12:31:15 +0200
 
 libcontentaction (0.1.42) unstable; urgency=low
 
