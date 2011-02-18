@@ -31,7 +31,7 @@
 #include <MLabelHighlighter>
 #include <MPopupList>
 
-typedef QPair<QString, QRegExp> MimeAndRegexp;
+typedef QPair<QString, const QRegExp &> MimeAndRegexp;
 typedef QList<MimeAndRegexp> MimesAndRegexps;
 
 namespace {
@@ -54,7 +54,9 @@ private:
     MimesAndRegexps mars;
 };
 
-static QRegExp combine(const MimesAndRegexps &mars)
+LCALabelHighlighter* DefaultHighlighter = 0;
+
+QRegExp combine(const MimesAndRegexps &mars)
 {
     QString re("(?:");
     bool first = true;
@@ -182,43 +184,32 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 
 } // end anon namespace
 
-static void hiLabel(MLabel *label, const MimesAndRegexps &mars)
-{
-    if (mars.isEmpty())
-        return;
-    if (label->property("_lca_highlighter").isValid())
-        return;
-    LCALabelHighlighter *hl = new LCALabelHighlighter(mars, label);
-    label->addHighlighter(hl);
-    label->setProperty("_lca_highlighter", QVariant::fromValue<void *>(hl));
-}
-
-static void unhiliteLabel(MLabel *label)
-{
-    QVariant prop = label->property("_lca_highlighter");
-    if (!prop.isValid())
-        return;
-    LCALabelHighlighter *hl = static_cast<LCALabelHighlighter *>(prop.value<void *>());
-    label->removeHighlighter(hl);
-    delete hl;
-    label->setProperty("_lca_highlighter", QVariant());
-}
-
-/// Attaches possibly several MLabelHighlighter:s to the label, based on the
-/// highlighter configuration.  Clicking on a highlighted label invokes the
-/// first action defined for the matching pattern.  A long-click causes a
-/// popup list to be shown with the possible actions, from where the user may
-/// choose one.
+/// Attaches a MLabelHighlighter to the label, based on the highlighter
+/// configuration.  The MLabelHighlighter contains a regexp which is constructed
+/// by combining all regexps in the highlighter configuration.  Clicking on a
+/// highlighted label invokes the first action defined for the matching pattern.
+/// A long-click causes a popup list to be shown with the possible actions, from
+/// where the user may choose one.
 void ContentAction::highlightLabel(MLabel *label)
 {
-    MimesAndRegexps mars;
-    QListIterator<QPair<QString, QString> > iter(highlighterConfig());
-    while (iter.hasNext()) {
-        QPair<QString, QString> mar = iter.next();
-        if (!appsForContentType(mar.first).isEmpty())
-            mars += qMakePair(mar.first, QRegExp(mar.second, Qt::CaseInsensitive));
+    if (label->property("_lca_highlighter").isValid())
+        return;
+
+    // This highlights the label with the default highlighter.  The default
+    // highlighter is not deleted when the label is unhighlighted.
+    if (DefaultHighlighter == 0) {
+        MimesAndRegexps mars;
+        QListIterator<QPair<QString, QRegExp> > iter(highlighterConfig());
+        while (iter.hasNext()) {
+            const QPair<QString, QRegExp> &mar = iter.next();
+            if (!appsForContentType(mar.first).isEmpty())
+                mars += MimeAndRegexp(mar.first, mar.second);
+        }
+        DefaultHighlighter = new LCALabelHighlighter(mars);
     }
-    hiLabel(label, mars);
+    label->addHighlighter(DefaultHighlighter);
+    label->setProperty("_lca_highlighter",
+                       QVariant::fromValue<void *>(DefaultHighlighter));
 }
 
 /// Similar to highlightLabel() but allows specifying which regexp-types to
@@ -228,25 +219,42 @@ void ContentAction::highlightLabel(MLabel *label)
 void ContentAction::highlightLabel(MLabel *label,
                                    QStringList typesToHighlight)
 {
+    if (label->property("_lca_highlighter").isValid())
+        return;
+
+    // Don't use the default highlighter (which uses all the regexps), but
+    // create another one which uses only a subset of them.
     MimesAndRegexps mars;
-    const QList<QPair<QString, QString> >& cfgList = highlighterConfig();
-    QMap<QString, QString> cfgMap;
+    const QList<QPair<QString, QRegExp> >& cfgList = highlighterConfig();
+    QMap<QString, const QRegExp *> cfgMap;
     for (int i = 0; i < cfgList.size(); ++i)
-        cfgMap[cfgList[i].first] = cfgList[i].second;
+        cfgMap.insert(cfgList[i].first, &cfgList[i].second);
     Q_FOREACH (const QString& k, typesToHighlight) {
-        QString re(cfgMap.value(k, QString()));
-        if (re.isEmpty())
+        QMap<QString, const QRegExp *>::const_iterator it(cfgMap.find(k));
+        if (it == cfgMap.end())
             continue;
         if (!appsForContentType(k).isEmpty())
-            mars += qMakePair(k, QRegExp(re, Qt::CaseInsensitive));
+            mars += MimeAndRegexp(k, **it);
     }
-    hiLabel(label, mars);
+
+    if (mars.isEmpty())
+        return;
+    LCALabelHighlighter *hl = new LCALabelHighlighter(mars, label);
+    label->addHighlighter(hl);
+    label->setProperty("_lca_highlighter", QVariant::fromValue<void *>(hl));
 }
 
 /// Removes all highlighters attached by highlightLabel() from \a label.
 void ContentAction::dehighlightLabel(MLabel *label)
 {
-    unhiliteLabel(label);
+    QVariant prop = label->property("_lca_highlighter");
+    if (!prop.isValid())
+        return;
+    LCALabelHighlighter *hl = static_cast<LCALabelHighlighter *>(prop.value<void *>());
+    label->removeHighlighter(hl);
+    if (hl != DefaultHighlighter)
+        delete hl;
+    label->setProperty("_lca_highlighter", QVariant());
 }
 
 Q_DECLARE_METATYPE(ContentAction::Action);

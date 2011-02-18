@@ -34,11 +34,11 @@ using namespace ContentAction::Internal;
 /// list of Match objects.
 QList<Match> Action::highlight(const QString& text)
 {
-    const QList<QPair<QString, QString> >& cfg = highlighterConfig();
+    const QList<QPair<QString, QRegExp> >& cfg = highlighterConfig();
     QList<Match> result;
 
     for (int i = 0; i < cfg.size(); ++i) {
-        QRegExp re(cfg[i].second, Qt::CaseInsensitive);
+	const QRegExp &re = cfg[i].second;
         QStringList apps = appsForContentType(cfg[i].first);
         int pos = 0;
         while ((pos = re.indexIn(text, pos)) != -1) {
