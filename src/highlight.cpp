@@ -45,7 +45,6 @@ class LCALabelHighlighter: public MCommonLabelHighlighter
 public:
     LCALabelHighlighter(const MimesAndRegexps &mars_,
                         QObject *parent = 0);
-    static LCALabelHighlighter* defaultHighlighter;
 private Q_SLOTS:
     void doDefaultAction(const QString& match);
     void doPopupActions(const QString& match);
@@ -55,7 +54,7 @@ private:
     MimesAndRegexps mars;
 };
 
-LCALabelHighlighter* LCALabelHighlighter::defaultHighlighter = 0;
+LCALabelHighlighter* DefaultHighlighter = 0;
 
 QRegExp combine(const MimesAndRegexps &mars)
 {
@@ -198,7 +197,7 @@ void ContentAction::highlightLabel(MLabel *label)
 
     // This highlights the label with the default highlighter.  The default
     // highlighter is not deleted when the label is unhighlighted.
-    if (LCALabelHighlighter::defaultHighlighter == 0) {
+    if (DefaultHighlighter == 0) {
         MimesAndRegexps mars;
         QListIterator<QPair<QString, QRegExp> > iter(highlighterConfig());
         while (iter.hasNext()) {
@@ -206,11 +205,11 @@ void ContentAction::highlightLabel(MLabel *label)
             if (!appsForContentType(mar.first).isEmpty())
                 mars += MimeAndRegexp(mar.first, mar.second);
         }
-        LCALabelHighlighter::defaultHighlighter = new LCALabelHighlighter(mars);
+        DefaultHighlighter = new LCALabelHighlighter(mars);
     }
-    label->addHighlighter(LCALabelHighlighter::defaultHighlighter);
+    label->addHighlighter(DefaultHighlighter);
     label->setProperty("_lca_highlighter",
-                       QVariant::fromValue<void *>(LCALabelHighlighter::defaultHighlighter));
+                       QVariant::fromValue<void *>(DefaultHighlighter));
 }
 
 /// Similar to highlightLabel() but allows specifying which regexp-types to
@@ -253,7 +252,7 @@ void ContentAction::dehighlightLabel(MLabel *label)
         return;
     LCALabelHighlighter *hl = static_cast<LCALabelHighlighter *>(prop.value<void *>());
     label->removeHighlighter(hl);
-    if (hl != LCALabelHighlighter::defaultHighlighter)
+    if (hl != DefaultHighlighter)
         delete hl;
     label->setProperty("_lca_highlighter", QVariant());
 }
