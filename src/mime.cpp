@@ -353,6 +353,19 @@ Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType
     return Action();
 }
 
+/// Returns the default actions for the given \a fileUris, assuming
+/// all their mime types are \a mimeType. This function can be used
+/// even when \a fileUri doesn't exist yet but will be created before
+/// trigger() is called, or if you already know the mime type.
+Action Action::defaultActionForFile(const QStringList& fileUris, const QString& mimeType)
+{
+    QString app = findDesktopFile(defaultAppForContentType(mimeType));
+    if (!app.isEmpty()) {
+        return createAction(app, fileUris);
+    }
+    return Action();
+}
+
 QList<Action> Internal::actionsForUri(const QString& uri, const QString& mimeType)
 {
     QList<Action> result;
