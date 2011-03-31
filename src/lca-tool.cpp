@@ -79,7 +79,7 @@ static const char help[] = \
 "  $ lca-tool --tracker --triggerdefault urn:1246934-4213\n"
 "  $ lca-tool --file --print file://$HOME/plaintext\n"
 "  $ lca-tool --scheme --triggerdefault mailto:someone@example.com\n"
-"  $ lca-tool --string print \"myaddress@email.com\""
+"  $ lca-tool --string --print \"myaddress@email.com\""
 "  $ lca-tool --setmimedefault image/jpeg imageviewer\n"
 "  $ lca-tool --highlight < myinput.txt\n"
 "  $ lca-tool --triggerdesktop myapp.desktop param1 param2\n";
