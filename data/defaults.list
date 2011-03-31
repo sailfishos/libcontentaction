@@ -81,7 +81,6 @@ video/x-msvideo=videosuiteinterface.desktop
 video/x-xvid=videosuiteinterface.desktop
 x-maemo-highlight/email-address=mail.desktop
 x-maemo-highlight/feed-url=browser.desktop
-x-maemo-highlight/ftp-url=browser.desktop
 x-maemo-highlight/http-url=browser.desktop
 x-maemo-highlight/mms-url=videosuiteinterface.desktop                           
 x-maemo-highlight/ovi-store-url=ovistoreclient.desktop
