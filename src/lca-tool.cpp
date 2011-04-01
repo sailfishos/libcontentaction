@@ -363,19 +363,18 @@ int main(int argc, char **argv)
         break;
     case FileMode:
     {
-        QStringList files;
-        for (int i = 0; i < argc; i++)
-            files << argv[i];
-
-        if (files.size() == 1)
+        qDebug() << args.size() << "files";
+        if (args.size() == 1)
           {
-            defAction = Action::defaultActionForFile(files[0]);
-            actions = Action::actionsForFile(files[0]);
+            defAction = Action::defaultActionForFile(args[0]);
+            actions = Action::actionsForFile(args[0]);
           }
         else
           {
-            // XXX - need mime type
-            defAction = Action::defaultActionForFile(files, "");
+            QString mimeType;
+            if (args.size() > 0)
+                mimeType = mimeForFile (args[0]);
+            defAction = Action::defaultActionForFile(args, mimeType);
             actions << defAction;
           }
     }
