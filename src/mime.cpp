@@ -63,18 +63,8 @@ static QString generalizeMimeType(const QString &mime)
     return QString(mime.left(n) + "/*");
 }
 
-/// Returns the content type of the given file, or an empty string if it cannot
-/// be retrieved.
-QString Internal::mimeForFile(const QUrl& uri)
+QString mimeForFile_aux(GFile *file)
 {
-    g_type_init();
-    // assume "file" scheme if the uri had nothing
-    QUrl fileUri(uri);
-    if (fileUri.scheme().isEmpty())
-        fileUri.setScheme("file");
-    QByteArray filename = fileUri.toEncoded();
-    GFile *file = g_file_new_for_uri(filename.constData());
-
     GError *error = 0;
     GFileInfo *fileInfo;
     fileInfo = g_file_query_info(file,
@@ -91,6 +81,31 @@ QString Internal::mimeForFile(const QUrl& uri)
     g_object_unref(fileInfo);
     g_object_unref(file);
     return ret;
+}
+
+/// Returns the content type of the given file, or an empty string if it cannot
+/// be retrieved.
+QString Internal::mimeForFile(const QUrl& uri)
+{
+    g_type_init();
+    // assume "file" scheme if the uri had nothing
+    QUrl fileUri(uri);
+    if (fileUri.scheme().isEmpty())
+        fileUri.setScheme("file");
+    QByteArray filename = fileUri.toEncoded();
+    GFile *file = g_file_new_for_uri(filename.constData());
+
+    return mimeForFile_aux(file);
+}
+
+/// Returns the content type of the given file, or an empty string if it cannot
+/// be retrieved.
+QString Internal::mimeForFile(const QString &file)
+{
+    g_type_init();
+    GFile *gfile = g_file_new_for_path(file.toLocal8Bit().constData());
+
+    return mimeForFile_aux(gfile);
 }
 
 static QString xdgDataHome()
@@ -330,6 +345,34 @@ Action Action::defaultActionForFile(const QUrl& fileUri)
     return defaultActionForFile(fileUri, contentType);
 }
 
+/// Returns the default action for a given \a file, based on its content
+/// type.
+Action Action::defaultActionForFile(const QString& file)
+{
+    QString contentType = mimeForFile(file);
+    if (contentType.isEmpty())
+        return Action();
+    return defaultActionForFile(file, contentType);
+}
+
+static Action defaultActionForFile_aux (const QString &localFile, const QByteArray &encodedUri,
+                                        const QString &mimeType)
+{
+    // We treat .desktop files specially: the default action (the only
+    // actually) is to launch the application it describes.
+    if (mimeType == DesktopFileMimeType)
+        return createAction(localFile, QStringList());
+    QString app = findDesktopFile(defaultAppForContentType(mimeType));
+    if (!app.isEmpty()) {
+        return createAction(app, QStringList() << encodedUri);
+    }
+    // Fall back to one of the existing actions (if there are some)
+    QList<Action> acts = actionsForUri(encodedUri, mimeType);
+    if (acts.size() >= 1)
+        return acts[0];
+    return Action();
+}
+
 /// Returns the default actions for a given \a fileUri, assuming its mime type
 /// is \a mimeType. This function can be used even when \a fileUri doesn't
 /// exist yet but will be created before trigger() is called, or if you
@@ -337,31 +380,37 @@ Action Action::defaultActionForFile(const QUrl& fileUri)
 /// exist when this function is called.
 Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType)
 {
-    // We treat .desktop files specially: the default action (the only
-    // actually) is to launch the application it describes.
-    if (mimeType == DesktopFileMimeType)
-        return createAction(fileUri.toLocalFile(), QStringList());
-    QString app = findDesktopFile(defaultAppForContentType(mimeType));
-    if (!app.isEmpty()) {
-        return createAction(app,
-                            QStringList() << fileUri.toEncoded());
-    }
-    // Fall back to one of the existing actions (if there are some)
-    QList<Action> acts = actionsForUri(fileUri.toEncoded(), mimeType);
-    if (acts.size() >= 1)
-        return acts[0];
-    return Action();
+    return defaultActionForFile_aux (fileUri.toLocalFile(), fileUri.toEncoded(), mimeType);
 }
 
-/// Returns the default actions for the given \a fileUris, assuming
-/// all their mime types are \a mimeType. This function can be used
-/// even when \a fileUri doesn't exist yet but will be created before
-/// trigger() is called, or if you already know the mime type.
-Action Action::defaultActionForFile(const QStringList& fileUris, const QString& mimeType)
+/// Returns the default actions for a given \a file, assuming its mime
+/// type is \a mimeType. This function can be used even when \a file
+/// doesn't exist yet but will be created before trigger() is called,
+/// or if you already know the mime type. Note: if the file is a
+/// .desktop file, it must exist when this function is called.
+Action Action::defaultActionForFile(const QString& file, const QString& mimeType)
 {
+    return defaultActionForFile_aux (file, QUrl::fromLocalFile(file).toEncoded(), mimeType);
+}
+
+/// Returns the default actions for the given \a files, assuming
+/// all their mime types are \a mimeType. This function can be used
+/// even when the \a files doesn't exist yet but will be created before
+/// trigger() is called, or if you already know the mime type.
+Action Action::defaultActionForFile(const QStringList& files, const QString& mimeType)
+{
+    // The function for one file handles some special cases that don't
+    // make sense for multiple files.
+    if (files.size() == 1)
+        return defaultActionForFile(files[0], mimeType);
+
     QString app = findDesktopFile(defaultAppForContentType(mimeType));
     if (!app.isEmpty()) {
-        return createAction(app, fileUris);
+        QStringList args;
+        Q_FOREACH (const QString &f, files) {
+            args << QUrl::fromLocalFile(f).toEncoded();
+        }
+        return createAction(app, args);
     }
     return Action();
 }
