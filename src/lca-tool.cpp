@@ -363,24 +363,21 @@ int main(int argc, char **argv)
         break;
     case FileMode:
     {
-        QFileInfo fileInfo(args[0]);
-        QUrl fileUrl;
-        if (fileInfo.exists()) {
-            // the user gave: /home/me/somefile#canhavespecialchars.txt
-            fileUrl = QUrl::fromLocalFile(fileInfo.absoluteFilePath());
-        }
-        else {
-            // the user gave: file:///home/me/mustbe%23escapedproperly.txt
-            // (hopefully)
-            fileUrl = QUrl::fromEncoded(args[0].toLatin1());
-            QFileInfo fileInfo2(fileUrl.toLocalFile());
-            if (!fileInfo2.exists()) {
-                err << "possibly incorrect file uri: " << args[0] << endl;
-                err << "input a file uri (file:///abs/path/...) %-escaped" << endl;
-            }
-        }
-        actions = Action::actionsForFile(fileUrl);
-        defAction = Action::defaultActionForFile(fileUrl);
+        QStringList files;
+        for (int i = 0; i < argc; i++)
+            files << argv[i];
+
+        if (files.size() == 1)
+          {
+            defAction = Action::defaultActionForFile(files[0]);
+            actions = Action::actionsForFile(files[0]);
+          }
+        else
+          {
+            // XXX - need mime type
+            defAction = Action::defaultActionForFile(files, "");
+            actions << defAction;
+          }
     }
     break;
     case SchemeMode:
