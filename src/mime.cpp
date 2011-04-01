@@ -401,30 +401,39 @@ Action Action::defaultActionForFile(const QStringList& files, const QString& mim
     if (files.size() == 1)
         return defaultActionForFile(files[0], mimeType);
 
+    QStringList args;
+    Q_FOREACH (const QString &f, files) {
+        args << QUrl::fromLocalFile(f).toEncoded();
+    }
+
     QString app = findDesktopFile(defaultAppForContentType(mimeType));
     if (!app.isEmpty()) {
-        QStringList args;
-        Q_FOREACH (const QString &f, files) {
-            args << QUrl::fromLocalFile(f).toEncoded();
-        }
         return createAction(app, args);
     }
+    // Fall back to one of the existing actions (if there are some)
+    QList<Action> acts = actionsForUris(args, mimeType);
+    if (acts.size() >= 1)
+        return acts[0];
     return Action();
 }
 
 QList<Action> Internal::actionsForUri(const QString& uri, const QString& mimeType)
 {
+    return actionsForUris(QStringList() << uri, mimeType);
+}
+
+QList<Action> Internal::actionsForUris(const QStringList& uris, const QString& mimeType)
+{
     QList<Action> result;
 
-    if (mimeType == DesktopFileMimeType)
-        return result << createAction(uri, QStringList());
+    if (mimeType == DesktopFileMimeType && uris.size() == 1)
+        return result << createAction(uris[0], QStringList());
 
     QStringList appIds = appsForContentType(mimeType);
     Q_FOREACH (const QString& id, appIds) {
         QString app = findDesktopFile(id);
         if (!app.isEmpty())
-            result << createAction(app,
-                                   QStringList() << uri);
+            result << createAction(app, uris);
     }
     return result;
 }
