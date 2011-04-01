@@ -335,29 +335,12 @@ QStringList Internal::appsForContentType(const QString& contentType)
     return ret;
 }
 
-/// Returns the default action for a given \a fileUri, based on its content
-/// type.
-Action Action::defaultActionForFile(const QUrl& fileUri)
-{
-    QString contentType = mimeForFile(fileUri);
-    if (contentType.isEmpty())
-        return Action();
-    return defaultActionForFile(fileUri, contentType);
-}
-
-/// Returns the default action for a given \a file, based on its content
-/// type.
-Action Action::defaultActionForFile(const QString& file)
-{
-    QString contentType = mimeForFile(file);
-    if (contentType.isEmpty())
-        return Action();
-    return defaultActionForFile(file, contentType);
-}
-
 static Action defaultActionForFile_aux (const QString &localFile, const QByteArray &encodedUri,
                                         const QString &mimeType)
 {
+    if (mimeType.isEmpty())
+        return Action();
+
     // We treat .desktop files specially: the default action (the only
     // actually) is to launch the application it describes.
     if (mimeType == DesktopFileMimeType)
@@ -371,6 +354,20 @@ static Action defaultActionForFile_aux (const QString &localFile, const QByteArr
     if (acts.size() >= 1)
         return acts[0];
     return Action();
+}
+
+/// Returns the default action for a given \a fileUri, based on its content
+/// type.
+Action Action::defaultActionForFile(const QUrl& fileUri)
+{
+  return defaultActionForFile(fileUri, mimeForFile(fileUri));
+}
+
+/// Returns the default action for a given \a file, based on its content
+/// type.
+Action Action::defaultActionForFile(const QString& file)
+{
+    return defaultActionForFile(file, mimeForFile(file));
 }
 
 /// Returns the default actions for a given \a fileUri, assuming its mime type
