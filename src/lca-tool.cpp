@@ -363,7 +363,6 @@ int main(int argc, char **argv)
         break;
     case FileMode:
     {
-        qDebug() << args.size() << "files";
         if (args.size() == 1)
           {
             defAction = Action::defaultActionForFile(args[0]);
