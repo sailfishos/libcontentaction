@@ -363,6 +363,11 @@ int main(int argc, char **argv)
         break;
     case FileMode:
     {
+        for (int i = 0; i < args.size(); i++) {
+            if (args[i].startsWith ("file:")) {
+                args[i] = QUrl::fromEncoded(args[i].toAscii()).toLocalFile();
+            }
+        }
         if (args.size() == 1)
           {
             defAction = Action::defaultActionForFile(args[0]);
