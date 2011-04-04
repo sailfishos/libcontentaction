@@ -363,23 +363,26 @@ int main(int argc, char **argv)
         break;
     case FileMode:
     {
+        QList<QUrl> uris;
         for (int i = 0; i < args.size(); i++) {
             if (args[i].startsWith ("file:")) {
-                args[i] = QUrl::fromEncoded(args[i].toAscii()).toLocalFile();
+                uris << QUrl::fromEncoded(args[i].toAscii());
+            } else {
+                uris << QUrl::fromLocalFile(args[i]);
             }
         }
-        if (args.size() == 1)
+        if (uris.size() == 1)
           {
-            defAction = Action::defaultActionForFilePath(args[0]);
-            actions = Action::actionsForFilePath(args[0]);
+            defAction = Action::defaultActionForFile(uris[0]);
+            actions = Action::actionsForFile(uris[0]);
           }
         else
           {
             QString mimeType;
-            if (args.size() > 0)
-                mimeType = mimeForFile (args[0]);
-            defAction = Action::defaultActionForFilePaths(args, mimeType);
-            actions = Action::actionsForFilePaths(args, mimeType);
+            if (uris.size() > 0)
+                mimeType = mimeForFile (uris[0]);
+            defAction = Action::defaultActionForFile(uris, mimeType);
+            actions = Action::actionsForFile(uris, mimeType);
           }
     }
     break;
