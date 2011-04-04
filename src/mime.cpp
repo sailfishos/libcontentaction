@@ -365,7 +365,7 @@ Action Action::defaultActionForFile(const QUrl& fileUri)
 
 /// Returns the default action for a given \a file, based on its content
 /// type.
-Action Action::defaultActionForFile(const QString& file)
+Action Action::defaultActionForFilePath(const QString& file)
 {
     return defaultActionForFile(file, mimeForFile(file));
 }
@@ -385,7 +385,7 @@ Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType
 /// doesn't exist yet but will be created before trigger() is called,
 /// or if you already know the mime type. Note: if the file is a
 /// .desktop file, it must exist when this function is called.
-Action Action::defaultActionForFile(const QString& file, const QString& mimeType)
+Action Action::defaultActionForFilePath(const QString& file, const QString& mimeType)
 {
     return defaultActionForFile_aux (file, QUrl::fromLocalFile(file).toEncoded(), mimeType);
 }
@@ -394,12 +394,12 @@ Action Action::defaultActionForFile(const QString& file, const QString& mimeType
 /// all their mime types are \a mimeType. This function can be used
 /// even when the \a files doesn't exist yet but will be created before
 /// trigger() is called, or if you already know the mime type.
-Action Action::defaultActionForFile(const QStringList& files, const QString& mimeType)
+Action Action::defaultActionForFilePaths(const QStringList& files, const QString& mimeType)
 {
     // The function for one file handles some special cases that don't
     // make sense for multiple files.
     if (files.size() == 1)
-        return defaultActionForFile(files[0], mimeType);
+        return defaultActionForFilePath(files[0], mimeType);
 
     QStringList args;
     Q_FOREACH (const QString &f, files) {
@@ -461,10 +461,10 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeTyp
 
 /// Returns the set of applicable actions for a given \a file, based on its
 /// content type.
-QList<Action> Action::actionsForFile(const QString& file)
+QList<Action> Action::actionsForFilePath(const QString& file)
 {
     QString contentType = mimeForFile(file);
-    return actionsForFile(file, contentType);
+    return actionsForFilePath(file, contentType);
 }
 
 /// Returns the set of applicable actions for a given \a file,
@@ -473,12 +473,24 @@ QList<Action> Action::actionsForFile(const QString& file)
 /// trigger() is called, or if you already know the mime type.  Note:
 /// if the file is a .desktop file, it must exist when this function
 /// is called.
-QList<Action> Action::actionsForFile(const QString& file, const QString& mimeType)
+QList<Action> Action::actionsForFilePath(const QString& file, const QString& mimeType)
 {
     if (mimeType == DesktopFileMimeType)
         return actionsForUri(file, mimeType);
 
     return actionsForUri(QUrl::fromLocalFile(file).toEncoded(), mimeType);
+}
+
+QList<Action> Action::actionsForFilePaths(const QStringList& files, const QString& mimeType)
+{
+    if (mimeType == DesktopFileMimeType && files.size() == 1)
+        return actionsForUri(files[0], mimeType);
+
+    QStringList args;
+    Q_FOREACH (const QString &f, files) {
+        args << QUrl::fromLocalFile(f).toEncoded();
+    }
+    return actionsForUris(args, mimeType);
 }
 
 /// Returns the pseudo-mimetype of the scheme of \a uri.

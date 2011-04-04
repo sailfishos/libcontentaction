@@ -370,16 +370,16 @@ int main(int argc, char **argv)
         }
         if (args.size() == 1)
           {
-            defAction = Action::defaultActionForFile(args[0]);
-            actions = Action::actionsForFile(args[0]);
+            defAction = Action::defaultActionForFilePath(args[0]);
+            actions = Action::actionsForFilePath(args[0]);
           }
         else
           {
             QString mimeType;
             if (args.size() > 0)
                 mimeType = mimeForFile (args[0]);
-            defAction = Action::defaultActionForFile(args, mimeType);
-            actions << defAction;
+            defAction = Action::defaultActionForFilePaths(args, mimeType);
+            actions = Action::actionsForFilePaths(args, mimeType);
           }
     }
     break;
