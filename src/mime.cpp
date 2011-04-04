@@ -459,6 +459,28 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeTyp
     return actionsForUri(fileUri.toEncoded(), mimeType);
 }
 
+/// Returns the set of applicable actions for a given \a file, based on its
+/// content type.
+QList<Action> Action::actionsForFile(const QString& file)
+{
+    QString contentType = mimeForFile(file);
+    return actionsForFile(file, contentType);
+}
+
+/// Returns the set of applicable actions for a given \a file,
+/// assuming its content type is \a mimeType.  This function can be
+/// used even when \a file doesn't exist but will be created before
+/// trigger() is called, or if you already know the mime type.  Note:
+/// if the file is a .desktop file, it must exist when this function
+/// is called.
+QList<Action> Action::actionsForFile(const QString& file, const QString& mimeType)
+{
+    if (mimeType == DesktopFileMimeType)
+        return actionsForUri(file, mimeType);
+
+    return actionsForUri(QUrl::fromLocalFile(file).toEncoded(), mimeType);
+}
+
 /// Returns the pseudo-mimetype of the scheme of \a uri.
 QString Internal::mimeForScheme(const QString& uri)
 {

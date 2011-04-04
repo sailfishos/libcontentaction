@@ -67,6 +67,8 @@ public:
     static QList<Action> actions(const QStringList& uris);
     static QList<Action> actionsForFile(const QUrl& fileUri);
     static QList<Action> actionsForFile(const QUrl& fileUri, const QString& mimeType);
+    static QList<Action> actionsForFile(const QString& file);
+    static QList<Action> actionsForFile(const QString& file, const QString& mimeType);
     static QList<Action> actionsForScheme(const QString& uri);
     static QList<Action> actionsForString(const QString& param);
 
