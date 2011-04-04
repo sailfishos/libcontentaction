@@ -326,7 +326,7 @@ Action Action::defaultActionForFile(const QUrl& fileUri)
   return defaultActionForFile(fileUri, mimeForFile(fileUri));
 }
 
-/// Returns the default actions for a given \a fileUri, assuming its mime type
+/// Returns the default action for a given \a fileUri, assuming its mime type
 /// is \a mimeType. This function can be used even when \a fileUri doesn't
 /// exist yet but will be created before trigger() is called, or if you
 /// already know the mime type. Note: if the file is a .desktop file, it must
@@ -351,7 +351,7 @@ Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType
     return Action();
 }
 
-/// Returns the default actions for the given \a files, assuming
+/// Returns the default action for the given \a files, assuming
 /// all their mime types are \a mimeType. This function can be used
 /// even when the \a files doesn't exist yet but will be created before
 /// trigger() is called, or if you already know the mime type.
@@ -420,6 +420,9 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeTyp
     return actionsForUri(fileUri.toEncoded(), mimeType);
 }
 
+/// Returns the set of applicable actions for a given \a mimeType,
+/// using the givben \a uris as the parameters when the actions are
+/// triggered.
 QList<Action> Action::actionsForFile(const QList<QUrl>& uris, const QString& mimeType)
 {
     if (mimeType == DesktopFileMimeType && uris.size() == 1)
