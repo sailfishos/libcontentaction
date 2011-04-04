@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=unterexec
+GenericName=Unter Program
+Icon=execicon
+Comment=View AYNTHING
+Exec=sh -c "for p in %U; do echo $p; done >./executedParams"
+Terminal=false
+Type=Application
+MimeType=text/plain;
+NotShowIn=X-MeeGo;
