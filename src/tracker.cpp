@@ -73,7 +73,7 @@ static QDBusInterface *tracker()
 // query didn't fail, urlsAndMimes is set to the list of ["url1", "mime1",
 // "url2", "mime2", ...].  Finally it checks that all urls and mimes are
 // nonempty and returns true if this holds.
-static bool mimeAndUriFromTracker(const QStringList& uris, QStringList &urlsAndMimes)
+bool Internal::mimeAndUriFromTracker(const QStringList& uris, QStringList &urlsAndMimes)
 {
     QString query("SELECT ");
     Q_FOREACH (const QString& uri, uris)
