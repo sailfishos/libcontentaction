@@ -50,7 +50,8 @@ citest_DATA = \
 	launchme.desktop
 
 check_PROGRAMS = \
-	linktest
+	linktest \
+	test-info
 
 noinst_PROGRAMS = hldemo
 hldemo_SOURCES = hldemo.cpp
