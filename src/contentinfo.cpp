@@ -22,11 +22,13 @@
 #include "contentinfo.h"
 #include "internal.h"
 
+#include <gio/gio.h>
+
 /*!
   \class ContentInfo
 
-  \brief ContentInfo provides information about a content object, such
-  as an icon and a description.
+  \brief ContentInfo provides information about a content object,
+  including its mime type, and a generic description and icon.
 */
 
 struct ContentInfo::Private {
@@ -62,41 +64,76 @@ ContentInfo::~ContentInfo ()
 {
 }
 
+/// Determines whether this ContentInfo is valid or not.  Invalid
+/// ContentInfo objects are returned when no information about a
+/// object could be found.
+///
+/// Invalid ContentInfo instances can still be accessed, but they will
+/// return empty strings for mimeType, typeDescription, and typeIcon.
 bool
 ContentInfo::isValid () const
 {
   return priv->isValid;
 }
 
+/// Returns the mime type of this content object
 QString
 ContentInfo::mimeType () const
 {
   return priv->mimeType;
 }
 
+/// Returns a one-line, localized description of the type of the
+/// content object.
 QString
 ContentInfo::description () const
 {
   return priv->description;
 }
 
+/// Returns the name of an icon to represent the type of this content
+/// object.
 QString
 ContentInfo::icon () const
 {
   return priv->icon;
 }
 
+/// Returns information for the given mime type \a mimeType.
 ContentInfo
 ContentInfo::forMime (const QString &mimeType)
 {
+  g_type_init ();
+
+  char *contentType = g_content_type_from_mime_type (mimeType.toUtf8());
+
   Private *priv = new Private;
   priv->isValid = true;
   priv->mimeType = mimeType;
-  priv->description = "A " + mimeType + " file";
-  priv->icon = "icon-m-content-file-unknown";
+  if (contentType)
+    {
+      priv->icon = g_icon_to_string (g_content_type_get_icon (contentType));
+      priv->description = g_content_type_get_description (contentType);
+      free (contentType);
+    }
   return ContentInfo(priv);
 }
 
+/// Returns information for the file identified by \a url.  The file
+/// does not need to exist.  If it does, its content will be used to
+/// guess its type; otherwise only the filename will be used.
+ContentInfo
+ContentInfo::forFile (const QUrl &url)
+{
+  QString mime = ContentAction::Internal::mimeForFile (url);
+  if (!mime.isEmpty())
+    return forMime (mime);
+  else
+    return ContentInfo();
+}
+
+/// Returns information for the Tracker object identified by \a
+/// tracker_uri.
 ContentInfo
 ContentInfo::forTracker (const QString &tracker_uri)
 {
@@ -104,5 +141,24 @@ ContentInfo::forTracker (const QString &tracker_uri)
   if (ContentAction::Internal::mimeAndUriFromTracker(QStringList() << tracker_uri, urlAndMime))
     return forMime (urlAndMime[1]);
   else
-    return ContentInfo ();
+    return ContentInfo();
+}
+
+/// Returns information for the given \a bytes.  The \a bytes are
+/// assumed to be the first few bytes of a content object, and its
+/// type is guessed from them.
+ContentInfo
+ContentInfo::forBytes (const QByteArray &bytes)
+{
+   g_type_init ();
+  
+   char *content_type = g_content_type_guess (NULL, (const guchar *)bytes.constData(), bytes.size(), NULL);
+   if (content_type)
+     {
+       ContentInfo info = forMime (g_content_type_get_mime_type (content_type));
+       free (content_type);
+       return info;
+     }
+   else
+     return ContentInfo();
 }

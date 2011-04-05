@@ -52,7 +52,6 @@ public:
     static ContentInfo forMime (const QString &mimeType);
     static ContentInfo forTracker (const QString &trackerUri);
     static ContentInfo forFile (const QUrl &file);
-    static ContentInfo forBytes (const QIODevice &io);
     static ContentInfo forBytes (const QByteArray &arr);
     
 private:
