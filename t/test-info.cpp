@@ -27,19 +27,48 @@ expect (int b, const char *expr, const char *file, int line,
 }
 
 void
-test_tracker_info ()
+test_mime_info ()
 {
-  ContentInfo info = ContentInfo::forTracker ("b.image");
+  ContentInfo info = ContentInfo::forMime ("text/plain");
 
   EXPECT (info.isValid());
-  EXPECT (info.mimeType() == "image/png");
-  EXPECT (info.description() == "Document");
-  EXPECT (info.icon() == "icon-content-m-document");
+  EXPECT (info.mimeType() == "text/plain");
+  EXPECT (info.description() == "A text/plain file");
+  EXPECT (info.icon() == "icon-m-content-file-unknown");
+}
+
+void
+test_tracker_info ()
+{
+  {
+    ContentInfo info = ContentInfo::forTracker ("b.image");
+    
+    EXPECT (info.isValid());
+    EXPECT (info.mimeType() == "image/png");
+    EXPECT (info.description() == "A image/png file");
+    EXPECT (info.icon() == "icon-m-content-file-unknown");
+  }
+
+  {
+    ContentInfo info = ContentInfo::forTracker ("a.music");
+    
+    EXPECT (info.isValid());
+    EXPECT (info.mimeType() == "audio/mpeg");
+    EXPECT (info.description() == "A audio/mpeg file");
+    EXPECT (info.icon() == "icon-m-content-file-unknown");
+  }
+
+  {
+    ContentInfo info = ContentInfo::forTracker ("urn:test:calendarevent");
+    
+    EXPECT (!info.isValid());
+  }
 }
 
 int
 main (int argc, char **argv)
 {
+  test_mime_info ();
   test_tracker_info ();
 
   exit (0);

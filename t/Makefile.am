@@ -99,6 +99,7 @@ EXTRA_DIST = \
 TESTS = \
 	start-sandbox.sh \
 	linktest \
+	test-info \
 	test-actions.sh \
 	test-mimetypes.sh \
 	test-invoking.py \

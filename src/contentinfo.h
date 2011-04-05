@@ -49,9 +49,9 @@ public:
     ContentInfo(const ContentInfo& other);
     ContentInfo& operator=(const ContentInfo& other);
 
-    static ContentInfo forTracker (const QString &tracker_uri);
+    static ContentInfo forMime (const QString &mimeType);
+    static ContentInfo forTracker (const QString &trackerUri);
     static ContentInfo forFile (const QUrl &file);
-    static ContentInfo forFile (const QUrl &file, const QString &mimeType);
     static ContentInfo forBytes (const QIODevice &io);
     static ContentInfo forBytes (const QByteArray &arr);
     

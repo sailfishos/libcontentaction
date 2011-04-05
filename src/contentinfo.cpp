@@ -86,19 +86,23 @@ ContentInfo::icon () const
   return priv->icon;
 }
 
-ContentInfo ContentInfo::forTracker (const QString &tracker_uri)
+ContentInfo
+ContentInfo::forMime (const QString &mimeType)
 {
   Private *priv = new Private;
-  priv->isValid = false;
+  priv->isValid = true;
+  priv->mimeType = mimeType;
+  priv->description = "A " + mimeType + " file";
+  priv->icon = "icon-m-content-file-unknown";
+  return ContentInfo(priv);
+}
 
+ContentInfo
+ContentInfo::forTracker (const QString &tracker_uri)
+{
   QStringList urlAndMime;
-  if (ContentAction::Internal::mimeAndUriFromTracker(QStringList() << tracker_uri, urlAndMime)) 
-    {
-      priv->isValid = true;
-      priv->mimeType = urlAndMime[1];
-      priv->icon = "icon-content-m-document";
-      priv->description = "Document";
-    }
-
-  return ContentInfo (priv);
+  if (ContentAction::Internal::mimeAndUriFromTracker(QStringList() << tracker_uri, urlAndMime))
+    return forMime (urlAndMime[1]);
+  else
+    return ContentInfo ();
 }
