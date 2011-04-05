@@ -20,6 +20,7 @@
  */
 
 #include "contentinfo.h"
+#include "internal.h"
 
 /*!
   \class ContentInfo
@@ -79,13 +80,25 @@ ContentInfo::description () const
   return priv->description;
 }
 
+QString
+ContentInfo::icon () const
+{
+  return priv->icon;
+}
+
 ContentInfo ContentInfo::forTracker (const QString &tracker_uri)
 {
   Private *priv = new Private;
-  priv->isValid = true;
-  priv->mimeType = "foo/bar";
-  priv->icon = "icon-content-m-document";
-  priv->description = "Document";
+  priv->isValid = false;
+
+  QStringList urlAndMime;
+  if (ContentAction::Internal::mimeAndUriFromTracker(QStringList() << tracker_uri, urlAndMime)) 
+    {
+      priv->isValid = true;
+      priv->mimeType = urlAndMime[1];
+      priv->icon = "icon-content-m-document";
+      priv->description = "Document";
+    }
 
   return ContentInfo (priv);
 }
