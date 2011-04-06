@@ -86,7 +86,7 @@ ContentInfo::mimeType () const
 /// Returns a one-line, localized description of the type of the
 /// content object.
 QString
-ContentInfo::description () const
+ContentInfo::typeDescription () const
 {
   return priv->description;
 }
@@ -94,7 +94,7 @@ ContentInfo::description () const
 /// Returns the name of an icon to represent the type of this content
 /// object.
 QString
-ContentInfo::icon () const
+ContentInfo::typeIcon () const
 {
   return priv->icon;
 }

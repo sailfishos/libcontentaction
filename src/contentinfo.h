@@ -41,8 +41,8 @@ class LCA_EXPORT ContentInfo
 public:
     bool isValid() const;
     QString mimeType() const;
-    QString description() const;
-    QString icon() const;
+    QString typeDescription() const;
+    QString typeIcon() const;
 
     ContentInfo();
     ~ContentInfo();

@@ -33,8 +33,8 @@ dump_info (ContentInfo &info)
   if (info.isValid())
     {
       qDebug() << "mime:" << info.mimeType();
-      qDebug() << "desc:" << info.description();
-      qDebug() << "icon:" << info.icon();
+      qDebug() << "desc:" << info.typeDescription();
+      qDebug() << "icon:" << info.typeIcon();
     }
   else
     qDebug() << "invalid";
@@ -47,8 +47,8 @@ test_mime_info ()
 
   EXPECT (info.isValid());
   EXPECT (info.mimeType() == "text/plain");
-  EXPECT (info.description() == "plain text document");
-  // EXPECT (info.icon() == "icon-m-content-file-unknown");
+  EXPECT (info.typeDescription() == "plain text document");
+  // EXPECT (info.typeIcon() == "icon-m-content-file-unknown");
 }
 
 void
@@ -58,8 +58,8 @@ test_file_info ()
 
   EXPECT (info.isValid());
   EXPECT (info.mimeType() == "image/png");
-  EXPECT (info.description() == "PNG image");
-  // EXPECT (info.icon() == "icon-m-content-file-unknown");
+  EXPECT (info.typeDescription() == "PNG image");
+  // EXPECT (info.typeIcon() == "icon-m-content-file-unknown");
 }
 
 void
@@ -70,8 +70,8 @@ test_tracker_info ()
     
     EXPECT (info.isValid());
     EXPECT (info.mimeType() == "image/png");
-    EXPECT (info.description() == "PNG image");
-    // EXPECT (info.icon() == "icon-m-content-file-unknown");
+    EXPECT (info.typeDescription() == "PNG image");
+    // EXPECT (info.typeIcon() == "icon-m-content-file-unknown");
   }
 
   {
@@ -79,8 +79,8 @@ test_tracker_info ()
     
     EXPECT (info.isValid());
     EXPECT (info.mimeType() == "audio/mpeg");
-    EXPECT (info.description() == "MP3 audio");
-    // EXPECT (info.icon() == "icon-m-content-file-unknown");
+    EXPECT (info.typeDescription() == "MP3 audio");
+    // EXPECT (info.typeIcon() == "icon-m-content-file-unknown");
   }
 
   {
@@ -101,22 +101,8 @@ test_bytes_info ()
 
   EXPECT (info.isValid());
   EXPECT (info.mimeType() == "image/png");
-  EXPECT (info.description() == "PNG image");
-  // EXPECT (info.icon() == "icon-m-content-file-unknown");
-}
-
-void
-test_iodevice_info ()
-{
-  QFile file("./test-image.png");
-  file.open (QIODevice::ReadOnly);
-
-  ContentInfo info = ContentInfo::forIODevice (file);
-
-  EXPECT (info.isValid());
-  EXPECT (info.mimeType() == "image/png");
-  EXPECT (info.description() == "PNG image");
-  // EXPECT (info.icon() == "icon-m-content-file-unknown");
+  EXPECT (info.typeDescription() == "PNG image");
+  // EXPECT (info.typeIcon() == "icon-m-content-file-unknown");
 }
 
 int
@@ -126,7 +112,6 @@ main (int argc, char **argv)
   test_file_info ();
   test_tracker_info ();
   test_bytes_info ();
-  test_iodevice_info ();
 
   exit (0);
 }
