@@ -1,8 +1,9 @@
-libcontentaction (0.1.44~unreleased) unstable; urgency=low
+libcontentaction (0.1.44) unstable; urgency=low
 
-  *
+  * Added support for QLists of QUrls.
+    Fixes: NB#242925.
 
- -- Marja Hassinen <marja.hassinen@nokia.com>  Fri, 18 Feb 2011 13:18:30 +0200
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Wed, 06 Apr 2011 11:27:10 +0300
 
 libcontentaction (0.1.43) unstable; urgency=low
 
