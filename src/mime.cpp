@@ -74,7 +74,6 @@ QString Internal::mimeForFile(const QUrl& uri)
         fileUri.setScheme("file");
     QByteArray filename = fileUri.toEncoded();
     GFile *file = g_file_new_for_uri(filename.constData());
-
     GError *error = 0;
     GFileInfo *fileInfo;
     fileInfo = g_file_query_info(file,
@@ -324,27 +323,26 @@ QStringList Internal::appsForContentType(const QString& contentType)
 /// type.
 Action Action::defaultActionForFile(const QUrl& fileUri)
 {
-    QString contentType = mimeForFile(fileUri);
-    if (contentType.isEmpty())
-        return Action();
-    return defaultActionForFile(fileUri, contentType);
+  return defaultActionForFile(fileUri, mimeForFile(fileUri));
 }
 
-/// Returns the default actions for a given \a fileUri, assuming its mime type
+/// Returns the default action for a given \a fileUri, assuming its mime type
 /// is \a mimeType. This function can be used even when \a fileUri doesn't
 /// exist yet but will be created before trigger() is called, or if you
 /// already know the mime type. Note: if the file is a .desktop file, it must
 /// exist when this function is called.
 Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType)
 {
+    if (mimeType.isEmpty())
+        return Action();
+
     // We treat .desktop files specially: the default action (the only
     // actually) is to launch the application it describes.
     if (mimeType == DesktopFileMimeType)
         return createAction(fileUri.toLocalFile(), QStringList());
     QString app = findDesktopFile(defaultAppForContentType(mimeType));
     if (!app.isEmpty()) {
-        return createAction(app,
-                            QStringList() << fileUri.toEncoded());
+        return createAction(app, QStringList() << fileUri.toEncoded());
     }
     // Fall back to one of the existing actions (if there are some)
     QList<Action> acts = actionsForUri(fileUri.toEncoded(), mimeType);
@@ -353,19 +351,50 @@ Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType
     return Action();
 }
 
+/// Returns the default action for the given \a files, assuming
+/// all their mime types are \a mimeType. This function can be used
+/// even when the \a files doesn't exist yet but will be created before
+/// trigger() is called, or if you already know the mime type.
+Action Action::defaultActionForFile(const QList<QUrl>& uris, const QString& mimeType)
+{
+    // The function for one URI handles some special cases that don't
+    // make sense for multiple files.
+    if (uris.size() == 1)
+        return defaultActionForFile(uris[0], mimeType);
+
+    QStringList args;
+    Q_FOREACH (const QUrl &u, uris) {
+        args << u.toEncoded();
+    }
+
+    QString app = findDesktopFile(defaultAppForContentType(mimeType));
+    if (!app.isEmpty()) {
+        return createAction(app, args);
+    }
+    // Fall back to one of the existing actions (if there are some)
+    QList<Action> acts = actionsForUris(args, mimeType);
+    if (acts.size() >= 1)
+        return acts[0];
+    return Action();
+}
+
 QList<Action> Internal::actionsForUri(const QString& uri, const QString& mimeType)
+{
+    return actionsForUris(QStringList() << uri, mimeType);
+}
+
+QList<Action> Internal::actionsForUris(const QStringList& uris, const QString& mimeType)
 {
     QList<Action> result;
 
-    if (mimeType == DesktopFileMimeType)
-        return result << createAction(uri, QStringList());
+    if (mimeType == DesktopFileMimeType && uris.size() == 1)
+        return result << createAction(uris[0], QStringList());
 
     QStringList appIds = appsForContentType(mimeType);
     Q_FOREACH (const QString& id, appIds) {
         QString app = findDesktopFile(id);
         if (!app.isEmpty())
-            result << createAction(app,
-                                   QStringList() << uri);
+            result << createAction(app, uris);
     }
     return result;
 }
@@ -389,6 +418,21 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeTyp
         return actionsForUri(fileUri.toLocalFile(), mimeType);
 
     return actionsForUri(fileUri.toEncoded(), mimeType);
+}
+
+/// Returns the set of applicable actions for a given \a mimeType,
+/// using the givben \a uris as the parameters when the actions are
+/// triggered.
+QList<Action> Action::actionsForFile(const QList<QUrl>& uris, const QString& mimeType)
+{
+    if (mimeType == DesktopFileMimeType && uris.size() == 1)
+        return actionsForUri(uris[0].toEncoded(), mimeType);
+
+    QStringList args;
+    Q_FOREACH (const QUrl &u, uris) {
+        args << u.toEncoded();
+    }
+    return actionsForUris(args, mimeType);
 }
 
 /// Returns the pseudo-mimetype of the scheme of \a uri.

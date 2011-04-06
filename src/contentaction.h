@@ -57,6 +57,7 @@ public:
     static Action defaultAction(const QStringList& uris);
     static Action defaultActionForFile(const QUrl& fileUri);
     static Action defaultActionForFile(const QUrl& fileUri, const QString& mimeType);
+    static Action defaultActionForFile(const QList<QUrl>& fileUris, const QString& mimeType);
     static Action defaultActionForScheme(const QString& uri);
     static Action defaultActionForString(const QString& param);
 
@@ -64,6 +65,7 @@ public:
     static QList<Action> actions(const QStringList& uris);
     static QList<Action> actionsForFile(const QUrl& fileUri);
     static QList<Action> actionsForFile(const QUrl& fileUri, const QString& mimeType);
+    static QList<Action> actionsForFile(const QList<QUrl>& fileUri, const QString& mimeType);
     static QList<Action> actionsForScheme(const QString& uri);
     static QList<Action> actionsForString(const QString& param);
 

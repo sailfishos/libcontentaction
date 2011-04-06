@@ -93,6 +93,7 @@ extern const QString XMaemoFixedArgsKey;
 extern const QString ExecKey;
 
 QList<Action> actionsForUri(const QString& uri, const QString& mimeType);
+QList<Action> actionsForUris(const QStringList& uri, const QString& mimeType);
 LCA_EXPORT QStringList appsForContentType(const QString& contentType);
 LCA_EXPORT QString defaultAppForContentType(const QString& contentType);
 QString findDesktopFile(const QString& id);

@@ -76,6 +76,16 @@ class Mimes(unittest.TestCase):
         os.remove("./executedAction")
         self.assert_(content.find("This is plain text") != -1)
 
+    def testInvokeExecMulti(self):
+        filename = testfiles_dir + "/plaintext"
+        (status, output) = getstatusoutput("lca-tool --file --trigger unterexec " + filename + " " + filename + "2")
+        self.assert_(status == 0)
+        f = open("./executedParams")
+        content = f.read()
+        f.close()
+        os.remove("./executedParams")
+        self.assert_(content == filename + "\n" + filename + "2\n");
+
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Mimes)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
