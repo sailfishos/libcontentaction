@@ -112,7 +112,12 @@ ContentInfo::forMime (const QString &mimeType)
   priv->mimeType = mimeType;
   if (contentType)
     {
-      priv->icon = g_icon_to_string (g_content_type_get_icon (contentType));
+      GIcon *icon = g_content_type_get_icon (contentType);
+      if (G_IS_THEMED_ICON(icon))
+        {
+          const gchar *const *names = g_themed_icon_get_names (G_THEMED_ICON(icon));
+          priv->icon = names[0];
+        }
       priv->description = g_content_type_get_description (contentType);
       free (contentType);
     }
