@@ -4,97 +4,77 @@
     <set name="libcontentaction" description="Tests for libcontentaction">
       <pre_steps>
 	<step expected_result="0">
-          . /tmp/session_bus_address.user; \
 	  echo "[General]" > /home/user/.config/tracker/tracker-store.cfg; \
 	  echo "Verbosity=3" >> /home/user/.config/tracker/tracker-store.cfg; \
 	  echo "LowMemoryMode=false" >> /home/user/.config/tracker/tracker-store.cfg; \
-          cd /usr/share/libcontentaction-tests; \
-          ./sandbox.sh --start
+          lca-cita-test sandbox.sh --start
         </step>
       </pre_steps>
 
-      <case name="test-actions" description="A test of questionable value.">
-        <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-actions.sh
+      <case name="lca-cita-test-fail">
+        <step expected_result="1">
+          lca-cita-test false
         </step>
       </case>
-      <case name="test-mimetypes" description="A test of questionable value.">
+
+      <case name="test-actions">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-mimetypes.sh
+          lca-cita-test test-actions.sh
         </step>
       </case>
-      <case name="test-invoking" description="A test of questionable value.">
+      <case name="test-mimetypes">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-invoking.py
+          lca-cita-test test-mimetypes.sh
         </step>
       </case>
-      <case name="test-defaults" description="A test of questionable value.">
+      <case name="test-invoking">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-defaults.py
+          lca-cita-test test-invoking.py
         </step>
       </case>
-      <case name="test-servicefw-signals" description="A test of questionable value.">
+      <case name="test-defaults">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-servicefw-signals.py
+          lca-cita-test test-defaults.py
         </step>
       </case>
-      <case name="test-mimes" description="A test of questionable value.">
+      <case name="test-servicefw-signals">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-mimes.py
+          lca-cita-test test-servicefw-signals.py
         </step>
       </case>
-      <case name="test-desktop-launching" description="A test of questionable value.">
+      <case name="test-mimes">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-desktop-launching.py
+          lca-cita-test test-mimes.py
         </step>
       </case>
-      <case name="test-l10n" description="A test of questionable value.">
+      <case name="test-desktop-launching">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-l10n.sh
+          lca-cita-test test-desktop-launching.py
         </step>
       </case>
-      <case name="test-fixedparams" description="A test of questionable value.">
+      <case name="test-l10n">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-fixed-params.py
+          lca-cita-test test-l10n.sh
         </step>
       </case>
-      <case name="test-schemes" description="A test of questionable value.">
+      <case name="test-fixedparams">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-schemes.sh
+          lca-cita-test test-fixed-params.py
         </step>
       </case>
-      <case name="test-special-chars" description="A test of questionable value.">
+      <case name="test-schemes">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests ./test-special-chars.py
+          lca-cita-test test-schemes.sh
         </step>
       </case>
-      <case name="test-regexps" description="A test of questionable value.">
+      <case name="test-special-chars">
         <step expected_result="0">
-          . /tmp/session_bus_address.user; \
-          cd /usr/share/libcontentaction-tests; \
-          PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests CONTENTACTION_ACTIONS=/usr/share/libcontentaction-tests/data ./test-regexps.py
+          lca-cita-test test-special-chars.py
+        </step>
+      </case>
+      <case name="test-regexps">
+        <step expected_result="0">
+          lca-cita-test test-regexps.py
         </step>
       </case>
 
@@ -110,8 +90,7 @@
 
       <post_steps>
         <step expected_result="0">
-          cd /usr/share/libcontentaction-tests; \
-          ./sandbox.sh --stop;
+          lca-cita-test ./sandbox.sh --stop
         </step>
       </post_steps>
     </set>

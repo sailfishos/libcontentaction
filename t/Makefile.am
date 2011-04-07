@@ -36,6 +36,9 @@ citest_SCRIPTS = \
 	test-invalid-defaults.py \
 	test-regexps.py
 
+bin_SCRIPTS = \
+	lca-cita-test
+
 noinst_SCRIPTS = \
 	start-sandbox.sh \
 	stop-sandbox.sh \
@@ -91,7 +94,8 @@ EXTRA_DIST = \
 	hlinput.txt \
 	plaintext \
 	empty.pdf \
-	launchme.desktop
+	launchme.desktop \
+	lca-cita-test
 
 # NOTE: we depend on automake executing $(TESTS) in order.  Should this
 # change, we fail.
