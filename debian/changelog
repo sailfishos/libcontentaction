@@ -1,8 +1,9 @@
-libcontentaction (0.1.46~unreleased) unstable; urgency=low
+libcontentaction (0.1.46) unstable; urgency=low
 
-  * 
-
- --
+  * Added special casing for mfo:Enclosure objects in Tracker.
+    Fixes: NB#244234.
+  
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Fri, 08 Apr 2011 15:50:47 +0300
 
 libcontentaction (0.1.45) unstable; urgency=low
 
