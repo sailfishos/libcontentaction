@@ -116,7 +116,6 @@ static bool hactionFileFromTracker(const QString& uri, QString &path, QString &m
     QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query);
     if (!reply.isValid())
         return false;
-    qDebug() << "result" << reply.value();
     path = reply.value()[0][0];
     mimeType = reply.value()[0][1];
     if (path.isEmpty())
