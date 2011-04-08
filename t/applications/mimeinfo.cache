@@ -1,8 +1,8 @@
 [MIME Cache]
 x-maemo-nepomuk/person-contact=contacthandler.desktop
 text/*=fixedparams.desktop
-image/png=gallerywithfilename.desktop;uriprinter.desktop;
-image/*=plainimageviewer.desktop
+image/png=uriprinter.desktop;
+image/*=gallerywithfilename.desktop;plainimageviewer.desktop
 x-maemo-nepomuk/image=galleryserviceinterface.desktop;trackerimageviewer.desktop;other.desktop;upload.desktop;show.desktop;
 text/plain=uberexec.desktop;ubermeego.desktop;ubermimeopen.desktop;unterexec.desktop;
 audio/mpeg=complexmusic.desktop
