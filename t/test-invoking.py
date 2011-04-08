@@ -64,7 +64,7 @@ class Actions(unittest.TestCase):
         # triggering it should go indirectly via <an.image>.
         (status, output) = getstatusoutput("lca-tool --tracker --trigger gallerywithfilename urn:test:encl1")
         self.assert_(status == 0)
-        self.assert_(self.gallery.expect("showImage ; file:///tmp.aaa.jpg"))
+        self.assert_(self.gallery.expect("showImage ; /tmp/aaa.jpg"))
 
     def testEnclosureDefaults(self):
         # We have "<urn:test:encl1> mfo:localLink <an.image>", and
