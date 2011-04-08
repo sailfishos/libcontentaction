@@ -119,4 +119,5 @@
 <urn:test:calendarevent> a ncal:Event .
 
 <urn:test:encl1> a mfo:Enclosure ;
-        mfo:localLink <an.image> .
+        nie:mimeType "image/jpeg";
+        mfo:localLink "/tmp/tmp/aaa.jpg" .
