@@ -1,8 +1,14 @@
-libcontentaction (0.1.47~unreleased) unstable; urgency=low
+libcontentaction (0.1.47) unstable; urgency=low
 
-  * 
+  [ Marja Hölttä ]
+  * Matching with case-insensitive QRegExps seems to be very slow. Using case sensitive
+    QRegeExps, adapted the actual regexps for the change.
 
- --
+  [ Marius Vollmer ]
+  * Treat mfo:localLink as a pathname string, not as a nie:FileDataObject.
+    The onotology will be changed to reflect this.
+  
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Fri, 08 Apr 2011 17:17:40 +0300
 
 libcontentaction (0.1.46) unstable; urgency=low
 
