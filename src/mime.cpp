@@ -421,7 +421,7 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeTyp
 }
 
 /// Returns the set of applicable actions for a given \a mimeType,
-/// using the givben \a uris as the parameters when the actions are
+/// using the given \a uris as the parameters when the actions are
 /// triggered.
 QList<Action> Action::actionsForFile(const QList<QUrl>& uris, const QString& mimeType)
 {
