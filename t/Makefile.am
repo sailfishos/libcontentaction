@@ -36,6 +36,9 @@ citest_SCRIPTS = \
 	test-invalid-defaults.py \
 	test-regexps.py
 
+citest_PROGRAMS = \
+	test-info
+
 bin_SCRIPTS = \
 	lca-cita-test
 
@@ -50,7 +53,8 @@ citest_DATA = \
 	testdata.ttl \
 	plaintext \
 	empty.pdf \
-	launchme.desktop
+	launchme.desktop \
+	test-image.png
 
 check_PROGRAMS = \
 	linktest \

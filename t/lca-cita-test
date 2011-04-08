@@ -3,5 +3,5 @@
 set -e
 . /tmp/session_bus_address.user
 chmod a+rw /usr/share/libcontentaction-tests
-cmd="cd /usr/share/libcontentaction-tests; PATH=.:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests CONTENTACTION_ACTIONS=/usr/share/libcontentaction-tests/data $@"
+cmd="cd /usr/share/libcontentaction-tests; PATH=/usr/share/libcontentaction-tests:/usr/lib/libcontentaction-tests:$PATH XDG_DATA_HOME=/usr/share/libcontentaction-tests CONTENTACTION_ACTIONS=/usr/share/libcontentaction-tests/data $@"
 su - user /bin/sh -c "$cmd"
