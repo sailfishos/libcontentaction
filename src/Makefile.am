@@ -27,7 +27,8 @@ LIBS += \
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \
-	contentaction.h
+	contentaction.h \
+	contentinfo.h
 
 lib_LTLIBRARIES = libcontentaction.la
 
@@ -43,7 +44,9 @@ libcontentaction_la_SOURCES = \
 	tracker.cpp \
 	highlighter.cpp \
 	highlight.cpp \
-	config.cpp
+	config.cpp \
+	contentinfo.h \
+	contentinfo.cpp
 
 BUILT_SOURCES = \
 	service.moc.cpp \
