@@ -153,7 +153,7 @@ ContentInfo::forTracker (const QString &tracker_uri)
 /// assumed to be the first few bytes of a content object, and its
 /// type is guessed from them.
 ContentInfo
-ContentInfo::forBytes (const QByteArray &bytes)
+ContentInfo::forData (const QByteArray &bytes)
 {
    g_type_init ();
   

@@ -97,7 +97,7 @@ test_bytes_info ()
   file.open (QIODevice::ReadOnly);
   QByteArray content = file.read (200);
 
-  ContentInfo info = ContentInfo::forBytes (content);
+  ContentInfo info = ContentInfo::forData (content);
 
   EXPECT (info.isValid());
   EXPECT (info.mimeType() == "image/png");
