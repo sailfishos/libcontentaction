@@ -106,6 +106,23 @@ static bool hactionSchemeFromTracker(const QStringList& uris, QStringList &urls)
     return true;
 }
 
+// Another special hack, this time for mfo:Enclosure:s.  We follow
+// their mfo:localLink property and dispatch again on that.
+static bool hactionObjectFromTracker(const QStringList& uris, QStringList &urls)
+{
+    QString query("SELECT ");
+    Q_FOREACH (const QString& uri, uris)
+        query += QString("mfo:localLink(<%1>) ").arg(uri);
+    query += " {}";
+    QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query);
+    if (!reply.isValid())
+        return false;
+    urls = reply.value()[0];
+    Q_FOREACH (const QString& x, urls)
+        if (x.isEmpty()) return false;
+    return true;
+}
+
 // Queries tracker whether \a condition applies to \a uri.
 static bool checkTrackerCondition(const QString& condition, const QString& uri)
 {
@@ -206,6 +223,12 @@ Action Action::defaultAction(const QString& uri)
     if (hactionSchemeFromTracker(QStringList() << uri, hackUrl)) {
         LCA_DEBUG << "hack url" << hackUrl;
         return defaultActionForScheme(hackUrl[0]);
+    }
+
+    // FIXME, too
+    if (hactionObjectFromTracker(QStringList() << uri, hackUrl)) {
+        LCA_DEBUG << "hack url" << hackUrl;
+        return defaultAction(hackUrl[0]);
     }
 
     // Fall back to one of the existing actions (if there are some)
@@ -339,6 +362,12 @@ QList<Action> Action::actions(const QString& uri)
     if (hactionSchemeFromTracker(QStringList() << uri, hackUrl)) {
         LCA_DEBUG << "hack url" << hackUrl;
         result << actionsForScheme(hackUrl[0]);
+    }
+
+    // FIXME, too
+    if (hactionObjectFromTracker(QStringList() << uri, hackUrl)) {
+        LCA_DEBUG << "hack url" << hackUrl;
+        return actions(hackUrl[0]);
     }
 
     // TODO: sort the result
