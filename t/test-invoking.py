@@ -43,13 +43,13 @@ class Actions(unittest.TestCase):
         (status, output) = getstatusoutput("lca-tool --tracker --trigger gallerywithfilename an.image")
         self.assert_(status == 0)
         # assert that the gallery was invoked
-        self.assert_(self.gallery.expect("showImageFile ; file:///tmp.aaa.jpg"))
+        self.assert_(self.gallery.expect("showImage ; file:///tmp.aaa.jpg"))
 
     def testInvokeForTwoImages(self):
         (status, output) = getstatusoutput("lca-tool --tracker --trigger gallerywithfilename an.image b.image")
         self.assert_(status == 0)
         # assert that the gallery was invoked
-        self.assert_(self.gallery.expect("showImageFile ; file:///tmp/aaa.jpg,file:///tmp/bbb.png"))
+        self.assert_(self.gallery.expect("showImage ; file:///tmp/aaa.jpg,file:///tmp/bbb.png"))
 
     def testInvokeForInvalid(self):
         (status, output) = getstatusoutput("lca-tool --tracker --triggerdefault invalid.uri")

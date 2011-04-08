@@ -6,4 +6,4 @@ Type=Application
 MimeType=image/*;
 NotShowIn=X-MeeGo;
 X-Maemo-Service=just.a.gallery
-X-Maemo-Method=com.nokia.galleryserviceinterface.showImageFile
+X-Maemo-Method=com.nokia.galleryserviceinterface.showImage

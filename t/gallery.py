@@ -15,13 +15,6 @@ class Gallery(dbus.service.Object):
         stdout.flush()
         return True
 
-    @dbus.service.method(dbus_interface='com.nokia.galleryserviceinterface',
-                         in_signature='as', out_signature='b')
-    def showImageFile(self, uris):
-        print 'showImageFile ; %s' % (','.join(uris))
-        stdout.flush()
-        return True
-
 print "started"
 stdout.flush()
 dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
