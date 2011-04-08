@@ -91,7 +91,7 @@ static bool mimeAndUriFromTracker(const QStringList& uris, QStringList &urlsAndM
 // A special hack for WebHistory and Bookmark. We check the nfo:bookmarks and
 // nfo:uri properties, and if the uri has either of them defined, we check the
 // object of that property, and dispatch it by its scheme.
-static bool hactionFromTracker(const QStringList& uris, QStringList &urls)
+static bool hactionSchemeFromTracker(const QStringList& uris, QStringList &urls)
 {
     QString query("SELECT ");
     Q_FOREACH (const QString& uri, uris)
@@ -203,7 +203,7 @@ Action Action::defaultAction(const QString& uri)
     // FIXME: this is a hack for converting nfo:Bookmark and nfo:WebHistory into
     // a url.
     QStringList hackUrl;
-    if (hactionFromTracker(QStringList() << uri, hackUrl)) {
+    if (hactionSchemeFromTracker(QStringList() << uri, hackUrl)) {
         LCA_DEBUG << "hack url" << hackUrl;
         return defaultActionForScheme(hackUrl[0]);
     }
@@ -336,7 +336,7 @@ QList<Action> Action::actions(const QString& uri)
     // FIXME: this is a hack for converting nfo:Bookmark and nfo:WebHistory into
     // a url.
     QStringList hackUrl;
-    if (hactionFromTracker(QStringList() << uri, hackUrl)) {
+    if (hactionSchemeFromTracker(QStringList() << uri, hackUrl)) {
         LCA_DEBUG << "hack url" << hackUrl;
         result << actionsForScheme(hackUrl[0]);
     }
