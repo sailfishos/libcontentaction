@@ -1,8 +1,9 @@
-libcontentaction (0.1.48~unreleased) unstable; urgency=low
+libcontentaction (0.1.48) unstable; urgency=low
 
-  * 
+  * Added ContentInfo class.
+    Fixes: NB#243826 - LCA should provide a simple ContentInfo abstraction.
 
- --
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Fri, 08 Apr 2011 17:34:06 +0300
 
 libcontentaction (0.1.47) unstable; urgency=low
 
