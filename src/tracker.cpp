@@ -91,11 +91,28 @@ static bool mimeAndUriFromTracker(const QStringList& uris, QStringList &urlsAndM
 // A special hack for WebHistory and Bookmark. We check the nfo:bookmarks and
 // nfo:uri properties, and if the uri has either of them defined, we check the
 // object of that property, and dispatch it by its scheme.
-static bool hactionFromTracker(const QStringList& uris, QStringList &urls)
+static bool hactionSchemeFromTracker(const QStringList& uris, QStringList &urls)
 {
     QString query("SELECT ");
     Q_FOREACH (const QString& uri, uris)
         query += QString("tracker:coalesce(nfo:bookmarks(<%1>), nfo:uri(<%1>)) ").arg(uri);
+    query += " {}";
+    QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query);
+    if (!reply.isValid())
+        return false;
+    urls = reply.value()[0];
+    Q_FOREACH (const QString& x, urls)
+        if (x.isEmpty()) return false;
+    return true;
+}
+
+// Another special hack, this time for mfo:Enclosure:s.  We follow
+// their mfo:localLink property and dispatch again on that.
+static bool hactionObjectFromTracker(const QStringList& uris, QStringList &urls)
+{
+    QString query("SELECT ");
+    Q_FOREACH (const QString& uri, uris)
+        query += QString("mfo:localLink(<%1>) ").arg(uri);
     query += " {}";
     QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query);
     if (!reply.isValid())
@@ -203,9 +220,15 @@ Action Action::defaultAction(const QString& uri)
     // FIXME: this is a hack for converting nfo:Bookmark and nfo:WebHistory into
     // a url.
     QStringList hackUrl;
-    if (hactionFromTracker(QStringList() << uri, hackUrl)) {
+    if (hactionSchemeFromTracker(QStringList() << uri, hackUrl)) {
         LCA_DEBUG << "hack url" << hackUrl;
         return defaultActionForScheme(hackUrl[0]);
+    }
+
+    // FIXME, too
+    if (hactionObjectFromTracker(QStringList() << uri, hackUrl)) {
+        LCA_DEBUG << "hack url" << hackUrl;
+        return defaultAction(hackUrl[0]);
     }
 
     // Fall back to one of the existing actions (if there are some)
@@ -336,9 +359,15 @@ QList<Action> Action::actions(const QString& uri)
     // FIXME: this is a hack for converting nfo:Bookmark and nfo:WebHistory into
     // a url.
     QStringList hackUrl;
-    if (hactionFromTracker(QStringList() << uri, hackUrl)) {
+    if (hactionSchemeFromTracker(QStringList() << uri, hackUrl)) {
         LCA_DEBUG << "hack url" << hackUrl;
         result << actionsForScheme(hackUrl[0]);
+    }
+
+    // FIXME, too
+    if (hactionObjectFromTracker(QStringList() << uri, hackUrl)) {
+        LCA_DEBUG << "hack url" << hackUrl;
+        return actions(hackUrl[0]);
     }
 
     // TODO: sort the result

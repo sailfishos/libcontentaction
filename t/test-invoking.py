@@ -59,6 +59,23 @@ class Actions(unittest.TestCase):
         (status, output) = getstatusoutput("lca-tool --tracker --triggerdefault an.image a.contact")
         self.assert_(status >> 8 == 4)
 
+    def testInvokeEnclosure(self):
+        # We have "<urn:test:encl1> mfo:localLink <an.image>", and
+        # triggering it should go indirectly via <an.image>.
+        (status, output) = getstatusoutput("lca-tool --tracker --trigger gallerywithfilename urn:test:encl1")
+        self.assert_(status == 0)
+        self.assert_(self.gallery.expect("showImage ; file:///tmp.aaa.jpg"))
+
+    def testEnclosureDefaults(self):
+        # We have "<urn:test:encl1> mfo:localLink <an.image>", and
+        # <urn:test:encl1> and <an.image> should have the same
+        # defaults.
+        (status, encldef) = getstatusoutput("lca-tool --tracker --printdefault urn:test:encl1")
+        self.assert_(status == 0)
+        (status, imgdef) = getstatusoutput("lca-tool --tracker --printdefault an.image")
+        self.assert_(status == 0)
+        self.assert_(encldef != "" and encldef == imgdef)
+
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Actions)
     result = unittest.TextTestRunner(verbosity=2).run(suite)

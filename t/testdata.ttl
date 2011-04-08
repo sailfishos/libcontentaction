@@ -117,3 +117,6 @@
 	nfo:uri "mailto:foo@bar.com" .
 
 <urn:test:calendarevent> a ncal:Event .
+
+<urn:test:encl1> a mfo:Enclosure ;
+        mfo:localLink <an.image> .
