@@ -108,19 +108,20 @@ static bool hactionSchemeFromTracker(const QStringList& uris, QStringList &urls)
 
 // Another special hack, this time for mfo:Enclosure:s.  We follow
 // their mfo:localLink property and dispatch again on that.
-static bool hactionObjectFromTracker(const QStringList& uris, QStringList &urls)
+static bool hactionFileFromTracker(const QString& uri, QString &path, QString &mimeType)
 {
-    QString query("SELECT ");
-    Q_FOREACH (const QString& uri, uris)
-        query += QString("mfo:localLink(<%1>) ").arg(uri);
-    query += " {}";
+    QString query = ("SELECT "
+                     + QString("mfo:localLink(<%1>) nie:mimeType(<%1>)").arg(uri)
+                     + " {}");
     QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query);
     if (!reply.isValid())
         return false;
-    urls = reply.value()[0];
-    Q_FOREACH (const QString& x, urls)
-        if (x.isEmpty()) return false;
-    return true;
+    path = reply.value()[0][0];
+    mimeType = reply.value()[0][1];
+    if (path.isEmpty())
+      return false;
+    else
+      return true;
 }
 
 // Queries tracker whether \a condition applies to \a uri.
@@ -226,9 +227,10 @@ Action Action::defaultAction(const QString& uri)
     }
 
     // FIXME, too
-    if (hactionObjectFromTracker(QStringList() << uri, hackUrl)) {
-        LCA_DEBUG << "hack url" << hackUrl;
-        return defaultAction(hackUrl[0]);
+    QString hackPath, hackMimeType;
+    if (hactionFileFromTracker(uri, hackPath, hackMimeType)) {
+        LCA_DEBUG << "hack file" << hackPath << hackMimeType;
+        return defaultActionForFile(hackPath, hackMimeType);
     }
 
     // Fall back to one of the existing actions (if there are some)
@@ -365,9 +367,11 @@ QList<Action> Action::actions(const QString& uri)
     }
 
     // FIXME, too
-    if (hactionObjectFromTracker(QStringList() << uri, hackUrl)) {
-        LCA_DEBUG << "hack url" << hackUrl;
-        return actions(hackUrl[0]);
+    // FIXME, too
+    QString hackPath, hackMimeType;
+    if (hactionFileFromTracker(uri, hackPath, hackMimeType)) {
+        LCA_DEBUG << "hack file" << hackPath << hackMimeType;
+        return actionsForFile(hackPath, hackMimeType);
     }
 
     // TODO: sort the result

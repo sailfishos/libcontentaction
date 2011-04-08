@@ -118,5 +118,9 @@
 
 <urn:test:calendarevent> a ncal:Event .
 
+# XXX - needs to be changed when Ontology makes mfo:linkLocal a
+#       string.
+#
 <urn:test:encl1> a mfo:Enclosure ;
-        mfo:localLink <an.image> .
+        nie:mimeType "image/jpeg";
+        mfo:localLink </tmp/aaa.jpg> .
