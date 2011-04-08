@@ -72,8 +72,11 @@ class Actions(unittest.TestCase):
         # defaults.
         (status, encldef) = getstatusoutput("lca-tool --tracker --printdefault urn:test:encl1")
         self.assert_(status == 0)
-        (status, imgdef) = getstatusoutput("lca-tool --tracker --printdefault an.image")
+        (status, imgdef) = getstatusoutput("lca-tool --file --printdefault /tmp/aaa.jpg")
         self.assert_(status == 0)
+        # get the last line of the output
+        encldef = encldef.split('\n')[-1]
+        imgdef = imgdef.split('\n')[-1]
         self.assert_(encldef != "" and encldef == imgdef)
 
 def runTests():
