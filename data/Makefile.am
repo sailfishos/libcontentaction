@@ -5,6 +5,7 @@ dist_actions_DATA = \
 
 testdatadir = $(datadir)/libcontentaction-tests/data
 dist_testdata_DATA = \
+	tracker1.xml \
 	highlight1.xml \
 	hl-examples.xml
 
