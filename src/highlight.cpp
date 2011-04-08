@@ -67,7 +67,7 @@ QRegExp combine(const MimesAndRegexps &mars)
         first = false;
     }
     re += ")";
-    return QRegExp(re, Qt::CaseInsensitive);
+    return QRegExp(re);
 }
 
 LCALabelHighlighter::LCALabelHighlighter(const MimesAndRegexps &mars_,

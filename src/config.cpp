@@ -190,7 +190,7 @@ static void sortRegexps()
         // inserted.
         Highlighter_cfg.prepend(
             qMakePair(QString(HighlighterMimeClass) + toInsert,
-                      QRegExp(mimeToRegexp.take(toInsert), Qt::CaseInsensitive)));
+                      QRegExp(mimeToRegexp.take(toInsert))));
     }
 }
 

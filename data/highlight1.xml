@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <actions>
-  <highlight regexp="(mailto:)?[\w!#$%&amp;'*+/=?^`{|}~-]+(\.[\w!#$%&amp;'*+/=?^`{|}~-]+)*@([\w-]+\.)+[\w-]+" name="email-address"/>
-  <highlight regexp="(callto:|sms:|tel:)?(\+ ?)?(\(\d+\) ?|\d[-.pwxPWX# ]*){2,19}\d(?!\d)" name="phone-number"/>
-  <highlight regexp="(https?://)?music\.ovi\.com(/([\w/?%:;@&amp;=+$,\-.!~*'#]*[\w/?%:;@&amp;=+$,\-!~*'#]|\([\w/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="ovi-music-url" specialCaseOf="http-url"/>
-  <highlight regexp="(https?://)?store\.ovi\.(com|mobi)(.cn)?(/([\w/?%:;@&amp;=+$,\-.!~*'#]*[\w/?%:;@&amp;=+$,\-!~*'#]|\([\w/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="ovi-store-url" specialCaseOf="http-url"/>
-  <highlight regexp="(https?://|www\.)(\w+((:\w+)?)@)?([\w\-]+\.)+[\w\-]+(:\d+)?(/([\w/?%:;@&amp;=+$,\-.!~*'#]*[\w/?%:;@&amp;=+$,\-!~*'#]|\([\w/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="http-url"/>
-  <highlight regexp="ftp://(\w+((:\w+)?)@)?([\w\-]+\.)+[\w\-]+(:\d+)?(/([\w/?%:;@&amp;=+$,\-.!~*'#]*[\w/?%:;@&amp;=+$,\-!~*'#]|\([\w/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="ftp-url"/>
-  <highlight regexp="feed:(//)?(\w+((:\w+)?)@)?([\w\-]+\.)+[\w\-]+(:\d+)?(/([\w/?%:;@&amp;=+$,\-.!~*'#]*[\w/?%:;@&amp;=+$,\-!~*'#]|\([\w/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="feed-url"/>
-  <highlight regexp="sips?:[\w/?%:;@&amp;=+$,\-.!~*'#]*" name="sip-url"/>
+  <highlight regexp="([mM][aA][iI][lL][tT][oO]:)?[\w!#$%&amp;'*+/=?^`{|}~-]+(\.[\w!#$%&amp;'*+/=?^`{|}~-]+)*@([\w-]+\.)+[\w-]+" name="email-address"/>
+  <highlight regexp="([cC][aA][lL][lL][tT][oO]:|[sS][mM][sS]:|[tT][eE][lL]:)?(\+ ?)?(\(\d+\) ?|\d[-.pwxPWX# ]*){2,19}\d(?!\d)" name="phone-number"/>
+  <highlight regexp="([hH][tT][pP][sS]?://)?music\.ovi\.com(/([\w/?%:;@&amp;=+$,\-.!~*'#]*[\w/?%:;@&amp;=+$,\-!~*'#]|\([\w/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="ovi-music-url" specialCaseOf="http-url"/>
+  <highlight regexp="([hH][tT][tT][pP][sS]?://|www\.)(\w+((:\w+)?)@)?([\w\-]+\.)+[\w\-]+(:\d+)?(/([\w/?%:;@&amp;=+$,\-.!~*'#]*[\w/?%:;@&amp;=+$,\-!~*'#]|\([\w/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="http-url"/>
+  <highlight regexp="[fF][tT][pP]://(\w+((:\w+)?)@)?([\w\-]+\.)+[\w\-]+(:\d+)?(/([\w/?%:;@&amp;=+$,\-.!~*'#]*[\w/?%:;@&amp;=+$,\-!~*'#]|\([\w/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="ftp-url"/>
+  <highlight regexp="[fF][eE][eE][dD]:(//)?(\w+((:\w+)?)@)?([\w\-]+\.)+[\w\-]+(:\d+)?(/([\w/?%:;@&amp;=+$,\-.!~*'#]*[\w/?%:;@&amp;=+$,\-!~*'#]|\([\w/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="feed-url"/>
+  <highlight regexp="[sS][iI][pP][sS]?:[\w/?%:;@&amp;=+$,\-.!~*'#]*" name="sip-url"/>
 </actions>
