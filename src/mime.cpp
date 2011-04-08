@@ -84,7 +84,15 @@ QString Internal::mimeForFile(const QUrl& uri)
     if (error != 0) {
         g_error_free(error);
         g_object_unref(file);
-        return QString();
+        // Try again without GFileInfo, which might only work if the
+        // file actually exists.
+        char *type = g_content_type_guess (fileUri.toLocalFile().toLocal8Bit().constData(),
+                                           NULL, 0, NULL);
+        QString res;
+        if (type)
+          res = g_content_type_get_mime_type (type);
+        free (type);
+        return res;
     }
     QString ret = QString::fromAscii(g_file_info_get_content_type(fileInfo));
     g_object_unref(fileInfo);
