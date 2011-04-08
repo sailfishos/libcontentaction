@@ -1,3 +1,9 @@
+libcontentaction (0.1.45) unstable; urgency=low
+
+  * Cleaned up testsuite.
+
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Fri, 08 Apr 2011 11:56:28 +0300
+
 libcontentaction (0.1.44) unstable; urgency=low
 
   * Added support for QLists of QUrls.
