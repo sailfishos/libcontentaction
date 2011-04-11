@@ -31,7 +31,7 @@ namespace ContentAction {
 using namespace ContentAction::Internal;
 
 /// Highlights fragments of \a text which have applicable actions.  Returns a
-/// list of Match objects.
+/// list of Match objects.  \deprecated Use Action::findHighlights instead.
 QList<Match> Action::highlight(const QString& text)
 {
     const QList<QPair<QString, QRegExp> >& cfg = highlighterConfig();
@@ -67,5 +67,20 @@ bool Match::operator<(const Match& other) const
         ((this->start == other.start) && (this->end < other.end));
 }
 
+QList<QPair<int, int> > Action::findHighlights(const QString& text)
+{
+    QRegExp regexp = masterRegexp();
+
+    QList<QPair<int, int> > result;
+    int pos = 0;
+    while ((pos = regexp.indexIn(text, pos)) != -1) {
+        int l = regexp.matchedLength();
+        result << qMakePair<int, int>(pos, pos + l);
+        pos += l;
+        if (l == 0)
+            ++pos;
+    }
+    return result;
+}
 
 } // end namespace
