@@ -331,7 +331,7 @@ QStringList Internal::appsForContentType(const QString& contentType)
 /// type.
 Action Action::defaultActionForFile(const QUrl& fileUri)
 {
-  return defaultActionForFile(fileUri, mimeForFile(fileUri));
+    return defaultActionForFile(fileUri, mimeForFile(fileUri));
 }
 
 /// Returns the default action for a given \a fileUri, assuming its mime type
@@ -339,8 +339,14 @@ Action Action::defaultActionForFile(const QUrl& fileUri)
 /// exist yet but will be created before trigger() is called, or if you
 /// already know the mime type. Note: if the file is a .desktop file, it must
 /// exist when this function is called.
-Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType)
+Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType_arg)
 {
+    QString mimeType;
+    if (mimeType_arg.isEmpty() || mimeType_arg == "application/octet-stream")
+        mimeType = mimeForFile(fileUri);
+    else
+        mimeType = mimeType_arg;
+
     if (mimeType.isEmpty())
         return Action();
 
@@ -411,8 +417,7 @@ QList<Action> Internal::actionsForUris(const QStringList& uris, const QString& m
 /// content type.
 QList<Action> Action::actionsForFile(const QUrl& fileUri)
 {
-    QString contentType = mimeForFile(fileUri);
-    return actionsForFile(fileUri, contentType);
+    return actionsForFile(fileUri, mimeForFile(fileUri));
 }
 
 /// Returns the set of applicable actions for a given \a fileUri, assuming its
@@ -420,8 +425,14 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri)
 /// fileUri doesn't exist but will be created before trigger() is called, or
 /// if you already know the mime type.  Note: if the file is a .desktop file,
 /// it must exist when this function is called.
-QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeType)
+QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeType_arg)
 {
+    QString mimeType;
+    if (mimeType_arg.isEmpty() || mimeType_arg == "application/octet-stream")
+        mimeType = mimeForFile(fileUri);
+    else
+        mimeType = mimeType_arg;
+
     if (mimeType == DesktopFileMimeType)
         return actionsForUri(fileUri.toLocalFile(), mimeType);
 
