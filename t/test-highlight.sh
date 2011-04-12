@@ -119,5 +119,6 @@ strstr "$res" ".*'email2@domain.org' emailer" || exit 7
 
 strstr "$res" ".*'Http://www.capital.com' browser" || exit 8
 strstr "$res" ".*'hTTp://www.capital.com' browser" || exit 8
+strstr "$res" ".*'Www.capitalwww.com' browser" || exit 8
 
 exit 0

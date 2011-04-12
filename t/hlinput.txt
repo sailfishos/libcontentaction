@@ -86,3 +86,4 @@ this is an url www.myurl.com/foo/bar and e-mail first@home.com
 1112223338;email@domain.org;4445556668;email2@domain.org
 Http://www.capital.com
 hTTp://www.capital.com
+Www.capitalwww.com
