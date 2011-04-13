@@ -154,12 +154,12 @@ void doHighlight()
     QList<QPair<int, int> > highlights = Action::findHighlights(text);
     QList<QPair<int, int> >::const_iterator it = highlights.begin();
     while (it != highlights.end()) {
-        QString highlight = text.mid(it->first, it->second - it->first);
+        QString highlight = text.mid(it->first, it->second);
         QStringList actions;
         Q_FOREACH (const Action& a, Action::actionsForString(highlight))
             actions << a.name();
         out << QString("%1 %2 '%3' %4\n").arg(QString::number(it->first),
-                                              QString::number(it->second),
+                                              QString::number(it->first + it->second),
                                               highlight,
                                               actions.join(" "));
         ++it;
