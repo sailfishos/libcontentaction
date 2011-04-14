@@ -86,15 +86,17 @@ QList<QPair<int, int> > Action::findHighlights(const QString& text)
         return result;
     }
 
+    QPair<int, int> next;
     int pos = 0;
+    while (true) {
+        next = findNextHighlight(text, pos);
+        if (next.first == -1)
+            break;
 
-    while ((pos = regexp.indexIn(text, pos)) != -1) {
-        int len = regexp.matchedLength();
-        result << qMakePair<int, int>(pos, len);
-        pos += len;
-        if (len == 0)
-            ++pos;
+        pos = next.first + next.second;
+        result << qMakePair<int, int>(next.first, next.second);
     }
+
     return result;
 }
 

@@ -90,8 +90,6 @@ void TestFindHighlights::allHighlights()
     {
         QString text = "nothing relevant in this text";
 
-        QStringList expectedMatches;
-
         QList<QPair<int, int> > res = Action::findHighlights(text);
 
         QCOMPARE(res.size(), 0);
