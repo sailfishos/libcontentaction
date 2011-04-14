@@ -1,8 +1,10 @@
 libcontentaction (0.1.49~unreleased) unstable; urgency=low
 
-  * 
+  * Added Action::findHighlights(const QString& text)
+  * Added Action::findNextHighlight(const QString& text, int start)
+  * Deprecated Action::highlight(const QString& text)
 
- --
+ -- Marja Hölttä <marja.holtta@nokia.com>  Thu, 14 Apr 2011 10:50:02 +0300
 
 libcontentaction (0.1.48) unstable; urgency=low
 
