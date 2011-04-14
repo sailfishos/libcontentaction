@@ -74,6 +74,8 @@ public:
                                  const QStringList& params);
 
     static QList<Match> highlight(const QString& text);
+    static QList<QPair<int, int> > findHighlights(const QString& text);
+    static QPair<int, int> findNextHighlight(const QString& text, int start = 0);
 
     Action();
     ~Action();

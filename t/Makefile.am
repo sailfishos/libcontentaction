@@ -37,7 +37,8 @@ citest_SCRIPTS = \
 	test-regexps.py
 
 citest_PROGRAMS = \
-	test-info
+	test-info \
+	test-findhighlights
 
 bin_SCRIPTS = \
 	lca-cita-test
@@ -58,7 +59,8 @@ citest_DATA = \
 
 check_PROGRAMS = \
 	linktest \
-	test-info
+	test-info \
+	test-findhighlights
 
 noinst_PROGRAMS = hldemo
 hldemo_SOURCES = hldemo.cpp
@@ -85,7 +87,19 @@ linktest_LDADD = \
 
 servicetest_SOURCES = servicelistener.cpp
 
-BUILT_SOURCES += servicelistener.moc
+test_findhighlights_SOURCES = \
+	test-findhighlights.cpp \
+	test-findhighlights.moc
+
+test_findhighlights_CPPFLAGS = \
+	$(AM_CPPFLAGS) \
+	$(QtTest_CFLAGS)
+
+test_findhighlights_LDADD = \
+	$(QtTest_LIBS)
+
+BUILT_SOURCES += servicelistener.moc \
+	test-findhighlights.moc
 
 ../src/libcontentaction.la: FORCE
 	$(MAKE) -C ../src libcontentaction.la
@@ -108,6 +122,7 @@ TESTS = \
 	start-sandbox.sh \
 	linktest \
 	test-info \
+	test-findhighlights \
 	test-actions.sh \
 	test-mimetypes.sh \
 	test-invoking.py \

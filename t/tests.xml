@@ -82,6 +82,11 @@
           lca-cita-test test-info
         </step>
       </case>
+      <case name="test-findhighlights">
+        <step expected_result="0">
+          lca-cita-test test-findhighlights
+        </step>
+      </case>
 
       <environments>
         <scratchbox>true</scratchbox>

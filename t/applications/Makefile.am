@@ -22,4 +22,5 @@ dist_citestapp_DATA = \
 	uriprinter.desktop \
 	gallerywithfilename.desktop \
 	browser.desktop \
-	special-browser.desktop
+	special-browser.desktop \
+	regexpmatcher.desktop

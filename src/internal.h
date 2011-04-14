@@ -108,6 +108,8 @@ const QHash<QString, QStringList>& mimeApps();
 const QList<QPair<QString, QRegExp> >& highlighterConfig();
 const QHash<QString, QString>& trackerConditions();
 
+QRegExp masterRegexp();
+
 } // end namespace Internal
 } // end namespace ContentAction
 #endif

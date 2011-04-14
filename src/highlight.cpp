@@ -56,6 +56,23 @@ private:
 
 LCALabelHighlighter* DefaultHighlighter = 0;
 
+MimesAndRegexps regExpsInUse()
+{
+    // Returns the regexps for which we have actions.
+    static MimesAndRegexps mars;
+    static bool read = false;
+    if (!read) {
+        QListIterator<QPair<QString, QRegExp> > iter(highlighterConfig());
+        while (iter.hasNext()) {
+            const QPair<QString, QRegExp> &mar = iter.next();
+            if (!appsForContentType(mar.first).isEmpty())
+                mars += MimeAndRegexp(mar.first, mar.second);
+        }
+        read = true;
+    }
+    return mars;
+}
+
 QRegExp combine(const MimesAndRegexps &mars)
 {
     QString re("(?:");
@@ -184,6 +201,23 @@ void LCALabelHighlighter::doPopupActions(const QString& match)
 
 } // end anon namespace
 
+namespace ContentAction {
+namespace Internal {
+
+QRegExp masterRegexp()
+{
+    static QRegExp master;
+    static bool read = false;
+    if (!read) {
+        master = combine(regExpsInUse());
+        read = true;
+    }
+    return master;
+}
+
+} // end namespace Internal
+} // end namespace ContentAction
+
 /// Attaches a MLabelHighlighter to the label, based on the highlighter
 /// configuration.  The MLabelHighlighter contains a regexp which is constructed
 /// by combining all regexps in the highlighter configuration.  Clicking on a
@@ -198,14 +232,7 @@ void ContentAction::highlightLabel(MLabel *label)
     // This highlights the label with the default highlighter.  The default
     // highlighter is not deleted when the label is unhighlighted.
     if (DefaultHighlighter == 0) {
-        MimesAndRegexps mars;
-        QListIterator<QPair<QString, QRegExp> > iter(highlighterConfig());
-        while (iter.hasNext()) {
-            const QPair<QString, QRegExp> &mar = iter.next();
-            if (!appsForContentType(mar.first).isEmpty())
-                mars += MimeAndRegexp(mar.first, mar.second);
-        }
-        DefaultHighlighter = new LCALabelHighlighter(mars);
+        DefaultHighlighter = new LCALabelHighlighter(regExpsInUse());
     }
     label->addHighlighter(DefaultHighlighter);
     label->setProperty("_lca_highlighter",

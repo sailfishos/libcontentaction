@@ -41,6 +41,7 @@ AC_CONFIG_FILES([
         t/Makefile
         t/env.sh
         t/env.py
+        t/env.h
         t/applications/Makefile
         t/test-l10n-data/Makefile
         doc/Makefile

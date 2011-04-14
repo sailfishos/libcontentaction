@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=implements actions for all regexps
+Exec=echo "nothing"
+Terminal=false
+Type=Application
+NotShowIn=X-MeeGo;
+MimeType=x-maemo-highlight/general-1;x-maemo-highlight/special-1a;x-maemo-highlight/special-1b;x-maemo-highlight/general-2;x-maemo-highlight/special-2;x-maemo-highlight/superspecial-2;x-maemo-highlight/circular-1;x-maemo-highlight/circular-2;

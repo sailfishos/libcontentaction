@@ -151,19 +151,21 @@ void doHighlight()
     QTextStream in(stdin);
     QString text = in.readAll();
 
-    QList<Match> ms = Action::highlight(text);
-    Q_FOREACH (const Match& m, ms) {
+    QList<QPair<int, int> > highlights = Action::findHighlights(text);
+    QList<QPair<int, int> >::const_iterator it = highlights.begin();
+    while (it != highlights.end()) {
+        QString highlight = text.mid(it->first, it->second);
         QStringList actions;
-        Q_FOREACH (const Action& a, m.actions)
+        Q_FOREACH (const Action& a, Action::actionsForString(highlight))
             actions << a.name();
-        out << QString("%1 %2 '%3' %4\n").arg(QString::number(m.start),
-                                              QString::number(m.end),
-                                              text.mid(m.start, m.end - m.start),
+        out << QString("%1 %2 '%3' %4\n").arg(QString::number(it->first),
+                                              QString::number(it->first + it->second),
+                                              highlight,
                                               actions.join(" "));
+        ++it;
     }
     QString hltext(text);
     if (isatty(1)) {
-        qSort(ms.begin(), ms.end());
         QString color[] = {
             "\e[1;37;41m",
             "\e[1;37;42m",
@@ -174,12 +176,14 @@ void doHighlight()
         };
         int i = 0;
         int d = 0;
-        Q_FOREACH (const Match& m, ms) {
-            hltext.insert(d + m.start, color[i]);
+        it = highlights.begin();
+        while (it != highlights.end()) {
+            hltext.insert(d + it->first, color[i]);
             d += color[i].length();
             i = (i + 1) % (sizeof(color) / sizeof(color[0]));
-            hltext.insert(d + m.end, "\e[0m");
+            hltext.insert(d + it->second, "\e[0m");
             d += 4;
+            ++it;
         }
         textout << hltext;
     }

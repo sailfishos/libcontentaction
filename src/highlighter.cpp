@@ -31,7 +31,8 @@ namespace ContentAction {
 using namespace ContentAction::Internal;
 
 /// Highlights fragments of \a text which have applicable actions.  Returns a
-/// list of Match objects.
+/// list of Match objects.  \deprecated Use
+/// ContentAction::Action::findHighlights() instead.
 QList<Match> Action::highlight(const QString& text)
 {
     const QList<QPair<QString, QRegExp> >& cfg = highlighterConfig();
@@ -67,5 +68,64 @@ bool Match::operator<(const Match& other) const
         ((this->start == other.start) && (this->end < other.end));
 }
 
+/// Finds fragments of \a text which have applicable actions.  Returns a list of
+/// (start, length) pairs which identify the locations of the fragments.  The
+/// fragments can be passed to ContentAction::Action::actionsForString() and
+/// ContentAction::Action::defaultActionForString() for finding out the
+/// applicable actions and the default action.
+QList<QPair<int, int> > Action::findHighlights(const QString& text)
+{
+    QRegExp regexp = masterRegexp();
+
+    QList<QPair<int, int> > result;
+
+    if (regexp.pattern() == "(?:)") {
+        // The regexp doesn't have any real content -> no matches. "(?:)" is
+        // what masterRegexp() will return if there are no regexps to combine
+        // together.
+        return result;
+    }
+
+    QPair<int, int> next;
+    int pos = 0;
+    while (true) {
+        next = findNextHighlight(text, pos);
+        if (next.first == -1)
+            break;
+
+        result << qMakePair<int, int>(next.first, next.second);
+
+        pos = next.first + next.second;
+        if (next.second == 0)
+            // regexp matched an empty string, avoid the inifinite loop
+            ++pos;
+    }
+
+    return result;
+}
+
+/// Finds the next fragment of \a text, starting from \a start, which has
+/// applicable actions.  Returns a (start, length) pair which identifies the
+/// location of the fragment.  Returns (-1, -1) if no such fragment can be
+/// found.  The fragment can be passed to
+/// ContentAction::Action::actionsForString() and
+/// ContentAction::Action::defaultActionForString() for finding out the
+/// applicable actions and the default action.
+QPair<int, int> Action::findNextHighlight(const QString& text, int start)
+{
+    QRegExp regexp = masterRegexp();
+
+    if (regexp.pattern() == "(?:)") {
+        // The regexp doesn't have any real content -> no matches. "(?:)" is
+        // what masterRegexp() will return if there are no regexps to combine
+        // together.
+        return qMakePair<int, int>(-1, -1);
+    }
+
+    int pos = regexp.indexIn(text, start);
+    // QRegExp::matchedLength() returns -1 if there was no match
+    int len = regexp.matchedLength();
+    return qMakePair<int, int>(pos, len);
+}
 
 } // end namespace
