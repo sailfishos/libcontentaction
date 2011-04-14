@@ -93,8 +93,12 @@ QList<QPair<int, int> > Action::findHighlights(const QString& text)
         if (next.first == -1)
             break;
 
-        pos = next.first + next.second;
         result << qMakePair<int, int>(next.first, next.second);
+
+        pos = next.first + next.second;
+        if (next.second == 0)
+            // regexp matched an empty string, avoid the inifinite loop
+            ++pos;
     }
 
     return result;
