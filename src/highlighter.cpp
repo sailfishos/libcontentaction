@@ -68,15 +68,12 @@ bool Match::operator<(const Match& other) const
         ((this->start == other.start) && (this->end < other.end));
 }
 
-/// Finds fragments of \a text which begin on the range [\a start, \a end[ and
-/// which have applicable actions.  Returns a list of (start, length) pairs
-/// which identify the locations of the fragments.  If \a end is negative, the
-/// whole string \a text is used.  The fragments can be passed to
-/// ContentAction::Action::actionsForString() and
+/// Finds fragments of \a text which have applicable actions.  Returns a list of
+/// (start, length) pairs which identify the locations of the fragments.  The
+/// fragments can be passed to ContentAction::Action::actionsForString() and
 /// ContentAction::Action::defaultActionForString() for finding out the
 /// applicable actions and the default action.
-QList<QPair<int, int> > Action::findHighlights(const QString& text,
-                                               int start, int end)
+QList<QPair<int, int> > Action::findHighlights(const QString& text)
 {
     QRegExp regexp = masterRegexp();
 
@@ -89,28 +86,40 @@ QList<QPair<int, int> > Action::findHighlights(const QString& text,
         return result;
     }
 
-    int pos = start;
+    int pos = 0;
 
-    // Despite the good intention of the range, it's possible that the regexp
-    // engine needs to read the whole string (if there are no matches).  This is
-    // because 1) there's no way to give the end index to QRegExp::indexIn() 2)
-    // we cannot only give a substring of text (we don't know how long the
-    // substring would need to be to include all the matches).  (The user's
-    // expectation is that if he calls findHighlights(text, 0, n) and
-    // findHighlights(text, n, text.length()), all highlights are found, and no
-    // highlights are left out because they cross the index "n".)
     while ((pos = regexp.indexIn(text, pos)) != -1) {
-        if (end >= 0 && pos >= end)
-            break;
-
-        // The match is taken in if its starting point is at range [start, end[.
-        int l = regexp.matchedLength();
-        result << qMakePair<int, int>(pos,l);
-        pos += l;
-        if (l == 0)
+        int len = regexp.matchedLength();
+        result << qMakePair<int, int>(pos, len);
+        pos += len;
+        if (len == 0)
             ++pos;
     }
     return result;
+}
+
+/// Finds the next fragment of \a text, starting from \a start, which has
+/// applicable actions.  Returns a (start, length) pair which identifies the
+/// location of the fragment.  Returns (-1, -1) if no such fragment can be
+/// found.  The fragment can be passed to
+/// ContentAction::Action::actionsForString() and
+/// ContentAction::Action::defaultActionForString() for finding out the
+/// applicable actions and the default action.
+QPair<int, int> Action::findNextHighlight(const QString& text, int start)
+{
+    QRegExp regexp = masterRegexp();
+
+    if (regexp.pattern() == "(?:)") {
+        // The regexp doesn't have any real content -> no matches. "(?:)" is
+        // what masterRegexp() will return if there are no regexps to combine
+        // together.
+        return qMakePair<int, int>(-1, -1);
+    }
+
+    int pos = regexp.indexIn(text, start);
+    // QRegExp::matchedLength() returns -1 if there was no match
+    int len = regexp.matchedLength();
+    return qMakePair<int, int>(pos, len);
 }
 
 } // end namespace

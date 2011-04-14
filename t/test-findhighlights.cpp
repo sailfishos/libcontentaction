@@ -44,7 +44,7 @@ private Q_SLOTS:
     void allHighlights();
     void noOverlap();
 
-    void highlightsOnRange();
+    void nextHighlight();
 };
 
 void TestFindHighlights::initTestCase()
@@ -68,21 +68,33 @@ void TestFindHighlights::cleanup()
 
 void TestFindHighlights::allHighlights()
 {
-    QString text = "here is something to match: foobarX and here another: foobazX";
+    {
+        QString text = "here is something to match: foobarX and here another: foobazX";
 
-    // There are 3 relevant regexps for this test: foo\w*, foobar\w* and
-    // foobaz\w*, the latter 2 are specializations. "foo" doesn't appear as a
-    // match since the specializations are preferred, and regexps cannot
-    // overlap.
-    QStringList expectedMatches;
-    expectedMatches << "foobarX" << "foobazX";
+        // There are 3 relevant regexps for this test: foo\w*, foobar\w* and
+        // foobaz\w*, the latter 2 are specializations. "foo" doesn't appear as a
+        // match since the specializations are preferred, and regexps cannot
+        // overlap.
+        QStringList expectedMatches;
+        expectedMatches << "foobarX" << "foobazX";
 
-    QList<QPair<int, int> > res = Action::findHighlights(text);
+        QList<QPair<int, int> > res = Action::findHighlights(text);
 
-    QCOMPARE(res.size(), expectedMatches.size());
-    for (int i = 0; i < expectedMatches.size(); ++i) {
-        QCOMPARE(res[i].first, text.indexOf(expectedMatches[i]));
-        QCOMPARE(res[i].second, expectedMatches[i].length());
+        QCOMPARE(res.size(), expectedMatches.size());
+        for (int i = 0; i < expectedMatches.size(); ++i) {
+            QCOMPARE(res[i].first, text.indexOf(expectedMatches[i]));
+            QCOMPARE(res[i].second, expectedMatches[i].length());
+        }
+    }
+
+    {
+        QString text = "nothing relevant in this text";
+
+        QStringList expectedMatches;
+
+        QList<QPair<int, int> > res = Action::findHighlights(text);
+
+        QCOMPARE(res.size(), 0);
     }
 }
 
@@ -105,35 +117,33 @@ void TestFindHighlights::noOverlap()
     }
 }
 
-void TestFindHighlights::highlightsOnRange()
+void TestFindHighlights::nextHighlight()
 {
     QString text = "I have a cat, I don't have a catepillar, my catalyzator is broken.";
 
     // There is 1 relevant regexp for this test: cat\w*
-    QStringList expectedMatches;
-    expectedMatches << "catepillar";
 
-    QList<QPair<int, int> > res = Action::findHighlights(text,
-                                                         text.indexOf("don't"),
-                                                         text.indexOf("my"));
-    QCOMPARE(res.size(), expectedMatches.size());
-    for (int i = 0; i < expectedMatches.size(); ++i) {
-        QCOMPARE(res[i].first, text.indexOf(expectedMatches[i]));
-        QCOMPARE(res[i].second, expectedMatches[i].length());
+    {
+        QString expectedMatch = "cat";
+        QPair<int, int> res = Action::findNextHighlight(text,
+                                                        text.indexOf("have"));
+        QCOMPARE(res.first, text.indexOf(expectedMatch));
+        QCOMPARE(res.second, expectedMatch.length());
+    }
+    {
+        QString expectedMatch = "catepillar";
+        QPair<int, int> res = Action::findNextHighlight(text,
+                                                        text.indexOf("don't"));
+        QCOMPARE(res.first, text.indexOf(expectedMatch));
+        QCOMPARE(res.second, expectedMatch.length());
+    }
+    {
+        QPair<int, int> res = Action::findNextHighlight(text,
+                                                        text.indexOf("is"));
+        QCOMPARE(res.first, -1);
+        QCOMPARE(res.second, -1);
     }
 
-    // Test a highlight that starts on the wanted range, but extends beyond the
-    // end of the range.
-
-    res = Action::findHighlights(text,
-                                 text.indexOf("cate"),
-                                 text.indexOf("pillar"));
-
-    QCOMPARE(res.size(), expectedMatches.size());
-    for (int i = 0; i < expectedMatches.size(); ++i) {
-        QCOMPARE(res[i].first, text.indexOf(expectedMatches[i]));
-        QCOMPARE(res[i].second, expectedMatches[i].length());
-    }
 }
 
 QTEST_MAIN(TestFindHighlights)
