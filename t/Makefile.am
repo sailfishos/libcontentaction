@@ -4,9 +4,11 @@ SUBDIRS = \
 CLEANFILES =
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
+	$(QtTest_CFLAGS) \
 	-I$(top_srcdir)/src
 LIBS += \
-	../src/libcontentaction.la
+	../src/libcontentaction.la \
+	$(QtTest_LIBS)
 
 .cpp.moc:
 	$(MOC) -o "$@" "$<"
@@ -38,7 +40,8 @@ citest_SCRIPTS = \
 
 citest_PROGRAMS = \
 	test-info \
-	test-findhighlights
+	test-findhighlights \
+	test-action
 
 bin_SCRIPTS = \
 	lca-cita-test
@@ -60,7 +63,8 @@ citest_DATA = \
 check_PROGRAMS = \
 	linktest \
 	test-info \
-	test-findhighlights
+	test-findhighlights \
+	test-action
 
 noinst_PROGRAMS = hldemo
 hldemo_SOURCES = hldemo.cpp
@@ -70,7 +74,7 @@ hldemo_CPPFLAGS = \
 hldemo_LDADD = \
 	$(MT_LIBS) \
 	../src/libcontentaction.la
-BUILT_SOURCES += hldemo.moc
+BUILT_SOURCES += hldemo.moc test-action.moc test-info.moc
 CLEANFILES += hldemo.moc
 
 testhelperdir = $(libdir)/libcontentaction-tests
@@ -123,6 +127,7 @@ TESTS = \
 	linktest \
 	test-info \
 	test-findhighlights \
+	test-action \
 	test-actions.sh \
 	test-mimetypes.sh \
 	test-invoking.py \

@@ -69,3 +69,4 @@ Makefile.in
 *.moc
 TAGS
 /t/test-info
+/t/test-action
