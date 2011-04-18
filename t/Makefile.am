@@ -61,7 +61,8 @@ citest_DATA = \
 
 check_PROGRAMS = \
 	linktest \
-	test-info
+	test-info \
+	test-action
 
 noinst_PROGRAMS = hldemo
 hldemo_SOURCES = hldemo.cpp
@@ -111,6 +112,7 @@ TESTS = \
 	start-sandbox.sh \
 	linktest \
 	test-info \
+	test-action \
 	test-actions.sh \
 	test-mimetypes.sh \
 	test-invoking.py \

@@ -82,6 +82,11 @@
           lca-cita-test test-info
         </step>
       </case>
+      <case name="test-actions">
+        <step expected_result="0">
+          lca-cita-test test-actions
+        </step>
+      </case>
 
       <environments>
         <scratchbox>true</scratchbox>
