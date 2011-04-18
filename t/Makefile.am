@@ -4,9 +4,11 @@ SUBDIRS = \
 CLEANFILES =
 AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
+	$(QtTest_CFLAGS) \
 	-I$(top_srcdir)/src
 LIBS += \
-	../src/libcontentaction.la
+	../src/libcontentaction.la \
+	$(QtTest_LIBS)
 
 .cpp.moc:
 	$(MOC) -o "$@" "$<"
@@ -37,7 +39,8 @@ citest_SCRIPTS = \
 	test-regexps.py
 
 citest_PROGRAMS = \
-	test-info
+	test-info \
+	test-action
 
 bin_SCRIPTS = \
 	lca-cita-test
@@ -68,7 +71,7 @@ hldemo_CPPFLAGS = \
 hldemo_LDADD = \
 	$(MT_LIBS) \
 	../src/libcontentaction.la
-BUILT_SOURCES += hldemo.moc
+BUILT_SOURCES += hldemo.moc test-action.moc test-info.moc
 CLEANFILES += hldemo.moc
 
 testhelperdir = $(libdir)/libcontentaction-tests
