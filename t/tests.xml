@@ -82,9 +82,9 @@
           lca-cita-test test-info
         </step>
       </case>
-      <case name="test-actions">
+      <case name="test-action">
         <step expected_result="0">
-          lca-cita-test test-actions
+          lca-cita-test test-action
         </step>
       </case>
 
