@@ -66,6 +66,8 @@ check_PROGRAMS = \
 	test-findhighlights \
 	test-action
 
+BUILT_SOURCES += test-action.moc test-info.moc
+
 noinst_PROGRAMS = hldemo
 hldemo_SOURCES = hldemo.cpp
 hldemo_CPPFLAGS = \
@@ -74,7 +76,7 @@ hldemo_CPPFLAGS = \
 hldemo_LDADD = \
 	$(MT_LIBS) \
 	../src/libcontentaction.la
-BUILT_SOURCES += hldemo.moc test-action.moc test-info.moc
+BUILT_SOURCES += hldemo.moc
 CLEANFILES += hldemo.moc
 
 testhelperdir = $(libdir)/libcontentaction-tests
