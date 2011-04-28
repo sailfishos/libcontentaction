@@ -92,6 +92,11 @@
           lca-cita-test test-action
         </step>
       </case>
+      <case name="test-mimedefaults">
+        <step expected_result="0">
+          lca-cita-test test-mimedefaults
+        </step>
+      </case>
 
       <environments>
         <scratchbox>true</scratchbox>

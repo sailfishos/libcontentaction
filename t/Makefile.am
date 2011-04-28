@@ -41,7 +41,8 @@ citest_SCRIPTS = \
 citest_PROGRAMS = \
 	test-info \
 	test-findhighlights \
-	test-action
+	test-action \
+	test-mimedefaults
 
 bin_SCRIPTS = \
 	lca-cita-test
@@ -64,7 +65,8 @@ check_PROGRAMS = \
 	linktest \
 	test-info \
 	test-findhighlights \
-	test-action
+	test-action \
+	test-mimedefaults
 
 BUILT_SOURCES += test-action.moc test-info.moc
 
@@ -104,8 +106,20 @@ test_findhighlights_CPPFLAGS = \
 test_findhighlights_LDADD = \
 	$(QtTest_LIBS)
 
+test_mimedefaults_SOURCES = \
+	test-mimedefaults.cpp \
+	test-mimedefaults.moc
+
+test_mimedefaults_CPPFLAGS = \
+	$(AM_CPPFLAGS) \
+	$(QtTest_CFLAGS)
+
+test_mimedefaults_LDADD = \
+	$(QtTest_LIBS)
+
 BUILT_SOURCES += servicelistener.moc \
-	test-findhighlights.moc
+	test-findhighlights.moc \
+	test-mimedefaults.moc
 
 ../src/libcontentaction.la: FORCE
 	$(MAKE) -C ../src libcontentaction.la
@@ -130,6 +144,7 @@ TESTS = \
 	test-info \
 	test-findhighlights \
 	test-action \
+	test-mimedefaults \
 	test-actions.sh \
 	test-mimetypes.sh \
 	test-invoking.py \

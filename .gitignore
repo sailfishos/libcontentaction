@@ -29,6 +29,7 @@ t/env.sh
 t/env.h
 t/linktest
 t/test-findhighlights
+t/test-mimedefaults
 t/mocs.cpp
 t/moc_*.cpp
 t/servicetest

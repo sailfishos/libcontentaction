@@ -42,6 +42,24 @@
 
 #include <MDesktopEntry>
 
+#include <sys/stat.h>
+
+namespace { // Helper functions
+
+void readLastModifiedTime(const QString& filename, bool& success, time_t& time)
+{
+    struct stat statData;
+    if (stat(filename.toLatin1().constData(), &statData) == 0) {
+        success = true;
+        time = statData.st_mtime;
+    }
+    else {
+        success = false;
+    }
+}
+
+} // end of unnamed namespace
+
 namespace ContentAction {
 
 using namespace ContentAction::Internal;
@@ -233,19 +251,44 @@ QString Internal::findDesktopFile(const QString& id)
 // application, returns an empty string.
 QString Internal::defaultAppForContentType(const QString& contentType)
 {
-    static bool read = false;
     static QHash<QString, QString> defaultApps;
 
-    if (!read) {
-        QStringList dirs = xdgDataDirs();
-        for (int i = dirs.size()-1; i >= 0; --i) {
-            QFile f(dirs[i] + "/applications/defaults.list");
-            if (!f.exists())
-                continue;
-            readKeyValues(f, defaultApps);
+    // What were the "last modified" times of them when the various
+    // defaults.list files were read the last time.
+    static QHash<QString, time_t> lastModified;
+
+    // Read each defaults.list if it has changed since the last time we read it.
+    // Already checking the "last modified" time might be too expensive for this
+    // purpose, but what else can we do.. (Adding a QFileSystemWatcher or
+    // similar is a bad idea.)
+
+    // The resolution of the "last modified time" is one second.  This will be a
+    // problem if somebody sets the mime default twice during the same second,
+    // and somebody reads it between those two changes.  In this case, the
+    // second change remains undetected by the reading process, until the file
+    // is changed again.
+
+    // Note: this function doesn't work properly if there are multiple
+    // defaults.lists.  (Changes to any of them will override other values, even
+    // if the changed file has lower precedence than the others.)
+
+    QStringList dirs = xdgDataDirs();
+    for (int i = dirs.size()-1; i >= 0; --i) {
+        bool success = false;
+        time_t lm = 0;
+        readLastModifiedTime(dirs[i] + "/applications/defaults.list", success, lm);
+        if (!success) {
+            // Most probably the file doesn't exist.
+            continue;
         }
+        if (lastModified.contains(dirs[i]) &&
+            lm == lastModified[dirs[i]]) {
+            continue;
+        }
+        QFile f(dirs[i] + "/applications/defaults.list");
+        readKeyValues(f, defaultApps);
+        lastModified[dirs[i]] = lm;
     }
-    read = true;
     if (defaultApps.contains(contentType))
         return defaultApps.value(contentType);
     QString generalizedType(generalizeMimeType(contentType));
