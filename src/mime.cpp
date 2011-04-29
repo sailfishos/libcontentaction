@@ -46,12 +46,12 @@
 
 namespace { // Helper functions
 
-void readLastModifiedTime(const QString& filename, bool& success, time_t& time)
+void readLastModifiedTime(const QString& filename, bool& success, long& time)
 {
     struct stat statData;
     if (stat(filename.toLatin1().constData(), &statData) == 0) {
         success = true;
-        time = statData.st_mtime;
+        time = statData.st_mtim.tv_sec * 1000 + statData.st_mtim.tv_nsec / 1000000;
     }
     else {
         success = false;
@@ -99,7 +99,7 @@ QHash<QString, QString> readChangedKeyValueFiles(const QStringList& dirs,
     // is changed again.
 
     // The "last modified" times of the files this function has read.
-    static QHash<QString, time_t> lastModified;
+    static QHash<QString, long> lastModified;
 
     QHash<QString, QString> temp;
     // Whether a file has changed so that we need to re-read all the overriding
@@ -109,7 +109,7 @@ QHash<QString, QString> readChangedKeyValueFiles(const QStringList& dirs,
     // ones.
     for (int i = dirs.size()-1; i >= 0; --i) {
         bool success = false;
-        time_t lm = 0;
+        long lm = 0;
         QString filename = dirs[i] + suffix;
         readLastModifiedTime(filename, success, lm);
         if (!success) {

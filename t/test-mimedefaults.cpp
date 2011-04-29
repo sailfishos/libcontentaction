@@ -69,14 +69,8 @@ void TestMimeDefaults::setMimeDefault()
     // the libcontentaction c++ api from here. This way we simulate querying the
     // mime default twice during the run of a process.
 
-    // The waits are needed since the resolution of the "last modified time" is
-    // one second.  This will be a problem if somebody sets the mime default
-    // twice during the same second, and somebody reads it between those two
-    // changes.
-
     {
         ContentAction::setMimeDefault("text/plain", "ubermeego");
-        QTest::qWait(1000);
         Action a = ContentAction::defaultActionForMime("text/plain");
         QCOMPARE(a.name(), QString("ubermeego"));
     }
@@ -85,7 +79,6 @@ void TestMimeDefaults::setMimeDefault()
     // default for some reason.
     {
         ContentAction::setMimeDefault("text/plain", "ubermimeopen");
-        QTest::qWait(1000);
         Action a = ContentAction::defaultActionForMime("text/plain");
         QCOMPARE(a.name(), QString("ubermimeopen"));
     }
