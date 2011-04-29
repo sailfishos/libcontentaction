@@ -27,6 +27,8 @@
 #include <QTest>
 #include <QDebug>
 
+#include <sys/stat.h>
+
 using namespace ContentAction;
 
 class TestMimeDefaults : public QObject
@@ -44,10 +46,21 @@ private Q_SLOTS:
 
 void TestMimeDefaults::initTestCase()
 {
-    // Set the environment variables but don't overwrite them if they're already
-    // set.
-    setenv("CONTENTACTION_ACTIONS", CONTENTACTION_ACTIONS, 0);
+    // Setting the XDG_DATA_HOME to the value in env.h, but not overriding it if
+    // it's already set.
     setenv("XDG_DATA_HOME", XDG_DATA_HOME, 0);
+
+    // Killing XDG_DATA_DIRS is normally not a good idea, but here we don't need
+    // any "determining mime type of file" functionalities. However, we need
+    // XDG_DATA_HOME to be writable by the test program.
+    setenv("XDG_DATA_DIRS", getenv("XDG_DATA_HOME"), 1);
+
+    char temp[30] = "./lcaXXXXXX";
+    mkdtemp(temp);
+    QString tempApplications = QString(temp) + "/applications";
+    setenv("XDG_DATA_HOME", temp, 1);
+
+    mkdir(tempApplications.toLatin1().constData(), 0777);
 }
 
 void TestMimeDefaults::cleanupTestCase()
