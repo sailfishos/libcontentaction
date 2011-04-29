@@ -46,16 +46,14 @@
 
 namespace { // Helper functions
 
-void readLastModifiedTime(const QString& filename, bool& success, long& time)
+bool readLastModifiedTime(const QString& filename, long& time)
 {
     struct stat statData;
     if (stat(filename.toLatin1().constData(), &statData) == 0) {
-        success = true;
         time = statData.st_mtim.tv_sec * 1000 + statData.st_mtim.tv_nsec / 1000000;
+        return true;
     }
-    else {
-        success = false;
-    }
+    return false;
 }
 
 // Reads "Key=Value" formatted lines from the file, and updates dict with
@@ -108,16 +106,13 @@ QHash<QString, QString> readChangedKeyValueFiles(const QStringList& dirs,
     // Read the files in such a order that the first ones override the later
     // ones.
     for (int i = dirs.size()-1; i >= 0; --i) {
-        bool success = false;
         long lm = 0;
         QString filename = dirs[i] + suffix;
-        readLastModifiedTime(filename, success, lm);
-        if (!success) {
+        if (!readLastModifiedTime(filename, lm)) {
             // Most probably the file doesn't exist.
             continue;
         }
-        if (!rereadAllThatFollows && lastModified.contains(filename) &&
-            lm == lastModified[filename]) {
+        if (!rereadAllThatFollows && lm == lastModified.value(filename)) {
             continue;
         }
         QFile f(filename);
