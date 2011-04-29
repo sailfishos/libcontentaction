@@ -58,6 +58,76 @@ void readLastModifiedTime(const QString& filename, bool& success, time_t& time)
     }
 }
 
+// Reads "Key=Value" formatted lines from the file, and updates dict with
+// them.
+void readKeyValues(QFile& file, QHash<QString, QString>& dict)
+{
+    if (!file.open(QIODevice::ReadOnly)) {
+        return;
+    }
+    QTextStream stream(&file);
+    while (!stream.atEnd()) {
+        QString line = stream.readLine();
+        if (line.isNull())
+            break;
+        if (line.isEmpty() || line[0] == '[' || line[0] == '#')
+            continue;
+        int eq = line.indexOf('=');
+        if (eq < 0)
+            continue;
+        dict.insert(line.left(eq).trimmed(), line.mid(eq + 1).trimmed());
+    }
+    file.close();
+}
+
+
+QHash<QString, QString> readChangedKeyValueFiles(const QStringList& dirs,
+                                                 const QString& suffix)
+{
+    // Read each file if it has changed since the last time we read it.
+
+    // Using the "last modified" time for this purpose might be stupid, but what
+    // else can we do.  Using a QFileSystemWatcher (or a similar solution) in a
+    // library without a LifeTimeManager object is a bad idea too.  Deleting the
+    // QFileSystemWatcher at the right moment is tricky and cannot be enforced
+    // by the library.
+
+    // The resolution of the "last modified time" is one second.  This will be a
+    // problem if somebody sets the mime default twice during the same second,
+    // and somebody reads it between those two changes.  In this case, the
+    // second change remains undetected by the reading process, until the file
+    // is changed again.
+
+    // The "last modified" times of the files this function has read.
+    static QHash<QString, time_t> lastModified;
+
+    QHash<QString, QString> temp;
+    // Whether a file has changed so that we need to re-read all the overriding
+    // files, too.
+    bool rereadAllThatFollows = false;
+    // Read the files in such a order that the first ones override the later
+    // ones.
+    for (int i = dirs.size()-1; i >= 0; --i) {
+        bool success = false;
+        time_t lm = 0;
+        QString filename = dirs[i] + suffix;
+        readLastModifiedTime(filename, success, lm);
+        if (!success) {
+            // Most probably the file doesn't exist.
+            continue;
+        }
+        if (!rereadAllThatFollows && lastModified.contains(filename) &&
+            lm == lastModified[filename]) {
+            continue;
+        }
+        QFile f(filename);
+        readKeyValues(f, temp);
+        lastModified[filename] = lm;
+        rereadAllThatFollows = true;
+    }
+    return temp;
+}
+
 } // end of unnamed namespace
 
 namespace ContentAction {
@@ -170,28 +240,6 @@ static void writeDefaultsList(const QHash<QString, QString>& defaults)
 
 }
 
-// Reads "Key=Value" formatted lines from the file, and updates dict with
-// them.
-static void readKeyValues(QFile& file, QHash<QString, QString>& dict)
-{
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-    QTextStream stream(&file);
-    while (!stream.atEnd()) {
-        QString line = stream.readLine();
-        if (line.isNull())
-            break;
-        if (line.isEmpty() || line[0] == '[' || line[0] == '#')
-            continue;
-        int eq = line.indexOf('=');
-        if (eq < 0)
-            continue;
-        dict.insert(line.left(eq).trimmed(), line.mid(eq + 1).trimmed());
-    }
-    file.close();
-}
-
 /// Sets the \a action as a default application to the given \a mimeType.
 void setMimeDefault(const QString& mimeType, const Action& action)
 {
@@ -253,41 +301,18 @@ QString Internal::defaultAppForContentType(const QString& contentType)
 {
     static QHash<QString, QString> defaultApps;
 
-    // What were the "last modified" times of them when the various
-    // defaults.list files were read the last time.
-    static QHash<QString, time_t> lastModified;
-
-    // Read each defaults.list if it has changed since the last time we read it.
-    // Already checking the "last modified" time might be too expensive for this
-    // purpose, but what else can we do.. (Adding a QFileSystemWatcher or
-    // similar is a bad idea.)
-
-    // The resolution of the "last modified time" is one second.  This will be a
-    // problem if somebody sets the mime default twice during the same second,
-    // and somebody reads it between those two changes.  In this case, the
-    // second change remains undetected by the reading process, until the file
-    // is changed again.
-
-    // Note: this function doesn't work properly if there are multiple
-    // defaults.lists.  (Changes to any of them will override other values, even
-    // if the changed file has lower precedence than the others.)
-
     QStringList dirs = xdgDataDirs();
-    for (int i = dirs.size()-1; i >= 0; --i) {
-        bool success = false;
-        time_t lm = 0;
-        readLastModifiedTime(dirs[i] + "/applications/defaults.list", success, lm);
-        if (!success) {
-            // Most probably the file doesn't exist.
-            continue;
-        }
-        if (lastModified.contains(dirs[i]) &&
-            lm == lastModified[dirs[i]]) {
-            continue;
-        }
-        QFile f(dirs[i] + "/applications/defaults.list");
-        readKeyValues(f, defaultApps);
-        lastModified[dirs[i]] = lm;
+
+    // Read the defaults.lists which have changed since we read them the last
+    // time.
+    QHash<QString, QString> temp = readChangedKeyValueFiles(dirs,
+                                                            "/applications/defaults.list");
+
+    // Merge the results into our cache
+    QHashIterator<QString, QString> it(temp);
+    while (it.hasNext()) {
+        it.next();
+        defaultApps.insert(it.key(), it.value());
     }
     if (defaultApps.contains(contentType))
         return defaultApps.value(contentType);
@@ -303,39 +328,15 @@ QString Internal::defaultAppForContentType(const QString& contentType)
 const QHash<QString, QStringList>& Internal::mimeApps()
 {
     static QHash<QString, QStringList> mimecache;
-    // When have we last consider reading various mimeinfo.cache files
-    static uint lastTime = 0;
-    // What were the "last modified" times of them when they were read
-    static QHash<QString, uint> lastModified;
-
-    // Read each mimeinfo.cache if 1) it has never been read or 2) 1 min has
-    // passed since our previous timestamp check && timestamp shows it has
-    // changed.
-
-    // This is a hack but so is trying to use QFileSystemWatcher from a library
-    // without a LifeTimeManager object. Deleting the QFileSystemWatcher at the
-    // right moment is tricky and cannot be enforced by the library.
-
-    uint currentTime = QDateTime::currentDateTime().toTime_t();
-    if (currentTime - lastTime < 60)
-        return mimecache;
-    lastTime = currentTime;
 
     QStringList dirs = xdgDataDirs();
-    QHash<QString, QString> temp;
-    for (int i = dirs.size()-1; i >= 0; --i) {
-        QFile f(dirs[i] + "/applications/mimeinfo.cache");
-        if (!f.exists())
-            continue;
-        // Check the "last modified" time of the file
-        uint lm = QFileInfo(f.fileName()).lastModified().toTime_t();
-        if (lastModified.contains(dirs[i]) &&
-            lm == lastModified[dirs[i]])
-            continue;
 
-        readKeyValues(f, temp);
-        lastModified[dirs[i]] = lm;
-    }
+    // Read the mimeinfo.caches which have changed since we read them the last
+    // time.
+    QHash<QString, QString> temp = readChangedKeyValueFiles(dirs,
+                                                            "/applications/mimeinfo.cache");
+
+    // Merge the changes into our cache
     QHashIterator<QString, QString> it(temp);
     while (it.hasNext()) {
         it.next();
