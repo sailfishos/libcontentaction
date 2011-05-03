@@ -119,7 +119,8 @@ ContentInfo::forMime (const QString &mimeType)
           priv->icon = names[0];
         }
       priv->description = g_content_type_get_description (contentType);
-      free (contentType);
+      g_object_unref (icon);
+      g_free (contentType);
     }
   return ContentInfo(priv);
 }
