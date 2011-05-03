@@ -118,8 +118,13 @@ ContentInfo::forMime (const QString &mimeType)
           const gchar *const *names = g_themed_icon_get_names (G_THEMED_ICON(icon));
           priv->icon = names[0];
         }
-      priv->description = g_content_type_get_description (contentType);
       g_object_unref (icon);
+
+      gchar* description = g_content_type_get_description (contentType);
+      // This will copy the data
+      priv->description = QString(description);
+      g_free (description);
+
       g_free (contentType);
     }
   return ContentInfo(priv);
@@ -161,7 +166,10 @@ ContentInfo::forData (const QByteArray &bytes)
    char *content_type = g_content_type_guess (NULL, (const guchar *)bytes.constData(), bytes.size(), NULL);
    if (content_type)
      {
-       ContentInfo info = forMime (g_content_type_get_mime_type (content_type));
+       gchar* mime_type = g_content_type_get_mime_type (content_type);
+       ContentInfo info = forMime (mime_type);
+       if (mime_type != 0)
+           g_free (mime_type);
        free (content_type);
        return info;
      }
