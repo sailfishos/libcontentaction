@@ -27,7 +27,7 @@
 #include <QTest>
 #include <QDebug>
 
-#include <sys/stat.h>
+#include <QDir>
 
 using namespace ContentAction;
 
@@ -42,6 +42,8 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void setMimeDefault();
+private:
+    QString tempApplications;
 };
 
 void TestMimeDefaults::initTestCase()
@@ -55,16 +57,19 @@ void TestMimeDefaults::initTestCase()
     // XDG_DATA_HOME to be writable by the test program.
     setenv("XDG_DATA_DIRS", getenv("XDG_DATA_HOME"), 1);
 
-    char temp[30] = "./lcaXXXXXX";
-    mkdtemp(temp);
-    QString tempApplications = QString(temp) + "/applications";
-    setenv("XDG_DATA_HOME", temp, 1);
+    char temp[30] = "./mimedefaults-test";
 
-    mkdir(tempApplications.toLatin1().constData(), 0777);
+    setenv("XDG_DATA_HOME", temp, 1);
+    tempApplications = QString(temp) + "/applications";
+    QDir(".").mkpath(tempApplications);
 }
 
 void TestMimeDefaults::cleanupTestCase()
 {
+    // Unfortunately, no rmtree in Qt/C++.
+    QFile file(tempApplications + "/defaults.list");
+    file.remove();
+    QDir(".").rmpath(QString(tempApplications));
 }
 
 void TestMimeDefaults::init()
