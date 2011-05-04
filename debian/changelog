@@ -1,6 +1,8 @@
 libcontentaction (0.1.52~unreleased) unstable; urgency=low
 
-  *
+  * Fixes: NB#252034
+  * Fixing ContextPropertyInfo memory leaks, the return values of some glib functions
+  were not g_object_unreffed or g_freed properly.
 
  -- Marja Hölttä <marja.holtta@nokia.com>  Fri, 29 Apr 2011 16:14:12 +0300
 
