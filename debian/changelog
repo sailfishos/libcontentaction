@@ -1,3 +1,9 @@
+libcontentaction (0.1.54~unreleased) unstable; urgency=low
+
+  * 
+
+ -- Jean-Luc Lamadon <jean-luc.lamadon@nokia.com>  Tue, 10 May 2011 10:21:00 +0300
+
 libcontentaction (0.1.53) unstable; urgency=low
 
   * Fixes: NB#253414 - web-search-generic.desktop should be the default handler for mimetype x-web-search
