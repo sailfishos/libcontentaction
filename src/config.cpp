@@ -27,6 +27,9 @@
 #include <QDir>
 #include <QStringList>
 #include <QMultiHash>
+#include <QSystemDeviceInfo>
+
+QTM_USE_NAMESPACE
 
 const QString ContentAction::HighlighterMimeClass("x-maemo-highlight/");
 
@@ -150,7 +153,7 @@ bool ConfigReader::endElement(const QString& nsuri, const QString& name,
     case inTrackerCondition: {
         if (qname == "tracker-condition")
             state = inActions;
-        Tracker_cfg.insert(condName, sparqlSnippet);
+        Tracker_cfg.insert(condName, bindParams (sparqlSnippet));
         break;
     }
     default:
@@ -244,4 +247,21 @@ const QHash<QString, QString>& ContentAction::Internal::trackerConditions()
 {
     readConfig();
     return Tracker_cfg;
+}
+
+QString ContentAction::Internal::bindParams(const QString &str)
+{
+    static bool initialized = false;
+    static QString manufacturer;
+    static QString model;
+
+    if (!initialized) {
+        QSystemDeviceInfo sid;
+        manufacturer = sid.manufacturer();
+        model = sid.productName();
+        initialized = true;
+    }
+    
+    QString res = str;
+    return res.replace("@MANUFACTURER@", manufacturer).replace("@MODEL@", model);
 }

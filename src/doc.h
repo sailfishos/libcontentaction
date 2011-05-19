@@ -210,6 +210,13 @@ x-maemo-nepomuk/contact and \c x-maemo-nepomuk/contact-with-phone-number.
 </actions>
 \endcode
 
+In the SparQL snippet, you can the following parameters:
+
+\code
+@MANUFACTURER@   -  The manufacturer of the current device, as used in the nfo:Equipment class.
+@MODEL@          -  The model of the current device, as used in the nfo:Equipment class. 
+\endcode
+
 A condition is evaluated by executing the following SparQL query:
 
 \code
