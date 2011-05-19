@@ -12,6 +12,7 @@ AM_CPPFLAGS = \
 	$(QtCore_CFLAGS) \
 	$(QtXml_CFLAGS) \
 	$(QtDBus_CFLAGS) \
+	$(QtSystemInfo_CFLAGS) \
 	$(GIO_CFLAGS) \
 	$(MT_CFLAGS) \
 	-DDEFAULT_ACTIONS=\"@datadir@/contentaction\" \
@@ -22,6 +23,7 @@ LIBS += \
 	$(QtCore_LIBS) \
 	$(QtXml_LIBS) \
 	$(QtDBus_LIBS) \
+	$(QtSystemInfo_LIBS) \
 	$(GIO_LIBS) \
 	$(MT_LIBS)
 

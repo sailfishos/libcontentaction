@@ -100,7 +100,7 @@
 
   <tracker-condition name="device-captured-video">
     { ?uri a nfo:Video ;
-    nfo:equipment "urn:equipment:booti:008:" . }
+    nfo:equipment "urn:equipment:@MANUFACTURER@:@MODEL@:" . }
   </tracker-condition>
 
   <tracker-condition name="web-history">
