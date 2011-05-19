@@ -1,10 +1,12 @@
-libcontentaction (0.1.54~unreleased) unstable; urgency=low
+libcontentaction (0.1.54) unstable; urgency=low
 
   * Added @MANUFACTURER@ and @MODEL@ parameters for Tracker conditions.
-    Use them for device-captured-video.
+    Use them for device-captured-video.  Use galleryserviceaction as the
+    default for device-captured-video.
+  
     Fixes: NB#254882 - Video is not played using Gallery when opened from search application
 
- -- Jean-Luc Lamadon <jean-luc.lamadon@nokia.com>  Tue, 10 May 2011 10:21:00 +0300
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Thu, 19 May 2011 12:56:51 +0300
 
 libcontentaction (0.1.53) unstable; urgency=low
 
