@@ -1,7 +1,8 @@
 libcontentaction (0.1.55~unreleased) unstable; urgency=low
 
-  * 
-
+  * Simplify and generalize http-url regexp.
+    Fixes: NB#253021 - Web URL sent in SMS is not hyper-linked properly.
+  
  -- Marius Vollmer <marius.vollmer@nokia.com>  Thu, 19 May 2011 13:53:42 +0300
 
 libcontentaction (0.1.54) unstable; urgency=low
