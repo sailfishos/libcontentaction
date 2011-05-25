@@ -211,7 +211,7 @@ int main(int argc, char **argv)
 
     QStringList args;
     for (int i = 1; i < argc; ++i)
-        args << QString(argv[i]);
+        args << QString::fromLocal8Bit(argv[i]);
 
     UriMode mode = NoMode;
     ActionToDo todo = Nothing;
@@ -370,7 +370,7 @@ int main(int argc, char **argv)
         QList<QUrl> uris;
         for (int i = 0; i < args.size(); i++) {
             if (args[i].startsWith ("file:")) {
-                uris << QUrl::fromEncoded(args[i].toAscii());
+                uris << QUrl::fromEncoded(args[i].toLocal8Bit());
             } else {
                 uris << QUrl::fromLocalFile(args[i]);
             }
