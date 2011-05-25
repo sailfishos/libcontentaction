@@ -1,8 +1,10 @@
-libcontentaction (0.1.56~unreleased) unstable; urgency=low
+libcontentaction (0.1.56) unstable; urgency=low
 
-  * 
+  * Allow "|" characters in URLs.
+    Fixes: NB#258358 - OVI Map link is not properly recognized as a URL
+  * Encoding fixes for lca-tool.
 
- -- Marius Vollmer <marius.vollmer@nokia.com>  Tue, 24 May 2011 14:36:13 +0300
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Wed, 25 May 2011 15:36:48 +0300
 
 libcontentaction (0.1.55) unstable; urgency=low
 
