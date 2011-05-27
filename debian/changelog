@@ -1,8 +1,8 @@
-libcontentaction (0.1.57~unreleased) unstable; urgency=low
+libcontentaction (0.1.57) unstable; urgency=low
 
-  * 
+  * Make tests depend on nukkumatti, for interesting reasons.
 
- -- Marius Vollmer <marius.vollmer@nokia.com>  Wed, 25 May 2011 15:37:31 +0300
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Fri, 27 May 2011 14:15:03 +0300
 
 libcontentaction (0.1.56) unstable; urgency=low
 
