@@ -1,3 +1,9 @@
+libcontentaction (0.1.59~unreleased) unstable; urgency=low
+
+  * 
+
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Tue, 07 Jun 2011 14:15:03 +0300
+
 libcontentaction (0.1.58) unstable; urgency=low
 
   * Fixes: NB#263257 - QtM SystemInfo model() and productName() return values swapped
