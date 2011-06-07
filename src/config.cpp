@@ -258,7 +258,7 @@ QString ContentAction::Internal::bindParams(const QString &str)
     if (!initialized) {
         QSystemDeviceInfo sid;
         manufacturer = sid.manufacturer();
-        model = sid.productName();
+        model = sid.model();
         initialized = true;
     }
     
