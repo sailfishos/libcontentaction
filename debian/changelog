@@ -1,6 +1,6 @@
 libcontentaction (0.1.59~unreleased) unstable; urgency=low
 
-  * 
+  * Fixes: NB#265554 - OTC - Cannot extract or dial USSD numbers from the body of an SMS
 
  -- Marius Vollmer <marius.vollmer@nokia.com>  Tue, 07 Jun 2011 14:15:03 +0300
 
