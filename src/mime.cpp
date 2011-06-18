@@ -173,7 +173,11 @@ QString Internal::mimeForFile(const QUrl& uri)
                                            NULL, 0, NULL);
         QString res;
         if (type)
-          res = g_content_type_get_mime_type (type);
+          {
+            gchar *temp = g_content_type_get_mime_type (type);
+            res = temp;
+            g_free (temp);
+          }
         free (type);
         return res;
     }
