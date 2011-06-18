@@ -105,7 +105,7 @@ ContentInfo::forMime (const QString &mimeType)
 {
   g_type_init ();
 
-  char *contentType = g_content_type_from_mime_type (mimeType.toUtf8());
+  gchar *contentType = g_content_type_from_mime_type (mimeType.toUtf8());
 
   Private *priv = new Private;
   priv->isValid = true;
@@ -163,14 +163,14 @@ ContentInfo::forData (const QByteArray &bytes)
 {
    g_type_init ();
   
-   char *content_type = g_content_type_guess (NULL, (const guchar *)bytes.constData(), bytes.size(), NULL);
+   gchar *content_type = g_content_type_guess (NULL, (const guchar *)bytes.constData(), bytes.size(), NULL);
    if (content_type)
      {
        gchar* mime_type = g_content_type_get_mime_type (content_type);
        ContentInfo info = forMime (mime_type);
        if (mime_type != 0)
            g_free (mime_type);
-       free (content_type);
+       g_free (content_type);
        return info;
      }
    else
