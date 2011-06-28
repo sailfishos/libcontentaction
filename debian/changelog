@@ -1,8 +1,8 @@
-libcontentaction (0.1.61~unreleased) unstable; urgency=low
+libcontentaction (0.1.61) unstable; urgency=low
 
   * Fixes: NB#266357 - Memory leak found in libcontentaction
 
- -- Jean-Luc Lamadon <jean-luc.lamadon@nokia.com>  Fri, 17 Jun 2011 14:47:22 +0300
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Tue, 28 Jun 2011 13:02:16 +0300
 
 libcontentaction (0.1.60) unstable; urgency=low
 
