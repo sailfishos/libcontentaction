@@ -1,8 +1,9 @@
-libcontentaction (0.1.62~unreleased) unstable; urgency=low
+libcontentaction (0.1.62) unstable; urgency=low
 
-  * 
+  * Added default for maps-url.
+    Fixes: NB#269418 - Need default handler for maps-url
 
- -- Marius Vollmer <marius.vollmer@nokia.com>  Tue, 28 Jun 2011 13:03:21 +0300
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Wed, 29 Jun 2011 09:41:49 +0300
 
 libcontentaction (0.1.61) unstable; urgency=low
 
