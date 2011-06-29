@@ -86,6 +86,7 @@ x-maemo-highlight/mms-url=videosuiteinterface.desktop
 x-maemo-highlight/ovi-store-url=ovistoreclient.desktop
 x-maemo-highlight/phone-number=opencontactcardforphonenumber.desktop
 x-maemo-highlight/rtsp-url=videosuiteinterface.desktop
+x-maemo-highlight/maps-url=maps.desktop
 x-maemo-nepomuk/calendar-event=calendar.desktop
 x-maemo-nepomuk/calendar-journal=notes.desktop
 x-maemo-nepomuk/calendar-todo=calendar.desktop
