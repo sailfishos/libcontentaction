@@ -87,3 +87,6 @@ this is an url www.myurl.com/foo/bar and e-mail first@home.com
 Http://www.capital.com
 hTTp://www.capital.com
 Www.capitalwww.com
+
+xxx http://ct.nokia.com?761435127&FK20R the slash after the hostname is optional.
+xxx http://maps.ovi.com/#|50.060185|19.9328789|11|0|0|normal.day and bars are ok, too.
