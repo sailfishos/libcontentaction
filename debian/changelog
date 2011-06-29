@@ -1,8 +1,9 @@
-libcontentaction (0.1.63~unreleased) unstable; urgency=low
+libcontentaction (0.1.63) unstable; urgency=low
 
-  * 
+  * Don't allow phone numbers to end in a space.
+    Fixes: NB#265554 - OTC - Cannot extract or dial USSD numbers from the body of an SMS
 
- -- Marius Vollmer <marius.vollmer@nokia.com>  Wed, 29 Jun 2011 16:18:38 +0300
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Wed, 29 Jun 2011 17:18:07 +0300
 
 libcontentaction (0.1.62) unstable; urgency=low
 
