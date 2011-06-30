@@ -97,6 +97,12 @@
           lca-cita-test test-mimedefaults
         </step>
       </case>
+      <case name="test-highlight">
+        <step expected_result="0">
+          lca-cita-test test-highlight.sh
+        </step>
+      </case>
+
 
       <environments>
         <scratchbox>true</scratchbox>
