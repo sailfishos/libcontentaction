@@ -4,6 +4,9 @@ srcdir=.
 [ -r ./env.sh ] && . ./env.sh;
 . $srcdir/testlib.sh
 
+# Restrict us to our own action definitions
+export XDG_DATA_DIRS=$XDG_DATA_HOME
+
 strstr() {
     expr "$1" : "$2" >/dev/null;
 }
