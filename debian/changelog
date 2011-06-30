@@ -1,6 +1,13 @@
 libcontentaction (0.1.64~unreleased) unstable; urgency=low
 
-  * 
+  * Revert change in 0.1.55, "Simplify and generalize http-url regexp",
+    which accidentally re-opened NB#217329.
+  * Make sure that the highlight test cases are actually run, and make
+    them pass again.
+  
+    Fixes: NB#217329 - HTTP URL links within mail content are detected in
+                       a wrong way, if the url is inside paretheses in the
+                       mail
 
  -- Marius Vollmer <marius.vollmer@nokia.com>  Wed, 29 Jun 2011 17:19:02 +0300
 
