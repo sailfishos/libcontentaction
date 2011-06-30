@@ -36,7 +36,8 @@ citest_SCRIPTS = \
 	test-schemes.sh \
 	test-special-chars.py \
 	test-invalid-defaults.py \
-	test-regexps.py
+	test-regexps.py \
+	test-highlight.sh
 
 citest_PROGRAMS = \
 	test-info \
@@ -59,7 +60,8 @@ citest_DATA = \
 	plaintext \
 	empty.pdf \
 	launchme.desktop \
-	test-image.png
+	test-image.png \
+	hlinput.txt
 
 check_PROGRAMS = \
 	linktest \
