@@ -1,3 +1,9 @@
+libcontentaction (0.1.65) unstable; urgency=low
+
+  * Fixes: NB#221698 - TLF: Deep link support for Ovi Music
+
+ -- Jean-Luc Lamadon <jean-luc.lamadon@nokia.com>  Thu, 28 Jul 2011 16:09:14 +0300
+
 libcontentaction (0.1.64) unstable; urgency=low
 
   * Revert change in 0.1.55, "Simplify and generalize http-url regexp",
