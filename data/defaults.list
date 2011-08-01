@@ -84,6 +84,7 @@ x-maemo-highlight/feed-url=browser.desktop
 x-maemo-highlight/http-url=browser.desktop
 x-maemo-highlight/mms-url=videosuiteinterface.desktop
 x-maemo-highlight/ovi-store-url=ovistoreclient.desktop
+x-maemo-highlight/ovi-music-url=morpheus.desktop
 x-maemo-highlight/phone-number=opencontactcardforphonenumber.desktop
 x-maemo-highlight/rtsp-url=videosuiteinterface.desktop
 x-maemo-highlight/maps-url=maps.desktop
