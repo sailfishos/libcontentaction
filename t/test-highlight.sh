@@ -13,6 +13,8 @@ strstr() {
 
 res=$(lca-tool --highlight < $srcdir/hlinput.txt)
 
+echo $res
+
 strstr "$res" ".*61 73 '+44 433 2236' caller" || exit 1
 strstr "$res" ".*77 80 '911' caller" || exit 1
 strstr "$res" ".*15 33 'email@address.here' emailer" || exit 1 
@@ -126,6 +128,9 @@ strstr "$res" ".*'Www.capitalwww.com' browser" || exit 8
 
 strstr "$res" ".*'http://ct.nokia.com?761435127&FK20R' browser" || exit 9
 strstr "$res" ".*'http://maps.ovi.com/#|50.060185|19.9328789|11|0|0|normal.day' browser" || exit 9
+
+# A URL immediately followed by non-ascii letters.
+strstr "$res" ".*'www.10010.com' browser" || exit 10
 
 strstr "$res" ".*'"
 exit 0
