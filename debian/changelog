@@ -1,3 +1,10 @@
+libcontentaction (0.1.66) unstable; urgency=low
+
+  * Fixes: NB#274983 - Chinese characters are identified as a part of link
+                       in a SMS message.
+
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Wed, 03 Aug 2011 14:03:00 +0300
+
 libcontentaction (0.1.65) unstable; urgency=low
 
   * Fixes: NB#221698 - TLF: Deep link support for Ovi Music
