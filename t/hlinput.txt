@@ -92,3 +92,9 @@ xxx http://ct.nokia.com?761435127&FK20R the slash after the hostname is optional
 xxx http://maps.ovi.com/#|50.060185|19.9328789|11|0|0|normal.day and bars are ok, too.
 
 xxx www.10010.com四川专区特惠活动进行中 xxx
+
+xxx http://music.ovi.com xxx
+xxx http://music.ovi.mobi xxx
+xxx http://music.ovi.com.cn xxx
+xxx http://music.ovi.com/cn/zh/pc xxx
+xxx http://music.ovi.mobi/fi/fi/pc xxx
