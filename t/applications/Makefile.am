@@ -23,4 +23,5 @@ dist_citestapp_DATA = \
 	gallerywithfilename.desktop \
 	browser.desktop \
 	special-browser.desktop \
-	regexpmatcher.desktop
+	regexpmatcher.desktop \
+	ovi-music.desktop
