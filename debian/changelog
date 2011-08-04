@@ -1,3 +1,9 @@
+libcontentaction (0.1.67~unreleased) unstable; urgency=low
+
+  * 
+
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Thu, 04 Aug 2011 14:58:35 +0300
+
 libcontentaction (0.1.66) unstable; urgency=low
 
   * Fixes: NB#274983 - Chinese characters are identified as a part of link
