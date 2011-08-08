@@ -1,6 +1,6 @@
-libcontentaction (0.1.67~unreleased) unstable; urgency=low
+libcontentaction (0.1.67) unstable; urgency=low
 
-  * 
+  * Fix test suite package to include all necessary files.
 
  -- Marius Vollmer <marius.vollmer@nokia.com>  Thu, 04 Aug 2011 14:58:35 +0300
 
