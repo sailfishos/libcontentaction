@@ -13,7 +13,7 @@ libcontentaction (0.1.66) unstable; urgency=low
 
 libcontentaction (0.1.65) unstable; urgency=low
 
-  * Fixes: NB#221698 - TLF: Deep link support for Ovi Music
+  * Fikses: NB#221698 - TLF: Deep link support for Ovi Music
 
  -- Jean-Luc Lamadon <jean-luc.lamadon@nokia.com>  Thu, 28 Jul 2011 16:09:14 +0300
 
