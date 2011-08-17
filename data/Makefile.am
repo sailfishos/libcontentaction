@@ -15,3 +15,6 @@ dist_applications_DATA = \
 
 backupconfdir = $(datadir)/backup-framework/applications
 dist_backupconf_DATA = contentaction.conf
+
+rfsscriptdir = $(sysconfdir)/osso-rfs-scripts
+dist_rfsscript_SCRIPTS = contentaction-rfs.sh
