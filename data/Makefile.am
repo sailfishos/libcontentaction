@@ -12,3 +12,6 @@ dist_testdata_DATA = \
 applicationsdir = $(datadir)/applications
 dist_applications_DATA = \
 	defaults.list
+
+backupconfdir = $(datadir)/backup-framework/applications
+dist_backupconf_DATA = contentaction.conf
