@@ -1,4 +1,4 @@
-libcontentaction (0.1.68~unreleased) unstable; urgency=low
+libcontentaction (0.1.68) unstable; urgency=low
 
   * Fixes: NB#265778 - Default actions for mime types are not backed up /
                        restored, and not restored to factory settings.
