@@ -1,6 +1,7 @@
 libcontentaction (0.1.68~unreleased) unstable; urgency=low
 
-  * 
+  * Fixes: NB#265778 - Default actions for mime types are not backed up /
+                       restored, and not restored to factory settings.
 
  -- Marius Vollmer <marius.vollmer@nokia.com>  Tue, 16 Aug 2011 16:53:36 +0300
 
