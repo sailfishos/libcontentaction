@@ -1,0 +1,104 @@
+#! /usr/bin/python
+
+# This program generates the complicated regular expressions used in
+# highlight1.xml, with the goal to dcoument them clearly and make
+# maintenance easier.
+#
+# Also, this file contains a number of test cases to run against the
+# created regular expressions.
+
+## Generators
+
+import re
+
+def rx_p (rx):
+    return "(" + rx + ")"
+
+def rx_ci (str):
+    return str
+
+def rx_or (*args):
+    return "|".join (map (rx_p, args))
+
+def rx_seq (*args):
+    return "".join (map (rx_p, args))
+
+def rx_repeat (rx, min=0, max=-1):
+    if min == 0 and max == -1:
+        return rx_p (rx) + "*"
+    elif min == 1 and max == -1:
+        return rx_p (rx) + "+"
+    elif min == 0 and max == 1:
+        return rx_p (rx) + "?"
+    else:
+        return rx_p (rx) + "{%d,%d}" % (min, max)
+
+def rx_opt (rx):
+    return rx_repeat (rx, 0, 1)
+
+def rx_test (rx, spec):
+    parts = spec.split ("|")
+    text = "".join (parts)
+    expected = [ parts[i] for i in range (1, len (parts), 2) ]
+    result = map (lambda m: m.group(0), re.finditer (rx, text))
+    if result != expected:
+        print "Ouch: ", result, "!=", expected
+
+## Phone numbers
+
+# A phone number consists of one or more digit-groups, separated in
+# various ways.
+#
+# Besides the usual digits 0-9, we also treat the characters 'p', 'w',
+# 'x', '*', and '#' as digits.
+#
+# A digit-group must be three or more digits, or two or more digits
+# enclosed in parentheses.
+#
+# A phone number can not consists solely of a parenthesized digit group.
+#
+# Separators are whitespace and the characters '-' and '.'.
+#
+# A phone number can also be prefixed with a "callto://", "sms://", or
+# "tel://" scheme.
+#
+# Corner cases are explained with test cases below.
+
+ph_url_prefix = rx_or (rx_ci ("callto://"),
+                       rx_ci ("sms://"),
+                       rx_ci ("tel://"))
+
+ph_digit = "[0-9pwx#*+]"
+
+ph_bare_digit_group = rx_repeat (ph_digit, 3, 20)
+
+ph_paren_digit_group = rx_seq ("\(", rx_repeat (ph_digit, 2, 10), "\)")
+
+ph_digit_group = rx_or (ph_bare_digit_group, ph_paren_digit_group)
+
+ph_separator = rx_repeat ("[ .-]", 1)
+
+ph_groups = rx_seq (rx_or (rx_seq (ph_digit_group,
+                                   rx_repeat (rx_seq (ph_separator, ph_digit_group), 1, 10)),
+                           ph_bare_digit_group),
+                    "(?!\d)")
+
+phonenumber = rx_seq (rx_opt (ph_url_prefix), ph_groups)
+
+print phonenumber
+
+rx_test (phonenumber, "call |12345| now")
+rx_test (phonenumber, "call 12 now")
+
+rx_test (phonenumber, "call |(555) 123456| now")
+rx_test (phonenumber, "call (|555|) now")
+rx_test (phonenumber, "call (|555|) 22 now")
+
+rx_test (phonenumber, "call |555.12346| now")
+rx_test (phonenumber, "call |555-12346| now")
+rx_test (phonenumber, "let's meet on 12.08 on 13:00. this year")
+
+rx_test (phonenumber, "call 12345678901234567890123456 now")
+
+rx_test (phonenumber, "|+358 (50) 12345675|")
+rx_test (phonenumber, "call |+358 (50) 12345675|, please")
