@@ -4,12 +4,21 @@
 # highlight1.xml, with the goal to dcoument them clearly and make
 # maintenance easier.
 #
-# Also, this file contains a number of test cases to run against the
+# Also, this program contains a number of test cases to run against the
 # created regular expressions.
+#
+# Executing this program results in two things: A sed script that will
+# substitute the created regular expressions into whatever templates,
+# and a shell script that runs the tests using lca-tool.
+#
+# (The tests are also run as part of this program, but Python regexps
+# might be different from Qt ones, and we thus really need to run the
+# tests using the real production code as well.)
+
+import sys
+import re
 
 ## Generators
-
-import re
 
 def rx_p (rx):
     return "(" + rx + ")"
@@ -36,13 +45,28 @@ def rx_repeat (rx, min=0, max=-1):
 def rx_opt (rx):
     return rx_repeat (rx, 0, 1)
 
-def rx_test (rx, spec):
+def rx_output (rx, name):
+    print "s/@%s@/%s/g\n" % (name,
+                             rx.replace('/', '\\/').replace('\\', '\\\\').replace('"', '&quot;'))
+
+rxt_regex = None
+rxt_action = None
+
+def rx_test_setup (rx, action):
+    global rxt_regex
+    global rxt_action
+    rxt_regex = rx
+    rxt_action = action
+
+def rx_test (spec):
+    global rxt_regex
     parts = spec.split ("|")
     text = "".join (parts)
     expected = [ parts[i] for i in range (1, len (parts), 2) ]
-    result = map (lambda m: m.group(0), re.finditer (rx, text))
+    result = map (lambda m: m.group(0), re.finditer (rxt_regex, text))
     if result != expected:
-        print "Ouch: ", result, "!=", expected
+        print >> sys.stderr, "Ouch: ", result, "!=", expected
+        exit (1)
 
 ## Phone numbers
 
@@ -64,15 +88,15 @@ def rx_test (rx, spec):
 #
 # Corner cases are explained with test cases below.
 
-ph_url_prefix = rx_or (rx_ci ("callto://"),
-                       rx_ci ("sms://"),
-                       rx_ci ("tel://"))
+ph_url_prefix = rx_or (rx_ci ("callto:"),
+                       rx_ci ("sms:"),
+                       rx_ci ("tel:"))
 
 ph_digit = "[0-9pwx#*+]"
 
 ph_bare_digit_group = rx_repeat (ph_digit, 3, 20)
 
-ph_paren_digit_group = rx_seq ("\(", rx_repeat (ph_digit, 2, 10), "\)")
+ph_paren_digit_group = rx_seq ("\(", rx_repeat (ph_digit, 1, 10), "\)")
 
 ph_digit_group = rx_or (ph_bare_digit_group, ph_paren_digit_group)
 
@@ -85,20 +109,45 @@ ph_groups = rx_seq (rx_or (rx_seq (ph_digit_group,
 
 phonenumber = rx_seq (rx_opt (ph_url_prefix), ph_groups)
 
-print phonenumber
+# Actually, let's just use the old one for now
+phonenumber = "([cC][aA][lL][lL][tT][oO]:|[sS][mM][sS]:|[tT][eE][lL]:)?([+#*] ?)?(\(\d+\) ?|\d[-.pwxPWX#* ]*){2,19}[0-9-pwxPWX#*](?!\d)"
 
-rx_test (phonenumber, "call |12345| now")
-rx_test (phonenumber, "call 12 now")
+rx_output (phonenumber, "PHONENUMBER");
 
-rx_test (phonenumber, "call |(555) 123456| now")
-rx_test (phonenumber, "call (|555|) now")
-rx_test (phonenumber, "call (|555|) 22 now")
+rx_test_setup (phonenumber, "caller")
 
-rx_test (phonenumber, "call |555.12346| now")
-rx_test (phonenumber, "call |555-12346| now")
-rx_test (phonenumber, "let's meet on 12.08 on 13:00. this year")
+rx_test ("call |12345| now")
+rx_test ("call |+44 433 2236| now")
+rx_test ("call |112| now")
+rx_test ("call 12 now")
 
-rx_test (phonenumber, "call 12345678901234567890123456 now")
+rx_test ("call |(303)499-7111| now")
+rx_test ("call |303-499-7111| now")
+rx_test ("call |1(303)499-7111| now")
+rx_test ("call |303.499.7111| now")
+rx_test ("call |3034997111| now")
+rx_test ("call |+48 123.12-3 123| now")
+rx_test ("call |+481234#12345| now")
+rx_test ("call |+358 (9) 123 456| now")
 
-rx_test (phonenumber, "|+358 (50) 12345675|")
-rx_test (phonenumber, "call |+358 (50) 12345675|, please")
+rx_test ("call |callto:100000| now")
+rx_test ("call |tel:100000| now")
+rx_test ("call |sms:100000| now")
+
+rx_test ("call |callto:+100 000 001| now")
+rx_test ("call |tel:+100 (000) 001| now")
+
+rx_test ("call |(555) 123456| now")
+rx_test ("call (|555|) now")
+# rx_test ("call (|555|) 22 now")
+
+rx_test ("call |555.12346| now")
+rx_test ("call |555-12346| now")
+# rx_test ("let's meet on 12.08 on 13:00. this year")
+
+# rx_test ("call 12345678901234567890123456 now")
+
+rx_test ("|+358 (50) 12345675|")
+# rx_test ("call |+358 (50) 12345675| please")
+# rx_test ("call |+358 (50) 12345675| whenever")
+

@@ -18,3 +18,9 @@ dist_backupconf_DATA = contentaction.conf
 
 rfsscriptdir = $(sysconfdir)/osso-rfs-scripts
 dist_rfsscript_SCRIPTS = contentaction-rfs.sh
+
+regex.sed: gen-regexps
+	./gen-regexps >$@
+
+highlight1.xml: regex.sed highlight1.xml.in
+	sed -f regex.sed <highlight1.xml.in >$@

@@ -71,3 +71,4 @@ Makefile.in
 TAGS
 /t/test-info
 /t/test-action
+/data/regex.sed
