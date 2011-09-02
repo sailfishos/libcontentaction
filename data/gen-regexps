@@ -17,6 +17,7 @@
 
 import sys
 import re
+from regextest import rx_test, rx_test_setup
 
 ## Generators
 
@@ -48,25 +49,6 @@ def rx_opt (rx):
 def rx_output (rx, name):
     print "s/@%s@/%s/g\n" % (name,
                              rx.replace('/', '\\/').replace('\\', '\\\\').replace('"', '&quot;'))
-
-rxt_regex = None
-rxt_action = None
-
-def rx_test_setup (rx, action):
-    global rxt_regex
-    global rxt_action
-    rxt_regex = rx
-    rxt_action = action
-
-def rx_test (spec):
-    global rxt_regex
-    parts = spec.split ("|")
-    text = "".join (parts)
-    expected = [ parts[i] for i in range (1, len (parts), 2) ]
-    result = map (lambda m: m.group(0), re.finditer (rxt_regex, text))
-    if result != expected:
-        print >> sys.stderr, "Ouch: ", result, "!=", expected
-        exit (1)
 
 ## Phone numbers
 
