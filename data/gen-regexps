@@ -17,7 +17,7 @@
 
 import sys
 import re
-from regextest import rx_test, rx_test_setup
+from regextest2 import rx_test, rx_test_setup, rx_run
 
 ## Generators
 
@@ -99,6 +99,7 @@ rx_output (phonenumber, "PHONENUMBER");
 rx_test_setup (phonenumber, "caller")
 
 rx_test ("call |12345| now")
+rx_test ("call |12345| or |23456| now")
 rx_test ("call |+44 433 2236| now")
 rx_test ("call |112| now")
 rx_test ("call 12 now")
@@ -133,3 +134,4 @@ rx_test ("|+358 (50) 12345675|")
 # rx_test ("call |+358 (50) 12345675| please")
 # rx_test ("call |+358 (50) 12345675| whenever")
 
+rx_run ()
