@@ -102,7 +102,9 @@
           lca-cita-test test-highlight.sh
         </step>
       </case>
-
+      <case name="generated-regex-testsuite">
+        <step expected_result="0">/usr/share/libcontentaction-tests/gen-regexps test</step>
+      </case>
 
       <environments>
         <scratchbox>true</scratchbox>

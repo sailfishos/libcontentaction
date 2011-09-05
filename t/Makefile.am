@@ -24,6 +24,8 @@ citest_SCRIPTS = \
 	gallery.py \
 	servicemapper.py \
 	uberprogram.py \
+	../data/regextest2.py \
+	../data/gen-regexps \
 	test-actions.sh \
 	test-mimetypes.sh \
 	test-invoking.py \
@@ -161,7 +163,8 @@ TESTS = \
 	test-special-chars.py \
 	test-invalid-defaults.py \
 	test-regexps.py \
-	stop-sandbox.sh
+	stop-sandbox.sh \
+	../data/gen-regexps
 
 clean-local:
 	rm -f *.py?;
