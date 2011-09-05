@@ -52,8 +52,7 @@ Depends: ${shlibs:Depends},
          python-dbus,
          python-gobject,
          python2.5,
-         tracker-utils,
-         nukkumatti
+         tracker-utils
 XB-Maemo-CI-Packages: libcontentaction0
 XB-Maemo-CI-Stage: staging, acceptance
 Description: libcontentaction tests
