@@ -20,7 +20,7 @@ rfsscriptdir = $(sysconfdir)/osso-rfs-scripts
 dist_rfsscript_SCRIPTS = contentaction-rfs.sh
 
 regex.sed: gen-regexps
-	./gen-regexps >$@
+	./gen-regexps >$@ || exit -1
 
 highlight1.xml: regex.sed highlight1.xml.in
 	sed -f regex.sed <highlight1.xml.in >$@
