@@ -53,7 +53,7 @@ Depends: ${shlibs:Depends},
          python-gobject,
          python2.5,
          tracker-utils,
-         libgruff-ruby
+         nukkumatti
 XB-Maemo-CI-Packages: libcontentaction0
 XB-Maemo-CI-Stage: staging, acceptance
 Description: libcontentaction tests
