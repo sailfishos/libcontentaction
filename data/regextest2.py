@@ -71,7 +71,10 @@ class SystemRegexTest (unittest.TestCase):
             if (len(line) == 0):
                 continue
 
-            (init, end, result) = line.strip().split (" ", 2)
+            # In real environments, usually there is an action after the match
+            (init, end, raw_result) = line.strip().split (" ", 2)
+            result = raw_result if raw_result[-1] == "'" else raw_result[:raw_result.rindex (" ")]
+            
             expected_result = expected.pop (0)
 
             self.assertEquals (result[1:-1], expected_result, 
