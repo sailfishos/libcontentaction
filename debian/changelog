@@ -1,6 +1,7 @@
 libcontentaction (0.1.69~unreleased) unstable; urgency=low
 
-  * 
+  * Regex generator tests run in CITA (Ivan Frade)
+  *
 
  -- Marius Vollmer <marius.vollmer@nokia.com>  Wed, 24 Aug 2011 12:51:52 +0300
 
