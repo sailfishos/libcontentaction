@@ -25,7 +25,10 @@ def rx_p (rx):
     return "(" + rx + ")"
 
 def rx_ci (str):
-    return str
+    res = ""
+    for c in str:
+        res = res + "[" + c + c.upper() + "]"
+    return res
 
 def rx_or (*args):
     return "|".join (map (rx_p, args))
@@ -58,10 +61,10 @@ def rx_output (rx, name):
 # Besides the usual digits 0-9, we also treat the characters 'p', 'w',
 # 'x', '*', and '#' as digits.
 #
-# A digit-group must be three or more digits, or two or more digits
-# enclosed in parentheses.
+# A digit-group must be three or more digits.
 #
-# A phone number can not consists solely of a parenthesized digit group.
+# Optionally, a phonenumber can start with a 'parenthetical prefix'
+# like "1 (555)".
 #
 # Separators are whitespace and the characters '-' and '.'.
 #
@@ -74,25 +77,31 @@ ph_url_prefix = rx_or (rx_ci ("callto:"),
                        rx_ci ("sms:"),
                        rx_ci ("tel:"))
 
-ph_digit = "[0-9pwx#*+]"
+ph_num_digit = "[0-9]"
+ph_digit = "[0-9pwx#*-]"
+ph_sep = "[ .]"
 
-ph_bare_digit_group = rx_repeat (ph_digit, 3, 20)
+ph_digit_group = rx_repeat (ph_digit, 3, 20)
 
-ph_paren_digit_group = rx_seq ("\(", rx_repeat (ph_digit, 1, 10), "\)")
+ph_plus_prefix = rx_seq ("[+]", rx_repeat (ph_num_digit), rx_repeat (ph_sep))
 
-ph_digit_group = rx_or (ph_bare_digit_group, ph_paren_digit_group)
+ph_paren_prefix = rx_seq (rx_opt (rx_seq (rx_repeat (ph_num_digit, 1),
+                                          rx_repeat (ph_sep))),
+                          "\(",
+                          rx_repeat (rx_or (ph_num_digit, ph_sep), 1),
+                          "\)",
+                          rx_repeat (ph_sep))
 
-ph_separator = rx_repeat ("[ .-]", 1)
+ph_groups = rx_seq (ph_digit_group,
+                    rx_repeat (rx_seq (rx_repeat (ph_sep, 1), ph_digit_group), 0, 10))
 
-ph_groups = rx_seq (rx_or (rx_seq (ph_digit_group,
-                                   rx_repeat (rx_seq (ph_separator, ph_digit_group), 1, 10)),
-                           ph_bare_digit_group),
-                    "(?!\d)")
+phonenumber = rx_seq (rx_opt (ph_url_prefix),
+                      rx_opt (ph_plus_prefix),
+                      rx_opt (ph_paren_prefix),
+                      ph_groups)
 
-phonenumber = rx_seq (rx_opt (ph_url_prefix), ph_groups)
-
-# Actually, let's just use the old one for now
-phonenumber = "([cC][aA][lL][lL][tT][oO]:|[sS][mM][sS]:|[tT][eE][lL]:)?([+#*] ?)?(\(\d+\) ?|\d[-.pwxPWX#* ]*){2,19}[0-9-pwxPWX#*](?!\d)"
+# This was the old regexps.
+# phonenumber = "([cC][aA][lL][lL][tT][oO]:|[sS][mM][sS]:|[tT][eE][lL]:)?([+#*] ?)?(\(\d+\) ?|\d[-.pwxPWX#* ]*){2,19}[0-9-pwxPWX#*](?!\d)"
 
 rx_output (phonenumber, "PHONENUMBER");
 
@@ -117,21 +126,23 @@ rx_test ("call |callto:100000| now")
 rx_test ("call |tel:100000| now")
 rx_test ("call |sms:100000| now")
 
+rx_test ("call |CALLTO:100000| now")
+rx_test ("call |CallTo:100000| now")
+rx_test ("call |CaLlTo:100000| now")
+
 rx_test ("call |callto:+100 000 001| now")
 rx_test ("call |tel:+100 (000) 001| now")
 
 rx_test ("call |(555) 123456| now")
 rx_test ("call (|555|) now")
-# rx_test ("call (|555|) 22 now")
+rx_test ("call (|555|) 22 now")
 
 rx_test ("call |555.12346| now")
 rx_test ("call |555-12346| now")
-# rx_test ("let's meet on 12.08 on 13:00. this year")
-
-# rx_test ("call 12345678901234567890123456 now")
+rx_test ("let's meet on 12.08 on 13:00. this year")
 
 rx_test ("|+358 (50) 12345675|")
-# rx_test ("call |+358 (50) 12345675| please")
-# rx_test ("call |+358 (50) 12345675| whenever")
+rx_test ("call |+358 (50) 12345675| please")
+rx_test ("call |+358 (50) 12345675| whenever")
 
 rx_run ()
