@@ -46,7 +46,7 @@ def rx_opt (rx):
 
 def rx_output (rx, name):
     print "s/@%s@/%s/g\n" % (name,
-                             rx.replace('/', '\\/').replace('\\', '\\\\').replace('"', '&quot;'))
+                             rx.replace('\\', '\\\\').replace('/', '\\/').replace('"', '\&quot;').replace('&', '\&amp;'))
 
 ## Phone numbers
 

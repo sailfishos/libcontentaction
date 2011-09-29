@@ -7,13 +7,17 @@ import functools
 # Note: unittest in python < 2.7 doesn't support expectedFailures
 #
 
+def escape_for_shell (str):
+    "'" + str.replace("'", "'\\''") + "'"
+
 class LocalRegexTest (unittest.TestCase):
     
-    def __init__ (self, regex, name, spec, counter):
+    def __init__ (self, regex, name, spec, delimiter, counter):
         unittest.TestCase.__init__ (self, methodName="regex_test")
         self.__regex = regex
         self.__name = name
         self.__spec = spec
+        self.__delimiter = delimiter
 
         methodName = "test_%s_%d" % (self.__name, int(counter))
         # 
@@ -25,7 +29,7 @@ class LocalRegexTest (unittest.TestCase):
         self._testMethodName = methodName
 
     def regex_test (self):
-        parts = self.__spec.split ("|")
+        parts = self.__spec.split (self.__delimiter)
         text = "".join (parts)
         expected = [ parts[i] for i in range (1, len (parts), 2) ]
         result = map (lambda m: m.group(0), re.finditer (self.__regex, text))
@@ -34,11 +38,12 @@ class LocalRegexTest (unittest.TestCase):
 
 class SystemRegexTest (unittest.TestCase):
 
-    def __init__ (self, regex, name, spec, counter):
+    def __init__ (self, regex, name, spec, delimiter, counter):
         unittest.TestCase.__init__ (self, methodName="regex_test")
         self.__regex = regex
         self.__name = name
         self.__spec = spec
+        self.__delimiter = delimiter
 
         methodName = "test_%s_cita_%d" % (self.__name, int(counter))
         # 
@@ -60,10 +65,11 @@ class SystemRegexTest (unittest.TestCase):
 
     def regex_test (self):
         self.__check_tools ()
-        command = "echo '%s' | lca-tool --highlight |cat" % (self.__spec.replace ("|", ""))
+        command = ("echo %s | lca-tool --highlight |cat"
+                   % (escape_for_shell (self.__spec.replace (self.__delimiter, ""))))
         proc_stdout = subprocess.Popen ([command], stdout=subprocess.PIPE, shell=True).stdout
 
-        parts = self.__spec.split ("|")
+        parts = self.__spec.split (self.__delimiter)
         expected = [parts[i].strip() for i in range (1, len (parts), 2) ]
 
         for line in proc_stdout.read().split ("\n"):
@@ -104,11 +110,11 @@ def rx_test_setup (rx, action):
     rxt_regex = rx
     rxt_action = action
 
-def rx_test (spec):
+def rx_test (spec, delimiter = "|"):
     if ("test" in sys.argv):
-        t = SystemRegexTest (rxt_regex, rxt_action, spec, static_counter ())
+        t = SystemRegexTest (rxt_regex, rxt_action, spec, delimiter, static_counter ())
     else:
-        t = LocalRegexTest (rxt_regex, rxt_action, spec, static_counter())
+        t = LocalRegexTest (rxt_regex, rxt_action, spec, delimiter, static_counter())
     regexTestSuite.addTest(t)
 
 
