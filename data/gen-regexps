@@ -7,13 +7,8 @@
 # Also, this program contains a number of test cases to run against the
 # created regular expressions.
 #
-# Executing this program results in two things: A sed script that will
-# substitute the created regular expressions into whatever templates,
-# and a shell script that runs the tests using lca-tool.
-#
-# (The tests are also run as part of this program, but Python regexps
-# might be different from Qt ones, and we thus really need to run the
-# tests using the real production code as well.)
+# Executing this program results in a sed script that will substitute
+# the created regular expressions into whatever templates.
 
 import sys
 import re
