@@ -1,8 +1,9 @@
 libcontentaction (0.1.70~unreleased) unstable; urgency=low
 
-  * 
-
- -- Marius Vollmer <marius.vollmer@nokia.com>  Thu, 29 Sep 2011 15:47:06 +0300
+  * Rewritten phone number regexps again.  Fixes regressions introduced in
+    0.1.69 (not released).
+  
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Fri, 30 Sep 2011 16:48:43 +0300
 
 libcontentaction (0.1.69) unstable; urgency=low
 
