@@ -51,53 +51,24 @@ def rx_output (rx, name):
 
 ## Phone numbers
 
-# A phone number consists of one or more digit-groups, separated in
-# various ways.
-#
-# Besides the usual digits 0-9, we also treat the characters 'p', 'w',
-# 'x', '*', and '#' as digits.
-#
-# A digit-group must be three or more digits.
-#
-# Optionally, a phonenumber can start with a 'parenthetical prefix'
-# like "1 (555)".
-#
-# Separators are whitespace and the characters '-' and '.'.
-#
-# A phone number can also be prefixed with a "callto://", "sms://", or
-# "tel://" scheme.
-#
-# Corner cases are explained with test cases below.
-
 ph_url_prefix = rx_or (rx_ci ("callto:"),
                        rx_ci ("sms:"),
                        rx_ci ("tel:"))
 
-ph_num_digit = "[0-9]"
-ph_digit = "[0-9pwx#*-]"
-ph_sep = "[ .]"
+ph_plus_prefix = "[+#*] ?"
 
-ph_digit_group = rx_seq (ph_num_digit, ph_num_digit, rx_repeat (ph_digit, 1, 20))
+ph_paren_group = "\(\d+\) ?"
 
-ph_plus_prefix = rx_seq ("[+]", rx_repeat (ph_num_digit), rx_repeat (ph_sep))
+ph_digits_plus_suffix = "\d+[-.pwxPWX#* ]*"
 
-ph_paren_prefix = rx_seq (rx_opt (rx_seq (rx_repeat (ph_num_digit, 1),
-                                          rx_repeat (ph_sep))),
-                          "\(",
-                          rx_repeat (rx_or (ph_num_digit, ph_sep), 1),
-                          "\)",
-                          rx_repeat (ph_sep))
-
-ph_groups = rx_seq (ph_digit_group,
-                    rx_repeat (rx_seq (rx_repeat (ph_sep, 1), ph_digit_group), 0, 10))
+ph_end_digit = "[0-9-pwxPWX#*]"
 
 phonenumber = rx_seq (rx_opt (ph_url_prefix),
                       rx_opt (ph_plus_prefix),
-                      rx_opt (ph_paren_prefix),
-                      ph_groups)
-
-# This was the old regexps.
-# phonenumber = "([cC][aA][lL][lL][tT][oO]:|[sS][mM][sS]:|[tT][eE][lL]:)?([+#*] ?)?(\(\d+\) ?|\d[-.pwxPWX#* ]*){2,19}[0-9-pwxPWX#*](?!\d)"
+                      rx_repeat (rx_or (ph_paren_group,
+                                        ph_digits_plus_suffix),
+                                 2, 19),
+                      ph_end_digit)
 
 rx_output (phonenumber, "PHONENUMBER");
 
@@ -131,7 +102,7 @@ rx_test ("call |tel:+100 (000) 001| now")
 
 rx_test ("call |(555) 123456| now")
 rx_test ("call (|555|) now")
-rx_test ("call (|555|) 22 now")
+rx_test ("call |(555) 22| now")
 
 rx_test ("call |555.12346| now")
 rx_test ("call |555-12346| now")
@@ -145,14 +116,10 @@ rx_test ("sometextbefore|333222111444|sometextafter")
 rx_test ("+(((((")
 rx_test ("|+358||+7777|")
 
-rx_test ("xxx www.foo.com wpp 1ppwx")
-
-# We probably don't want this
-rx_test ("|12p|")
+rx_test ("xxx www.foo.com")
 
 # Http urls
 
-# This was the old regexps.
 httpurl = "([hH][tT][tT][pP][sS]?://|[wW][wW][wW]\\.)([a-zA-Z0-9_]+((:[a-zA-Z0-9_]+)?)@)?([a-zA-Z0-9_\\-]+\\.)+[a-zA-Z0-9_\\-]+(:\\d+)?(/?([a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#|]*[a-zA-Z0-9_/?%:;@&=+$,\\-!~*'#|]|\\([a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#|]*\\))*)?"
 
 rx_output (httpurl, "HTTPURL")
