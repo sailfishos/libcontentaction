@@ -23,7 +23,10 @@ def rx_p (rx):
 def rx_ci (str):
     res = ""
     for c in str:
-        res = res + "[" + c + c.upper() + "]"
+        if c.upper() != c:
+            res = res + "[" + c + c.upper() + "]"
+        else:
+            res = res + c
     return res
 
 def rx_or (*args):
@@ -123,7 +126,37 @@ rx_test ("xxx www.foo.com")
 
 # Http urls
 
-httpurl = "([hH][tT][tT][pP][sS]?://|[wW][wW][wW]\\.)([a-zA-Z0-9_]+((:[a-zA-Z0-9_]+)?)@)?([a-zA-Z0-9_\\-]+\\.)+[a-zA-Z0-9_\\-]+(:\\d+)?(/?([a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#|]*[a-zA-Z0-9_/?%:;@&=+$,\\-!~*'#|]|\\([a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#|]*\\))*)?"
+hu_cred_char       = "[a-zA-Z0-9_]"
+hu_dns_char        = "[a-zA-Z0-9_\\-]"
+hu_suffix_char     = "[a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#|]"
+hu_suffix_end_char = "[a-zA-Z0-9_/?%:;@&=+$,\\-!~*'#|]"
+
+hu_schema_prefix = rx_or (rx_ci ("https?://"),
+                          rx_ci ("www\\."))
+
+hu_creds = rx_seq (rx_repeat (hu_cred_char, 1),
+                   rx_opt (rx_seq (":", rx_repeat (hu_cred_char, 1))),
+                   "@")
+
+hu_dns_part = rx_repeat (hu_dns_char, 1)
+
+hu_hostname = rx_seq (rx_repeat (rx_seq (hu_dns_part,
+                                         "\\."),
+                                 1),
+                      hu_dns_part)
+
+hu_port_suffix = ":\\d+"
+
+httpurl = rx_seq (hu_schema_prefix,
+                  rx_opt (hu_creds),
+                  hu_hostname,
+                  rx_opt (hu_port_suffix),
+                  rx_opt ("/"),
+                  rx_opt (rx_repeat (rx_or (rx_seq (rx_repeat (hu_suffix_char),
+                                                    hu_suffix_end_char),
+                                            rx_seq ("\\(",
+                                                    rx_repeat (hu_suffix_char),
+                                                    "\\)")))))
 
 rx_output (httpurl, "HTTPURL")
 
