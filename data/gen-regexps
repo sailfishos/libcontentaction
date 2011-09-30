@@ -1,4 +1,5 @@
 #! /usr/bin/python
+# coding=UTF-8
 
 # This program generates the complicated regular expressions used in
 # highlight1.xml, with the goal to dcoument them clearly and make
@@ -148,5 +149,84 @@ rx_test ("xxx www.foo.com wpp 1ppwx")
 
 # We probably don't want this
 rx_test ("|12p|")
+
+# Http urls
+
+# This was the old regexps.
+httpurl = "([hH][tT][tT][pP][sS]?://|[wW][wW][wW]\\.)([a-zA-Z0-9_]+((:[a-zA-Z0-9_]+)?)@)?([a-zA-Z0-9_\\-]+\\.)+[a-zA-Z0-9_\\-]+(:\\d+)?(/?([a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#|]*[a-zA-Z0-9_/?%:;@&=+$,\\-!~*'#|]|\\([a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#|]*\\))*)?"
+
+rx_output (httpurl, "HTTPURL")
+
+rx_test_setup (httpurl, "browser")
+
+# Regular URLs
+
+rx_test ("|http://us.m.yahoo.com|")
+rx_test ("|http://www.google.com/m|")
+rx_test ("|www.google.com/m|")
+rx_test ("<|http://us.m.yahoo.com|>")
+rx_test ("|http://maps.google.com/maps?f=d&source=s_d&saddr=Nieznana+droga&daddr=krak%C3%B3w&hl&geocode=Fa5h9wIdlq87Aq%3BFQrt-wIdFFYwASnRGE41wEQWRzG_ikd2tbZrtA&mra=ls&sll=49.915862,20.323334&sspn=0.505808,1.234589&ie=UTF8&t=h&z=10|")
+rx_test ("|http://host-with-dash.com/path?%:@&=+$,-!~*'with(special)chars|")
+rx_test ("|http://www.foo.com/page#fragment|")
+rx_test ("feed://browsefeed.com/page#fragment")
+rx_test ("ftp://browseftp.com/page#fragment")
+
+# Skipping dots and parentheses next to web addresses:
+
+rx_test ("xxx (see also: |http://mydomain00.com|) ending ) should not be included")
+rx_test ("xxx (see also: |http://mydomain01.com/|) ending ) should not be included")
+rx_test ("xxx (see also: |http://mydomain02.com/file|) ending ) should not be included")
+rx_test ("xxx (see also: |http://mydomain03.com/file/|) ending ) should not be included")
+rx_test ("xxx (see also: |http://mydomain04.com|). note, dot should not be included")
+rx_test ("xxx (see also: |http://mydomain05.com/|). ending ) should not be included")
+rx_test ("xxx (see also: |http://mydomain06.com/file|). ending ) should not be included")
+rx_test ("xxx (see also: |http://mydomain07.com/file/|). xxx")
+
+rx_test ("xxx see also: |http://mydomain08.com|. dot should not be included")
+rx_test ("xxx see also: |http://mydomain09.com/|. dot should not be included")
+rx_test ("xxx see also: |http://mydomain10.com/file|. dot should not be included")
+rx_test ("xxx see also: |http://mydomain11.com/file/|. dot should not be included")
+
+rx_test ("xxxx See also: |http://paren.com/something_(one_%26_two)| parens included in the address...")
+rx_test ("xxxx See also: |http://paren.com/something_(three_%26_four)|. ... but dot is not")
+
+rx_test ("xxxx (See also: |http://paren.com/something_(five_%26_six)|) this might be tricky")
+rx_test ("testing also |www.foo.com/(bar)baz(bar)bar|.")
+
+# And other browsable urls:
+
+rx_test ("feed://browsefeed.com")
+rx_test ("feed:browsefeed.com")
+rx_test ("ftp://browseftp.com")
+
+# Suspicious URL
+rx_test ("http://|http://double.http.com|")
+
+# Previous bugs
+rx_test ("this is an url |www.myurl.com/foo/bar| and e-mail first@home.com")
+rx_test ("1112223338;email@domain.org;4445556668;email2@domain.org")
+rx_test ("|Http://www.capital.com|")
+rx_test ("|hTTp://www.capital.com|")
+rx_test ("|Www.capitalwww.com|")
+
+rx_test ("xxx |http://ct.nokia.com?761435127&FK20R| the slash after the hostname is optional.")
+rx_test ("xxx ~http://maps.ovi.com/#|50.060185|19.9328789|11|0|0|normal.day~ and bars are ok, too.", "~")
+
+# Foreign letters are not part of a URL.
+rx_test ("xxx |www.10010.com|四川专区特惠活动进行中 xxx")
+
+# OVI Music URL
+
+ovimusicurl = "([hH][tT][tT][pP][sS]?://)?music\\.(([Oo][Vv][Ii]\\.([Mm][Oo][Bb][Ii]|[Cc][Oo][Mm](\\.[Cc][Nn])?))|(([Mm][Oo][Bb][Ii]\\.)?([Oo][Vv][Ii]\\.[Cc][Oo][Mm]\\.[Cc][Nn])))(/([a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#]*[a-zA-Z0-9_/?%:;@&=+$,\\-!~*'#]|\\([a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#]*\\))*)?"
+
+rx_output (ovimusicurl, "OVIMUSICURL")
+
+rx_test_setup (ovimusicurl, "ovimusic")
+
+rx_test ("xxx |http://music.ovi.com| xxx")
+rx_test ("xxx |http://music.ovi.mobi| xxx")
+rx_test ("xxx |http://music.ovi.com.cn| xxx")
+rx_test ("xxx |http://music.ovi.com/cn/zh/pc| xxx")
+rx_test ("xxx |http://music.ovi.mobi/fi/fi/pc| xxx")
 
 rx_run ()

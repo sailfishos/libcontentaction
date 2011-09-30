@@ -2,8 +2,8 @@
 <actions>
   <highlight regexp="([mM][aA][iI][lL][tT][oO]:)?[a-zA-Z0-9_!#$%&amp;'*+/=?^`{|}~-]+(\.[a-zA-Z0-9_!#$%&amp;'*+/=?^`{|}~-]+)*@([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+" name="email-address"/>
   <highlight regexp="@PHONENUMBER@" name="phone-number"/>
-  <highlight regexp="([hH][tT][tT][pP][sS]?://)?music\.(([Oo][Vv][Ii]\.([Mm][Oo][Bb][Ii]|[Cc][Oo][Mm](\.[Cc][Nn])?))|(([Mm][Oo][Bb][Ii]\.)?([Oo][Vv][Ii]\.[Cc][Oo][Mm]\.[Cc][Nn])))(/([a-zA-Z0-9_/?%:;@&amp;=+$,\-.!~*'#]*[a-zA-Z0-9_/?%:;@&amp;=+$,\-!~*'#]|\([a-zA-Z0-9_/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="ovi-music-url" specialCaseOf="http-url"/>
-  <highlight regexp="([hH][tT][tT][pP][sS]?://|[wW][wW][wW]\.)([a-zA-Z0-9_]+((:[a-zA-Z0-9_]+)?)@)?([a-zA-Z0-9_\-]+\.)+[a-zA-Z0-9_\-]+(:\d+)?(/?([a-zA-Z0-9_/?%:;@&amp;=+$,\-.!~*'#|]*[a-zA-Z0-9_/?%:;@&amp;=+$,\-!~*'#|]|\([a-zA-Z0-9_/?%:;@&amp;=+$,\-.!~*'#|]*\))*)?" name="http-url"/>
+  <highlight regexp="@OVIMUSICURL@" name="ovi-music-url" specialCaseOf="http-url"/>
+  <highlight regexp="@HTTPURL@" name="http-url"/>
   <highlight regexp="[fF][tT][pP]://([a-zA-Z0-9_]+((:[a-zA-Z0-9_]+)?)@)?([a-zA-Z0-9_\-]+\.)+[a-zA-Z0-9_\-]+(:\d+)?(/([a-zA-Z0-9_/?%:;@&amp;=+$,\-.!~*'#]*[a-zA-Z0-9_/?%:;@&amp;=+$,\-!~*'#]|\([a-zA-Z0-9_/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="ftp-url"/>
   <highlight regexp="[fF][eE][eE][dD]:(//)?([a-zA-Z0-9_]+((:[a-zA-Z0-9_]+)?)@)?([a-zA-Z0-9_\-]+\.)+[a-zA-Z0-9_\-]+(:\d+)?(/([a-zA-Z0-9_/?%:;@&amp;=+$,\-.!~*'#]*[a-zA-Z0-9_/?%:;@&amp;=+$,\-!~*'#]|\([a-zA-Z0-9_/?%:;@&amp;=+$,\-.!~*'#]*\))*)?" name="feed-url"/>
   <highlight regexp="[sS][iI][pP][sS]?:[a-zA-Z0-9_/?%:;@&amp;=+$,\-.!~*'#]*" name="sip-url"/>
