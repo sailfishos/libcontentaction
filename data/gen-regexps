@@ -59,13 +59,16 @@ ph_plus_prefix = "[+#*] ?"
 
 ph_paren_group = "\(\d+\) ?"
 
-ph_digits_plus_suffix = "\d+[-.pwxPWX#* ]*"
+ph_digits_plus_suffix = "\d+[-pwxPWX#* ]*"
 
-ph_end_digit = "[0-9-pwxPWX#*]"
+ph_digits_plus_dot = "\d\d\d+[.]"
+
+ph_end_digit = "[0-9-#*]"
 
 phonenumber = rx_seq (rx_opt (ph_url_prefix),
                       rx_opt (ph_plus_prefix),
-                      rx_repeat (rx_or (ph_paren_group,
+                      rx_repeat (rx_or (ph_digits_plus_dot,
+                                        ph_paren_group,
                                         ph_digits_plus_suffix),
                                  2, 19),
                       ph_end_digit)
