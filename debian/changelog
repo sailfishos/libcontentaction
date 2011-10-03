@@ -5,6 +5,9 @@ libcontentaction (0.1.70~unreleased) unstable; urgency=low
     Fixes: NB#275255 - incorrect highlighting of characters "p" and "w" in SMS messages
     Fixes: NB#275348 - Dates are treated as phone numbers by libcontentaction.
 
+  * Re-encoded httpurl regexp.  Disallow "," at the end.
+    Fixes: NB#284549 - "," too much in the link in the cherry welcome-sms in finnish language
+
  -- Marius Vollmer <marius.vollmer@nokia.com>  Fri, 30 Sep 2011 16:48:43 +0300
 
 libcontentaction (0.1.69) unstable; urgency=low
