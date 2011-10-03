@@ -129,7 +129,7 @@ rx_test ("xxx www.foo.com")
 hu_cred_char       = "[a-zA-Z0-9_]"
 hu_dns_char        = "[a-zA-Z0-9_\\-]"
 hu_suffix_char     = "[a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#|]"
-hu_suffix_end_char = "[a-zA-Z0-9_/?%:;@&=+$,\\-!~*'#|]"
+hu_suffix_end_char = "[a-zA-Z0-9_/?%:;@&=+$\\-!~*'#|]"
 
 hu_schema_prefix = rx_or (rx_ci ("https?://"),
                           rx_ci ("www\\."))
@@ -190,11 +190,18 @@ rx_test ("xxx see also: |http://mydomain09.com/|. dot should not be included")
 rx_test ("xxx see also: |http://mydomain10.com/file|. dot should not be included")
 rx_test ("xxx see also: |http://mydomain11.com/file/|. dot should not be included")
 
+rx_test ("xxx see also: |http://mydomain08.com|, comma should not be included")
+rx_test ("xxx see also: |http://mydomain09.com/|, comma should not be included")
+rx_test ("xxx see also: |http://mydomain10.com/file|, comma should not be included")
+rx_test ("xxx see also: |http://mydomain11.com/file/|, comma should not be included")
+
 rx_test ("xxxx See also: |http://paren.com/something_(one_%26_two)| parens included in the address...")
 rx_test ("xxxx See also: |http://paren.com/something_(three_%26_four)|. ... but dot is not")
+rx_test ("xxxx See also: |http://paren.com/something_(three_%26_four)|, ... but comma is not")
 
 rx_test ("xxxx (See also: |http://paren.com/something_(five_%26_six)|) this might be tricky")
 rx_test ("testing also |www.foo.com/(bar)baz(bar)bar|.")
+rx_test ("testing also |www.foo.com/(bar)baz(bar)bar|, period.")
 
 # And other browsable urls:
 
