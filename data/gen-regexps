@@ -147,16 +147,18 @@ hu_hostname = rx_seq (rx_repeat (rx_seq (hu_dns_part,
 
 hu_port_suffix = ":\\d+"
 
+hu_suffix = rx_repeat (rx_or (rx_seq (rx_repeat (hu_suffix_char),
+                                      hu_suffix_end_char),
+                              rx_seq ("\\(",
+                                      rx_repeat (hu_suffix_char),
+                                      "\\)")))
+
 httpurl = rx_seq (hu_schema_prefix,
                   rx_opt (hu_creds),
                   hu_hostname,
                   rx_opt (hu_port_suffix),
                   rx_opt ("/"),
-                  rx_opt (rx_repeat (rx_or (rx_seq (rx_repeat (hu_suffix_char),
-                                                    hu_suffix_end_char),
-                                            rx_seq ("\\(",
-                                                    rx_repeat (hu_suffix_char),
-                                                    "\\)")))))
+                  rx_opt (hu_suffix))
 
 rx_output (httpurl, "HTTPURL")
 
@@ -228,7 +230,14 @@ rx_test ("xxx |www.10010.com|四川专区特惠活动进行中 xxx")
 
 # OVI Music URL
 
-ovimusicurl = "([hH][tT][tT][pP][sS]?://)?music\\.(([Oo][Vv][Ii]\\.([Mm][Oo][Bb][Ii]|[Cc][Oo][Mm](\\.[Cc][Nn])?))|(([Mm][Oo][Bb][Ii]\\.)?([Oo][Vv][Ii]\\.[Cc][Oo][Mm]\\.[Cc][Nn])))(/([a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#]*[a-zA-Z0-9_/?%:;@&=+$,\\-!~*'#]|\\([a-zA-Z0-9_/?%:;@&=+$,\\-.!~*'#]*\\))*)?"
+ovimusicurl = rx_seq (rx_opt (rx_ci ("https?://")),
+                      "music\\.",
+                      rx_or (rx_seq (rx_ci ("ovi\\."),
+                                     rx_or (rx_ci ("mobi"), rx_ci ("com")),
+                                     rx_opt (rx_ci ("\\.cn"))),
+                             rx_seq (rx_opt (rx_ci ("mobi\\.")), rx_ci ("ovi\\.com\\.cn"))),
+                      rx_opt ("/"),
+                      rx_opt (hu_suffix))
 
 rx_output (ovimusicurl, "OVIMUSICURL")
 
@@ -239,5 +248,32 @@ rx_test ("xxx |http://music.ovi.mobi| xxx")
 rx_test ("xxx |http://music.ovi.com.cn| xxx")
 rx_test ("xxx |http://music.ovi.com/cn/zh/pc| xxx")
 rx_test ("xxx |http://music.ovi.mobi/fi/fi/pc| xxx")
+
+rx_test ("xxx (see also: |http://music.ovi.com|) ending ) should not be included")
+rx_test ("xxx (see also: |http://music.ovi.com/|) ending ) should not be included")
+rx_test ("xxx (see also: |http://music.ovi.com/file|) ending ) should not be included")
+rx_test ("xxx (see also: |http://music.ovi.com/file/|) ending ) should not be included")
+rx_test ("xxx (see also: |http://music.ovi.com|). note, dot should not be included")
+rx_test ("xxx (see also: |http://music.ovi.com/|). ending ) should not be included")
+rx_test ("xxx (see also: |http://music.ovi.com/file|). ending ) should not be included")
+rx_test ("xxx (see also: |http://music.ovi.com/file/|). xxx")
+
+rx_test ("xxx see also: |http://music.ovi.com|. dot should not be included")
+rx_test ("xxx see also: |http://music.ovi.com/|. dot should not be included")
+rx_test ("xxx see also: |http://music.ovi.com/file|. dot should not be included")
+rx_test ("xxx see also: |http://music.ovi.com/file/|. dot should not be included")
+
+rx_test ("xxx see also: |http://music.ovi.com|, comma should not be included")
+rx_test ("xxx see also: |http://music.ovi.com/|, comma should not be included")
+rx_test ("xxx see also: |http://music.ovi.com/file|, comma should not be included")
+rx_test ("xxx see also: |http://music.ovi.com/file/|, comma should not be included")
+
+rx_test ("xxxx See also: |http://music.ovi.com/something_(one_%26_two)| parenss included in the address...")
+rx_test ("xxxx See also: |http://music.ovi.com/something_(three_%26_four)|. ... but dot is not")
+rx_test ("xxxx See also: |http://music.ovi.com/something_(three_%26_four)|, ... but comma is not")
+
+rx_test ("xxxx (See also: |http://music.ovi.com/something_(five_%26_six)|) this might be tricky")
+rx_test ("testing also |music.ovi.com/(bar)baz(bar)bar|.")
+rx_test ("testing also |music.ovi.com/(bar)baz(bar)bar|, period.")
 
 rx_run ()
