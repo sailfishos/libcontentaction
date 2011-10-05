@@ -1,4 +1,4 @@
-libcontentaction (0.1.70~unreleased) unstable; urgency=low
+libcontentaction (0.1.70) unstable; urgency=low
 
   * Rewritten phone number regexps again.  Fixes regressions introduced in
     0.1.69 (not released).
