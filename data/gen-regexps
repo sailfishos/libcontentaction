@@ -62,7 +62,7 @@ ph_plus_prefix = "[+#*] ?"
 
 ph_paren_group = "\(\d+\) ?"
 
-ph_digits_plus_suffix = "\d+[-pwxPWX#* ]*"
+ph_digit_plus_suffix = "\d[-pwxPWX#* ]*"
 
 ph_digits_plus_dot = "\d\d\d+[.]"
 
@@ -72,9 +72,10 @@ phonenumber = rx_seq (rx_opt (ph_url_prefix),
                       rx_opt (ph_plus_prefix),
                       rx_repeat (rx_or (ph_digits_plus_dot,
                                         ph_paren_group,
-                                        ph_digits_plus_suffix),
+                                        ph_digit_plus_suffix),
                                  2, 19),
-                      ph_end_digit)
+                      ph_end_digit,
+                      "(?!\d)")
 
 rx_output (phonenumber, "PHONENUMBER");
 
@@ -121,6 +122,9 @@ rx_test ("call |+358 (50) 12345675| whenever")
 rx_test ("sometextbefore|333222111444|sometextafter")
 rx_test ("+(((((")
 rx_test ("|+358||+7777|")
+
+# We still catch the last 20 digits of a this number.
+rx_test ("too long phone number: 111112222233333444445555566666|77777888889999900000|")
 
 rx_test ("xxx www.foo.com")
 
