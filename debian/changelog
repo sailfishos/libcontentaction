@@ -1,6 +1,7 @@
 libcontentaction (0.1.71~unreleased) unstable; urgency=low
 
-  *
+  * Fixes: NB#286390 - libcontentaction does not run .desktop entries with
+    Terminal=true in a terminal
 
  -- James Thomas <james.thomas@codethink.co.uk> Tue, 08 Nov 2011 15:01:00 +0000
 
