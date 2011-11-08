@@ -36,12 +36,41 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
     : DefaultPrivate(desktopEntry, params)
 {
     g_type_init();
-    appInfo = G_APP_INFO(
-        g_desktop_app_info_new_from_filename(
-            desktopEntry->fileName().toLocal8Bit().constData()));
+    GError *execError = 0;
+    GKeyFile *keyFile;
+    GKeyFileFlags flags = G_KEY_FILE_NONE;
+    keyFile = g_key_file_new();
+    g_key_file_load_from_file(keyFile,
+                              desktopEntry->fileName().toLocal8Bit().constData(),
+                              flags,
+                              NULL);
+
+    // Since the list of terminals is hard coded in glib, check here to see if
+    // Terminal=true has been set
+    if (desktopEntry->terminal()) {
+        // Set it to false
+        g_key_file_set_boolean(keyFile, "Desktop Entry", "Terminal", false);
+        // We will just prepend meego-terminal -e before the actual command here
+        gchar* execString = g_key_file_get_string(keyFile,
+                                                  "Desktop Entry",
+                                                  "Exec",
+                                                  &execError);
+        if (!execError) {
+            gchar* terminalString = g_strdup_printf("meego-terminal -e %s",execString);
+            g_key_file_set_string(keyFile, "Desktop Entry", "Exec", terminalString);
+            g_free(terminalString);
+        }
+        g_free(execString);
+    }
+
+    if (!execError)
+        appInfo = G_APP_INFO(g_desktop_app_info_new_from_keyfile(keyFile));
+
     if (appInfo == 0) {
         LCA_WARNING << "invalid desktop file" << desktopEntry->fileName();
     }
+    g_clear_error(&execError);
+    g_key_file_free(keyFile);
 }
 
 ExecPrivate::~ExecPrivate()
