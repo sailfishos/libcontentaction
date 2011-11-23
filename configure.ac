@@ -50,3 +50,7 @@ AC_CONFIG_FILES([
 ])
 
 AC_OUTPUT
+
+AX_FEATURE_SUMMARIZE([COVERAGE],
+             [Unit testing coverage support is enabled],
+             [Coverage won't be supported during unit testing])

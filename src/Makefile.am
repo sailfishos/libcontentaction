@@ -8,7 +8,17 @@ SUFFIXES = .cpp .h .moc.cpp
 EXTRA_DIST = \
 	doc.h
 
+# check for coverage
+if COVERAGE
+COV_CXXFLAGS=-ftest-coverage -fprofile-arcs -fno-elide-constructors
+COV_LIBS=-lgcov
+else
+COV_CXXFLAGS=
+COV_LIBS=
+endif
+
 AM_CPPFLAGS = \
+	$(COV_CXXFLAGS) \
 	$(QtCore_CFLAGS) \
 	$(QtXml_CFLAGS) \
 	$(QtDBus_CFLAGS) \
@@ -20,6 +30,7 @@ AM_CPPFLAGS = \
 	-DLCA_BUILD
 
 LIBS += \
+	$(COV_LIBS) \
 	$(QtCore_LIBS) \
 	$(QtXml_LIBS) \
 	$(QtDBus_LIBS) \
@@ -73,3 +84,12 @@ lca_tool_SOURCES = \
 lca_tool_LDADD = \
 	libcontentaction.la
 
+# coverage stuff
+coverage:covoptioncheck
+	mkdir -p ../coverage && \
+	lcov -d . --capture --output-file ../coverage/all.cov -b . && \
+	cd ../coverage && \
+	lcov -e all.cov '*/src/*.cpp' -e all.cov '*/src/*.h' -o src.cov && \
+	genhtml -o . src.cov	
+
+include $(top_srcdir)/am/covoptioncheck.am

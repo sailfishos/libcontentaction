@@ -68,8 +68,16 @@ Makefile.in
 *.o
 *.pyc
 *.moc
+*.gcda
+*.gcno
+*.cov
+*.orig
+
 TAGS
 /t/test-info
 /t/test-action
 /data/regex.sed
 /data/highlight1.xml
+
+/coverage/*
+
