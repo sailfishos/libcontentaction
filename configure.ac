@@ -29,10 +29,16 @@ AX_DISABLE_FEATURE_ON_PROG([doxygen], [BUILD_DOCS], [DOXYGEN], [doxygen])
 AM_CONDITIONAL([BUILD_DOCS], [test "$missing_deps_BUILD_DOCS" = ""])
 
 # coverage tools
-AX_FEATURE_DISABLEABLE([coverage], [COVERAGE], [disable unittests' coverage support])
 AX_DISABLE_FEATURE_ON_PROG([GCov coverage recording tool], [COVERAGE], [GCOV], [gcov])
 AX_DISABLE_FEATURE_ON_PROG([LCov coverage visualization tool], [COVERAGE], [LCOV], [lcov])
-AM_CONDITIONAL([COVERAGE], [test "$missing_deps_COVERAGE" = ""])
+AC_ARG_ENABLE(coverage,
+[  --enable-coverage    Turn on coverage support],
+[case "${enableval}" in
+  yes) coverage=true ;;
+  no)  coverage=false ;;
+  *) AC_MSG_ERROR(bad value ${enableval} for --enable-coverage) ;;
+esac],[coverage=false])
+AM_CONDITIONAL(CONTENTACTION_COVERAGE, test x$coverage = xtrue && test "$missing_deps_COVERAGE" = "")
 
 AC_CONFIG_FILES([
         Makefile
@@ -51,6 +57,9 @@ AC_CONFIG_FILES([
 
 AC_OUTPUT
 
-AX_FEATURE_SUMMARIZE([COVERAGE],
-             [Unit testing coverage support is enabled],
-             [Coverage won't be supported during unit testing])
+if test x$CONTENTACTION_COVERAGE_TRUE = x; then
+    AC_MSG_RESULT([Unit testing coverage support is enabled])
+else
+    AC_MSG_RESULT([Unit testing coverage is not enabled])
+fi
+

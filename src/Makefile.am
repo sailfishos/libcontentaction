@@ -9,7 +9,7 @@ EXTRA_DIST = \
 	doc.h
 
 # check for coverage
-if COVERAGE
+if CONTENTACTION_COVERAGE
 COV_CXXFLAGS=-ftest-coverage -fprofile-arcs -fno-elide-constructors
 COV_LIBS=-lgcov
 else
