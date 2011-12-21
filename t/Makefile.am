@@ -8,7 +8,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src
 LIBS += \
 	../src/libcontentaction.la \
-	$(QtTest_LIBS)
+	$(QtTest_LIBS) \
+	-lstdc++
 
 .cpp.moc:
 	$(MOC) -o "$@" "$<"
