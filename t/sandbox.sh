@@ -41,7 +41,7 @@ case "$1" in
                 done
 
                 echo "Launching gconfd-2"
-		if ! ps axw | grep -v grep | grep /usr/lib/gconf2/gconfd-2; then
+		if  ps axw | grep -v grep | grep /usr/lib/gconf2/gconfd-2; then
 			/usr/lib/gconf2/gconfd-2 &
 			echo "$!" > /tmp/gconfd-2.pid;
 		fi
