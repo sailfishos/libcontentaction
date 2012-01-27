@@ -1,4 +1,4 @@
-#!/usr/bin/python2.5
+#!/usr/bin/python2.6
 ##
 ## Copyright (C) 2010 Nokia. All rights reserved.
 ##
