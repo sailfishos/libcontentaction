@@ -1,6 +1,7 @@
-libcontentaction (0.1.72~unreleased) unstable; urgency=low
+libcontentaction (0.1.72) unstable; urgency=low
 
-  *
+  * Fixes: NB#290356 - Video-sheet-player should be default handler for rtsp and 
+    mms streams.
 
  -- James Thomas <james.thomas@codethink.co.uk>  Thu, 10 Nov 2011 12:36:00 +0000
 
