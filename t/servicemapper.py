@@ -1,4 +1,4 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 import os
 import dbus, dbus.service, dbus.mainloop.glib
 import gobject
