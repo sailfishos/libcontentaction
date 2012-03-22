@@ -1,5 +1,5 @@
 AC_PREREQ([2.61])
-AC_INIT([libcontentaction], [0.1.73~unreleased], [james.thomas@codethink.co.uk], libcontentaction)
+AC_INIT([libcontentaction], [0.1.73], [james.thomas@codethink.co.uk], libcontentaction)
 
 AC_CONFIG_SRCDIR([Makefile.am])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
