@@ -1,8 +1,8 @@
-libcontentaction (0.1.73~unreleased) unstable; urgency=low
+libcontentaction (0.1.73) unstable; urgency=low
 
-  * 
+  * Fix bug #299762, GID::libcontentaction0 credential is available to 3rd party apps
 
- -- Karl Lattimer <karl.lattimer@codethink.co.uk>  Wed, 1 Feb 2012 15:35:00 +0000
+ -- Karl Lattimer <karl.lattimer@codethink.co.uk>  Thu, 22 Mar 2012 11:05:00 +0000
 
 libcontentaction (0.1.72) unstable; urgency=low
 
