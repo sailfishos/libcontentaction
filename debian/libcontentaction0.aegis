@@ -1,5 +1,5 @@
 <aegis>
-   <request>
+   <request policy="not-inheritable">
       <credential name="TrackerReadAccess" />
       <for path="/usr/bin/lca-tool" />
    </request>
