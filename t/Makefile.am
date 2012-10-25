@@ -74,17 +74,6 @@ check_PROGRAMS = \
 
 BUILT_SOURCES += test-action.moc test-info.moc
 
-noinst_PROGRAMS = hldemo
-hldemo_SOURCES = hldemo.cpp
-hldemo_CPPFLAGS = \
-	$(MT_CFLAGS) \
-	-I$(top_srcdir)/src
-hldemo_LDADD = \
-	$(MT_LIBS) \
-	../src/libcontentaction.la
-BUILT_SOURCES += hldemo.moc
-CLEANFILES += hldemo.moc
-
 testhelperdir = $(libdir)/libcontentaction-tests
 testhelper_PROGRAMS = \
 	servicetest
@@ -120,6 +109,14 @@ test_mimedefaults_CPPFLAGS = \
 
 test_mimedefaults_LDADD = \
 	$(QtTest_LIBS)
+
+test_info_SOURCES = \
+	test-info.cpp \
+	test-info.moc
+
+test_action_SOURCES = \
+	test-action.cpp \
+	test-action.moc
 
 BUILT_SOURCES += servicelistener.moc \
 	test-findhighlights.moc \
