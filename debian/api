@@ -1,8 +1,0 @@
-interface: libcontentaction
-type: library
-scope: Platform
-state: stable
-libs-pkg: libcontentaction0
-dev-pkg: libcontentaction-dev
-doc-type: doxygen
-doxygen-conf: doc/doxy.cfg

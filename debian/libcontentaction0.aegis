@@ -1,6 +1,0 @@
-<aegis>
-   <request>
-      <credential name="TrackerReadAccess" />
-      <for path="/usr/bin/lca-tool" />
-   </request>
-</aegis>
