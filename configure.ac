@@ -21,7 +21,8 @@ PKG_CHECK_MODULES([QtDBus], [QtDBus])
 PKG_CHECK_MODULES([QtSystemInfo], [QtSystemInfo])
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12.0])
 PKG_CHECK_MODULES([GIO], [gio-2.0 gio-unix-2.0])
-PKG_CHECK_MODULES([MT], [meegotouch >= 0.20])
+PKG_CHECK_MODULES([MLITE], [mlite >= 0.0.6])
+PKG_CHECK_MODULES([MLOCALE], [mlocale >= 0.1])
 
 # tools for documentation
 AX_FEATURE_DISABLEABLE([doc], [BUILD_DOCS], [disable building of documentation])

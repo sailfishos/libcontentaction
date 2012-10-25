@@ -27,7 +27,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFileInfo>
-#include <MLocale>
+#include <mlocale/MLocale>
 
 using namespace ContentAction;
 using namespace ContentAction::Internal;
@@ -203,10 +203,10 @@ int main(int argc, char **argv)
     if (l10npaths) {
         Q_FOREACH (const QString& p, QString::fromLocal8Bit(l10npaths).split(':')) {
             qDebug() << "adding path:" << p;
-            MLocale::addTranslationPath(p);
+            ML10N::MLocale::addTranslationPath(p);
         }
     } else {
-        MLocale::addTranslationPath("/usr/share/l10n/meegotouch");
+        ML10N::MLocale::addTranslationPath("/usr/share/l10n/meegotouch");
     }
 
     QStringList args;

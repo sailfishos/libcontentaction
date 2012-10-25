@@ -24,7 +24,8 @@ AM_CPPFLAGS = \
 	$(QtDBus_CFLAGS) \
 	$(QtSystemInfo_CFLAGS) \
 	$(GIO_CFLAGS) \
-	$(MT_CFLAGS) \
+	$(MLITE_CFLAGS) \
+	$(MLOCALE_CFLAGS) \
 	-DDEFAULT_ACTIONS=\"@datadir@/contentaction\" \
 	-DDEFAULT_L10N_DIR=\"@datadir@/contentaction/l10n\" \
 	-DLCA_BUILD
@@ -36,7 +37,8 @@ LIBS += \
 	$(QtDBus_LIBS) \
 	$(QtSystemInfo_LIBS) \
 	$(GIO_LIBS) \
-	$(MT_LIBS)
+	$(MLITE_LIBS) \
+	$(MLOCALE_LIBS)
 
 incdir = $(includedir)/contentaction
 inc_HEADERS = \
