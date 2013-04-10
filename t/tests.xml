@@ -4,10 +4,11 @@
     <set name="libcontentaction" description="Tests for libcontentaction">
       <pre_steps>
 	<step expected_result="0">
-	  echo "[General]" > /home/user/.config/tracker/tracker-store.cfg; \
-	  echo "Verbosity=3" >> /home/user/.config/tracker/tracker-store.cfg; \
-	  echo "LowMemoryMode=false" >> /home/user/.config/tracker/tracker-store.cfg; \
-          lca-cita-test sandbox.sh --start
+	  echo "[General]" > ${HOME}/.config/tracker/tracker-store.cfg; \
+	  echo "Verbosity=3" >> ${HOME}/.config/tracker/tracker-store.cfg; \
+	  echo "LowMemoryMode=false" >> ${HOME}/.config/tracker/tracker-store.cfg; \
+	  export PATH=/opt/tests/libcontentaction/:/opt/tests/libcontentaction/bin/:${PATH}; \
+          /opt/tests/libcontentaction/bin/lca-cita-test sandbox.sh --start
         </step>
       </pre_steps>
 
@@ -103,7 +104,7 @@
         </step>
       </case>
       <case name="generated-regex-testsuite">
-        <step expected_result="0">/usr/share/libcontentaction-tests/gen-regexps test</step>
+        <step expected_result="0">/opt/tests/libcontentaction/gen-regexps test</step>
       </case>
 
       <environments>

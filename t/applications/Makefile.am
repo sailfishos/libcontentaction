@@ -1,4 +1,4 @@
-citestappdir = $(datarootdir)/libcontentaction-tests/applications
+citestappdir = /opt/tests/libcontentaction/applications
 dist_citestapp_DATA = \
 	mimeinfo.cache \
 	defaults.list \

@@ -1,4 +1,4 @@
-cidir = $(datarootdir)/libcontentaction-tests/test-l10n-data
+cidir = /opt/tests/libcontentaction/test-l10n-data
 ci_DATA = \
 	test_en.qm \
 	test_hu.qm \

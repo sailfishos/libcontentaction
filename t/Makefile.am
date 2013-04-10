@@ -18,7 +18,7 @@ BUILT_SOURCES = \
 	env.sh \
 	env.py
 
-citestdir = $(datarootdir)/libcontentaction-tests
+citestdir = /opt/tests/libcontentaction
 citest_SCRIPTS = \
 	sandbox.sh testlib.sh \
 	cltool.py \
@@ -48,6 +48,7 @@ citest_PROGRAMS = \
 	test-action \
 	test-mimedefaults
 
+bindir = /opt/tests/libcontentaction/bin
 bin_SCRIPTS = \
 	lca-cita-test
 
@@ -75,7 +76,7 @@ check_PROGRAMS = \
 
 BUILT_SOURCES += test-action.moc test-info.moc
 
-testhelperdir = $(libdir)/libcontentaction-tests
+testhelperdir = /opt/tests/libcontentaction
 testhelper_PROGRAMS = \
 	servicetest
 

@@ -3,7 +3,7 @@ dist_actions_DATA = \
 	tracker1.xml \
 	highlight1.xml
 
-testdatadir = $(datadir)/libcontentaction-tests/data
+testdatadir = /opt/tests/libcontentaction/data
 dist_testdata_DATA = \
 	tracker1.xml \
 	highlight1.xml \
