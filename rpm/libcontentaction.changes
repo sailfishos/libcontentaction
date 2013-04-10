@@ -1,0 +1,86 @@
+* Thu Oct 25 2012 Vesa Halttunen <vesa.halttunen@jollamobile.com> - 0.1.74
+- Replace dependency to libmeegotouch with mlite and mlocale
+- Update to 0.1.74
+
+* Tue Jul 05 2012 Marko Saukko <marko.saukko@gmail.com> - 0.1.73
+- Move tests to /opt/tests/
+- Update to 0.1.73
+
+* Mon Feb 13 2012 Marko Saukko <marko.saukko@cybercom.com> - 0.1.72
+- Update to version 0.1.72.
+
+* Wed Dec 21 2011 Marko Saukko <marko.saukko@cybercom.com> - 0.1.71
+- Added libcontentaction-0.1.71-add-missing-libs-for-linking.patch
+  to fix linking with newer toolchain.
+
+* Thu Dec 15 2011 Marko Saukko <marko.saukko@cybercom.com> - 0.1.71
+- Updated to version 0.1.71
+
+* Wed Oct 19 2011 Marko Saukko <marko.saukko@cybercom.com> - 0.1.70
+- Updated to the latest upstream version and rebased patches.
+- Removed documentation.
+
+* Fri Jan 28 2011 Mishra Maitrey <maitrey.mishra@nokia.com> - 0.1.39
+- BMC - 13066 
+- Configuration update: sparql snippet for software-application
+- Setting content item: No action returned when try to open any setting content item
+- Added Action::triggerWithWait() which will wait until the reply comes
+  when launching actions via D-Bus. Work-around for a D-Bus bug,
+  https://bugs.freedesktop.org/show_bug.cgi?id=896
+
+* Tue Dec 07 2010 Mishra Maitrey <maitrey.mishra@nokia.com> - 0.1.35
+- BMC - 11045
+- API addition: Action::actionsForString(const QString&)
+- API addition: Action::defaultActionForString(const QString&)
+- Enabling defining regexps specialCaseOf="another-regexp"
+- Configuration update: regexp for phone number
+- Configuration update: added feed-url, ftp-url, ovi-store-url
+- Fixes 2 digits numbers or more than 20 digits number are recognized as tel links
+  in Text Message Viewer / IM Viewer
+- QT_NO_KEYWORDS
+- Don't use QDBusInterface when triggering D-Bus actions
+- Doc update
+- Making regexps case-insensitive
+- Storing regexps in order; enables prioritizing specific ones over generic ones
+- Added missing _aegis file for tests
+- Configuration update: regexp for ovi music urls
+- Re-reading mimeinfo.cache
+- Configuration update: e-mail address regexps
+- API file contains interfaces that are frozen
+- Fixes regular expression for urls in libcontentaction
+- Fixes regular expression for emails in libcontentaction
+- Added 2 Action::launcherAction functions
+- Merging the highlighter tool hl1 into lca-tool (lca-tool --highlight)
+- libcontentaction declared 'scope: Platform' in the API file
+- Default actions are defined for the content with the '#' in the filename
+- Numbers with area code enclosed in "()" are parsed, and not intrepreted as
+  two distinct set of numbers. 
+- Numbers seperated by '.' are parsed, not intepreted as distinct set of numbers
+- lca doesn't get confused if defaults.list contains nonexistent applications
+- Fixes Text Message Viewer / IM Message Viewer - phone number link support 
+- Fixes Links, phone numbers not highlighted, nor recognised in MMS Viewer
+- Fixing double %-escaping of special characters
+- Defaults.list update
+- Configuration update: http-url regexp
+- Configuration update
+- Fixes music suite service interface changes
+- Small doc fix: .desktop keys were out of date
+- Remove duplicate actions: now it's ok to declare both x-maemo-nepomuk
+  mime types and the corresponding real mime types in a .desktop file
+- Fixes libcontentaction passes a wrong parameter to the music-suite service interface
+- Assume "file" scheme if none given
+- Fixes Method mimeForFile is not returning the mime-type of given file
+- Add autoconf to build-deps
+- Return Icon and Name even for invalid actions
+
+* Thu Aug 12 2010 Kaitlin Rupert <kaitlin.rupert@intel.com> - 0.1.15
+- BMC #4859: Exclude defaults.list - this file is installed via shared-mime-info
+
+* Thu Aug 12 2010 Fathi Boudra <fathi.boudra@nokia.com> - 0.1.15
+- Update to 0.1.15
+- Cleanup the YAML and spec files
+- Add tests package
+- Add fix_glib_ftbfs.patch to fix build failure with glib >= 2.25
+
+* Wed Jul 07 2010 Kaitlin Rupert <kaitlin.rupert@intel.com> - 0.1.11
+- Initial import using release tag 0.1.11

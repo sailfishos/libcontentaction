@@ -1,0 +1,44 @@
+Name: libcontentaction
+Summary: Library for associating content with actions
+Version: 0.1.74
+Release: 1
+Group: System/Desktop
+License: LGPLv2.1
+URL: https://github.com/nemomobile/libcontentaction
+Sources:
+    - "libcontentaction-%{version}.tar.bz2"
+    - "%{name}.rpmlintrc"
+Description: |
+    libcontentaction is a library for associating content with actions.
+PkgConfigBR:
+    - glib-2.0
+    - mlite
+    - mlocale
+    - QtCore
+    - QtDBus
+    - QtTest
+    - QtXml
+    - QtSystemInfo
+PkgBR:
+    # python required by data/gen-regexps
+    - python
+ConfigOptions:
+    - --disable-doc
+SubPackages:
+    - Name: devel
+      Summary: Development files for libcontentaction
+      Group: Development/System
+      Description: |
+        This package contains development files for building applications using
+        libcontentaction library.
+
+    - Name: tests
+      Summary: Tests for libcontentaction
+      Group: System/X11
+      Description: |
+        This package contains the tests for libcontentaction library.
+      Requires:  
+          - dbus-python  
+          - pygobject2  
+          - python 
+          - tracker-utils
