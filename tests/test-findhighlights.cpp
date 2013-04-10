@@ -21,8 +21,6 @@
 
 // This test utilized the regexps in data/hl-examples.xml
 
-#include "env.h"
-
 #include "contentaction.h"
 
 #include <QObject>

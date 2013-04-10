@@ -2,7 +2,6 @@
 #include <QtTest/QtTest>
 
 #include "contentaction.h"
-#include "env.h"
 
 using namespace ContentAction;
 

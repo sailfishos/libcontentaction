@@ -65,11 +65,9 @@ This package contains the tests for libcontentaction library.
 
 %build
 # >> build pre
-%autogen --disable-static
 # << build pre
 
-%configure --disable-static \
-    --disable-doc
+%qmake 
 
 make %{?jobs:-j%jobs}
 
@@ -80,7 +78,7 @@ make %{?jobs:-j%jobs}
 rm -rf %{buildroot}
 # >> install pre
 # << install pre
-%make_install
+%qmake_install
 
 # >> install post
 # << install post

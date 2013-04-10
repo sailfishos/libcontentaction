@@ -19,8 +19,6 @@
  *
  */
 
-#include "env.h"
-
 #include "contentaction.h"
 
 #include <QObject>

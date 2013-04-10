@@ -22,8 +22,7 @@ PkgConfigBR:
 PkgBR:
     # python required by data/gen-regexps
     - python
-ConfigOptions:
-    - --disable-doc
+Builder: qmake
 SubPackages:
     - Name: devel
       Summary: Development files for libcontentaction

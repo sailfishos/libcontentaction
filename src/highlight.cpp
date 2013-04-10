@@ -87,4 +87,3 @@ QRegExp masterRegexp()
 
 Q_DECLARE_METATYPE(ContentAction::Action);
 
-#include "highlight.moc"
