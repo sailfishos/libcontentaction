@@ -90,7 +90,6 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-# >> files
 %{_bindir}/lca-tool
 %{_datadir}/contentaction/highlight1.xml
 %{_datadir}/contentaction/tracker1.xml
@@ -98,19 +97,20 @@ rm -rf %{buildroot}
 %exclude %{_datadir}/applications/defaults.list
 %{_sysconfdir}/osso-rfs-scripts/contentaction-rfs.sh
 %{_datadir}/backup-framework/applications/contentaction.conf
+# >> files
 # << files
 
 %files devel
 %defattr(-,root,root,-)
-# >> files devel
 %{_includedir}/contentaction/contentaction.h
 %{_includedir}/contentaction/contentinfo.h
 %{_libdir}/libcontentaction.so
 %{_libdir}/pkgconfig/contentaction-0.1.pc
+# >> files devel
 # << files devel
 
 %files tests
 %defattr(-,root,root,-)
-# >> files tests
 /opt/tests/libcontentaction/*
+# >> files tests
 # << files tests

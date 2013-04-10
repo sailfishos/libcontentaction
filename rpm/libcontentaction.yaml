@@ -23,6 +23,14 @@ PkgBR:
     # python required by data/gen-regexps
     - python
 Builder: qmake
+Files:
+    - "%{_bindir}/lca-tool"
+    - "%{_datadir}/contentaction/highlight1.xml"
+    - "%{_datadir}/contentaction/tracker1.xml"
+    - "%{_libdir}/libcontentaction.so.*"
+    - "%exclude %{_datadir}/applications/defaults.list"
+    - "%{_sysconfdir}/osso-rfs-scripts/contentaction-rfs.sh"
+    - "%{_datadir}/backup-framework/applications/contentaction.conf"
 SubPackages:
     - Name: devel
       Summary: Development files for libcontentaction
@@ -30,6 +38,11 @@ SubPackages:
       Description: |
         This package contains development files for building applications using
         libcontentaction library.
+      Files:
+        - "%{_includedir}/contentaction/contentaction.h"
+        - "%{_includedir}/contentaction/contentinfo.h"
+        - "%{_libdir}/libcontentaction.so"
+        - "%{_libdir}/pkgconfig/contentaction-0.1.pc"
 
     - Name: tests
       Summary: Tests for libcontentaction
@@ -41,3 +54,6 @@ SubPackages:
           - pygobject2  
           - python 
           - tracker-utils
+      Files:
+        - "/opt/tests/libcontentaction/*"
+
