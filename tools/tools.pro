@@ -10,5 +10,7 @@ equals(QT_MAJOR_VERSION, 4): PKGCONFIG += mlocale
 equals(QT_MAJOR_VERSION, 5): PKGCONFIG += mlocale5
 DEFINES += QT_NO_KEYWORDS # make glib happy
 
-LIBS += -L../src -lcontentaction
+LIBS += -L../src
+equals(QT_MAJOR_VERSION, 4): LIBS += -lcontentaction
+equals(QT_MAJOR_VERSION, 5): LIBS += -lcontentaction5
 INCLUDEPATH += ../src
