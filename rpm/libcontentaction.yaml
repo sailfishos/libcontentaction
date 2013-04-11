@@ -7,7 +7,6 @@ License: LGPLv2.1
 URL: https://github.com/nemomobile/libcontentaction
 Sources:
     - "%{name}-%{version}.tar.bz2"
-    - "%{name}.rpmlintrc"
 Description: |
     libcontentaction is a library for associating content with actions.
 PkgConfigBR:
