@@ -95,8 +95,6 @@ rm -rf %{buildroot}
 %{_datadir}/contentaction5/tracker1.xml
 %{_libdir}/libcontentaction5.so.*
 %exclude %{_datadir}/applications/defaults.list
-%{_sysconfdir}/osso-rfs-scripts/contentaction-rfs.sh
-%{_datadir}/backup-framework/applications/contentaction.conf
 # >> files
 # << files
 

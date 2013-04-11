@@ -19,15 +19,6 @@ applications.path = /usr/share/applications
 applications.files = defaults.list
 INSTALLS += applications
 
-backupconf.path = /usr/share/backup-framework/applications
-backupconf.files = contentaction.conf
-INSTALLS += backupconf
-
-rfs.path = /etc/osso-rfs-scripts
-rfs.files = contentaction-rfs.sh
-INSTALLS += rfs
-
-
 XML_FILES = highlight1.xml.in
 
 genreg.input = XML_FILES
