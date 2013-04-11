@@ -21,9 +21,7 @@
 #include "internal.h"
 
 #include <QRegExp>
-#include <QGraphicsGridLayout>
 #include <QDebug>
-#include <QStringListModel>
 #include <QModelIndex>
 #include <QAbstractListModel>
 

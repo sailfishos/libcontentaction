@@ -27,7 +27,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFileInfo>
-#include <mlocale/MLocale>
+#include <MLocale>
 
 using namespace ContentAction;
 using namespace ContentAction::Internal;

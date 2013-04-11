@@ -22,6 +22,7 @@
 #ifndef SERVICE_H
 #define SERVICE_H
 
+#include <QObject>
 #include <QString>
 #include <QHash>
 

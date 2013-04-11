@@ -27,9 +27,13 @@
 #include <QDir>
 #include <QStringList>
 #include <QMultiHash>
-#include <QSystemDeviceInfo>
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+# include <QSystemDeviceInfo>
 QTM_USE_NAMESPACE
+#else
+# include <QDeviceInfo>
+# define QSystemDeviceInfo QDeviceInfo
+#endif
 
 const QString ContentAction::HighlighterMimeClass("x-maemo-highlight/");
 

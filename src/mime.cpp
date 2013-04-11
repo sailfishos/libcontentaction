@@ -181,7 +181,7 @@ QString Internal::mimeForFile(const QUrl& uri)
         g_free (type);
         return res;
     }
-    QString ret = QString::fromAscii(g_file_info_get_content_type(fileInfo));
+    QString ret = QString::fromLatin1(g_file_info_get_content_type(fileInfo));
     g_object_unref(fileInfo);
     g_object_unref(file);
     return ret;

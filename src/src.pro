@@ -8,9 +8,16 @@ VERSION = 0.0.75
 
 QT = core xml dbus
 CONFIG += link_pkgconfig hide_symbols
-PKGCONFIG += mlite gio-2.0 gio-unix-2.0
-CONFIG += mobility
-MOBILITY += systeminfo
+PKGCONFIG += gio-2.0 gio-unix-2.0
+
+equals(QT_MAJOR_VERSION, 4) {
+    PKGCONFIG += mlite
+    CONFIG += mobility
+    MOBILITY += systeminfo
+} else {
+    PKGCONFIG += mlite5
+    QT += systeminfo
+}
 
 target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
