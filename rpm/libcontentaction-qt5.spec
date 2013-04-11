@@ -27,6 +27,7 @@ BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  pkgconfig(Qt5Test)
 BuildRequires:  pkgconfig(Qt5Xml)
 BuildRequires:  pkgconfig(Qt5SystemInfo)
+BuildRequires:  pkgconfig(Qt5Network)
 BuildRequires:  python
 
 %description

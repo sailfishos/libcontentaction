@@ -19,6 +19,7 @@ PkgConfigBR:
     - Qt5Test
     - Qt5Xml
     - Qt5SystemInfo
+    - Qt5Network # needed by Qt5SystemInfo
 PkgBR:
     # python required by data/gen-regexps
     - python
