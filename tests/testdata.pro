@@ -1,5 +1,7 @@
 TEMPLATE = aux
 
+include(../common.pri)
+
 testdata.files = \
     tests.xml \
     service.map \
@@ -9,7 +11,7 @@ testdata.files = \
     launchme.desktop \
     test-image.png \
     hlinput.txt
-testdata.path = /opt/tests/libcontentaction
+testdata.path = $$CONTENTACTION_TESTDIR
 INSTALLS += testdata
 
 testscripts.files = \
@@ -34,11 +36,11 @@ testscripts.files = \
     test-invalid-defaults.py \
     test-regexps.py \
     test-highlight.sh
-testscripts.path = /opt/tests/libcontentaction
+testscripts.path = $$CONTENTACTION_TESTDIR
 INSTALLS += testscripts
 
 bin.files = lca-cita-test
-bin.path = /opt/tests/libcontentaction/bin
+bin.path = $$CONTENTACTION_TESTDIR/bin
 INSTALLS += bin
 
 

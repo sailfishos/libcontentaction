@@ -1,6 +1,8 @@
 TEMPLATE = aux
 
-desktop_tests.path = /opt/tests/libcontentaction/applications
+include(../../common.pri)
+
+desktop_tests.path = $$CONTENTACTION_TESTDIR/applications
 desktop_tests.files = \
     mimeinfo.cache \
     defaults.list \

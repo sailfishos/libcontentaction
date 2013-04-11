@@ -1,4 +1,5 @@
-TARGET = lca-tool
+equals(QT_MAJOR_VERSION, 4): TARGET = lca-tool
+equals(QT_MAJOR_VERSION, 5): TARGET = lca-tool5
 SOURCES += lca-tool.cpp
 target.path = /usr/bin
 INSTALLS += target

@@ -1,5 +1,8 @@
 TEMPLATE = lib
-TARGET = contentaction
+equals(QT_MAJOR_VERSION, 4): TARGET = contentaction
+equals(QT_MAJOR_VERSION, 5): TARGET = contentaction5
+
+include(../common.pri)
 
 # yes, 0.0.75. libcontentaction currently has a SONAME of 0, even though the
 # version numbering is 0.1. god only knows why. fix this in the future, some
@@ -22,7 +25,7 @@ equals(QT_MAJOR_VERSION, 4) {
 target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
 
-DEFINES += DEFAULT_ACTIONS=\\\"\"/usr/share/contentaction\"\\\"
+DEFINES += DEFAULT_ACTIONS=\\\"\"$$CONTENTACTION_DATADIR\"\\\"
 DEFINES += LCA_BUILD
 DEFINES += QT_NO_KEYWORDS # make glib happy
 
@@ -44,12 +47,13 @@ SOURCES += \
     config.cpp \
     contentinfo.cpp
 
-include.path = /usr/include/contentaction
+include.path = $$CONTENTACTION_INCLUDEDIR
 include.files = contentaction.h \
                 contentinfo.h
 INSTALLS += include
 
-PCFILE=contentaction-0.1.pc
+equals(QT_MAJOR_VERSION, 4): PCFILE=contentaction-0.1.pc
+equals(QT_MAJOR_VERSION, 5): PCFILE=contentaction5.pc
 
 # handle .pc file
 system(cp $${PCFILE}.in $$PCFILE)

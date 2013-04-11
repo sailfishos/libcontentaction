@@ -1,0 +1,59 @@
+Name: libcontentaction-qt5
+Summary: Library for associating content with actions
+Version: 0.1.74
+Release: 1
+Group: System/Desktop
+License: LGPLv2.1
+URL: https://github.com/nemomobile/libcontentaction
+Sources:
+    - "libcontentaction-%{version}.tar.bz2"
+    - "%{name}.rpmlintrc"
+Description: |
+    libcontentaction is a library for associating content with actions.
+PkgConfigBR:
+    - glib-2.0
+    - mlite5
+    - mlocale5
+    - Qt5Core
+    - Qt5DBus
+    - Qt5Test
+    - Qt5Xml
+    - Qt5SystemInfo
+PkgBR:
+    # python required by data/gen-regexps
+    - python
+Builder: qmake
+Files:
+    - "%{_bindir}/lca-tool5"
+    - "%{_datadir}/contentaction5/highlight1.xml"
+    - "%{_datadir}/contentaction5/tracker1.xml"
+    - "%{_libdir}/libcontentaction5.so.*"
+    - "%exclude %{_datadir}/applications/defaults.list"
+    - "%{_sysconfdir}/osso-rfs-scripts/contentaction-rfs.sh"
+    - "%{_datadir}/backup-framework/applications/contentaction.conf"
+SubPackages:
+    - Name: devel
+      Summary: Development files for libcontentaction
+      Group: Development/System
+      Description: |
+        This package contains development files for building applications using
+        libcontentaction library.
+      Files:
+        - "%{_includedir}/contentaction5/contentaction.h"
+        - "%{_includedir}/contentaction5/contentinfo.h"
+        - "%{_libdir}/libcontentaction5.so"
+        - "%{_libdir}/pkgconfig/contentaction5.pc"
+
+    - Name: tests
+      Summary: Tests for libcontentaction
+      Group: System/X11
+      Description: |
+        This package contains the tests for libcontentaction library.
+      Requires:  
+          - dbus-python  
+          - pygobject2  
+          - python 
+          - tracker-utils
+      Files:
+        - "/opt/tests/libcontentaction5/*"
+

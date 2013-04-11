@@ -1,12 +1,14 @@
 TEMPLATE = aux
 
-actions.path = /usr/share/contentaction
+include(../common.pri)
+
+actions.path = $$CONTENTACTION_DATADIR
 actions.files = \
     tracker1.xml \
     highlight1.xml
 INSTALLS += actions
 
-testdata.path = /opt/tests/libcontentaction/data
+testdata.path = $$CONTENTACTION_TESTDIR/data
 testdata.files = \
     tracker1.xml \
     highlight1.xml \
@@ -35,7 +37,7 @@ genreg.name = genreg
 genreg.CONFIG += no_link target_predeps
 QMAKE_EXTRA_COMPILERS += genreg
 
-highlight1.path = /usr/share/contentaction
+highlight1.path = $$CONTENTACTION_DATADIR
 highlight1.files = highlight1.xml
 highlight1.CONFIG += no_check_exist
 INSTALLS += highlight1

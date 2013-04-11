@@ -1,5 +1,7 @@
 TEMPLATE = aux
 
+include(../../common.pri)
+
 TS_FILES = \
     test_en.ts \
     test_hu.ts \
@@ -12,7 +14,7 @@ updateqm.name = LRELEASE $QMAKE_FILE_IN
 updateqm.config += no_link target_predeps
 QMAKE_EXTRA_COMPILERS += updateqm
 
-l10n_tests.path = /opt/tests/libcontentaction/test-l10n-data
+l10n_tests.path = $$CONTENTACTION_TESTDIR/test-l10n-data
 l10n_tests.files = \
     $$OUT_PWD/test_en.qm \
     $$OUT_PWD/test_hu.qm \

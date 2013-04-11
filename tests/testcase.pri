@@ -2,7 +2,9 @@ QT += testlib
 INCLUDEPATH += ../src
 LIBS += -L../src -lcontentaction
 
-target.path = /opt/tests/libcontentaction
+include(../common.pri)
+
+target.path = $$CONTENTACTION_TESTDIR
 INSTALLS += target
 
 DEFINES += srcdir=\\\"\"$$PWD\"\\\"
