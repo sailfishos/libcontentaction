@@ -8,4 +8,4 @@ Description: libcontentaction
 Version: @VERSION@
 Requires: QtCore
 Libs: -L${libdir} -lcontentaction
-Cflags: -I${includedir}/contentaction
+Cflags: -I${includedir}

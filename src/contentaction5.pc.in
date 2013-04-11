@@ -8,4 +8,4 @@ Description: libcontentaction-qt5
 Version: @VERSION@
 Requires: Qt5Core
 Libs: -L${libdir} -lcontentaction5
-Cflags: -I${includedir}/contentaction5
+Cflags: -I${includedir}
