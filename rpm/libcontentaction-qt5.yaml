@@ -21,8 +21,8 @@ PkgConfigBR:
     - Qt5SystemInfo
     - Qt5Network # needed by Qt5SystemInfo
 PkgBR:
-    # python required by data/gen-regexps
-    - python
+    - python # python required by data/gen-regexps
+    - qt5-qttools-linguist # lrelease
 Builder: qmake
 Files:
     - "%{_bindir}/lca-tool5"
