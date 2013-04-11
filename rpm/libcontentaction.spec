@@ -14,7 +14,7 @@ Release:    1
 Group:      System/Desktop
 License:    LGPLv2.1
 URL:        https://github.com/nemomobile/libcontentaction
-Source0:    libcontentaction-%{version}.tar.bz2
+Source0:    %{name}-%{version}.tar.bz2
 Source1:    %{name}.rpmlintrc
 Source100:  libcontentaction.yaml
 Requires(post): /sbin/ldconfig
