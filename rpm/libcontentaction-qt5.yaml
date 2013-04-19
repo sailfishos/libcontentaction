@@ -22,7 +22,7 @@ PkgConfigBR:
 PkgBR:
     - python # python required by data/gen-regexps
     - qt5-qttools-linguist # lrelease
-Builder: qmake
+Builder: qmake5
 Files:
     - "%{_bindir}/lca-tool5"
     - "%{_datadir}/contentaction5/highlight1.xml"
