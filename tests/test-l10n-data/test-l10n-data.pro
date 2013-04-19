@@ -9,7 +9,7 @@ TS_FILES = \
 
 updateqm.input = TS_FILES
 updateqm.output = $$OUT_PWD/${QMAKE_FILE_BASE}.qm
-updateqm.commands = lrelease ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_OUT}
+updateqm.commands = $$[QT_INSTALL_BINS]/lrelease ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_OUT}
 updateqm.name = LRELEASE $QMAKE_FILE_IN
 updateqm.config += no_link target_predeps
 QMAKE_EXTRA_COMPILERS += updateqm
