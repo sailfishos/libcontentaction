@@ -113,7 +113,8 @@
 
       <get>
 	<file>/tmp/lca-sandbox-start.log</file>
-	<file>/home/user/.local/share/tracker/tracker-store.log</file>
+	<!-- see how XDG_DATA_HOME is set inside lca-cita-test -->
+	<file>${HOME}/tests-home/tracker/tracker-store.log</file>
       </get>
 
       <post_steps>
