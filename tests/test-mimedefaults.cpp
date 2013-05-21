@@ -47,16 +47,7 @@ private:
 
 void TestMimeDefaults::initTestCase()
 {
-    // Setting the XDG_DATA_HOME to the value in env.h, but not overriding it if
-    // it's already set.
-    setenv("XDG_DATA_HOME", XDG_DATA_HOME, 0);
-
-    // Killing XDG_DATA_DIRS is normally not a good idea, but here we don't need
-    // any "determining mime type of file" functionalities. However, we need
-    // XDG_DATA_HOME to be writable by the test program.
-    setenv("XDG_DATA_DIRS", getenv("XDG_DATA_HOME"), 1);
-
-    char temp[30] = "./mimedefaults-test";
+    const QByteArray temp = QDir::home().filePath("mimedefaults-test").toLocal8Bit();
 
     setenv("XDG_DATA_HOME", temp, 1);
     tempApplications = QString(temp) + "/applications";

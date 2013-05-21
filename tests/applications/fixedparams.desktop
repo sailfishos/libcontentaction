@@ -5,7 +5,7 @@ GenericName=Launch Me
 Comment=Test helper
 X-Maemo-Service=just.a.gallery
 X-Maemo-Method=com.nokia.galleryserviceinterface.showImage
-Exec=python -c "f = open('./actionParams', 'w'); f.write('The params are %U');"
+Exec=python -c "f = open('/tmp/actionParams', 'w'); f.write('The params are %U');"
 X-Maemo-Fixed-Args=these;are;fixed
 Terminal=false
 MimeType=text/*;

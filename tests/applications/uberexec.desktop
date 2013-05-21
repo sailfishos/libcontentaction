@@ -6,7 +6,7 @@ Name[de]=deutschexec
 GenericName=Uber Program
 Icon=execicon
 Comment=View ANYTHING
-Exec=python -c "f = open(%U); content=f.read(); f2 = open('./executedAction', 'w'); f2.write(content);"
+Exec=python -c "f = open(%U); content=f.read(); f2 = open('/tmp/executedAction', 'w'); f2.write(content);"
 Terminal=false
 Type=Application
 MimeType=text/plain;

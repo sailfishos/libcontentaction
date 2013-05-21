@@ -32,14 +32,11 @@ from cltool import CLTool
 from tempfile import mkdtemp
 from shutil import rmtree
 
-# Killing XDG_DATA_DIRS is normally not a good idea, but here we don't need
-# any "determining mime type of file" functionalities.
-os.environ["XDG_DATA_DIRS"] = os.environ["XDG_DATA_HOME"]
-
 class Defaults(unittest.TestCase):
     def setUp(self):
-        os.environ["XDG_DATA_HOME"] = mkdtemp(dir = ".")
+        os.environ["XDG_DATA_HOME"] = mkdtemp(dir = os.path.expanduser("~"))
         os.mkdir(os.environ["XDG_DATA_HOME"] + "/applications")
+
     def tearDown(self):
         rmtree(os.environ["XDG_DATA_HOME"])
         

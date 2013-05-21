@@ -15,8 +15,6 @@ atexit "setlocale $original_locale"
 #lca-tool adds these as translation paths
 export CONTENTACTION_L10N_PATH=test-l10n-data
 
-export XDG_DATA_HOME=$srcdir
-
 # translation of tracker uri actions
 setlocale en_US
 a=$(lca-tool --l10n --tracker --print an.image 2>/dev/null)

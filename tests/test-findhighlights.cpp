@@ -47,9 +47,6 @@ private Q_SLOTS:
 
 void TestFindHighlights::initTestCase()
 {
-    // set the environment variables but don't overwrite it if it exists
-    setenv("CONTENTACTION_ACTIONS", CONTENTACTION_ACTIONS, 0);
-    setenv("XDG_DATA_HOME", XDG_DATA_HOME, 0);
 }
 
 void TestFindHighlights::cleanupTestCase()
