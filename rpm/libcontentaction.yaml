@@ -12,7 +12,6 @@ Description: |
 PkgConfigBR:
     - glib-2.0
     - mlite
-    - mlocale
     - QtCore
     - QtDBus
     - QtTest

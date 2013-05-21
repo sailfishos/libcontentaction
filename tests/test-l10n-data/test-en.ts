@@ -2,16 +2,13 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en">
   <context>
-    <message>
-      <source>com.nokia.imageviewer.show</source>
+    <message id="com.nokia.imageviewer.show">
       <translation>show in gallery</translation>
     </message>
-    <message>
-      <source>upload.to.album</source>
+    <message id="upload.to.album">
       <translation>upload to album</translation>
     </message>
-    <message>
-      <source>some.other.action</source>
+    <message id="some.other.action">
       <translation>lack of imagination</translation>
     </message>
   </context>

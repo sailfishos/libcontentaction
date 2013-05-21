@@ -2,32 +2,25 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fi">
   <context>
-    <message>
-      <source>com.nokia.imageviewer.show</source>
+    <message id="com.nokia.imageviewer.show">
       <translation>näytä galleriassa</translation>
     </message>
-    <message>
-      <source>upload.to.album</source>
+    <message id="upload.to.album">
       <translation>lataa albumiin</translation>
     </message>
-    <message>
-      <source>some.other.action</source>
+    <message id="some.other.action">
       <translation>mielikuvituksen puute</translation>
     </message>
-    <message>
-      <source>make.a.phonecall</source>
+    <message id="make.a.phonecall">
       <translation>soita jollekin</translation>
     </message>
-    <message>
-      <source>make.breakfast</source>
+    <message id="make.breakfast">
       <translation>laita aamupalaa</translation>
     </message>
-    <message>
-      <source>send.an.innocent.spam.chain.email</source>
+    <message id="send.an.innocent.spam.chain.email">
       <translation>lähetä viaton roskaketjusähköposti</translation>
     </message>
-    <message>
-      <source>stop.practicing.finnish.in.worktime</source>
+    <message id="stop.practicing.finnish.in.worktime">
       <translation>lopeta suomen harjoitteleminen työajalla</translation>
     </message>
 
