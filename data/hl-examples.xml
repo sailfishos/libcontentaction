@@ -2,7 +2,8 @@
 <actions>
   <!-- the following highlight rules are just examples -->
 
-  <highlight regexp="http://(\w+((:\w+)?)@)?example.com(:\d+)?(/[\w ./?%&amp;=]*)?" name="special-url"/>
+  <highlight regexp="((http://(\w+((:\w+)?)@)?)|((\w+((:\w+)?)@)?www\.))(\w+\.)+\w+(:\d+)?(/[\w ./?%&amp;=]*)?" name="http-url"/>
+  <highlight regexp="http://(\w+((:\w+)?)@)?example.com(:\d+)?(/[\w ./?%&amp;=]*)?" name="special-url" specialCaseOf="http-url"/>
 
   <!-- testing the special case relationships: general case + 2 specializations -->
   <highlight regexp="foobar\w*" name="special-1a" specialCaseOf="general-1"/>
