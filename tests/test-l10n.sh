@@ -12,11 +12,6 @@ setlocale() {
 original_locale=$(gconftool-2 -g /meegotouch/i18n/language)
 atexit "setlocale $original_locale"
 
-#lca-tool adds these as translation paths
-export CONTENTACTION_L10N_PATH=test-l10n-data
-
-export XDG_DATA_HOME=$srcdir
-
 # translation of tracker uri actions
 setlocale en_US
 a=$(lca-tool --l10n --tracker --print an.image 2>/dev/null)
@@ -62,6 +57,6 @@ strstr "$a" ".*!! showname" || exit 1;
 a=$(lca-tool --l10n --file --print "file://$plaintext" 2>/dev/null)
 strstr "$a" ".*uberexec" || exit 1;
 strstr "$a" ".*ubermimeopen" || exit 1;
-strstr "$a" ".*!! ubermeego" || exit 1;
+strstr "$a" ".*!! othername" || exit 1;
 
 exit 0;

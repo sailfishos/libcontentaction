@@ -6,5 +6,5 @@ set -e
 . ${HOME}/.eat-stored-env
 mkdir -p ${HOME}/tests-home
 cd ${TEST_DIR}
-PATH=${TEST_DIR}/bin/:${TEST_DIR}:$PATH XDG_DATA_HOME=${HOME}/tests-home/ CONTENTACTION_ACTIONS=${TEST_DIR}/data $@
+PATH=${TEST_DIR}/bin/:${TEST_DIR}:$PATH XDG_DATA_HOME=${HOME}/tests-home/ XDG_DATA_DIRS=${TEST_DIR}:/usr/local/share:/usr/share CONTENTACTION_ACTIONS=${TEST_DIR}/data $@
 

@@ -51,10 +51,10 @@ class SpecialChars(unittest.TestCase):
     def testExecWithSpecialChars(self):
         (status, output) = getstatusoutput("lca-tool --tracker --trigger uriprinter specialchars.image")
         self.assert_(status == 0)
-        f = open("./executedAction")
+        f = open("/tmp/executedAction")
         content = f.read()
         f.close()
-        os.remove("./executedAction")
+        os.remove("/tmp/executedAction")
         self.assert_(content.find("'/tmp/[special[.png'") != -1)
 
     def testActionsForFileWithSpecialChars(self):

@@ -11,7 +11,6 @@
 #include <MApplicationWindow>
 #include <MLabel>
 #include <MButton>
-#include <MLocale>
 
 static QString text("Hello, please reach me at foo@example.com\n"
                     "or call +1 555 23231.  But never send mail to\n"
@@ -65,7 +64,6 @@ int main(int argc, char **argv)
     MApplication app(argc, argv);
     MApplicationWindow window;
     MApplicationPage page;
-    MLocale locale;
 
     if (!isatty(0))
         text = QTextStream(stdin).readAll();

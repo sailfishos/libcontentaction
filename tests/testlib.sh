@@ -28,7 +28,13 @@ abspath() {
 
 # strstr HAYSTACK NEEDLE
 strstr() {
-    expr "$1" : "$2" >/dev/null;
+        if ! expr "$1" : "$2" >/dev/null;
+        then
+                echo "FAILED: Tested string does not contain expected value" >&2;
+                echo "    HAYSTACK: '$1'" >&2;
+                echo "    NEEDLE: '$2'" >&2;
+                return 1;
+        fi
 }
 
-trap do_cleanup EXIT;
+trap 'test ${?} -eq 0 || echo "${0}:${LINENO}: FAILED"; do_cleanup' EXIT;

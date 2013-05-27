@@ -49,18 +49,18 @@ class Launching(unittest.TestCase):
         self.assert_(status == 0)
 
         time.sleep(3)
-        f = open('./launchedAction')
+        f = open('/tmp/launchedAction')
         content = f.read()
         f.close()
-        os.remove("./launchedAction")
+        os.remove("/tmp/launchedAction")
         self.assert_(content.find("I was launched") != -1)
 
     def testLaunchWithParams(self):
         (status, output) = getstatusoutput("lca-tool --triggerdesktop uriprinter.desktop param1 param2 param3")
-        f = open("./executedAction")
+        f = open("/tmp/executedAction")
         content = f.read()
         f.close()
-        os.remove("./executedAction")
+        os.remove("/tmp/executedAction")
         self.assert_(status == 0)
         self.assert_(content.find("'param1' 'param2' 'param3'") != -1)
 

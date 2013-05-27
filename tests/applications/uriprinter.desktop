@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=UriPrinter
 Comment=Just prints the params into a file
-Exec=python -c "f2 = open('./executedAction', 'w'); f2.write(\"%U\\n\");"
+Exec=python -c "f2 = open('/tmp/executedAction', 'w'); f2.write(\"%U\\n\");"
 Terminal=false
 Type=Application
 MimeType=image/png;

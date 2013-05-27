@@ -20,9 +20,9 @@ strstr "$a" '.*plainmusicplayer' || exit 1
 a=$(lca-tool --tracker --print a.music b.music)
 strstr "$a" '.*plainmusicplayer' || exit 1
 
-echo test > test.html
-atexit rm -f test.html
-uri="file://$(abspath .)/test.html"
+echo test > /tmp/test.html
+atexit rm -f /tmp/test.html
+uri="file:///tmp/test.html"
 a=$(lca-tool --file --print $uri)
 strstr "$a" '.*fixedparams' || exit 1
 

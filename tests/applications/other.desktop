@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=othername
-X-MeeGo-Translation-Catalog=test
+X-MeeGo-Translation-Catalog=/opt/tests/libcontentaction/test-l10n-data/test
 X-MeeGo-Logical-Id=some.other.action
 Terminal=false
 Type=Application

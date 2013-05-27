@@ -25,10 +25,6 @@ class TestAction : public QObject
 private Q_SLOTS:
   void initTestCase()
   {
-    // Set the environment variables but don't overwrite them if they're already
-    // set.
-    setenv("CONTENTACTION_ACTIONS", CONTENTACTION_ACTIONS, 0);
-    setenv("XDG_DATA_HOME", XDG_DATA_HOME, 0);
   }
 
   void
