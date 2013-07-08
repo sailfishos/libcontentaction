@@ -11,12 +11,13 @@ VERSION = 0.0.75
 
 QT = core xml dbus
 CONFIG += link_pkgconfig hide_symbols
+CONFIG -= link_prl
 PKGCONFIG += gio-2.0 gio-unix-2.0
 
 equals(QT_MAJOR_VERSION, 4) {
     PKGCONFIG += mlite
-    CONFIG += mobility
-    MOBILITY += systeminfo
+#    CONFIG += mobility
+#    MOBILITY += systeminfo
 } else {
     PKGCONFIG += mlite5 Qt5SystemInfo
 }
