@@ -1,6 +1,6 @@
 Name: libcontentaction-qt5
 Summary: Library for associating content with actions
-Version: 0.1.86
+Version: 0.1.87
 Release: 1
 Group: System/Desktop
 License: LGPLv2.1
@@ -13,6 +13,7 @@ PkgConfigBR:
     - glib-2.0
     - mlite5
     - Qt5Core
+    - Qt5Gui
     - Qt5DBus
     - Qt5Test
     - Qt5Xml

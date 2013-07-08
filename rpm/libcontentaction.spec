@@ -9,7 +9,7 @@ Name:       libcontentaction
 # << macros
 
 Summary:    Library for associating content with actions
-Version:    0.1.86
+Version:    0.1.87
 Release:    1
 Group:      System/Desktop
 License:    LGPLv2.1

@@ -9,7 +9,7 @@ Name:       libcontentaction-qt5
 # << macros
 
 Summary:    Library for associating content with actions
-Version:    0.1.86
+Version:    0.1.87
 Release:    1
 Group:      System/Desktop
 License:    LGPLv2.1
@@ -21,6 +21,7 @@ Requires(postun): /sbin/ldconfig
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(mlite5)
 BuildRequires:  pkgconfig(Qt5Core)
+BuildRequires:  pkgconfig(Qt5Gui)
 BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  pkgconfig(Qt5Test)
 BuildRequires:  pkgconfig(Qt5Xml)
