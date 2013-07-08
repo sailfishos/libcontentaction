@@ -25,7 +25,7 @@
 #include <QModelIndex>
 #include <QAbstractListModel>
 
-typedef QPair<QString, const QRegExp &> MimeAndRegexp;
+typedef QPair<QString, QRegExp> MimeAndRegexp;
 typedef QList<MimeAndRegexp> MimesAndRegexps;
 
 namespace {
