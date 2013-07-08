@@ -18,8 +18,7 @@ equals(QT_MAJOR_VERSION, 4) {
     CONFIG += mobility
     MOBILITY += systeminfo
 } else {
-    PKGCONFIG += mlite5
-    QT += systeminfo
+    PKGCONFIG += mlite5 Qt5SystemInfo
 }
 
 target.path = $$[QT_INSTALL_LIBS]
