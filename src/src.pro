@@ -16,8 +16,8 @@ PKGCONFIG += gio-2.0 gio-unix-2.0
 
 equals(QT_MAJOR_VERSION, 4) {
     PKGCONFIG += mlite
-#    CONFIG += mobility
-#    MOBILITY += systeminfo
+    CONFIG += mobility
+    MOBILITY += systeminfo
 } else {
     PKGCONFIG += mlite5 Qt5SystemInfo
 }
