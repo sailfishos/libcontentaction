@@ -22,11 +22,11 @@ PkgBR:
     - python
 Builder: qmake
 Files:
-    - "%{_bindir}/lca-tool"
-    - "%{_datadir}/contentaction/highlight1.xml"
-    - "%{_datadir}/contentaction/tracker1.xml"
     - "%{_libdir}/libcontentaction.so.*"
     - "%exclude %{_datadir}/applications/defaults.list"
+Requires:
+    # required as the qt5 package installs lca-tool and the test data
+    - libcontentaction-qt5
 SubPackages:
     - Name: devel
       Summary: Development files for libcontentaction

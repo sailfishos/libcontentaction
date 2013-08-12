@@ -23,9 +23,9 @@ PkgBR:
     - qt5-qttools-linguist # lrelease
 Builder: qmake5
 Files:
-    - "%{_bindir}/lca-tool5"
-    - "%{_datadir}/contentaction5/highlight1.xml"
-    - "%{_datadir}/contentaction5/tracker1.xml"
+    - "%{_bindir}/lca-tool"
+    - "%{_datadir}/contentaction/highlight1.xml"
+    - "%{_datadir}/contentaction/tracker1.xml"
     - "%{_libdir}/libcontentaction5.so.*"
     - "%exclude %{_datadir}/applications/defaults.list"
 SubPackages:
