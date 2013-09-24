@@ -50,13 +50,13 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
     if (desktopEntry->terminal()) {
         // Set it to false
         g_key_file_set_boolean(keyFile, "Desktop Entry", "Terminal", false);
-        // We will just prepend meego-terminal -e before the actual command here
+        // We will just prepend fingerterm -e before the actual command here
         gchar* execString = g_key_file_get_string(keyFile,
                                                   "Desktop Entry",
                                                   "Exec",
                                                   &execError);
         if (!execError) {
-            gchar* terminalString = g_strdup_printf("meego-terminal -e %s",execString);
+            gchar* terminalString = g_strdup_printf("fingerterm -e %s",execString);
             g_key_file_set_string(keyFile, "Desktop Entry", "Exec", terminalString);
             g_free(terminalString);
         }
