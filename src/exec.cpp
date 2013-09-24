@@ -45,23 +45,60 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
                               flags,
                               NULL);
 
+    gchar *execString = g_key_file_get_string(keyFile,
+            "Desktop Entry",
+            "Exec",
+            &execError);
+
     // Since the list of terminals is hard coded in glib, check here to see if
     // Terminal=true has been set
     if (desktopEntry->terminal()) {
         // Set it to false
         g_key_file_set_boolean(keyFile, "Desktop Entry", "Terminal", false);
         // We will just prepend fingerterm -e before the actual command here
-        gchar* execString = g_key_file_get_string(keyFile,
-                                                  "Desktop Entry",
-                                                  "Exec",
-                                                  &execError);
         if (!execError) {
             gchar* terminalString = g_strdup_printf("fingerterm -e %s",execString);
             g_key_file_set_string(keyFile, "Desktop Entry", "Exec", terminalString);
             g_free(terminalString);
         }
-        g_free(execString);
     }
+
+    if (!execError && g_strstr_len(execString, -1, "invoker") != execString &&
+            g_strstr_len(execString, -1, "/usr/bin/invoker") != execString) {
+        // Force invoker usage if invoker isn't specified in Exec= line already
+
+        gchar *boosterType = g_key_file_get_string(keyFile, "Desktop Entry",
+                "X-Nemo-Application-Type", NULL);
+        if (boosterType == NULL) {
+            // Default booster type is "generic". This can be overridden via
+            // "X-Nemo-Application-Type=<boostertype>".
+            boosterType = g_strdup("generic");
+        }
+
+        gchar *singleInstanceValue = g_key_file_get_string(keyFile, "Desktop Entry",
+                "X-Nemo-Single-Instance", NULL);
+        bool singleInstance = true;
+        if (g_strcmp0(singleInstanceValue, "no") == 0) {
+            // Default is to use single-instance launching. This can be disabled
+            // by using "X-Nemo-Single-Instance=no".
+            singleInstance = false;
+        }
+
+        // Set X-Nemo-Application-Type to "no-invoker" to disable invoker
+        if (g_strcmp0(boosterType, "no-invoker") != 0) {
+            gchar *invokerString = g_strdup_printf("invoker --type=%s %s %s",
+                    boosterType,
+                    singleInstance ? "--single-instance" : "",
+                    execString);
+            g_key_file_set_string(keyFile, "Desktop Entry", "Exec", invokerString);
+            g_free(invokerString);
+        }
+
+        g_free(boosterType);
+        g_free(singleInstanceValue);
+    }
+
+    g_free(execString);
 
     if (!execError)
         appInfo = G_APP_INFO(g_desktop_app_info_new_from_keyfile(keyFile));
