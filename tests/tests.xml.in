@@ -7,103 +7,103 @@
 	  echo "[General]" > ${HOME}/.config/tracker/tracker-store.cfg; \
 	  echo "Verbosity=3" >> ${HOME}/.config/tracker/tracker-store.cfg; \
 	  echo "LowMemoryMode=false" >> ${HOME}/.config/tracker/tracker-store.cfg; \
-          /opt/tests/libcontentaction/bin/lca-cita-test sandbox.sh --start
+          @PATH@/bin/lca-cita-test sandbox.sh --start
         </step>
       </pre_steps>
 
       <case name="lca-cita-test-fail">
         <step expected_result="1">
-          /opt/tests/libcontentaction/bin/lca-cita-test false
+          @PATH@/bin/lca-cita-test false
         </step>
       </case>
 
       <case name="test-actions">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-actions.sh
+          @PATH@/bin/lca-cita-test test-actions.sh
         </step>
       </case>
       <case name="test-mimetypes">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-mimetypes.sh
+          @PATH@/bin/lca-cita-test test-mimetypes.sh
         </step>
       </case>
       <case name="test-invoking">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-invoking.py
+          @PATH@/bin/lca-cita-test test-invoking.py
         </step>
       </case>
       <case name="test-defaults">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-defaults.py
+          @PATH@/bin/lca-cita-test test-defaults.py
         </step>
       </case>
       <case name="test-servicefw-signals">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-servicefw-signals.py
+          @PATH@/bin/lca-cita-test test-servicefw-signals.py
         </step>
       </case>
       <case name="test-mimes">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-mimes.py
+          @PATH@/bin/lca-cita-test test-mimes.py
         </step>
       </case>
       <case name="test-desktop-launching">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-desktop-launching.py
+          @PATH@/bin/lca-cita-test test-desktop-launching.py
         </step>
       </case>
       <case name="test-l10n">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-l10n.sh
+          @PATH@/bin/lca-cita-test test-l10n.sh
         </step>
       </case>
       <case name="test-fixedparams">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-fixed-params.py
+          @PATH@/bin/lca-cita-test test-fixed-params.py
         </step>
       </case>
       <case name="test-schemes">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-schemes.sh
+          @PATH@/bin/lca-cita-test test-schemes.sh
         </step>
       </case>
       <case name="test-special-chars">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-special-chars.py
+          @PATH@/bin/lca-cita-test test-special-chars.py
         </step>
       </case>
       <case name="test-regexps">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-regexps.py
+          @PATH@/bin/lca-cita-test test-regexps.py
         </step>
       </case>
       <case name="test-info">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-info
+          @PATH@/bin/lca-cita-test test-info
         </step>
       </case>
       <case name="test-findhighlights">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-findhighlights
+          @PATH@/bin/lca-cita-test test-findhighlights
         </step>
       </case>
       <case name="test-action">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-action
+          @PATH@/bin/lca-cita-test test-action
         </step>
       </case>
       <case name="test-mimedefaults">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-mimedefaults
+          @PATH@/bin/lca-cita-test test-mimedefaults
         </step>
       </case>
       <case name="test-highlight">
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test test-highlight.sh
+          @PATH@/bin/lca-cita-test test-highlight.sh
         </step>
       </case>
       <case name="generated-regex-testsuite">
-        <step expected_result="0">/opt/tests/libcontentaction/gen-regexps test</step>
+        <step expected_result="0">@PATH@/gen-regexps test</step>
       </case>
 
       <environments>
@@ -119,7 +119,7 @@
 
       <post_steps>
         <step expected_result="0">
-          /opt/tests/libcontentaction/bin/lca-cita-test ./sandbox.sh --stop
+          @PATH@/bin/lca-cita-test ./sandbox.sh --stop
         </step>
       </post_steps>
     </set>
