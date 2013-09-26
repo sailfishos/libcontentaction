@@ -45,7 +45,7 @@ t/test-l10n-data/test_fi.qm
 doc/doxygen.log
 doc/html/
 
-/*.pc
+*.pc
 /aclocal.m4
 /autom4te.cache
 /configure
@@ -81,3 +81,25 @@ TAGS
 
 /coverage/*
 
+src/libcontentaction5.so
+src/libcontentaction5.so.0
+src/libcontentaction5.so.0.0
+src/libcontentaction5.so.0.0.75
+src/moc_service.cpp
+tests/Makefile.*
+tests/applications/other.desktop
+tests/applications/show.desktop
+tests/applications/ubermeego.desktop
+tests/applications/upload.desktop
+tests/lca-cita-test
+tests/servicetest
+tests/test-action
+tests/test-findhighlights
+tests/test-info
+tests/test-l10n-data/test-en.qm
+tests/test-l10n-data/test-fi.qm
+tests/test-l10n-data/test-hu.qm
+tests/test-l10n-data/test_eng_en.qm
+tests/test-mimedefaults
+tests/tests.xml
+tools/lca-tool
