@@ -3,7 +3,6 @@ TEMPLATE = aux
 include(../common.pri)
 
 testdata.files = \
-    tests.xml \
     service.map \
     testdata.ttl \
     plaintext \
@@ -39,8 +38,21 @@ testscripts.files = \
 testscripts.path = $$CONTENTACTION_TESTDIR
 INSTALLS += testscripts
 
-bin.files = lca-cita-test
-bin.path = $$CONTENTACTION_TESTDIR/bin
-INSTALLS += bin
+unix{
+    bin.target = lca-cita-test
+    bin.files = lca-cita-test
+    bin.path = $$CONTENTACTION_TESTDIR/bin
+    bin.CONFIG = no_check_exist
+    bin.commands = sed \'s%@PATH@%$${CONTENTACTION_TESTDIR}%\' $$PWD/lca-cita-test.in > $$PWD/lca-cita-test
+    QMAKE_DISTCLEAN += lca-cita-test
+    INSTALLS += bin
 
+    tests_xml.target = tests.xml
+    tests_xml.files = tests.xml
+    tests_xml.path = $${CONTENTACTION_TESTDIR}
+    tests_xml.CONFIG = no_check_exist
+    tests_xml.commands = sed \'s%@PATH@%$${CONTENTACTION_TESTDIR}%\' $$PWD/tests.xml.in > $$PWD/tests.xml
+    QMAKE_DISTCLEAN += tests.xml
+    INSTALLS += tests_xml
+}
 

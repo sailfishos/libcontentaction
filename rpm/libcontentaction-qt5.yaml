@@ -51,6 +51,9 @@ SubPackages:
           - pygobject2  
           - python 
           - tracker-utils
+          - qt5-default
+          - qt5-qttools-qdbus
       Files:
+        - "%attr(0755, root, root) /opt/tests/libcontentaction5/bin/lca-cita-test"
         - "/opt/tests/libcontentaction5/*"
 

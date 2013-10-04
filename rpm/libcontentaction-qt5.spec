@@ -51,6 +51,8 @@ Requires:   dbus-python
 Requires:   pygobject2
 Requires:   python
 Requires:   tracker-utils
+Requires:   qt5-default
+Requires:   qt5-qttools-qdbus
 
 %description tests
 This package contains the tests for libcontentaction library.
@@ -68,7 +70,7 @@ This package contains the tests for libcontentaction library.
 
 %qmake5 
 
-make %{?jobs:-j%jobs}
+make %{?_smp_mflags}
 
 # >> build post
 # << build post
@@ -107,6 +109,7 @@ rm -rf %{buildroot}
 
 %files tests
 %defattr(-,root,root,-)
+%attr(0755, root, root) /opt/tests/libcontentaction5/bin/lca-cita-test
 /opt/tests/libcontentaction5/*
 # >> files tests
 # << files tests

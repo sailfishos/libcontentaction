@@ -11,6 +11,6 @@ Terminal=false
 Type=Application
 MimeType=text/plain;
 X-Maemo-Service=uber.program
-X-MeeGo-Translation-Catalog=/opt/tests/libcontentaction/test-l10n-data/test
+X-MeeGo-Translation-Catalog=@PATH@/test-l10n-data/test
 X-MeeGo-Logical-Id=some.other.action
 NotShowIn=X-MeeGo;
