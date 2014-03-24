@@ -361,7 +361,7 @@ int main(int argc, char **argv)
             if (args[i].startsWith ("file:")) {
                 uris << QUrl::fromEncoded(args[i].toLocal8Bit());
             } else {
-                uris << QUrl::fromLocalFile(args[i]);
+                uris << QUrl::fromLocalFile(QFileInfo(args[i]).absoluteFilePath());
             }
         }
         if (uris.size() == 1)
