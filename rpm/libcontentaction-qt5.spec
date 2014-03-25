@@ -9,7 +9,7 @@ Name:       libcontentaction-qt5
 # << macros
 
 Summary:    Library for associating content with actions
-Version:    0.1.92
+Version:    0.1.93
 Release:    1
 Group:      System/Desktop
 License:    LGPLv2.1
