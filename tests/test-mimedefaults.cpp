@@ -83,9 +83,6 @@ void TestMimeDefaults::setMimeDefault()
         QCOMPARE(a.name(), QString("ubermeego"));
     }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    struct QThread : public ::QThread { using ::QThread::sleep; };
-#endif
     QThread::sleep(1); // time resolution (not only) on ext3 is 1s (see readChangedKeyValueFiles())
 
     // Do it again for another app, just in case ubermeego was already the

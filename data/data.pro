@@ -6,7 +6,7 @@ actions.path = $$CONTENTACTION_DATADIR
 actions.files = \
     tracker1.xml \
     highlight1.xml
-equals(QT_MAJOR_VERSION, 5): INSTALLS += actions
+INSTALLS += actions
 
 testdata.path = $$CONTENTACTION_TESTDIR/data
 testdata.files = \
@@ -31,4 +31,4 @@ QMAKE_EXTRA_COMPILERS += genreg
 highlight1.path = $$CONTENTACTION_DATADIR
 highlight1.files = highlight1.xml
 highlight1.CONFIG += no_check_exist
-equals(QT_MAJOR_VERSION, 5): INSTALLS += highlight1
+INSTALLS += highlight1
