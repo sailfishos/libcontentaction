@@ -1,6 +1,5 @@
 TEMPLATE = lib
-equals(QT_MAJOR_VERSION, 4): TARGET = contentaction
-equals(QT_MAJOR_VERSION, 5): TARGET = contentaction5
+TARGET = contentaction5
 
 include(../common.pri)
 
@@ -13,14 +12,7 @@ QT = core xml dbus
 CONFIG += link_pkgconfig hide_symbols
 CONFIG -= link_prl
 PKGCONFIG += gio-2.0 gio-unix-2.0
-
-equals(QT_MAJOR_VERSION, 4) {
-    PKGCONFIG += mlite
-    CONFIG += mobility
-    MOBILITY += systeminfo
-} else {
-    PKGCONFIG += mlite5 Qt5SystemInfo
-}
+PKGCONFIG += mlite5 Qt5SystemInfo
 
 target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
@@ -52,8 +44,7 @@ include.files = contentaction.h \
                 contentinfo.h
 INSTALLS += include
 
-equals(QT_MAJOR_VERSION, 4): PCFILE=contentaction-0.1.pc
-equals(QT_MAJOR_VERSION, 5): PCFILE=contentaction5.pc
+PCFILE=contentaction5.pc
 
 # handle .pc file
 system(cp $${PCFILE}.in $$PCFILE)

@@ -27,13 +27,7 @@
 #include <QDir>
 #include <QStringList>
 #include <QMultiHash>
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-# include <QSystemDeviceInfo>
-QTM_USE_NAMESPACE
-#else
-# include <QDeviceInfo>
-# define QSystemDeviceInfo QDeviceInfo
-#endif
+#include <QDeviceInfo>
 
 const QString ContentAction::HighlighterMimeClass("x-maemo-highlight/");
 
@@ -260,7 +254,7 @@ QString ContentAction::Internal::bindParams(const QString &str)
     static QString model;
 
     if (!initialized) {
-        QSystemDeviceInfo sid;
+        QDeviceInfo sid;
         manufacturer = sid.manufacturer();
         model = sid.model();
         initialized = true;
