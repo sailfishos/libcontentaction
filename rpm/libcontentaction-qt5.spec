@@ -6,7 +6,6 @@ Group:      System/Desktop
 License:    LGPLv2.1
 URL:        https://github.com/nemomobile/libcontentaction
 Source0:    %{name}-%{version}.tar.bz2
-Source100:  libcontentaction-qt5.yaml
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRequires:  pkgconfig(glib-2.0)
