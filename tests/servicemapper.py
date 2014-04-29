@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import os
 import dbus, dbus.service, dbus.mainloop.glib
-import gobject
+from gi.repository import GObject as gobject
 
 class ServiceMapper(dbus.service.Object):
     def __init__(self, path):
