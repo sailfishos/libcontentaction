@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import dbus, dbus.service, dbus.mainloop.glib
-import gobject
+from gi.repository import GObject as gobject
 from sys import stdout, argv
 
 class Gallery(dbus.service.Object):
