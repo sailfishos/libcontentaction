@@ -6,10 +6,10 @@ srcdir=.
 
 setlocale() {
     export LANG="$1";
-    gconftool-2 -t string -s /meegotouch/i18n/language "$LANG";
+    dconf write /meegotouch/i18n/language \"$LANG\";
 }
 
-original_locale=$(gconftool-2 -g /meegotouch/i18n/language)
+original_locale=$(dconf read /meegotouch/i18n/language)
 atexit "setlocale $original_locale"
 
 # translation of tracker uri actions
@@ -46,17 +46,14 @@ strstr "$a" ".*a kepzelet hianya" || exit 1;
 # a locale for which we don't have translations
 setlocale xx_YY
 a=$(lca-tool --l10n --tracker --print an.image 2>/dev/null)
-b='some.other.action
-upload.to.album
-com.nokia.imageviewer.show'
 
-strstr "$a" ".*!! othername" || exit 1;
-strstr "$a" ".*!! uploadname" || exit 1;
-strstr "$a" ".*!! showname" || exit 1;
+strstr "$a" ".*othername" || exit 1;
+strstr "$a" ".*uploadname" || exit 1;
+strstr "$a" ".*showname" || exit 1;
 
 a=$(lca-tool --l10n --file --print "file://$plaintext" 2>/dev/null)
 strstr "$a" ".*uberexec" || exit 1;
 strstr "$a" ".*ubermimeopen" || exit 1;
-strstr "$a" ".*!! othername" || exit 1;
+strstr "$a" ".*unterexec" || exit 1;
 
 exit 0;
