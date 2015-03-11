@@ -1,6 +1,6 @@
 Name:       libcontentaction-qt5
 Summary:    Library for associating content with actions
-Version:    0.2.0
+Version:    0.2.3
 Release:    1
 Group:      System/Desktop
 License:    LGPLv2.1
@@ -48,6 +48,15 @@ Requires:   qt5-qttools-qdbus
 This package contains the tests for libcontentaction library.
 
 
+%package -n nemo-qml-plugin-contentaction
+Summary:  Content Action QML plugin
+Group:    System/Desktop
+Requires: %{name} = %{version}-%{release}
+
+%description -n nemo-qml-plugin-contentaction
+This package contains the Content Action QML plugin.
+
+
 %prep
 %setup -q -n %{name}-%{version}
 
@@ -82,3 +91,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %attr(0755, root, root) /opt/tests/libcontentaction5/bin/lca-cita-test
 /opt/tests/libcontentaction5/*
+
+%files -n nemo-qml-plugin-contentaction
+%defattr(-,root,root,-)
+%{_libdir}/qt5/qml/org/nemomobile/contentaction/*
