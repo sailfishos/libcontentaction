@@ -16,7 +16,7 @@ testdata.files = \
 INSTALLS += testdata
 
 applications.path = /usr/share/applications
-applications.files = defaults.list
+applications.files = mimeapps.list
 INSTALLS += applications
 
 XML_FILES = highlight1.xml.in

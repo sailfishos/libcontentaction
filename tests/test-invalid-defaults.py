@@ -38,7 +38,7 @@ if 'MIME_TEST_DIR' in os.environ:
 class InvalidDefaults(unittest.TestCase):
     def testInvalidDefaultForUri(self):
         # this uri is a ncal:Event, and x-maemo-nepomuk/calendar-event has a
-        # defaults.list entry pointing to a nonexistent application.
+        # mimeapps.list entry pointing to a nonexistent application.
         (status, output) = getstatusoutput("lca-tool --tracker --printdefault urn:test:calendarevent")
         self.assert_(status == 0)
         self.assert_(output.find("Invalid action") != -1)

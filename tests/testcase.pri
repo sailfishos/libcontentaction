@@ -1,5 +1,6 @@
 QT += testlib
 INCLUDEPATH += ../src
+
 LIBS += -L../src
 LIBS += -lcontentaction5
 

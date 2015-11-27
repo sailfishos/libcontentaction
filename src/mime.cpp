@@ -80,7 +80,7 @@ void readKeyValues(QFile& file, QHash<QString, QString>& dict)
 
 
 QHash<QString, QString> readChangedKeyValueFiles(const QStringList& dirs,
-                                                 const QString& suffix)
+                                                 const QStringList& suffixes)
 {
     // Read each file if it has changed since the last time we read it.
 
@@ -106,19 +106,24 @@ QHash<QString, QString> readChangedKeyValueFiles(const QStringList& dirs,
     // Read the files in such a order that the first ones override the later
     // ones.
     for (int i = dirs.size()-1; i >= 0; --i) {
-        long lm = 0;
-        QString filename = dirs[i] + suffix;
-        if (!readLastModifiedTime(filename, lm)) {
-            // Most probably the file doesn't exist.
-            continue;
+        for (int suffix = 0; suffix < suffixes.size(); suffix++) {
+            QString filename = dirs[i] + suffixes[suffix];
+            if (QFileInfo::exists(filename)) {
+                long lm = 0;
+                if (!readLastModifiedTime(filename, lm)) {
+                    // Most probably the file doesn't exist.
+                    continue;
+                }
+                if (!rereadAllThatFollows && lm == lastModified.value(filename)) {
+                    continue;
+                }
+                QFile f(filename);
+                readKeyValues(f, temp);
+                lastModified[filename] = lm;
+                rereadAllThatFollows = true;
+                break;
+            }
         }
-        if (!rereadAllThatFollows && lm == lastModified.value(filename)) {
-            continue;
-        }
-        QFile f(filename);
-        readKeyValues(f, temp);
-        lastModified[filename] = lm;
-        rereadAllThatFollows = true;
     }
     return temp;
 }
@@ -172,12 +177,11 @@ QString Internal::mimeForFile(const QUrl& uri)
         char *type = g_content_type_guess (fileUri.toLocalFile().toLocal8Bit().constData(),
                                            NULL, 0, NULL);
         QString res;
-        if (type)
-          {
+        if (type) {
             gchar *temp = g_content_type_get_mime_type (type);
             res = temp;
             g_free (temp);
-          }
+        }
         g_free (type);
         return res;
     }
@@ -215,9 +219,17 @@ static const QStringList& xdgDataDirs()
     return dirs;
 }
 
+static const QString getMimeFile(QString rootPath)
+{
+    QString mimeFileDB = rootPath + "/applications/mimeapps.list";
+    if (!QFileInfo::exists(mimeFileDB))
+        mimeFileDB = rootPath + "/applications/defaults.list";
+    return mimeFileDB;
+}
+
 static void writeDefaultsList(const QHash<QString, QString>& defaults)
 {
-    QString targetFileName = xdgDataHome() + "/applications/defaults.list";
+    QString targetFileName = xdgDataHome() + "/applications/mimeapps.list";
     QFile outFile(targetFileName + ".temp");
     if (!outFile.open(QIODevice::WriteOnly)) {
         LCA_WARNING << "cannot write" << outFile.fileName();
@@ -251,9 +263,9 @@ void setMimeDefault(const QString& mimeType, const Action& action)
 void setMimeDefault(const QString& mimeType, const QString& app)
 {
     QHash<QString, QString> defaults;
-    // Read the contents of $XDG_DATA_HOME/applications/defaults.list (if
+    // Read the contents of $XDG_DATA_HOME/applications/mimeapps.list (if
     // it exists)
-    QFile file(xdgDataHome() + "/applications/defaults.list");
+    QFile file(getMimeFile(xdgDataHome()));
     readKeyValues(file, defaults);
 
     defaults[mimeType] = app + ".desktop";
@@ -267,9 +279,9 @@ void setMimeDefault(const QString& mimeType, const QString& app)
 void resetMimeDefault(const QString& mimeType)
 {
     QHash<QString, QString> defaults;
-    // Read the contents of $XDG_DATA_HOME/applications/defaults.list (if
+    // Read the contents of $XDG_DATA_HOME/applications/mimeapps.list (if
     // it exists)
-    QFile file(xdgDataHome() + "/applications/defaults.list");
+    QFile file(getMimeFile(xdgDataHome()));
     readKeyValues(file, defaults);
 
     defaults.remove(mimeType);
@@ -294,7 +306,7 @@ QString Internal::findDesktopFile(const QString& id)
 }
 
 // Returns the default application for handling the given \a contentType. The
-// default application is read from the defaults.list. If there is no default
+// default application is read from the mimeapps.list. If there is no default
 // application, returns an empty string.
 QString Internal::defaultAppForContentType(const QString& contentType)
 {
@@ -302,10 +314,12 @@ QString Internal::defaultAppForContentType(const QString& contentType)
 
     QStringList dirs = xdgDataDirs();
 
-    // Read the defaults.lists which have changed since we read them the last
-    // time.
-    QHash<QString, QString> temp = readChangedKeyValueFiles(dirs,
-                                                            "/applications/defaults.list");
+    // Read the mimeapps.lists / defaults.lists which have changed since we
+    // read them the last time.
+    QStringList files;
+    files << "/applications/mimeapps.list";
+    files << "/applications/defaults.list";
+    QHash<QString, QString> temp = readChangedKeyValueFiles(dirs, files);
 
     // Merge the results into our cache
     QHashIterator<QString, QString> it(temp);
@@ -330,10 +344,11 @@ const QHash<QString, QStringList>& Internal::mimeApps()
 
     QStringList dirs = xdgDataDirs();
 
+
     // Read the mimeinfo.caches which have changed since we read them the last
     // time.
     QHash<QString, QString> temp = readChangedKeyValueFiles(dirs,
-                                                            "/applications/mimeinfo.cache");
+                                                            QStringList("/applications/mimeinfo.cache"));
 
     // Merge the changes into our cache
     QHashIterator<QString, QString> it(temp);

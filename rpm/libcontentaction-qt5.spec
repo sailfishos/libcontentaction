@@ -1,6 +1,6 @@
 Name:       libcontentaction-qt5
 Summary:    Library for associating content with actions
-Version:    0.2.3
+Version:    0.2.9
 Release:    1
 Group:      System/Desktop
 License:    LGPLv2.1
@@ -79,7 +79,7 @@ rm -rf %{buildroot}
 %{_datadir}/contentaction/highlight1.xml
 %{_datadir}/contentaction/tracker1.xml
 %{_libdir}/libcontentaction5.so.*
-%exclude %{_datadir}/applications/defaults.list
+%exclude %{_datadir}/applications/mimeapps.list
 
 %files devel
 %defattr(-,root,root,-)

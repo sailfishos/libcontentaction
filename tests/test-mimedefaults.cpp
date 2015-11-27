@@ -57,7 +57,7 @@ void TestMimeDefaults::initTestCase()
 void TestMimeDefaults::cleanupTestCase()
 {
     // Unfortunately, no rmtree in Qt/C++.
-    QFile file(tempApplications + "/defaults.list");
+    QFile file(tempApplications + "/mimeapps.list");
     file.remove();
     QDir(".").rmpath(QString(tempApplications));
 }
