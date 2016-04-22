@@ -8,6 +8,7 @@ include(../common.pri)
 # day?
 VERSION = 0.0.75
 
+
 QT = core xml dbus
 CONFIG += link_pkgconfig hide_symbols
 CONFIG -= link_prl

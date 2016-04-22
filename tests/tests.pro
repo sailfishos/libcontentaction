@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
+
 SUBDIRS = \
     applications \
     test-l10n-data \
