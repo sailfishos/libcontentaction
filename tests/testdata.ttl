@@ -31,8 +31,6 @@
 	nie:url "file:///tmp/bbb.wav" ;
 	nie:mimeType "audio/wav" .
 
-<a.softwareapp> a nfo:SoftwareApplication, nie:DataObject .
-
 <a.contact> a nco:PersonContact .
 <b.phonenumber> a nco:PhoneNumber ;
 	nco:phoneNumber "555-334112" .
