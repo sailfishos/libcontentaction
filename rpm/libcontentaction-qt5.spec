@@ -79,7 +79,6 @@ rm -rf %{buildroot}
 %{_datadir}/contentaction/highlight1.xml
 %{_datadir}/contentaction/tracker1.xml
 %{_libdir}/libcontentaction5.so.*
-%exclude %{_datadir}/applications/mimeapps.list
 
 %files devel
 %defattr(-,root,root,-)

@@ -129,12 +129,5 @@ strstr "$res" ".*'http://maps.ovi.com/#|50.060185|19.9328789|11|0|0|normal.day' 
 # A URL immediately followed by non-ascii letters.
 strstr "$res" ".*'www.10010.com' browser" || exit 10
 
-# music suite URLs
-strstr "$res" ".*'http://music.ovi.com' ovi-music browser" || exit 11
-strstr "$res" ".*'http://music.ovi.mobi' ovi-music browser" || exit 11
-strstr "$res" ".*'http://music.ovi.com.cn' ovi-music browser" || exit 11
-strstr "$res" ".*'http://music.ovi.com/cn/zh/pc' ovi-music browser" || exit 11
-strstr "$res" ".*'http://music.ovi.mobi/fi/fi/pc' ovi-music browser" || exit 11
-
 strstr "$res" ".*'"
 exit 0
