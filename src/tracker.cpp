@@ -43,7 +43,6 @@ namespace ContentAction {
 using namespace ContentAction::Internal;
 
 const QString OntologyMimeClass("x-maemo-nepomuk/");
-static const QString SoftwareApplicationMimeType("x-maemo-nepomuk/software-application");
 static const QString SparqlQuery("SparqlQuery");
 
 // Returns true if the \a uri is a valid IRI, warns otherwise.
@@ -148,8 +147,6 @@ QStringList Internal::mimeForTrackerObject(const QString& uri)
         // Don't consider mime types for which nobody defines an action,
         // except if it is `software-application' which is special case.
         QString pseudoMimeType(OntologyMimeClass + mimeType);
-        if (pseudoMimeType != SoftwareApplicationMimeType &&
-            appsForContentType(pseudoMimeType).isEmpty()) continue;
 
         if (checkTrackerCondition(conditions[mimeType], uri))
             mimeTypes << pseudoMimeType;
@@ -170,21 +167,6 @@ static QList<QStringList> mimeTypesForUris(const QStringList& uris)
     return allMimeTypes;
 }
 
-// Given a nfo:SoftwareApplication \a uri, constructs an Action, which
-// launches the corresponding application when triggered.
-static Action createSoftwareAction(const QString& uri)
-{
-    QString query("SELECT nie:url(<%1>) {}");
-    QDBusReply<QVector<QStringList> > reply = tracker()->call(SparqlQuery, query.arg(uri));
-    if (!reply.isValid())
-        return Action();
-    QString fileUri(reply.value()[0][0]);
-    if (fileUri.isEmpty())
-        return Action();
-    QUrl desktopFileUri(fileUri);
-    return createAction(desktopFileUri.toLocalFile(), QStringList());
-}
-
 /// Returns the default action for the given \a uri representing an object
 /// stored in Tracker.  A default action is determined by checking the \ref
 /// tracker_conditions "conditions" that apply to the \a uri, and taking the
@@ -201,8 +183,6 @@ Action Action::defaultAction(const QString& uri)
     QStringList mimeTypes = mimeForTrackerObject(uri);
     LCA_DEBUG << "pseudo-mimes" << mimeTypes;
     Q_FOREACH (const QString& mimeType, mimeTypes) {
-        if (mimeType == SoftwareApplicationMimeType)
-            return createSoftwareAction(uri);
         QString def = findDesktopFile(defaultAppForContentType(mimeType));
         if (!def.isEmpty())
             return createAction(def,
@@ -330,8 +310,6 @@ QList<Action> Action::actions(const QString& uri)
     QSet<QString> blackList; // for adding each action only once
     Q_FOREACH (const QString& mimeType, mimeTypes) {
         QStringList apps = appsForContentType(mimeType);
-        if (mimeType == SoftwareApplicationMimeType)
-            result << createSoftwareAction(uri);
         Q_FOREACH (const QString& appid, apps) {
             QString app = findDesktopFile(appid);
             if (!app.isEmpty()) {

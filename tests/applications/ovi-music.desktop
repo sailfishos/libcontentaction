@@ -1,9 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-Name=Ovi Music
-Icon=execicon
-Exec=ovi-music %U
-Terminal=false
-Type=Application
-MimeType=x-maemo-highlight/ovi-music-url;
-NotShowIn=X-MeeGo;

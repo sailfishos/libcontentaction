@@ -10,10 +10,6 @@
     { ?uri a nfo:Image . }
   </tracker-condition>
 
-  <tracker-condition name="software-application">
-    { ?uri a nfo:Software . }
-  </tracker-condition>
-
   <tracker-condition name="calendar-event">
     { ?uri a ncal:Event . }
   </tracker-condition>

@@ -23,8 +23,7 @@ desktop_tests.files = \
     gallerywithfilename.desktop \
     browser.desktop \
     special-browser.desktop \
-    regexpmatcher.desktop \
-    ovi-music.desktop
+    regexpmatcher.desktop 
 INSTALLS += desktop_tests
 
 unix{

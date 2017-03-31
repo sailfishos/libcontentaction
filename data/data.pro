@@ -15,10 +15,6 @@ testdata.files = \
     hl-examples.xml
 INSTALLS += testdata
 
-applications.path = /usr/share/applications
-applications.files = mimeapps.list
-INSTALLS += applications
-
 XML_FILES = highlight1.xml.in
 
 genreg.input = XML_FILES
