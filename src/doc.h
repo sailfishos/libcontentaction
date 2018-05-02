@@ -24,7 +24,7 @@ Actions can target one of the following:
 -# MIME types (\c image/jpeg)
 -# Tracker-query based conditions (\c x-maemo-nepomuk/contact)
 -# regular expressions (\c x-maemo-highlight/phonenumber)
--# URI schemes (\c x-maemo-urischeme/mailto)
+-# URI schemes (\c x-scheme-handler/mailto)
 
 \section detaileddescription Detailed description
 
@@ -242,8 +242,8 @@ More information:
 The libcontentaction library is also able to dispatch URIs based on the scheme
 (ContentAction::Action::actionsForScheme).  To this end, applications can
 define that they handle a custom MIME type, for example,
-\c x-maemo-urischeme/http.  When actionsForScheme("http://www.example.com") is
-called, applications declaring \c x-maemo-urischeme/http appear in the list of
+\c x-scheme-handler/http.  When actionsForScheme("http://www.example.com") is
+called, applications declaring \c x-scheme-handler/http appear in the list of
 applicable actions.  When launched, an action gets the string
 "http://www.example.com" as a parameter.
 
@@ -298,7 +298,7 @@ MimeType=x-maemo-nepomuk/contact;
 ;; 3. pre-defined regexps for the highlighter
 MimeType=x-maemo-highlight/phonenumber;
 ;; 4. URI schemes
-MimeType=x-maemo-urischeme/mailto;
+MimeType=x-scheme-handler/mailto;
 
 ;; Defining how to trigger the action:
 ;; 1. invoke a MApplication based program by calling
