@@ -17,10 +17,7 @@ from libcontentaction.
 
 For file URIs, the library finds out the MIME type and uses it as a key of the
 association.  For objects stored in Tracker, the library adds the custom MIME
-types that target them.  Finally, the library provides
-ContentAction::highlightLabel(), which adds highlighters to an MLabel based on
-the actions associated with regular expressions (such as phone numbers and
-e-mail addresses).
+types that target them.
 
 Actions can target one of the following:
 
@@ -260,19 +257,7 @@ applicable actions.  When launched, an action gets the string
 
 \section highlighter Free-text highlighter
 
-\attention
-The following section may be subject to changes!
-
-Passing an MLabel* to ContentAction::Action::highlightLabel() adds a
-MLabelHighlighter which highlights interesting elements inside the label.  When
-the user clicks a highlighted element, the default action for it is launched.
-When the user long-clicks a highlighted element, a pop-up menu containing the
-applicable actions is shown.  When the user clicks an item in the menu, the
-corresponding action is launched.
-
-These actions have different semantics than ordinary Actions.  When
-triggered, they call the method with a single element list containing the
-matched text (as UTF-8).  Note that these are very likely invalid URIs.
+FIXME: missing proper documentation for highlighting.
 
 Similarly to Tracker conditions, regexps are also defined in .xml files
 located in \c /usr/share/contentaction (unless overridden with
@@ -292,10 +277,6 @@ Applications can now define in their .desktop files that they handle these
 custom MIME types.  When launched, they get a string which matches the regular
 expression as a parameter. For example, an application handling
 \c x-maemo-highlight/phone-number might get "+ 123 456-789" as a parameter.
-
-More information:
-
-<a href="http://apidocs.meego.com/mtf/class_m_label.html">MLabel documentation</a>
 
 \section exampledesktop An example .desktop file
 
