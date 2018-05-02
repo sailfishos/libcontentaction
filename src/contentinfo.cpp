@@ -103,8 +103,6 @@ ContentInfo::typeIcon () const
 ContentInfo
 ContentInfo::forMime (const QString &mimeType)
 {
-  g_type_init ();
-
   gchar *contentType = g_content_type_from_mime_type (mimeType.toUtf8());
 
   Private *priv = new Private;
@@ -161,8 +159,6 @@ ContentInfo::forTracker (const QString &tracker_uri)
 ContentInfo
 ContentInfo::forData (const QByteArray &bytes)
 {
-   g_type_init ();
-  
    gchar *content_type = g_content_type_guess (NULL, (const guchar *)bytes.constData(), bytes.size(), NULL);
    if (content_type)
      {

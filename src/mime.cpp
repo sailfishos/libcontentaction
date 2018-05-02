@@ -155,7 +155,6 @@ static QString generalizeMimeType(const QString &mime)
 /// be retrieved.
 QString Internal::mimeForFile(const QUrl& uri)
 {
-    g_type_init();
     // assume "file" scheme if the uri had nothing
     QUrl fileUri(uri);
     if (fileUri.scheme().isEmpty())
