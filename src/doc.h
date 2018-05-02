@@ -112,7 +112,7 @@ More information:
 In addition to the Exec line, .desktop files can specify custom ways to launch
 the application.  The launch methods supported by libcontentaction are:
 
--# launching a MeeGoTouch based application using the MApplication D-Bus interface
+-# launching application using D-Bus interface
   - Define: \c X-Maemo-Service=my.bus.name
   - Optionally: \c X-Maemo-Fixed-Args=my;fixed;args
 -# calling a D-Bus method specified in the .desktop file
@@ -120,7 +120,7 @@ the application.  The launch methods supported by libcontentaction are:
   - Define: \c X-Maemo-Method=com.my.interface.Method
   - Optionally: \c X-Maemo-Object-Path=/the/object/path (default: /)
   - Optionally: \c X-Maemo-Fixed-Args=my;fixed;args
--# calling a MeeGo Service Framework method
+-# calling a D-Bus method
   - Define: \c X-Maemo-Method=com.my.interface.Method
   - Optionally: \c X-Maemo-Fixed-Args=my;fixed;args
   - Note: Do not define \c X-Maemo-Service
@@ -137,12 +137,6 @@ function is called, the strings are the URIs (or the free-text snippet)
 used to construct the Action, as well as the fixed parameters you may have
 specified.  If there is a return value, it is ignored.
 
-If you use a MeeGo Service Framework based invocation,
-declare your application to be an implementor of the interface. You just need to
-add an "Interface: " line to your D-Bus .service file.  You can also publish
-your interface in the meego-services package, but it is not needed for
-libcontentaction.
-
 If your application is running, D-Bus based launching delivers the
 function call to the running instance.  If your application is not running,
 D-Bus can autolaunch it as defined in your .service file.  This makes
@@ -156,8 +150,6 @@ More information:
 <a href="http://www.freedesktop.org/wiki/Software/dbus">D-Bus</a>
 
 <a href="http://dbus.freedesktop.org/doc/dbus-specification.html">Message Bus Starting Services</a>
-
-<a href="http://apidocs.meego.com/mtf/index.html">MeeGoTouch</a>
 
 \section custommime Custom MIME types for Tracker URIs
 
