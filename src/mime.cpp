@@ -134,7 +134,7 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
-const QString UriSchemeMimeClass("x-maemo-urischeme/");
+const QString UriSchemeMimeClass("x-scheme-handler/");
 
 static const QString DesktopFileMimeType("application/x-desktop");
 
@@ -155,7 +155,6 @@ static QString generalizeMimeType(const QString &mime)
 /// be retrieved.
 QString Internal::mimeForFile(const QUrl& uri)
 {
-    g_type_init();
     // assume "file" scheme if the uri had nothing
     QUrl fileUri(uri);
     if (fileUri.scheme().isEmpty())
@@ -554,8 +553,8 @@ Action Action::defaultActionForScheme(const QString& uri)
 
 /// Returns all actions handling the scheme of the given \a uri.  The uri
 /// scheme is mapped to mime types by prefixing it with \c
-/// "x-maemo-urischeme/".  For example an email client may declare to handle
-/// the \c "x-maemo-urischeme/mailto" mimetype and a browser then just
+/// "x-scheme-handler/".  For example an email client may declare to handle
+/// the \c "x-scheme-handler/mailto" mimetype and a browser then just
 /// triggers the returned Action to activate a \c mailto: link.
 QList<Action> Action::actionsForScheme(const QString& uri)
 {

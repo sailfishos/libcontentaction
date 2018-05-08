@@ -36,7 +36,6 @@
 # endif
 #endif
 
-class MLabel;
 class MDesktopEntry;
 
 namespace ContentAction
@@ -108,10 +107,6 @@ LCA_EXPORT Action defaultActionForMime(const QString& mimeType);
 LCA_EXPORT void setMimeDefault(const QString& mimeType, const Action& action);
 LCA_EXPORT void setMimeDefault(const QString& mimeType, const QString& app);
 LCA_EXPORT void resetMimeDefault(const QString& mimeType);
-
-LCA_EXPORT void highlightLabel(MLabel *label);
-LCA_EXPORT void highlightLabel(MLabel *label, QStringList typesToHighlight);
-LCA_EXPORT void dehighlightLabel(MLabel *label);
 
 } // end namespace
 #endif

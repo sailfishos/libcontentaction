@@ -98,6 +98,8 @@ ServiceResolver::~ServiceResolver()
 /// A slot connected to the serviceAvailable signal from Meego service mapper.
 void ServiceResolver::onServiceAvailable(QString implementor, QString interface)
 {
+    Q_UNUSED(implementor)
+
     // Now a service become available for an interface, but we cannot know
     // wheter it is now the *preferred* implementor or not. We cannot do
     // anything else but clear our understanging about who's the preferred

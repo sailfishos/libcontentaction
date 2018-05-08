@@ -54,3 +54,5 @@ system(sed -i "s/\\@VERSION\\@/$$VERSION/g" $$PCFILE)
 pcfiles.files = $$PCFILE
 pcfiles.path = $$[QT_INSTALL_LIBS]/pkgconfig
 INSTALLS += pcfiles
+
+OTHER_FILES += doc.h
