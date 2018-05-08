@@ -90,6 +90,8 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
                                 const QString& qname,
                                 const QXmlAttributes &atts)
 {
+    Q_UNUSED(ns)
+
     switch (state) {
     case inLimbo:
         if (qname != "actions")
@@ -139,6 +141,9 @@ bool ConfigReader::characters(const QString& chars)
 bool ConfigReader::endElement(const QString& nsuri, const QString& name,
                               const QString& qname)
 {
+    Q_UNUSED(nsuri)
+    Q_UNUSED(name)
+
     switch (state) {
     case inActions:
         if (qname == "actions")
