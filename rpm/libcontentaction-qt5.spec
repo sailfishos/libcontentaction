@@ -4,7 +4,7 @@ Version:    0.2.9
 Release:    1
 Group:      System/Desktop
 License:    LGPLv2.1
-URL:        https://github.com/nemomobile/libcontentaction
+URL:        https://git.merproject.org/mer-core/libcontentaction
 Source0:    %{name}-%{version}.tar.bz2
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
