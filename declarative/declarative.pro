@@ -26,9 +26,12 @@ HEADERS += \
     PRE_TARGETDEPS += $$copy_qmldir.target
 }
 
-qmldir.files = qmldir
+qmldir.files = qmldir plugins.qmltypes
 
 qmldir.path = $$installPath
 target.path = $$installPath
 
 INSTALLS += target qmldir
+
+qmltypes.commands = qmlplugindump -nonrelocatable org.nemomobile.contentaction 1.0 > $$PWD/plugins.qmltypes
+QMAKE_EXTRA_TARGETS += qmltypes
