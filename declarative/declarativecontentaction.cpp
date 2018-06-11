@@ -28,7 +28,8 @@
 #include <QtCore/QDebug>
 
 DeclarativeContentAction::DeclarativeContentAction(QObject *parent)
-:   QObject(parent), m_error(NoError)
+    : QObject(parent)
+    , m_error(NoError)
 {
 }
 
