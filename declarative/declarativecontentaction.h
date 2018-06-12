@@ -24,11 +24,17 @@
 
 #include <QtCore/QObject>
 
+QT_BEGIN_NAMESPACE
+class QMimeDatabase;
+QT_END_NAMESPACE
+
+
 class DeclarativeContentAction: public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(Error error READ error NOTIFY errorChanged)
+    Q_PROPERTY(QString mimeType READ mimeType NOTIFY mimeTypeChanged)
 
     Q_ENUMS(Error)
 
@@ -37,21 +43,29 @@ public:
         NoError,
         FileTypeNotSupported,
         FileDoesNotExist,
+        FileIsEmpty,
         UrlSchemeNotSupported,
         InvalidUrl
     };
 
     explicit DeclarativeContentAction(QObject *parent = 0);
+    virtual ~DeclarativeContentAction();
 
     Q_INVOKABLE bool trigger(const QUrl &url);
 
     Error error() const;
+    QString mimeType() const;
 
 signals:
     void errorChanged();
+    void mimeTypeChanged();
 
 private:
+    void updateMimeType(const QUrl &url);
+
     Error m_error;
+    QString m_mimeType;
+    QMimeDatabase *m_mimeDatabase;
 };
 
 #endif // DECLARATIVECONTENTACTION_H
