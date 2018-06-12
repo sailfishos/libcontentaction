@@ -37,6 +37,7 @@ public:
         NoError,
         FileTypeNotSupported,
         FileDoesNotExist,
+        FileIsEmpty,
         UrlSchemeNotSupported,
         InvalidUrl
     };

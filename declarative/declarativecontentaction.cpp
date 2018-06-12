@@ -50,11 +50,24 @@ bool DeclarativeContentAction::trigger(const QUrl &url)
     }
 
     if (url.isLocalFile()) {
-        if (!QFile::exists(url.toLocalFile())) {
+        QString localFile = url.toLocalFile();
+        if (!QFile::exists(localFile)) {
             qWarning() << Q_FUNC_INFO << "File doesn't exist!";
             m_error = FileDoesNotExist;
             emit errorChanged();
             return false;
+        }
+
+        QFile file(localFile);
+        if (file.open(QIODevice::ReadOnly) && file.size() == 0) {
+            m_error = FileIsEmpty;
+            emit errorChanged();
+            file.close();
+            return false;
+        }
+
+        if (file.openMode() != QIODevice::NotOpen) {
+            file.close();
         }
 
         ContentAction::Action action = ContentAction::Action::defaultActionForFile(url);
