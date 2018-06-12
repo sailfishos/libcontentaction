@@ -26,11 +26,18 @@
 #include <QtCore/QUrl>
 #include <QtCore/QFile>
 #include <QtCore/QDebug>
+#include <QtCore/QMimeDatabase>
 
 DeclarativeContentAction::DeclarativeContentAction(QObject *parent)
     : QObject(parent)
     , m_error(NoError)
+    , m_mimeDatabase(nullptr)
 {
+}
+
+DeclarativeContentAction::~DeclarativeContentAction()
+{
+    delete m_mimeDatabase;
 }
 
 DeclarativeContentAction::Error DeclarativeContentAction::error() const
@@ -38,42 +45,67 @@ DeclarativeContentAction::Error DeclarativeContentAction::error() const
     return m_error;
 }
 
+QString DeclarativeContentAction::mimeType() const
+{
+    return m_mimeType;
+}
+
+void DeclarativeContentAction::updateMimeType(const QUrl &url)
+{
+    if (!m_mimeDatabase) {
+        m_mimeDatabase = new QMimeDatabase;
+    }
+
+    QString mimeType = m_mimeDatabase->mimeTypeForUrl(url).name();
+    if (m_mimeType != mimeType) {
+        m_mimeType = mimeType;
+        emit mimeTypeChanged();
+    }
+}
+
 bool DeclarativeContentAction::trigger(const QUrl &url)
 {
     m_error = NoError;
+    QString oldMimeType = m_mimeType;
+    m_mimeType.clear();
 
     if (!url.isValid()) {
         qWarning() << Q_FUNC_INFO << "Invalid URL!";
         m_error = InvalidUrl;
         emit errorChanged();
+        if (m_mimeType != oldMimeType) {
+            emit mimeTypeChanged();
+        }
         return false;
     }
 
     if (url.isLocalFile()) {
-        QString localFile = url.toLocalFile();
-        if (!QFile::exists(localFile)) {
+        QFile file(url.toLocalFile());
+        if (!file.exists()) {
             qWarning() << Q_FUNC_INFO << "File doesn't exist!";
             m_error = FileDoesNotExist;
             emit errorChanged();
+            if (m_mimeType != oldMimeType) {
+                emit mimeTypeChanged();
+            }
+
             return false;
         }
 
-        QFile file(localFile);
-        if (file.open(QIODevice::ReadOnly) && file.size() == 0) {
+        if (file.size() == 0) {
             m_error = FileIsEmpty;
             emit errorChanged();
-            file.close();
+            if (m_mimeType != oldMimeType) {
+                emit mimeTypeChanged();
+            }
             return false;
-        }
-
-        if (file.openMode() != QIODevice::NotOpen) {
-            file.close();
         }
 
         ContentAction::Action action = ContentAction::Action::defaultActionForFile(url);
         if (!action.isValid()) {
             m_error = FileTypeNotSupported;
             emit errorChanged();
+            updateMimeType(url);
             return false;
         }
 
@@ -82,6 +114,7 @@ bool DeclarativeContentAction::trigger(const QUrl &url)
         ContentAction::Action action = ContentAction::Action::defaultActionForScheme(url.toString());
         if (!action.isValid()) {
             m_error = UrlSchemeNotSupported;
+            updateMimeType(url);
             emit errorChanged();
             return false;
         }
@@ -89,6 +122,7 @@ bool DeclarativeContentAction::trigger(const QUrl &url)
         action.trigger();
     }
 
+    updateMimeType(url);
     return true;
 }
 
