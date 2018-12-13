@@ -3,14 +3,8 @@ TARGET = contentaction5
 
 include(../common.pri)
 
-# yes, 0.0.75. libcontentaction currently has a SONAME of 0, even though the
-# version numbering is 0.1. god only knows why. fix this in the future, some
-# day?
-VERSION = 0.0.75
-
-
 QT = core xml dbus
-CONFIG += link_pkgconfig hide_symbols
+CONFIG += link_pkgconfig hide_symbols create_pc create_prl no_install_prl
 CONFIG -= link_prl
 PKGCONFIG += gio-2.0 gio-unix-2.0
 PKGCONFIG += mlite5 Qt5SystemInfo
@@ -45,14 +39,12 @@ include.files = contentaction.h \
                 contentinfo.h
 INSTALLS += include
 
-PCFILE=contentaction5.pc
-
-# handle .pc file
-system(cp $${PCFILE}.in $$PCFILE)
-system(sed -i "s/\\@VERSION\\@/$$VERSION/g" $$PCFILE)
-
-pcfiles.files = $$PCFILE
-pcfiles.path = $$[QT_INSTALL_LIBS]/pkgconfig
-INSTALLS += pcfiles
+QMAKE_PKGCONFIG_NAME = $$TARGET
+QMAKE_PKGCONFIG_DESCRIPTION = Library for associating content with actions
+QMAKE_PKGCONFIG_LIBDIR = $$target.path
+QMAKE_PKGCONFIG_INCDIR = $$include.path
+QMAKE_PKGCONFIG_DESTDIR = pkgconfig
+QMAKE_PKGCONFIG_REQUIRES = Qt5Core
+QMAKE_PKGCONFIG_VERSION = $$VERSION
 
 OTHER_FILES += doc.h
