@@ -1,4 +1,4 @@
-QT += testlib
+QT = core testlib
 INCLUDEPATH += ../src
 
 LIBS += -L../src
