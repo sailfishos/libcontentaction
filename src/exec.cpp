@@ -100,7 +100,7 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
     g_free(execString);
 
     if (!execError)
-        appInfo = G_APP_INFO(g_desktop_app_info_new_from_keyfile(keyFile));
+        appInfo = g_desktop_app_info_new_from_keyfile(keyFile);
 
     if (appInfo == 0) {
         LCA_WARNING << "invalid desktop file" << desktopEntry->fileName();
@@ -114,6 +114,21 @@ ExecPrivate::~ExecPrivate()
     g_object_unref(appInfo);
 }
 
+static void setupProcessIds(gpointer)
+{
+    const gid_t gid = getgid();
+    const uid_t uid = getuid();
+
+    if (setregid(gid, gid) < 0) {
+        fprintf(stderr, "Could not setegid to actual group\n");
+    } else if (setreuid(uid, uid) < 0) {
+        fprintf(stderr, "Could not seteuid to actual user\n");
+    } else {
+        return;
+    }
+    ::_exit(EXIT_FAILURE);
+}
+
 void ExecPrivate::trigger(bool) const
 {
     // Ignore whether the user wanted to wait for the application to start.
@@ -121,9 +136,18 @@ void ExecPrivate::trigger(bool) const
     GList *uris = NULL;
 
     Q_FOREACH (const QString& param, params)
-        uris = g_list_append(uris, g_strdup(param.toLatin1().constData()));
+        uris = g_list_append(uris, g_strdup(param.toUtf8().constData()));
 
-    g_app_info_launch_uris(appInfo, uris, NULL, &error);
+    g_desktop_app_info_launch_uris_as_manager(
+                appInfo,
+                uris,
+                NULL,
+                G_SPAWN_SEARCH_PATH,
+                setupProcessIds,
+                NULL,
+                NULL,
+                NULL,
+                &error);
     if (error != NULL) {
         LCA_WARNING << "cannot trigger: " << error->message;
         g_error_free(error);
