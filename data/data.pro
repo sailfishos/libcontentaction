@@ -28,3 +28,9 @@ highlight1.path = $$CONTENTACTION_DATADIR
 highlight1.files = highlight1.xml
 highlight1.CONFIG += no_check_exist
 INSTALLS += highlight1
+
+dconf_locks.files = \
+    locks/application_desktop_paths.txt
+dconf_locks.path = /etc/dconf/db/vendor.d/locks
+
+INSTALLS += dconf_locks

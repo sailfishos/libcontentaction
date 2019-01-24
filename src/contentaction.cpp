@@ -24,6 +24,7 @@
 #include "service.h"
 
 #include <MDesktopEntry>
+#include <MGConfItem>
 #include <QFileInfo>
 
 /*!
@@ -65,6 +66,45 @@ const QString XMaemoObjectPathKey("Desktop Entry/X-Maemo-Object-Path");
 const QString ExecKey("Desktop Entry/Exec");
 const QString URLKey("Desktop Entry/URL");
 const QString TypeKeyValueLink("Link");
+
+}
+
+namespace {
+
+QStringList applicationDesktopPaths()
+{
+    QStringList desktopPaths;
+    const QVariant configuration = MGConfItem(
+                QLatin1String("/desktop/sailfish/application_desktop_paths")).value();
+
+    if (configuration.isValid()) {
+        for (const QString &path : configuration.toStringList()) {
+            if (!path.isEmpty() && path.startsWith(QLatin1Char('/'))) {
+                desktopPaths.append(path.endsWith(QLatin1Char('/')) ? path : path + QLatin1Char('/'));
+            }
+        }
+    }
+    return desktopPaths;
+}
+
+Q_GLOBAL_STATIC_WITH_ARGS(QStringList, desktopPaths, (applicationDesktopPaths()))
+
+bool isApplicationDesktopPath(const QString &path)
+{
+    const QStringList paths = *desktopPaths();
+
+    if (paths.isEmpty()) {
+        return true;
+    }
+
+    for (const QString &desktopPath : paths) {
+        if (path.startsWith(desktopPath)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 }
 
 ActionPrivate::~ActionPrivate()
@@ -173,6 +213,8 @@ Action createAction(QSharedPointer<MDesktopEntry> desktopEntry,
     if (desktopEntry->type() == TypeKeyValueLink &&
         desktopEntry->contains(URLKey)) {
         return Action::defaultActionForScheme(desktopEntry->url());
+    } else if (!isApplicationDesktopPath(desktopEntry->fileName())) {
+        return Action();
     } else if (desktopEntry->contains(XMaemoMethodKey) &&
         !desktopEntry->contains(XMaemoServiceKey)) {
         return Action(new ServiceFwPrivate(desktopEntry, params));
