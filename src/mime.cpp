@@ -407,10 +407,6 @@ Action Action::defaultActionForFile(const QUrl& fileUri, const QString& mimeType
     if (mimeType.isEmpty())
         return Action();
 
-    // We treat .desktop files specially: the default action (the only
-    // actually) is to launch the application it describes.
-    if (mimeType == DesktopFileMimeType)
-        return createAction(fileUri.toLocalFile(), QStringList());
     QString app = findDesktopFile(defaultAppForContentType(mimeType));
     if (!app.isEmpty()) {
         return createAction(app, QStringList() << fileUri.toEncoded());
