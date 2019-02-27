@@ -78,6 +78,7 @@ rm -rf %{buildroot}
 %{_datadir}/contentaction/highlight1.xml
 %{_datadir}/contentaction/tracker1.xml
 %{_libdir}/libcontentaction5.so.*
+%{_sysconfdir}/dconf/db/vendor.d/locks/application_desktop_paths.txt
 
 %files devel
 %defattr(-,root,root,-)
