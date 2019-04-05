@@ -69,7 +69,7 @@ struct ExecPrivate : public DefaultPrivate {
     virtual ~ExecPrivate();
     virtual void trigger(bool) const;
 
-    GAppInfo *appInfo;
+    GDesktopAppInfo *appInfo;
 };
 
 Action createAction(const QString& desktopFilePath,
