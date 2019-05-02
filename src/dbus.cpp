@@ -93,8 +93,11 @@ void DBusPrivate::trigger(bool wait) const
     }
 
     MRemoteAction action(busName, objectPath, iface, method, arguments);
-
-    action.trigger();
+    if (wait) {
+        action.triggerAndWait();
+    } else {
+        action.trigger();
+    }
 }
 
 } // end namespace ContentAction
