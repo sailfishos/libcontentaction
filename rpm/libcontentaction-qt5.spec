@@ -3,8 +3,8 @@ Summary:    Library for associating content with actions
 Version:    0.2.9
 Release:    1
 Group:      System/Desktop
-License:    LGPLv2.1
-URL:        https://git.merproject.org/mer-core/libcontentaction
+License:    LGPLv2
+URL:        https://git.sailfishos.org/mer-core/libcontentaction
 Source0:    %{name}-%{version}.tar.bz2
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
@@ -50,7 +50,6 @@ This package contains the tests for libcontentaction library.
 
 %package -n nemo-qml-plugin-contentaction
 Summary:  Content Action QML plugin
-Group:    System/Desktop
 Requires: %{name} = %{version}-%{release}
 
 %description -n nemo-qml-plugin-contentaction
@@ -75,13 +74,16 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %{_bindir}/lca-tool
+%dir %{_datadir}/contentaction
 %{_datadir}/contentaction/highlight1.xml
 %{_datadir}/contentaction/tracker1.xml
 %{_libdir}/libcontentaction5.so.*
 %{_sysconfdir}/dconf/db/vendor.d/locks/application_desktop_paths.txt
+%license COPYING
 
 %files devel
 %defattr(-,root,root,-)
+%dir %{_includedir}/contentaction5
 %{_includedir}/contentaction5/contentaction.h
 %{_includedir}/contentaction5/contentinfo.h
 %{_libdir}/libcontentaction5.so
@@ -94,4 +96,4 @@ rm -rf %{buildroot}
 
 %files -n nemo-qml-plugin-contentaction
 %defattr(-,root,root,-)
-%{_libdir}/qt5/qml/org/nemomobile/contentaction/*
+%{_libdir}/qt5/qml/org/nemomobile/contentaction
