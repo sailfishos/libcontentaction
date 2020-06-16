@@ -1,8 +1,7 @@
 Name:       libcontentaction-qt5
 Summary:    Library for associating content with actions
-Version:    0.2.9
+Version:    0.3.5
 Release:    1
-Group:      System/Desktop
 License:    LGPLv2
 URL:        https://git.sailfishos.org/mer-core/libcontentaction
 Source0:    %{name}-%{version}.tar.bz2
@@ -25,7 +24,6 @@ libcontentaction is a library for associating content with actions.
 
 %package devel
 Summary:    Development files for libcontentaction
-Group:      Development/System
 Requires:   %{name} = %{version}-%{release}
 
 %description devel
@@ -35,7 +33,6 @@ libcontentaction library.
 
 %package tests
 Summary:    Tests for libcontentaction
-Group:      System/X11
 Requires:   %{name} = %{version}-%{release}
 Requires:   dbus-python
 Requires:   pygobject2

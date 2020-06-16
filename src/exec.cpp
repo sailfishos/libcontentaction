@@ -111,7 +111,9 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
 
 ExecPrivate::~ExecPrivate()
 {
-    g_object_unref(appInfo);
+    if (appInfo) {
+        g_object_unref(appInfo);
+    }
 }
 
 static void setupProcessIds(gpointer)
@@ -131,6 +133,10 @@ static void setupProcessIds(gpointer)
 
 void ExecPrivate::trigger(bool) const
 {
+    if (!appInfo) {
+        LCA_WARNING << "Exec action triggered without proper appInfo";
+        return;
+    }
     // Ignore whether the user wanted to wait for the application to start.
     GError *error = 0;
     GList *uris = NULL;
