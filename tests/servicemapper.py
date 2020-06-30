@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import os
 import dbus, dbus.service, dbus.mainloop.glib
 from gi.repository import GObject as gobject
@@ -10,9 +10,9 @@ class ServiceMapper(dbus.service.Object):
                                         dbus.SessionBus())
         self.mapping = {}
         try:
-            execfile('service.map')
+            exec(compile(open('service.map', "rb").read(), 'service.map', 'exec'))
         except IOError:
-            execfile(os.path.dirname(__file__) + '/service.map')
+            exec(compile(open(os.path.dirname(__file__) + '/service.map', "rb").read(), os.path.dirname(__file__) + '/service.map', 'exec'))
 
     @dbus.service.method(dbus_interface='com.nokia.MServiceFwIf',
                          in_signature='s', out_signature='s')
@@ -37,12 +37,12 @@ class ServiceMapper(dbus.service.Object):
     @dbus.service.signal(dbus_interface='com.nokia.MServiceFwIf',
                          signature='ss')
     def serviceAvailable(self, implementor, interface):
-        print "emit service available", implementor, interface
+        print("emit service available", implementor, interface)
 
     @dbus.service.signal(dbus_interface='com.nokia.MServiceFwIf',
                          signature='s')
     def serviceUnavailable(self, implementor):
-        print "emit service unavailable", implementor
+        print("emit service unavailable", implementor)
 
 dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 napper = ServiceMapper('/')

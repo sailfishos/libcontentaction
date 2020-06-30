@@ -3,7 +3,7 @@ Encoding=UTF-8
 Name=launchme
 GenericName=Launch Me
 Comment=Test helper
-Exec=python -c "f = open('/tmp/launchedAction', 'w'); f.write('I was launched');"
+Exec=python3 -c "f = open('/tmp/launchedAction', 'w'); f.write('I was launched');"
 Terminal=false
 Type=Application
 

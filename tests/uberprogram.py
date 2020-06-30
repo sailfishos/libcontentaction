@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import dbus, dbus.service, dbus.mainloop.glib
 from gi.repository import GObject as gobject
 from sys import stdout, argv
@@ -11,15 +11,15 @@ class Uberprogram(dbus.service.FallbackObject):
     @dbus.service.method(dbus_interface='com.nokia.MApplicationIf',
                          in_signature='as')
     def launch(self, uris):
-        print 'launch:', uris
+        print('launch:', uris)
         stdout.flush()
 
     @dbus.service.method(dbus_interface="uber.program")
     def mime_open(self, *args):
-        print 'mime_open: ', args
+        print('mime_open: ', args)
         stdout.flush()
 
-print "started"
+print("started")
 stdout.flush()
 dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 # if there is a command line parameter, use it as bus name (otherwise, use the

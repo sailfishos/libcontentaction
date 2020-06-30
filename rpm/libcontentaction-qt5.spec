@@ -15,7 +15,7 @@ BuildRequires:  pkgconfig(Qt5Test)
 BuildRequires:  pkgconfig(Qt5Xml)
 BuildRequires:  pkgconfig(Qt5SystemInfo)
 BuildRequires:  pkgconfig(Qt5Qml)
-BuildRequires:  python
+BuildRequires:  python3-base
 BuildRequires:  qt5-qttools-linguist
 
 %description
@@ -34,11 +34,10 @@ libcontentaction library.
 %package tests
 Summary:    Tests for libcontentaction
 Requires:   %{name} = %{version}-%{release}
-Requires:   dbus-python
-Requires:   pygobject2
-Requires:   python
+Requires:   dbus-python3
+Requires:   python3-gobject
+Requires:   python3-base
 Requires:   tracker-utils
-Requires:   qt5-default
 Requires:   qt5-qttools-qdbus
 
 %description tests
