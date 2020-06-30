@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 ##
 ## Copyright (C) 2010 Nokia. All rights reserved.
 ##
@@ -27,7 +27,7 @@ try: import env
 except: pass
 
 import unittest
-from commands import getstatusoutput
+from subprocess import getstatusoutput
 from cltool import CLTool
 
 # this controls where the test files are
@@ -39,7 +39,7 @@ class FixedParams(unittest.TestCase):
     def setUp(self):
         # start a fake gallery service
         self.gallery = CLTool("gallery.py")
-        self.assert_(self.gallery.expect("started"))
+        self.assertTrue(self.gallery.expect("started"))
 
     def tearDown(self):
         self.gallery.kill()
@@ -47,9 +47,9 @@ class FixedParams(unittest.TestCase):
     def testInvokeWithFixedParams(self):
         filename = "file://" + testfiles_dir + "/plaintext"
         (status, output) = getstatusoutput("lca-tool --file --trigger fixedparams " + filename)
-        self.assert_(status == 0)
+        self.assertTrue(status == 0)
         # assert that the gallery was invoked and the fixed params got prepended
-        self.assert_(self.gallery.expect("showImage ; these,are,fixed," + filename))
+        self.assertTrue(self.gallery.expect("showImage ; these,are,fixed," + filename))
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(FixedParams)

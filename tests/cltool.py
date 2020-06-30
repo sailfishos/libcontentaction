@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 ##
 ## Copyright (C) 2009 Nokia. All rights reserved.
 ##
@@ -18,7 +18,7 @@
 ## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 ## 02110-1301 USA
 
-from __future__ import with_statement
+
 
 import os
 import re
@@ -99,7 +99,7 @@ class CLTool:
         with self.iolock:
             self.io.append((time.time(), CLTool.STDIN, string))
         try:
-            print >>self.process.stdin, string
+            print(string, file=self.process.stdin)
             self.process.stdin.flush()
         except:
             self.printio()
@@ -115,7 +115,7 @@ class CLTool:
         """Compute the output read since the last match."""
         r = []
         with self.iolock:
-            for pos in xrange(self.last_expect, len(self.io)):
+            for pos in range(self.last_expect, len(self.io)):
                 ts, fno, l = self.io[pos]
                 if fno == CLTool.STDOUT:
                     r.append(l)
@@ -193,8 +193,8 @@ class CLTool:
 
     def printio(self):
         """Dump the io log to the standard output."""
-        print
-        print '-' * 72
+        print()
+        print('-' * 72)
         with self.iolock:
             for ts, fno, line in self.io:
                 line = line.rstrip("\r\n")
@@ -203,8 +203,8 @@ class CLTool:
                 if fno == CLTool.COMMENT: info = "###";
                 if fno == CLTool.STDIN:   info = "<--";
                 if fno == CLTool.STDOUT:  info = "-->";
-                print "%s %s %s" % (t, info, line)
-        print '-' * 72
+                print("%s %s %s" % (t, info, line))
+        print('-' * 72)
         sys.stdout.flush()
 
 def wanted(name, type, value):

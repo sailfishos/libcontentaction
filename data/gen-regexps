@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 # coding=UTF-8
 
 # This program generates the complicated regular expressions used in
@@ -49,8 +49,8 @@ def rx_opt (rx):
     return rx_repeat (rx, 0, 1)
 
 def rx_output (rx, name):
-    print("s/@%s@/%s/g\n" % (name,
-                             rx.replace('\\', '\\\\').replace('/', '\\/').replace('"', '\&quot;').replace('&', '\&amp;')))
+    print(("s/@%s@/%s/g\n" % (name,
+                             rx.replace('\\', '\\\\').replace('/', '\\/').replace('"', '\&quot;').replace('&', '\&amp;'))))
 
 ## Phone numbers
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import dbus, dbus.service, dbus.mainloop.glib
 from gi.repository import GObject as gobject
 from sys import stdout, argv
@@ -11,11 +11,11 @@ class Gallery(dbus.service.Object):
     @dbus.service.method(dbus_interface='com.nokia.galleryserviceinterface',
                          in_signature='as', out_signature='b')
     def showImage(self, uris):
-        print 'showImage ; %s' % (','.join(uris))
+        print('showImage ; %s' % (','.join(uris)))
         stdout.flush()
         return True
 
-print "started"
+print("started")
 stdout.flush()
 dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 # if there is a command line parameter, use it as bus name (otherwise, use the

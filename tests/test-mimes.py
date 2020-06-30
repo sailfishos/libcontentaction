@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 ##
 ## Copyright (C) 2010 Nokia. All rights reserved.
 ##
@@ -27,7 +27,7 @@ try: import env
 except: pass
 
 import unittest
-from commands import getstatusoutput
+from subprocess import getstatusoutput
 from cltool import CLTool
 
 # this controls where the test files are
@@ -39,52 +39,52 @@ class Mimes(unittest.TestCase):
     def testActionsForPlain(self):
         filename = "file://" + testfiles_dir + "/plaintext"
         (status, output) = getstatusoutput("lca-tool --file --print " + filename)
-        self.assert_(status == 0)
-        self.assert_(output.find("uberexec") != -1)
-        self.assert_(output.find("ubermeego") != -1)
-        self.assert_(output.find("ubermimeopen") != -1)
+        self.assertTrue(status == 0)
+        self.assertTrue(output.find("uberexec") != -1)
+        self.assertTrue(output.find("ubermeego") != -1)
+        self.assertTrue(output.find("ubermimeopen") != -1)
 
     def testInvokeMeego(self):
         program = CLTool("uberprogram.py")
-        self.assert_(program.expect("started"))
+        self.assertTrue(program.expect("started"))
 
         filename = "file://" + testfiles_dir + "/plaintext"
         (status, output) = getstatusoutput("lca-tool --file --trigger ubermeego " + filename)
-        self.assert_(status == 0)
+        self.assertTrue(status == 0)
 
-        self.assert_(program.expect("launch: "))
+        self.assertTrue(program.expect("launch: "))
         program.kill()
 
     def testInvokeMimeOpen(self):
         program = CLTool("uberprogram.py")
-        self.assert_(program.expect("started"))
+        self.assertTrue(program.expect("started"))
 
         filename = "file://" + testfiles_dir + "/plaintext"
         (status, output) = getstatusoutput("lca-tool --file --trigger ubermimeopen " + filename)
-        self.assert_(status == 0)
+        self.assertTrue(status == 0)
 
-        self.assert_(program.expect("mime_open:"))
+        self.assertTrue(program.expect("mime_open:"))
         program.kill()
 
     def testInvokeExec(self):
         filename = "file://" + testfiles_dir + "/plaintext"
         (status, output) = getstatusoutput("lca-tool --file --trigger uberexec " + filename)
-        self.assert_(status == 0)
+        self.assertTrue(status == 0)
         f = open("/tmp/executedAction")
         content = f.read()
         f.close()
         os.remove("/tmp/executedAction")
-        self.assert_(content.find("This is plain text") != -1)
+        self.assertTrue(content.find("This is plain text") != -1)
 
     def testInvokeExecMulti(self):
         filename = testfiles_dir + "/plaintext"
         (status, output) = getstatusoutput("lca-tool --file --trigger unterexec " + filename + " " + filename + "2")
-        self.assert_(status == 0)
+        self.assertTrue(status == 0)
         f = open("/tmp/executedParams")
         content = f.read()
         f.close()
         os.remove("/tmp/executedParams")
-        self.assert_(content == filename + "\n" + filename + "2\n");
+        self.assertTrue(content == filename + "\n" + filename + "2\n");
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Mimes)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 ##
 ## Copyright (C) 2010 Nokia. All rights reserved.
 ##
@@ -27,7 +27,7 @@ try: import env
 except: pass
 
 import unittest
-from commands import getstatusoutput
+from subprocess import getstatusoutput
 from cltool import CLTool
 import time
 
@@ -40,20 +40,20 @@ class Launching(unittest.TestCase):
     def testActionsForDesktop(self):
         filename = "file://" + testfiles_dir + "/launchme.desktop"
         (status, output) = getstatusoutput("lca-tool --file --print " + filename)
-        self.assert_(status == 0)
-        self.assert_(output.find("launchme") != -1)
+        self.assertTrue(status == 0)
+        self.assertTrue(output.find("launchme") != -1)
 
     def testLaunch(self):
         filename = "file://" + testfiles_dir + "/launchme.desktop"
         (status, output) = getstatusoutput("lca-tool --file --triggerdefault " + filename)
-        self.assert_(status == 0)
+        self.assertTrue(status == 0)
 
         time.sleep(3)
         f = open('/tmp/launchedAction')
         content = f.read()
         f.close()
         os.remove("/tmp/launchedAction")
-        self.assert_(content.find("I was launched") != -1)
+        self.assertTrue(content.find("I was launched") != -1)
 
     def testLaunchWithParams(self):
         (status, output) = getstatusoutput("lca-tool --triggerdesktop uriprinter.desktop param1 param2 param3")
@@ -61,8 +61,8 @@ class Launching(unittest.TestCase):
         content = f.read()
         f.close()
         os.remove("/tmp/executedAction")
-        self.assert_(status == 0)
-        self.assert_(content.find("'param1' 'param2' 'param3'") != -1)
+        self.assertTrue(status == 0)
+        self.assertTrue(content.find("'param1' 'param2' 'param3'") != -1)
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Launching)

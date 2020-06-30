@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 ##
 ## Copyright (C) 2008, 2009 Nokia. All rights reserved.
 ##
@@ -27,7 +27,7 @@ try: import env
 except: pass
 
 import unittest
-from commands import getstatusoutput
+from subprocess import getstatusoutput
 from cltool import CLTool
 
 # this controls where the test files are
@@ -40,14 +40,14 @@ class InvalidDefaults(unittest.TestCase):
         # this uri is a ncal:Event, and x-maemo-nepomuk/calendar-event has a
         # mimeapps.list entry pointing to a nonexistent application.
         (status, output) = getstatusoutput("lca-tool --tracker --printdefault urn:test:calendarevent")
-        self.assert_(status == 0)
-        self.assert_(output.find("Invalid action") != -1)
+        self.assertTrue(status == 0)
+        self.assertTrue(output.find("Invalid action") != -1)
 
     def testInvalidDefaultForFile(self):
         filename = "file://" + testfiles_dir + "/empty.pdf"
         (status, output) = getstatusoutput("lca-tool --file --printdefault " + filename)
-        self.assert_(status == 0)
-        self.assert_(output.find("Invalid action") != -1)
+        self.assertTrue(status == 0)
+        self.assertTrue(output.find("Invalid action") != -1)
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(InvalidDefaults)
