@@ -517,6 +517,22 @@ QString Internal::mimeForScheme(const QString& uri)
     return mime;
 }
 
+/// Returns the x-url-handler of the scheme of \a uri. Method can still change as
+/// the mime handler currently doesn't support parameters.
+QString mimeForUrl(const QString& uri)
+{
+    QString mime;
+
+    if (uri.startsWith("http:") || uri.startsWith("https:")) {
+        int n = uri.indexOf(':');
+        QString domain = uri.mid(n + 3);
+        n = domain.indexOf('/');
+        domain = domain.mid(n);
+        mime = QString("x-url-handler/") + domain;
+    }
+    return mime;
+}
+
 /// Returns the pseudo-mimetypes of the \a param string.  Mime types are found
 /// based on exact matching against regexps in the highlighter configuration.
 QStringList Internal::mimeForString(const QString& param)
@@ -547,6 +563,20 @@ Action Action::defaultActionForScheme(const QString& uri)
     return Action();
 }
 
+/// Returns the default action for handling the scheme of the passed \a uri.
+/// \sa actionsForScheme(). It also converts domain part of uri into
+/// "x-url-handler/<domain>" and prioritizes it. Method can still change as
+/// the mime handler currently doesn't support parameters.
+Action Action::defaultActionForUrl(const QString& uri)
+{
+    QString urlMimeType = mimeForUrl(uri);
+    QString defApp = findDesktopFile(defaultAppForContentType(urlMimeType));
+    if (!defApp.isEmpty())
+        return createAction(defApp, QStringList() << uri);
+
+    return defaultActionForScheme(uri);
+}
+
 /// Returns all actions handling the scheme of the given \a uri.  The uri
 /// scheme is mapped to mime types by prefixing it with \c
 /// "x-scheme-handler/".  For example an email client may declare to handle
@@ -558,6 +588,26 @@ QList<Action> Action::actionsForScheme(const QString& uri)
     Q_FOREACH (const QString& app, appsForContentType(mimeForScheme(uri))) {
         result << createAction(findDesktopFile(app), QStringList() << uri);
     }
+    return result;
+}
+
+/// Returns all actions handling the scheme of the given \a uri.  The uri
+/// scheme is mapped to mime types by prefixing it with \c
+/// "x-scheme-handler/".  For example an email client may declare to handle
+/// the \c "x-scheme-handler/mailto" mimetype and a browser then just
+/// triggers the returned Action to activate a \c mailto: link.
+/// Additionally domain part of uri is converted into
+/// "x-url-handler/<domain>".
+QList<Action> Action::actionsForUrl(const QString& uri)
+{
+    QList<Action> result;
+
+    QString urlMimeType = mimeForUrl(uri);
+    Q_FOREACH (const QString& app, appsForContentType(urlMimeType)) {
+        result << createAction(findDesktopFile(app), QStringList() << uri);
+    }
+
+    result.append(actionsForScheme(uri));
     return result;
 }
 
