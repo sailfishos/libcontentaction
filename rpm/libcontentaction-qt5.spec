@@ -37,7 +37,7 @@ Requires:   %{name} = %{version}-%{release}
 Requires:   dbus-python3
 Requires:   python3-gobject
 Requires:   python3-base
-Requires:   tracker-utils
+Requires:   tracker
 Requires:   qt5-qttools-qdbus
 
 %description tests
