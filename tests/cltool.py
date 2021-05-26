@@ -40,7 +40,7 @@ class Reader(Thread):
         while True:
             l = self.cltool.process.stdout.readline()
             if l:
-                l = l.rstrip() + '\n'  # delete trailing whitespace
+                l = l.rstrip() + b'\n'  # delete trailing whitespace
                 event = (time.time(), CLTool.STDOUT, l)
             else:
                 event = (time.time(), CLTool.COMMENT, "EOF ON STDOUT")
@@ -118,7 +118,7 @@ class CLTool:
             for pos in range(self.last_expect, len(self.io)):
                 ts, fno, l = self.io[pos]
                 if fno == CLTool.STDOUT:
-                    r.append(l)
+                    r.append(l.decode('utf-8'))
         return ''.join(r)
 
     # exp: is either a single or a list of regexes and all of them has to match
