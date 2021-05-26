@@ -4,13 +4,11 @@ include(../common.pri)
 
 actions.path = $$CONTENTACTION_DATADIR
 actions.files = \
-    tracker1.xml \
     highlight1.xml
 INSTALLS += actions
 
 testdata.path = $$CONTENTACTION_TESTDIR/data
 testdata.files = \
-    tracker1.xml \
     highlight1.xml \
     hl-examples.xml
 INSTALLS += testdata

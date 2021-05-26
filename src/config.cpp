@@ -41,8 +41,6 @@ static QList<QPair<QString, QRegExp> > Highlighter_cfg;
 // raw data for Highlighter_cfg
 static QHash<QString, QString> mimeToRegexp;
 static QHash<QString, QString> mimeToParent;
-// friendly tracker condition name => sparql snippet
-static QHash<QString, QString> Tracker_cfg;
 
 /// Returns the path where the action configuration files should be read from.
 /// It may be overridden via the $CONTENTACTION_ACTIONS environment variable.
@@ -60,7 +58,6 @@ struct ConfigReader: public QXmlDefaultHandler {
                       const QString& qname, const QXmlAttributes &atts);
     bool endElement(const QString& nsuri, const QString& name,
                     const QString& qname);
-    bool characters(const QString& chars);
     QString errorString() const { return error; }
     bool fatalError(const QXmlParseException &exception) {
         LCA_WARNING << QString("parse error at line %1 column %2: %3")
@@ -72,7 +69,7 @@ struct ConfigReader: public QXmlDefaultHandler {
     }
 
     enum {
-        inLimbo, inActions, inHighlight, inTrackerCondition,
+        inLimbo, inActions, inHighlight,
     } state;
 
     QString condName;
@@ -112,29 +109,13 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
             if (!parentRegexp.isEmpty())
                 mimeToParent.insert(mime, parentRegexp);
         }
-        else if (qname == "tracker-condition") {
-            state = inTrackerCondition;
-            condName = atts.value("name");
-            if (name.isEmpty())
-                fail("expected a name for the condition");
-            sparqlSnippet.clear();
-        }
         else
             fail("unexpected tag");
         break;
-    case inTrackerCondition:
     case inHighlight:
         fail("unexpected tag");
         break;
     }
-    return true;
-}
-
-bool ConfigReader::characters(const QString& chars)
-{
-    if (state != inTrackerCondition)
-        return true;
-    sparqlSnippet.append(chars.trimmed());
     return true;
 }
 
@@ -153,12 +134,6 @@ bool ConfigReader::endElement(const QString& nsuri, const QString& name,
         if (qname == "highlight")
             state = inActions;
         break;
-    case inTrackerCondition: {
-        if (qname == "tracker-condition")
-            state = inActions;
-        Tracker_cfg.insert(condName, bindParams (sparqlSnippet));
-        break;
-    }
     default:
         break;
     }
@@ -243,13 +218,6 @@ const QList<QPair<QString, QRegExp> >& ContentAction::Internal::highlighterConfi
 {
     readConfig();
     return Highlighter_cfg;
-}
-
-/// Returns the map from friendly names -> sparql snippets.
-const QHash<QString, QString>& ContentAction::Internal::trackerConditions()
-{
-    readConfig();
-    return Tracker_cfg;
 }
 
 QString ContentAction::Internal::bindParams(const QString &str)

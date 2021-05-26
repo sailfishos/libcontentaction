@@ -139,18 +139,6 @@ ContentInfo::forFile(const QUrl &url)
         return ContentInfo();
 }
 
-/// Returns information for the Tracker object identified by \a
-/// tracker_uri.
-ContentInfo
-ContentInfo::forTracker(const QString &tracker_uri)
-{
-    QStringList urlAndMime;
-    if (ContentAction::Internal::mimeAndUriFromTracker(QStringList() << tracker_uri, urlAndMime))
-        return forMime(urlAndMime[1]);
-    else
-        return ContentInfo();
-}
-
 /// Returns information for the given \a bytes.  The \a bytes are
 /// assumed to be the first few bytes of a content object, and its
 /// type is guessed from them.

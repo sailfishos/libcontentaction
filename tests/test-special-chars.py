@@ -42,21 +42,6 @@ class SpecialChars(unittest.TestCase):
         self.gallery.kill()
         (status, output) = getstatusoutput("rm /tmp/some#file.mp3")
 
-    def testDBusWithSpecialChars(self):
-        (status, output) = getstatusoutput("lca-tool --tracker --trigger gallerywithfilename specialchars.image")
-        self.assertTrue(status == 0)
-        # assert that the gallery was invoked
-        self.assertTrue(self.gallery.expect("showImage ; file:///tmp/%5Bspecial%5B.png"))
-
-    def testExecWithSpecialChars(self):
-        (status, output) = getstatusoutput("lca-tool --tracker --trigger uriprinter specialchars.image")
-        self.assertTrue(status == 0)
-        f = open("/tmp/executedAction")
-        content = f.read()
-        f.close()
-        os.remove("/tmp/executedAction")
-        self.assertTrue(content.find("'/tmp/[special[.png'") != -1)
-
     def testActionsForFileWithSpecialChars(self):
         filename = "file:///tmp/some%23file.mp3"
         (status, output) = getstatusoutput("lca-tool --file --print " + filename)

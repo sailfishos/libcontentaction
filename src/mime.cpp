@@ -141,8 +141,7 @@ static const QString DesktopFileMimeType("application/x-desktop");
 static QString generalizeMimeType(const QString &mime)
 {
     // No wildcards for our pseudo mimetypes.
-    if (mime.startsWith(OntologyMimeClass) ||
-        mime.startsWith(HighlighterMimeClass) ||
+    if (mime.startsWith(HighlighterMimeClass) ||
         mime.startsWith(UriSchemeMimeClass))
         return "";
     int n = mime.indexOf('/');

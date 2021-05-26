@@ -46,34 +46,6 @@ private Q_SLOTS:
   }
 
   void
-  test_tracker_info ()
-  {
-    {
-      ContentInfo info = ContentInfo::forTracker ("b.image");
-      
-      QVERIFY (info.isValid());
-      QVERIFY (info.mimeType() == "image/png");
-      QVERIFY (info.typeDescription() == "PNG image");
-      // QVERIFY (info.typeIcon() == "icon-m-content-file-unknown");
-    }
-
-    {
-      ContentInfo info = ContentInfo::forTracker ("a.music");
-      
-      QVERIFY (info.isValid());
-      QVERIFY (info.mimeType() == "audio/mpeg");
-      QVERIFY (info.typeDescription() == "MP3 audio");
-      // QVERIFY (info.typeIcon() == "icon-m-content-file-unknown");
-    }
-
-    {
-      ContentInfo info = ContentInfo::forTracker ("urn:test:calendarevent");
-      
-      QVERIFY (!info.isValid());
-    }
-  }
-
-  void
   test_bytes_info ()
   {
     QFile file("./test-image.png");
