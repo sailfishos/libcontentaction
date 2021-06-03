@@ -72,7 +72,7 @@ class SystemRegexTest (unittest.TestCase):
         parts = self.__spec.split (self.__delimiter)
         expected = [parts[i].strip() for i in range (1, len (parts), 2) ]
 
-        for line in proc_stdout.read().split ("\n"):
+        for line in proc_stdout.read().split (b"\n"):
 
             if (len(line) == 0):
                 continue

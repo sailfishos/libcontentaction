@@ -2,14 +2,6 @@
 <testdefinition version="1.0">
   <suite name="libcontentaction-tests">
     <set name="libcontentaction" description="Tests for libcontentaction">
-      <pre_steps>
-	<step expected_result="0">
-	  echo "[General]" > ${HOME}/.config/tracker/tracker-store.cfg; \
-	  echo "Verbosity=3" >> ${HOME}/.config/tracker/tracker-store.cfg; \
-	  echo "LowMemoryMode=false" >> ${HOME}/.config/tracker/tracker-store.cfg; \
-          @PATH@/bin/lca-cita-test sandbox.sh --start
-        </step>
-      </pre_steps>
 
       <case name="lca-cita-test-fail">
         <step expected_result="1">
@@ -17,29 +9,9 @@
         </step>
       </case>
 
-      <case name="test-actions">
-        <step expected_result="0">
-          @PATH@/bin/lca-cita-test test-actions.sh
-        </step>
-      </case>
-      <case name="test-mimetypes">
-        <step expected_result="0">
-          @PATH@/bin/lca-cita-test test-mimetypes.sh
-        </step>
-      </case>
-      <case name="test-invoking">
-        <step expected_result="0">
-          @PATH@/bin/lca-cita-test test-invoking.py
-        </step>
-      </case>
       <case name="test-defaults">
         <step expected_result="0">
           @PATH@/bin/lca-cita-test test-defaults.py
-        </step>
-      </case>
-      <case name="test-servicefw-signals">
-        <step expected_result="0">
-          @PATH@/bin/lca-cita-test test-servicefw-signals.py
         </step>
       </case>
       <case name="test-mimes">
@@ -50,11 +22,6 @@
       <case name="test-desktop-launching">
         <step expected_result="0">
           @PATH@/bin/lca-cita-test test-desktop-launching.py
-        </step>
-      </case>
-      <case name="test-l10n">
-        <step expected_result="0">
-          @PATH@/bin/lca-cita-test test-l10n.sh
         </step>
       </case>
       <case name="test-fixedparams">
@@ -111,17 +78,6 @@
         <hardware>true</hardware>
       </environments>
 
-      <get>
-	<file>/tmp/lca-sandbox-start.log</file>
-	<!-- see how XDG_DATA_HOME is set inside lca-cita-test -->
-	<file>${HOME}/tests-home/tracker/tracker-store.log</file>
-      </get>
-
-      <post_steps>
-        <step expected_result="0">
-          @PATH@/bin/lca-cita-test ./sandbox.sh --stop
-        </step>
-      </post_steps>
     </set>
   </suite>
 </testdefinition>

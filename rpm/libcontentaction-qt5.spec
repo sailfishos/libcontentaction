@@ -37,7 +37,6 @@ Requires:   %{name} = %{version}-%{release}
 Requires:   dbus-python3
 Requires:   python3-gobject
 Requires:   python3-base
-Requires:   tracker
 Requires:   qt5-qttools-qdbus
 
 %description tests
@@ -72,7 +71,6 @@ rm -rf %{buildroot}
 %{_bindir}/lca-tool
 %dir %{_datadir}/contentaction
 %{_datadir}/contentaction/highlight1.xml
-%{_datadir}/contentaction/tracker1.xml
 %{_libdir}/libcontentaction5.so.*
 %{_sysconfdir}/dconf/db/vendor.d/locks/application_desktop_paths.txt
 %license COPYING

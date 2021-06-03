@@ -33,13 +33,11 @@
   \brief ContentAction::Action represents an action for the given resources
 
   The Action object binds together the method of invocation (e.g. which D-Bus
-  method to call, what binary to execute) and the resources (URIs, Tracker
-  objects, text snippets, etc.) used for its creation.
+  method to call, what binary to execute) and the resources (URIs,
+  text snippets, etc.) used for its creation.
 
   There are multiple ways to construct an Action:
 
-  - For <b>objects in Tracker</b> try Action::actions() and
-    Action::defaultAction()
   - For handling ordinary \b files and other URIs call
     Action::actionsForFile() or Action::defaultActionForFile()
   - For <b>pseudo-urls</b> like \c "mailto:" use Action::actionsForScheme() or

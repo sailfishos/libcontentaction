@@ -2,13 +2,13 @@
 
 \mainpage libcontentaction
 
-\brief This library associates files, Tracker URIs, and text snippets to a
+\brief This library associates files and text snippets to a
 set of applicable ContentAction::Action objects and triggers the actions.
 
 \section overview Overview
 
 The libcontentaction library retrieves associated actions (ContentAction::Action
-objects) for files, objects stored in Tracker, and regular expressions (regexp)
+objects) for files and regular expressions (regexp)
 in free text.  It may also be used to query the default action.  The Action
 object can be used to trigger() the action.
 
@@ -16,13 +16,11 @@ Actions correspond to .desktop files, and they can be installed independently
 from libcontentaction.
 
 For file URIs, the library finds out the MIME type and uses it as a key of the
-association.  For objects stored in Tracker, the library adds the custom MIME
-types that target them.
+association.
 
 Actions can target one of the following:
 
 -# MIME types (\c image/jpeg)
--# Tracker-query based conditions (\c x-maemo-nepomuk/contact)
 -# regular expressions (\c x-maemo-highlight/phonenumber)
 -# URI schemes (\c x-scheme-handler/mailto)
 
@@ -151,91 +149,6 @@ More information:
 
 <a href="http://dbus.freedesktop.org/doc/dbus-specification.html">Message Bus Starting Services</a>
 
-\section custommime Custom MIME types for Tracker URIs
-
-\attention
-The following section may be subject to changes!
-
-The XDG MIME type handling associates files with applications that can open
-them. However, some objects are not represented as files.  For example, contacts
-are represented as objects in a semantic data store, Tracker.  It is often
-necessary to define actions to a subset of certain objects.  For example, the
-"call" action is only applicable to contacts which have an associated phone
-number.
-
-To this end, libcontentaction can find actions for Tracker URIs which are ids
-for objects in the Tracker data store.
-
-If a URI represents a normal file (for instance, an image), the actions found
-through XDG MIME type handling are added to the list of applicable actions. This
-makes libcontentaction compatible with XDG MIME type handling.  The applications
-that declare actions for normal files do not need to know about Tracker URIs.
-
-The libcontentaction library defines the "tracker conditions" which determine
-whether an URI is of interest.  The conditions are mapped into custom MIME types
-(\c "x-maemo-nepomuk/...").
-
-The conditions are defined in .xml files installed in /usr/share/contentaction
-(or a location specified by $CONTENTACTION_ACTIONS).  Each condition defines a
-SparQL snippet for querying whether a given URI satisfies the condition.
-
-For instance, the following .xml adds new MIME types \c x-maemo-nepomuk/image, \c
-x-maemo-nepomuk/contact and \c x-maemo-nepomuk/contact-with-phone-number.
-
-\code
-<actions>
-  <tracker-condition name="image">
-    { ?uri a nfo:Image . }
-  </tracker-condition>
-
-  <tracker-condition name="contact">
-    { ?uri a nco:Contact . }
-  </tracker-condition>
-
-  <tracker-condition name="contact-with-phone-number"><![CDATA[
-    { ?uri a nco:Contact ;
-           nco:hasPhoneNumber ?phone . }
-  ]]></tracker-condition>
-</actions>
-\endcode
-
-In the SparQL snippet, you can the following parameters:
-
-\code
-@MANUFACTURER@   -  The manufacturer of the current device, as used in the nfo:Equipment class.
-@MODEL@          -  The model of the current device, as used in the nfo:Equipment class. 
-\endcode
-
-A condition is evaluated by executing the following SparQL query:
-
-\code
-SELECT 1 {
-   SNIPPET
-   FILTER(?uri = <the-uri-to-verify-against>)
-}
-\endcode
-
-The condition applies if the query returns non-zero rows.
-
-An application can now define in its .desktop file that it handles a custom
-MIME type.  When launched, the application receives a parameter which is the
-Tracker URI of the object to be opened.  The application needs to query all
-the needed information (for example, the name and phone number for a contact)
-from Tracker.
-
-If your application wants to receive Tracker URIs instead of file URIs as
-parameters, a Tracker condition can overlap normal MIME types.  For example,
-applications handling the \c x-maemo-nepomuk/image MIME type get Tracker
-URIs and applications handling \c image/jpeg get file URIs as parameters.
-Both applications appear as applicable actions for images.
-
-More information:
-
-<a href="http://live.gnome.org/Tracker/Documentation">Tracker</a>
-
-<a href="http://www.semanticdesktop.org/ontologies/">Nepomuk ontologies</a>
-
-<a href="http://www.w3.org/TR/rdf-sparql-query/">SparQL, the query language</a>
 
 \section custommimescheme Custom MIME types for URI schemes
 
@@ -251,7 +164,7 @@ applicable actions.  When launched, an action gets the string
 
 FIXME: missing proper documentation for highlighting.
 
-Similarly to Tracker conditions, regexps are also defined in .xml files
+Regexps are defined in .xml files
 located in \c /usr/share/contentaction (unless overridden with
 $CONTENTACTION_ACTIONS).
 
@@ -293,11 +206,9 @@ Name[fi]=Avaa galleriassa
 ;; Defining when this action applies:
 ;; 1. ordinary mimetypes
 MimeType=image/*;text/plain;
-;; 2. Tracker-query based conditions
-MimeType=x-maemo-nepomuk/contact;
-;; 3. pre-defined regexps for the highlighter
+;; 2. pre-defined regexps for the highlighter
 MimeType=x-maemo-highlight/phonenumber;
-;; 4. URI schemes
+;; 3. URI schemes
 MimeType=x-scheme-handler/mailto;
 
 ;; Defining how to trigger the action:
@@ -333,8 +244,8 @@ The lca-tool is a command-line utility which can be used as a development and
 testing tool by action implementors.
 
 Use the lca-tool to:
-- list the applicable actions for a file, Tracker URI or a string with a scheme.
-- trigger an applicable action for a file, Tracker URI or a string with a scheme.
+- list the applicable actions for a file or a string with a scheme.
+- trigger an applicable action for a file or a string with a scheme.
 - launch an application (given its .desktop file) with parameters.
 - search for interesting items to highlight in free text.
 

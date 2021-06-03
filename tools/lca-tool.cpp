@@ -38,8 +38,6 @@ static const char help[] = \
 "  --l10n              use localized names when printing actions\n"
 "\n"
 "MODE is one of:\n"
-"  --tracker           PARAMS are representing objects stored in Tracker,\n"
-"                      dispatched using Tracker-query based conditions\n"
 "  --file              PARAMS is a file (or other resource), dispatched based on\n"
 "                      its content type\n"
 "  --scheme            PARAMS are dispatched based on their scheme only\n"
@@ -75,7 +73,6 @@ static const char help[] = \
 "  5   desktop file not found\n"
 "\n"
 "Examples:\n"
-"  $ lca-tool --tracker --triggerdefault urn:1246934-4213\n"
 "  $ lca-tool --file --print file://$HOME/plaintext\n"
 "  $ lca-tool --scheme --triggerdefault mailto:someone@example.com\n"
 "  $ lca-tool --string --print \"myaddress@email.com\""
@@ -85,7 +82,6 @@ static const char help[] = \
 
 enum UriMode {
     NoMode = 0,
-    TrackerMode,
     FileMode,
     SchemeMode,
     StringMode,
@@ -219,9 +215,7 @@ int main(int argc, char **argv)
             continue;
         }
         // modes
-        if (arg == "--tracker")
-            newmode = TrackerMode;
-        else if (arg == "--file")
+        if (arg == "--file")
             newmode = FileMode;
         else if (arg == "--scheme")
             newmode = SchemeMode;
@@ -345,15 +339,6 @@ int main(int argc, char **argv)
     QList<Action> actions;
     Action defAction;
     switch (mode) {
-    case TrackerMode:
-        if (args.size() > 1) {
-            actions = Action::actions(args);
-            defAction = Action::defaultAction(args);
-        } else {
-            actions = Action::actions(args[0]);
-            defAction = Action::defaultAction(args[0]);
-        }
-        break;
     case FileMode:
     {
         QList<QUrl> uris;
@@ -420,11 +405,6 @@ int main(int argc, char **argv)
         break;
     case PrintMimes: {
         switch (mode) {
-        case TrackerMode:
-            Q_FOREACH (const QString& mime, mimeForTrackerObject(args[0])) {
-                out << mime << endl;
-            }
-            break;
         case FileMode:
             out << mimeForFile(args[0]) << endl;
             break;

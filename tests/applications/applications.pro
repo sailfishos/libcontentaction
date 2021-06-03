@@ -16,7 +16,6 @@ desktop_tests.files = \
     galleryserviceinterface.desktop \
     fixedparams.desktop \
     plainimageviewer.desktop \
-    trackerimageviewer.desktop \
     plainmusicplayer.desktop \
     complexmusic.desktop \
     uriprinter.desktop \

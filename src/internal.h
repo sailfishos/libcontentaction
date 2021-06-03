@@ -78,7 +78,6 @@ Action createAction(QSharedPointer<MDesktopEntry> desktopEntry,
                     const QStringList& params);
 
 // our pseudo mimetype classes
-extern const QString OntologyMimeClass;
 extern const QString HighlighterMimeClass;
 extern const QString UriSchemeMimeClass;
 
@@ -100,13 +99,10 @@ QString findDesktopFile(const QString& id);
 
 LCA_EXPORT QString mimeForScheme(const QString& uri);
 LCA_EXPORT QString mimeForFile(const QUrl& fileUri);
-LCA_EXPORT QStringList mimeForTrackerObject(const QString& uri);
 LCA_EXPORT QStringList mimeForString(const QString& param);
-LCA_EXPORT bool mimeAndUriFromTracker(const QStringList& uris, QStringList &urlsAndMimes);
 
 const QHash<QString, QStringList>& mimeApps();
 const QList<QPair<QString, QRegExp> >& highlighterConfig();
-const QHash<QString, QString>& trackerConditions();
 
 QString bindParams(const QString &str);
 

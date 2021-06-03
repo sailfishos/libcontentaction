@@ -28,7 +28,6 @@ SOURCES += \
     dbus.cpp \
     exec.cpp \
     mime.cpp \
-    tracker.cpp \
     highlighter.cpp \
     highlight.cpp \
     config.cpp \
