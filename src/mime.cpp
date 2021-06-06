@@ -526,7 +526,7 @@ QString mimeForUrl(const QString& uri)
         int n = uri.indexOf(':');
         QString domain = uri.mid(n + 3);
         n = domain.indexOf('/');
-        domain = domain.mid(n);
+        domain = domain.left(n);
         mime = QString("x-url-handler/") + domain;
     }
     return mime;
