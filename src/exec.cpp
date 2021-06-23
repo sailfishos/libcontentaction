@@ -158,8 +158,7 @@ void ExecPrivate::trigger(bool) const
         LCA_WARNING << "cannot trigger: " << error->message;
         g_error_free(error);
     }
-    g_list_foreach(uris, (GFunc)g_free, NULL);
-    g_list_free(uris);
+    g_list_free_full(uris, g_free);
 }
 
 } // end namespace ContentAction
