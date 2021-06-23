@@ -1,5 +1,7 @@
 /*
  * Copyright (C) 2010 Nokia Corporation.
+ * Copyright (C) 2013 - 2020 Jolla Ltd.
+ * Copyright (C) 2021 Open Mobile Platform LLC.
  *
  * Contact: Marius Vollmer <marius.vollmer@nokia.com>
  *
@@ -68,9 +70,11 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
 
         gchar *boosterType = g_key_file_get_string(keyFile, "Desktop Entry",
                 "X-Nemo-Application-Type", NULL);
-        if (boosterType == NULL) {
+        if (boosterType == NULL || g_strcmp0(boosterType, "no-invoker") == 0) {
             // Default booster type is "generic". This can be overridden via
             // "X-Nemo-Application-Type=<boostertype>".
+            // "no-invoker" is synonymous to "generic"
+            g_free(boosterType);
             boosterType = g_strdup("generic");
         }
 
@@ -83,15 +87,12 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
             singleInstance = false;
         }
 
-        // Set X-Nemo-Application-Type to "no-invoker" to disable invoker
-        if (g_strcmp0(boosterType, "no-invoker") != 0) {
-            gchar *invokerString = g_strdup_printf("invoker --type=%s %s %s",
-                    boosterType,
-                    singleInstance ? "--single-instance" : "",
-                    execString);
-            g_key_file_set_string(keyFile, "Desktop Entry", "Exec", invokerString);
-            g_free(invokerString);
-        }
+        gchar *invokerString = g_strdup_printf("invoker --type=%s %s %s",
+                boosterType,
+                singleInstance ? "--single-instance" : "",
+                execString);
+        g_key_file_set_string(keyFile, "Desktop Entry", "Exec", invokerString);
+        g_free(invokerString);
 
         g_free(boosterType);
         g_free(singleInstanceValue);
