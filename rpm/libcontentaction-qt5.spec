@@ -17,6 +17,7 @@ BuildRequires:  pkgconfig(Qt5SystemInfo)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  python3-base
 BuildRequires:  qt5-qttools-linguist
+Requires: mapplauncherd >= 4.2.8
 
 %description
 libcontentaction is a library for associating content with actions.
