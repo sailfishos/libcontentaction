@@ -78,6 +78,9 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
             boosterType = g_strdup("generic");
         }
 
+        gchar *application = g_strdup(QFileInfo(desktopEntry->fileName())
+                .completeBaseName().toLocal8Bit().constData());
+
         gchar *singleInstanceValue = g_key_file_get_string(keyFile, "Desktop Entry",
                 "X-Nemo-Single-Instance", NULL);
         bool singleInstance = true;
@@ -87,14 +90,16 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
             singleInstance = false;
         }
 
-        gchar *invokerString = g_strdup_printf("invoker --type=%s %s %s",
+        gchar *invokerString = g_strdup_printf("invoker --type=%s --id=%s %s %s",
                 boosterType,
+                application,
                 singleInstance ? "--single-instance" : "",
                 execString);
         g_key_file_set_string(keyFile, "Desktop Entry", "Exec", invokerString);
         g_free(invokerString);
 
         g_free(boosterType);
+        g_free(application);
         g_free(singleInstanceValue);
     }
 
