@@ -65,7 +65,8 @@ ExecPrivate::ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
     }
 
     if (!execError && g_strstr_len(execString, -1, "invoker") != execString &&
-            g_strstr_len(execString, -1, "/usr/bin/invoker") != execString) {
+            g_strstr_len(execString, -1, "/usr/bin/invoker") != execString &&
+            QFile::exists("/usr/bin/invoker")) {
         // Force invoker usage if invoker isn't specified in Exec= line already
 
         gchar *boosterType = g_key_file_get_string(keyFile, "Desktop Entry",
