@@ -7,7 +7,7 @@ QT = core xml dbus
 CONFIG += link_pkgconfig hide_symbols create_pc create_prl no_install_prl
 CONFIG -= link_prl
 PKGCONFIG += gio-2.0 gio-unix-2.0
-PKGCONFIG += mlite5 Qt5SystemInfo
+PKGCONFIG += mlite5
 
 target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target

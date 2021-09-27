@@ -104,8 +104,6 @@ LCA_EXPORT QStringList mimeForString(const QString& param);
 const QHash<QString, QStringList>& mimeApps();
 const QList<QPair<QString, QRegExp> >& highlighterConfig();
 
-QString bindParams(const QString &str);
-
 QRegExp masterRegexp();
 
 } // end namespace Internal
