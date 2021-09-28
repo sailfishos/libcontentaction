@@ -13,7 +13,6 @@ BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  pkgconfig(Qt5Test)
 BuildRequires:  pkgconfig(Qt5Xml)
-BuildRequires:  pkgconfig(Qt5SystemInfo)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  python3-base
 BuildRequires:  qt5-qttools-linguist

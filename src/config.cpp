@@ -27,7 +27,6 @@
 #include <QDir>
 #include <QStringList>
 #include <QMultiHash>
-#include <QDeviceInfo>
 
 const QString ContentAction::HighlighterMimeClass("x-maemo-highlight/");
 
@@ -87,7 +86,8 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
                                 const QString& qname,
                                 const QXmlAttributes &atts)
 {
-    Q_UNUSED(ns)
+    Q_UNUSED(ns);
+    Q_UNUSED(name);
 
     switch (state) {
     case inLimbo:
@@ -218,21 +218,4 @@ const QList<QPair<QString, QRegExp> >& ContentAction::Internal::highlighterConfi
 {
     readConfig();
     return Highlighter_cfg;
-}
-
-QString ContentAction::Internal::bindParams(const QString &str)
-{
-    static bool initialized = false;
-    static QString manufacturer;
-    static QString model;
-
-    if (!initialized) {
-        QDeviceInfo sid;
-        manufacturer = sid.manufacturer();
-        model = sid.model();
-        initialized = true;
-    }
-    
-    QString res = str;
-    return res.replace("@MANUFACTURER@", manufacturer).replace("@MODEL@", model);
 }
