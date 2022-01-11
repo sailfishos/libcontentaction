@@ -57,6 +57,9 @@ namespace ContentAction {
 using namespace ContentAction::Internal;
 
 namespace Internal {
+
+const QString XSailjailOrganizationNameKey("X-Sailjail/OrganizationName");
+const QString XSailjailApplicationNameKey("X-Sailjail/ApplicationName");
 const QString XMaemoServiceKey("Desktop Entry/X-Maemo-Service");
 const QString XOssoServiceKey("Desktop Entry/X-Osso-Service");
 const QString XMaemoMethodKey("Desktop Entry/X-Maemo-Method");
@@ -64,6 +67,7 @@ const QString XMaemoObjectPathKey("Desktop Entry/X-Maemo-Object-Path");
 const QString ExecKey("Desktop Entry/Exec");
 const QString URLKey("Desktop Entry/URL");
 const QString TypeKeyValueLink("Link");
+const QString DBusActivatableKey("Desktop Entry/DBusActivatable");
 
 }
 
@@ -213,6 +217,9 @@ Action createAction(QSharedPointer<MDesktopEntry> desktopEntry,
         return Action::defaultActionForScheme(desktopEntry->url());
     } else if (!isApplicationDesktopPath(desktopEntry->fileName())) {
         return Action();
+    } else if (desktopEntry->contains(DBusActivatableKey) &&
+            desktopEntry->value(DBusActivatableKey) == QLatin1String("true")) {
+        return Action(new FSODBusPrivate(desktopEntry, params)); // TODO: Params should be urls...
     } else if (desktopEntry->contains(XMaemoMethodKey) &&
         !desktopEntry->contains(XMaemoServiceKey)) {
         return Action(new ServiceFwPrivate(desktopEntry, params));

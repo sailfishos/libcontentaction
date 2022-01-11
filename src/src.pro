@@ -27,6 +27,7 @@ SOURCES += \
     service.cpp \
     dbus.cpp \
     exec.cpp \
+    fsodbus.cpp \
     mime.cpp \
     highlighter.cpp \
     highlight.cpp \

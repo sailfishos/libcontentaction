@@ -63,6 +63,15 @@ struct DBusPrivate : public DefaultPrivate {
     bool varArgs;
 };
 
+struct FSODBusPrivate : public DefaultPrivate {
+    FSODBusPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
+                   const QStringList& params);
+    virtual void trigger(bool) const;
+
+    QString busName;
+    QString objectPath;
+};
+
 struct ExecPrivate : public DefaultPrivate {
     ExecPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
                 const QStringList& params);
@@ -84,6 +93,8 @@ extern const QString UriSchemeMimeClass;
 namespace Internal {
 
 // custom .desktop file keys
+extern const QString XSailjailOrganizationNameKey;
+extern const QString XSailjailApplicationNameKey;
 extern const QString XMaemoServiceKey;
 extern const QString XOssoServiceKey;
 extern const QString XMaemoMethodKey;
