@@ -110,6 +110,13 @@ More information:
 In addition to the Exec line, .desktop files can specify custom ways to launch
 the application.  The launch methods supported by libcontentaction are:
 
+-# launching application using org.freedesktop.Application interface
+  - Define: \c DBusActivatable=true
+  - Name the .desktop file after the bus name you are launching, e.g. my.bus.name.desktop
+-# launching application using org.freedesktop.Application interface without specific file name
+  - Define: \c DBusActivatable=true
+  - Define: \c X-Sailjail/OrganizationName=my.bus
+  - Define: \c X-Sailjail/ApplicationName=name
 -# launching application using D-Bus interface
   - Define: \c X-Maemo-Service=my.bus.name
   - Optionally: \c X-Maemo-Fixed-Args=my;fixed;args
@@ -135,6 +142,14 @@ function is called, the strings are the URIs (or the free-text snippet)
 used to construct the Action, as well as the fixed parameters you may have
 specified.  If there is a return value, it is ignored.
 
+For new code org.freedesktop.Application interface is recommeneded. It has
+methods Open and Activate. The former is called when opening URIs (such as
+file: URI) and takes an array of strings very similar to the other D-Bus
+methods. Both of them have also an argument for platform data which is string
+to variant mapping (signature="a{sv}"). Currently platform data is empty but
+that may change later. The methods names and the path are defined in Desktop
+Entry Specification.
+
 If your application is running, D-Bus based launching delivers the
 function call to the running instance.  If your application is not running,
 D-Bus can autolaunch it as defined in your .service file.  This makes
@@ -149,6 +164,7 @@ More information:
 
 <a href="http://dbus.freedesktop.org/doc/dbus-specification.html">Message Bus Starting Services</a>
 
+<a href="https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html#dbus">D-Bus Activation on Desktop Entry Specification</a>
 
 \section custommimescheme Custom MIME types for URI schemes
 

@@ -219,7 +219,7 @@ Action createAction(QSharedPointer<MDesktopEntry> desktopEntry,
         return Action();
     } else if (desktopEntry->contains(DBusActivatableKey) &&
             desktopEntry->value(DBusActivatableKey) == QLatin1String("true")) {
-        return Action(new FSODBusPrivate(desktopEntry, params)); // TODO: Params should be urls...
+        return Action(new FSODBusPrivate(desktopEntry, params));
     } else if (desktopEntry->contains(XMaemoMethodKey) &&
         !desktopEntry->contains(XMaemoServiceKey)) {
         return Action(new ServiceFwPrivate(desktopEntry, params));
