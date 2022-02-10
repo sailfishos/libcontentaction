@@ -35,7 +35,8 @@ class SpecialChars(unittest.TestCase):
         # start a fake gallery service
         self.gallery = CLTool("gallery.py")
         self.assertTrue(self.gallery.expect("started"))
-        (status, output) = getstatusoutput("touch /tmp/some#file.mp3")
+        # dummy content so it's not recognized as text/plain
+        (status, output) = getstatusoutput("echo a > /tmp/some#file.mp3")
         (status, output) = getstatusoutput("ls /tmp/some#file.mp3")
 
     def tearDown(self):
