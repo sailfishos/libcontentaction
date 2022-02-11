@@ -28,10 +28,9 @@ private Q_SLOTS:
   {
     ContentInfo info = ContentInfo::forMime ("text/plain");
     
-    QVERIFY (info.isValid());
-    QVERIFY (info.mimeType() == "text/plain");
-    QVERIFY (info.typeDescription() == "plain text document");
-    // QVERIFY (info.typeIcon() == "icon-m-content-file-unknown");
+    QVERIFY(info.isValid());
+    QCOMPARE(info.mimeType(), QString::fromLatin1("text/plain"));
+    QCOMPARE(info.typeDescription(), QString::fromLatin1("plain text document"));
   }
 
   void
@@ -39,10 +38,9 @@ private Q_SLOTS:
   {
     ContentInfo info = ContentInfo::forFile (QUrl::fromLocalFile(QDir::currentPath() + "/test-image.png"));
     
-    QVERIFY (info.isValid());
-    QVERIFY (info.mimeType() == "image/png");
-    QVERIFY (info.typeDescription() == "PNG image");
-    // QVERIFY (info.typeIcon() == "icon-m-content-file-unknown");
+    QVERIFY(info.isValid());
+    QCOMPARE(info.mimeType(), QString::fromLatin1("image/png"));
+    QCOMPARE(info.typeDescription(), QString::fromLatin1("PNG image"));
   }
 
   void
@@ -54,10 +52,9 @@ private Q_SLOTS:
     
     ContentInfo info = ContentInfo::forData (content);
     
-    QVERIFY (info.isValid());
-    QVERIFY (info.mimeType() == "image/png");
-    QVERIFY (info.typeDescription() == "PNG image");
-    // QVERIFY (info.typeIcon() == "icon-m-content-file-unknown");
+    QVERIFY(info.isValid());
+    QCOMPARE(info.mimeType(), QString::fromLatin1("image/png"));
+    QCOMPARE(info.typeDescription(), QString::fromLatin1("PNG image"));
   }
 };
 

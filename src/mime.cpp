@@ -453,8 +453,10 @@ QList<Action> Internal::actionsForUris(const QStringList& uris, const QString& m
 {
     QList<Action> result;
 
-    if (mimeType == DesktopFileMimeType && uris.size() == 1)
-        return result << createAction(uris[0], QStringList());
+    if (mimeType == DesktopFileMimeType && uris.size() == 1) {
+        QString filePath = QUrl(uris[0]).toLocalFile();
+        return result << createAction(filePath, QStringList());
+    }
 
     QStringList appIds = appsForContentType(mimeType);
     Q_FOREACH (const QString& id, appIds) {
@@ -484,9 +486,6 @@ QList<Action> Action::actionsForFile(const QUrl& fileUri, const QString& mimeTyp
         mimeType = mimeForFile(fileUri);
     else
         mimeType = mimeType_arg;
-
-    if (mimeType == DesktopFileMimeType)
-        return actionsForUri(fileUri.toLocalFile(), mimeType);
 
     return actionsForUri(fileUri.toEncoded(), mimeType);
 }
