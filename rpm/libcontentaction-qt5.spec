@@ -3,7 +3,7 @@ Summary:    Library for associating content with actions
 Version:    0.3.5
 Release:    1
 License:    LGPLv2
-URL:        https://git.sailfishos.org/mer-core/libcontentaction
+URL:        https://github.com/sailfishos/libcontentaction/
 Source0:    %{name}-%{version}.tar.bz2
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
@@ -37,7 +37,6 @@ Requires:   %{name} = %{version}-%{release}
 Requires:   dbus-python3
 Requires:   python3-gobject
 Requires:   python3-base
-Requires:   qt5-qttools-qdbus
 
 %description tests
 This package contains the tests for libcontentaction library.
@@ -56,10 +55,9 @@ This package contains the Content Action QML plugin.
 
 %build
 %qmake5 "VERSION=%{version}"
-make %{?_smp_mflags}
+%make_build
 
 %install
-rm -rf %{buildroot}
 %qmake5_install
 
 %post -p /sbin/ldconfig
@@ -67,7 +65,6 @@ rm -rf %{buildroot}
 %postun -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root,-)
 %{_bindir}/lca-tool
 %dir %{_datadir}/contentaction
 %{_datadir}/contentaction/highlight1.xml
@@ -76,7 +73,6 @@ rm -rf %{buildroot}
 %license COPYING
 
 %files devel
-%defattr(-,root,root,-)
 %dir %{_includedir}/contentaction5
 %{_includedir}/contentaction5/contentaction.h
 %{_includedir}/contentaction5/contentinfo.h
@@ -84,10 +80,8 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/contentaction5.pc
 
 %files tests
-%defattr(-,root,root,-)
 %attr(0755, root, root) /opt/tests/libcontentaction5/bin/lca-cita-test
 /opt/tests/libcontentaction5/*
 
 %files -n nemo-qml-plugin-contentaction
-%defattr(-,root,root,-)
 %{_libdir}/qt5/qml/org/nemomobile/contentaction
