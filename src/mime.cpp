@@ -39,10 +39,14 @@
 #include <QHash>
 #include <QDBusInterface>
 #include <QDBusPendingCall>
-
+#include <QRegularExpression>
 #include <MDesktopEntry>
 
 #include <sys/stat.h>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+#define endl Qt::endl;
+#endif
 
 namespace { // Helper functions
 
@@ -213,7 +217,12 @@ static const QStringList& xdgDataDirs()
     d = getenv("XDG_DATA_DIRS");
     if (!d)
         d = "/usr/local/share:/usr/share";
-    dirs.append(QString::fromLocal8Bit(d).split(":", QString::SkipEmptyParts));
+    dirs.append(QString::fromLocal8Bit(d)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                    .split(":", Qt::SkipEmptyParts));
+#else
+                    .split(":", QString::SkipEmptyParts));
+#endif
     return dirs;
 }
 
@@ -352,7 +361,12 @@ const QHash<QString, QStringList>& Internal::mimeApps()
     QHashIterator<QString, QString> it(temp);
     while (it.hasNext()) {
         it.next();
-        mimecache.insert(it.key(), it.value().split(";", QString::SkipEmptyParts));
+        mimecache.insert(it.key(), it.value()
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                       .split(";", Qt::SkipEmptyParts));
+#else
+                                       .split(";", QString::SkipEmptyParts));
+#endif
     }
     return mimecache;
 }
@@ -536,9 +550,11 @@ QString mimeForUrl(const QString& uri)
 QStringList Internal::mimeForString(const QString& param)
 {
     QStringList mimes;
-    const QList<QPair<QString, QRegExp> >& cfgList = highlighterConfig();
-    for (int i = 0; i < cfgList.size(); ++i) {
-        if (cfgList[i].second.exactMatch(param)) {
+    const QList<QPair<QString, QRegularExpression> >& cfgList = highlighterConfig();
+    for (int i = 0; i < cfgList.size(); ++i) {        
+        if (cfgList[i].second
+                .match(param).hasMatch()
+            ) {
             mimes << cfgList[i].first;
         }
     }

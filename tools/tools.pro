@@ -10,5 +10,5 @@ PKGCONFIG += gio-2.0 gio-unix-2.0
 DEFINES += QT_NO_KEYWORDS # make glib happy
 
 LIBS += -L../src
-LIBS += -lcontentaction5
+LIBS += -lcontentaction$${QT_MAJOR_VERSION}
 INCLUDEPATH += ../src

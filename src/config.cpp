@@ -23,7 +23,8 @@
 #include <stdlib.h>
 
 #include <QDebug>
-#include <QXmlDefaultHandler>
+#include <QRegularExpression>
+#include <QXmlStreamReader>
 #include <QDir>
 #include <QStringList>
 #include <QMultiHash>
@@ -36,7 +37,7 @@ using namespace ContentAction;
 using namespace ContentAction::Internal;
 
 // mime type -> regexp
-static QList<QPair<QString, QRegExp> > Highlighter_cfg;
+static QList<QPair<QString, QRegularExpression> > Highlighter_cfg;
 // raw data for Highlighter_cfg
 static QHash<QString, QString> mimeToRegexp;
 static QHash<QString, QString> mimeToParent;
@@ -51,22 +52,13 @@ static QString actionPath()
     return QString(path);
 }
 
-struct ConfigReader: public QXmlDefaultHandler {
+struct ConfigReader
+{
     ConfigReader() : state(inLimbo) { }
     bool startElement(const QString& ns, const QString& name,
-                      const QString& qname, const QXmlAttributes &atts);
+                      const QString& qname, const QXmlStreamAttributes &atts);
     bool endElement(const QString& nsuri, const QString& name,
                     const QString& qname);
-    QString errorString() const { return error; }
-    bool fatalError(const QXmlParseException &exception) {
-        LCA_WARNING << QString("parse error at line %1 column %2: %3")
-            .arg(exception.lineNumber())
-            .arg(exception.columnNumber())
-            .arg(exception.message())
-            .toLocal8Bit().constData();
-        return false;
-    }
-
     enum {
         inLimbo, inActions, inHighlight,
     } state;
@@ -84,7 +76,7 @@ struct ConfigReader: public QXmlDefaultHandler {
 
 bool ConfigReader::startElement(const QString& ns, const QString& name,
                                 const QString& qname,
-                                const QXmlAttributes &atts)
+                                const QXmlStreamAttributes &atts)
 {
     Q_UNUSED(ns);
     Q_UNUSED(name);
@@ -98,14 +90,14 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
     case inActions:
         if (qname == "highlight") {
             state = inHighlight;
-            QString regexp = atts.value("regexp");
+            QString regexp = atts.value("regexp").toString();
             if (regexp.isEmpty())
                 fail("expected a nonempty regexp");
-            QString mime = atts.value("name").trimmed();
+            QString mime = atts.value("name").trimmed().toString();
             if (mime.isEmpty())
                 fail("expected a nonempy mimetype");
             mimeToRegexp.insert(mime, regexp);
-            QString parentRegexp = atts.value("specialCaseOf");
+            QString parentRegexp = atts.value("specialCaseOf").toString();
             if (!parentRegexp.isEmpty())
                 mimeToParent.insert(mime, parentRegexp);
         }
@@ -171,7 +163,7 @@ static void sortRegexps()
         // inserted.
         Highlighter_cfg.prepend(
             qMakePair(QString(HighlighterMimeClass) + toInsert,
-                      QRegExp(mimeToRegexp.take(toInsert))));
+                      QRegularExpression(mimeToRegexp.take(toInsert))));
     }
 }
 
@@ -194,10 +186,8 @@ static void readConfig()
         QFile file(dir.filePath(confFile));
 
         ConfigReader handler;
-        QXmlSimpleReader reader;
-        reader.setContentHandler(&handler);
-        reader.setErrorHandler(&handler);
-        if (!reader.parse(QXmlInputSource(&file))) {
+        QXmlStreamReader reader(&file);
+        if (reader.hasError()) {
             LCA_WARNING << "failed to parse" << file.fileName();
             continue;
         }
@@ -214,7 +204,7 @@ static void readConfig()
 
 /// Returns the highlighter configuration map of (mimetype, regexp) read from
 /// the configuration files.
-const QList<QPair<QString, QRegExp> >& ContentAction::Internal::highlighterConfig()
+const QList<QPair<QString, QRegularExpression> >& ContentAction::Internal::highlighterConfig()
 {
     readConfig();
     return Highlighter_cfg;
