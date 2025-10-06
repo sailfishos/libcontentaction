@@ -22,7 +22,8 @@
 #include "internal.h"
 
 #include <QDebug>
-#include <QRegExp>
+#include <QRegularExpression>
+#include <QPair>
 #include <QDBusInterface>
 #include <QCoreApplication>
 
@@ -35,15 +36,17 @@ using namespace ContentAction::Internal;
 /// ContentAction::Action::findHighlights() instead.
 QList<Match> Action::highlight(const QString& text)
 {
-    const QList<QPair<QString, QRegExp> >& cfg = highlighterConfig();
+    const QList<QPair<QString, QRegularExpression> >& cfg = highlighterConfig();
     QList<Match> result;
 
     for (int i = 0; i < cfg.size(); ++i) {
-	const QRegExp &re = cfg[i].second;
+    const QRegularExpression &re = cfg[i].second;
         QStringList apps = appsForContentType(cfg[i].first);
         int pos = 0;
-        while ((pos = re.indexIn(text, pos)) != -1) {
-            int l = re.matchedLength();
+        QRegularExpressionMatch match = re.match(text);
+        while (match.hasMatch()) {
+            pos = match.capturedStart();
+            int l = match.capturedLength();
             Match m;
             m.start = pos;
             m.end = pos + l;
@@ -51,7 +54,7 @@ QList<Match> Action::highlight(const QString& text)
             Q_FOREACH (const QString& app, apps) {
                 const QString &desktop = findDesktopFile(app);
                 if (desktop != "")
-                    m.actions << createAction(desktop, QStringList() << re.cap());
+                    m.actions << createAction(desktop, QStringList() << match.captured());
             }
             result << m;
             pos += l;
@@ -75,7 +78,7 @@ bool Match::operator<(const Match& other) const
 /// applicable actions and the default action.
 QList<QPair<int, int> > Action::findHighlights(const QString& text)
 {
-    QRegExp regexp = masterRegexp();
+    QRegularExpression regexp = masterRegexp();
 
     QList<QPair<int, int> > result;
 
@@ -93,7 +96,7 @@ QList<QPair<int, int> > Action::findHighlights(const QString& text)
         if (next.first == -1)
             break;
 
-        result << qMakePair<int, int>(next.first, next.second);
+        result << QPair<int, int>{next.first, next.second};
 
         pos = next.first + next.second;
         if (next.second == 0)
@@ -113,7 +116,7 @@ QList<QPair<int, int> > Action::findHighlights(const QString& text)
 /// applicable actions and the default action.
 QPair<int, int> Action::findNextHighlight(const QString& text, int start)
 {
-    QRegExp regexp = masterRegexp();
+    QRegularExpression regexp = masterRegexp();
 
     if (regexp.pattern() == "(?:)") {
         // The regexp doesn't have any real content -> no matches. "(?:)" is
@@ -121,11 +124,10 @@ QPair<int, int> Action::findNextHighlight(const QString& text, int start)
         // together.
         return qMakePair<int, int>(-1, -1);
     }
+    int pos = regexp.match(text).capturedStart();
+    int len = regexp.match(text).capturedLength();
 
-    int pos = regexp.indexIn(text, start);
-    // QRegExp::matchedLength() returns -1 if there was no match
-    int len = regexp.matchedLength();
-    return qMakePair<int, int>(pos, len);
+    return qMakePair(pos, len);
 }
 
 } // end namespace

@@ -75,7 +75,11 @@ DBusPrivate::DBusPrivate(QSharedPointer<MDesktopEntry> desktopEntry,
             objectPath = "/";
     }
     QStringList fixedArgs = desktopEntry->value(XMaemoFixedArgsKey)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+        .split(';', Qt::SkipEmptyParts);
+#else
         .split(';', QString::SkipEmptyParts);
+#endif
     fixedArgs.append(params);
     params = fixedArgs;
 }

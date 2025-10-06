@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = contentaction5
+TARGET = contentaction$${QT_MAJOR_VERSION}
 
 include(../common.pri)
 
@@ -7,7 +7,7 @@ QT = core xml dbus
 CONFIG += link_pkgconfig hide_symbols create_pc create_prl no_install_prl
 CONFIG -= link_prl
 PKGCONFIG += gio-2.0 gio-unix-2.0
-PKGCONFIG += mlite5
+PKGCONFIG += mlite$${QT_MAJOR_VERSION}
 
 target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
@@ -43,7 +43,7 @@ QMAKE_PKGCONFIG_DESCRIPTION = Library for associating content with actions
 QMAKE_PKGCONFIG_LIBDIR = $$target.path
 QMAKE_PKGCONFIG_INCDIR = $$include.path
 QMAKE_PKGCONFIG_DESTDIR = pkgconfig
-QMAKE_PKGCONFIG_REQUIRES = Qt5Core
+QMAKE_PKGCONFIG_REQUIRES = Qt$${QT_MAJOR_VERSION}Core
 QMAKE_PKGCONFIG_VERSION = $$VERSION
 
 OTHER_FILES += doc.h
