@@ -40,16 +40,17 @@ QList<Match> Action::highlight(const QString& text)
     QList<Match> result;
 
     for (int i = 0; i < cfg.size(); ++i) {
-    const QRegularExpression &re = cfg[i].second;
         QStringList apps = appsForContentType(cfg[i].first);
-        int pos = 0;
-        QRegularExpressionMatch match = re.match(text);
-        while (match.hasMatch()) {
-            pos = match.capturedStart();
-            int l = match.capturedLength();
+        const QRegularExpression &re = cfg[i].second;
+        QRegularExpressionMatchIterator it = re.globalMatch(text);
+
+        while (it.hasNext()) {
+            QRegularExpressionMatch match = it.next();
+            int pos = match.capturedStart();
+            int length = match.capturedLength();
             Match m;
             m.start = pos;
-            m.end = pos + l;
+            m.end = pos + length;
 
             Q_FOREACH (const QString& app, apps) {
                 const QString &desktop = findDesktopFile(app);
@@ -57,9 +58,6 @@ QList<Match> Action::highlight(const QString& text)
                     m.actions << createAction(desktop, QStringList() << match.captured());
             }
             result << m;
-            pos += l;
-            if (l == 0)
-                ++pos;
         }
     }
     return result;
@@ -124,10 +122,12 @@ QPair<int, int> Action::findNextHighlight(const QString& text, int start)
         // together.
         return qMakePair<int, int>(-1, -1);
     }
-    int pos = regexp.match(text).capturedStart();
-    int len = regexp.match(text).capturedLength();
+    QRegularExpressionMatch match = regexp.match(text, start);
+    if (!match.hasMatch()) {
+        return qMakePair<int, int>(-1, -1);
+    }
 
-    return qMakePair(pos, len);
+    return qMakePair(match.capturedStart(), match.capturedLength());
 }
 
 } // end namespace
