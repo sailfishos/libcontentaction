@@ -8,7 +8,7 @@ uri = org.nemomobile.contentaction
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 
 INCLUDEPATH += ../src
-LIBS += -L../src -lcontentaction5
+LIBS += -L../src -lcontentaction$${QT_MAJOR_VERSION}
 
 SOURCES += \
     plugin.cpp \

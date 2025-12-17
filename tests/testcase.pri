@@ -2,7 +2,7 @@ QT = core testlib
 INCLUDEPATH += ../src
 
 LIBS += -L../src
-LIBS += -lcontentaction5
+LIBS += -lcontentaction$${QT_MAJOR_VERSION}
 
 include(../common.pri)
 

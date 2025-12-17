@@ -102,9 +102,9 @@ LCA_EXPORT QString mimeForFile(const QUrl& fileUri);
 LCA_EXPORT QStringList mimeForString(const QString& param);
 
 const QHash<QString, QStringList>& mimeApps();
-const QList<QPair<QString, QRegExp> >& highlighterConfig();
+const QList<QPair<QString, QRegularExpression> >& highlighterConfig();
+QRegularExpression masterRegexp();
 
-QRegExp masterRegexp();
 
 } // end namespace Internal
 } // end namespace ContentAction

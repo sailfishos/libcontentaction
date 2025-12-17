@@ -28,6 +28,10 @@
 #include <QDebug>
 #include <QFileInfo>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+#define endl Qt::endl
+#endif
+
 using namespace ContentAction;
 using namespace ContentAction::Internal;
 

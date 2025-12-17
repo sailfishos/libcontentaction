@@ -20,12 +20,12 @@
 #include "contentaction.h"
 #include "internal.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QDebug>
 #include <QModelIndex>
 #include <QAbstractListModel>
 
-typedef QPair<QString, QRegExp> MimeAndRegexp;
+typedef QPair<QString, QRegularExpression> MimeAndRegexp;
 typedef QList<MimeAndRegexp> MimesAndRegexps;
 
 namespace {
@@ -39,9 +39,9 @@ MimesAndRegexps regExpsInUse()
     static MimesAndRegexps mars;
     static bool read = false;
     if (!read) {
-        QListIterator<QPair<QString, QRegExp> > iter(highlighterConfig());
+        QListIterator<QPair<QString, QRegularExpression> > iter(highlighterConfig());
         while (iter.hasNext()) {
-            const QPair<QString, QRegExp> &mar = iter.next();
+            const QPair<QString, QRegularExpression> &mar = iter.next();
             if (!appsForContentType(mar.first).isEmpty())
                 mars += MimeAndRegexp(mar.first, mar.second);
         }
@@ -50,7 +50,7 @@ MimesAndRegexps regExpsInUse()
     return mars;
 }
 
-QRegExp combine(const MimesAndRegexps &mars)
+QRegularExpression combine(const MimesAndRegexps &mars)
 {
     QString re("(?:");
     bool first = true;
@@ -61,7 +61,7 @@ QRegExp combine(const MimesAndRegexps &mars)
         first = false;
     }
     re += ")";
-    return QRegExp(re);
+    return QRegularExpression(re);
 }
 
 } // end anon namespace
@@ -69,9 +69,9 @@ QRegExp combine(const MimesAndRegexps &mars)
 namespace ContentAction {
 namespace Internal {
 
-QRegExp masterRegexp()
+QRegularExpression masterRegexp()
 {
-    static QRegExp master;
+    static QRegularExpression master;
     static bool read = false;
     if (!read) {
         master = combine(regExpsInUse());
