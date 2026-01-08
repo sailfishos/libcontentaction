@@ -80,8 +80,7 @@ This package contains the Content Action QML plugin.
 %{_libdir}/pkgconfig/contentaction5.pc
 
 %files tests
-%attr(0755, root, root) /opt/tests/libcontentaction5/bin/lca-cita-test
-/opt/tests/libcontentaction5/*
+/opt/tests/libcontentaction5
 
 %files -n nemo-qml-plugin-contentaction
 %{_libdir}/qt5/qml/org/nemomobile/contentaction

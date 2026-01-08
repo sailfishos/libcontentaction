@@ -38,7 +38,7 @@ unix{
     bin.target = lca-cita-test
     bin.files = lca-cita-test
     bin.path = $$CONTENTACTION_TESTDIR/bin
-    bin.CONFIG = no_check_exist
+    bin.CONFIG = no_check_exist executable
     bin.commands = sed \'s%@PATH@%$${CONTENTACTION_TESTDIR}%\' $$PWD/lca-cita-test.in > $$PWD/lca-cita-test
     QMAKE_DISTCLEAN += lca-cita-test
     INSTALLS += bin
