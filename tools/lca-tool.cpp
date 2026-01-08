@@ -120,7 +120,8 @@ enum ActionToDo {
 
 // The highlighter part:
 
-QDebug operator<<(QDebug dbg, const Match& m) {
+QDebug operator<<(QDebug dbg, const Match& m)
+{
     dbg.nospace() << "match at ("
                   << m.start << ", " << m.end << "): ";
     Q_FOREACH (const Action& a, m.actions) {
@@ -130,7 +131,8 @@ QDebug operator<<(QDebug dbg, const Match& m) {
     return dbg;
 }
 
-QDebug operator<<(QDebug dbg, const QList<Match>& ms) {
+QDebug operator<<(QDebug dbg, const QList<Match>& ms)
+{
     Q_FOREACH (const Match& m, ms) {
         dbg.space() << m;
     }
@@ -152,6 +154,7 @@ void doHighlight()
 
     QList<QPair<int, int> > highlights = Action::findHighlights(text);
     QList<QPair<int, int> >::const_iterator it = highlights.begin();
+
     while (it != highlights.end()) {
         QString highlight = text.mid(it->first, it->second);
         QStringList actions;
@@ -304,23 +307,18 @@ int main(int argc, char **argv)
             out << a.name() << endl;
         }
         return 0;
-        break;
     case PrintMimeDefault:
         out << defaultActionForMime(mime).name() << endl;
         return 0;
-        break;
     case SetMimeDefault:
         setMimeDefault(mime, actionName);
         return 0;
-        break;
     case ResetMimeDefault:
         resetMimeDefault(mime);
         return 0;
-        break;
     case Highlight:
         doHighlight();
         return 0;
-        break;
     case TriggerDesktop:
     {
         Action a = Action::launcherAction(actionName, args);
@@ -342,6 +340,7 @@ int main(int argc, char **argv)
     // get the Action:s and the default Action based on the mode
     QList<Action> actions;
     Action defAction;
+
     switch (mode) {
     case FileMode:
     {
@@ -353,21 +352,19 @@ int main(int argc, char **argv)
                 uris << QUrl::fromLocalFile(QFileInfo(args[i]).absoluteFilePath());
             }
         }
-        if (uris.size() == 1)
-          {
+        if (uris.size() == 1) {
             defAction = Action::defaultActionForFile(uris[0]);
             actions = Action::actionsForFile(uris[0]);
-          }
-        else
-          {
+        } else {
             QString mimeType;
             if (uris.size() > 0)
                 mimeType = mimeForFile (uris[0]);
             defAction = Action::defaultActionForFile(uris, mimeType);
             actions = Action::actionsForFile(uris, mimeType);
-          }
+        }
+
+        break;
     }
-    break;
     case SchemeMode:
         actions = Action::actionsForScheme(args[0]);
         defAction = Action::defaultActionForScheme(args[0]);
@@ -395,7 +392,6 @@ int main(int argc, char **argv)
         }
         err << actionName << " is not applicable" << endl;
         return 3;
-        break;
     case PrintDefaultAction:
         out << (use_l10n ? defAction.localizedName() : defAction.name()) << endl;
         break;
@@ -406,8 +402,8 @@ int main(int argc, char **argv)
         }
         defAction.triggerAndWait();
         return 0;
-        break;
-    case PrintMimes: {
+    case PrintMimes:
+    {
         switch (mode) {
         case FileMode:
             out << mimeForFile(args[0]) << endl;
@@ -428,5 +424,6 @@ int main(int argc, char **argv)
     default:
         break;
     }
+
     return 0;
 }

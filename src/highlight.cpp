@@ -20,24 +20,25 @@
 #include "contentaction.h"
 #include "internal.h"
 
+#include <QList>
+#include <QString>
 #include <QRegularExpression>
+#include <QPair>
 #include <QDebug>
-#include <QModelIndex>
-#include <QAbstractListModel>
 
 typedef QPair<QString, QRegularExpression> MimeAndRegexp;
-typedef QList<MimeAndRegexp> MimesAndRegexps;
 
 namespace {
 
 using namespace ContentAction;
 using namespace ContentAction::Internal;
 
-MimesAndRegexps regExpsInUse()
+QList<MimeAndRegexp> regExpsInUse()
 {
     // Returns the regexps for which we have actions.
-    static MimesAndRegexps mars;
+    static QList<MimeAndRegexp> mars;
     static bool read = false;
+
     if (!read) {
         QListIterator<QPair<QString, QRegularExpression> > iter(highlighterConfig());
         while (iter.hasNext()) {
@@ -50,7 +51,7 @@ MimesAndRegexps regExpsInUse()
     return mars;
 }
 
-QRegularExpression combine(const MimesAndRegexps &mars)
+QRegularExpression combine(const QList<MimeAndRegexp> &mars)
 {
     QString re("(?:");
     bool first = true;

@@ -2,7 +2,7 @@
 # coding=UTF-8
 
 # This program generates the complicated regular expressions used in
-# highlight1.xml, with the goal to dcoument them clearly and make
+# highlight1.xml, with the goal to document them clearly and make
 # maintenance easier.
 #
 # Also, this program contains a number of test cases to run against the
