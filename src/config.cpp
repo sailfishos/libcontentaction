@@ -169,11 +169,15 @@ static void sortRegexps()
                 break;
             }
         }
-        // Insert, and also remove from mimeToRegexp to note it has been
-        // inserted.
-        Highlighter_cfg.prepend(
-            qMakePair(QString(HighlighterMimeClass) + toInsert,
-                      QRegularExpression(mimeToRegexp.take(toInsert))));
+        // Insert, and also remove from mimeToRegexp to note it has been inserted
+        QString rule = mimeToRegexp.take(toInsert);
+        QRegularExpression expression(rule);
+
+        if (expression.isValid()) {
+            Highlighter_cfg.prepend(qMakePair(QString(HighlighterMimeClass) + toInsert, expression));
+        } else {
+            qWarning() << "Invalid highlight rule:" << rule << "-- " << expression.errorString();
+        }
     }
 }
 
