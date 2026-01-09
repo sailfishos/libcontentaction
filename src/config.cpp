@@ -27,7 +27,6 @@
 #include <QRegularExpression>
 #include <QDir>
 #include <QStringList>
-#include <QMultiHash>
 
 const QString ContentAction::HighlighterMimeClass("x-maemo-highlight/");
 
@@ -52,14 +51,16 @@ static QString actionPath()
     return QString(path);
 }
 
-struct ConfigReader: public QXmlDefaultHandler {
-    ConfigReader() : state(inLimbo) { }
-    bool startElement(const QString& ns, const QString& name,
-                      const QString& qname, const QXmlAttributes &atts);
-    bool endElement(const QString& nsuri, const QString& name,
-                    const QString& qname);
+struct ConfigReader: public QXmlDefaultHandler
+{
+    ConfigReader() : state(inLimbo) {}
+
+    bool startElement(const QString& ns, const QString& name, const QString& qname, const QXmlAttributes &atts);
+    bool endElement(const QString& nsuri, const QString& name, const QString& qname);
     QString errorString() const { return error; }
-    bool fatalError(const QXmlParseException &exception) {
+
+    bool fatalError(const QXmlParseException &exception)
+    {
         LCA_WARNING << QString("parse error at line %1 column %2: %3")
             .arg(exception.lineNumber())
             .arg(exception.columnNumber())
@@ -77,10 +78,10 @@ struct ConfigReader: public QXmlDefaultHandler {
     QString error;
 };
 
-#define fail(msg)                               \
-    do {                                        \
-        error = msg;                            \
-        return false;                           \
+#define fail(msg)     \
+    do {              \
+        error = msg;  \
+        return false; \
     } while (0)
 
 bool ConfigReader::startElement(const QString& ns, const QString& name,
@@ -109,9 +110,9 @@ bool ConfigReader::startElement(const QString& ns, const QString& name,
             QString parentRegexp = atts.value("specialCaseOf");
             if (!parentRegexp.isEmpty())
                 mimeToParent.insert(mime, parentRegexp);
-        }
-        else
+        } else {
             fail("unexpected tag");
+        }
         break;
     case inHighlight:
         fail("unexpected tag");
@@ -143,9 +144,8 @@ bool ConfigReader::endElement(const QString& nsuri, const QString& name,
 
 #undef fail
 
-// Constructs Highlighter_cfg from mimeToRegexp and mimeToParent.  Sorts the
-// regexps topologically so that the special cases appear before the general
-// cases.
+// Constructs Highlighter_cfg from mimeToRegexp and mimeToParent.
+// Sorts the regexps topologically so that the special cases appear before the general cases.
 static void sortRegexps()
 {
     // Insert the regexps in the wrong order (parent first, parent is the more
@@ -153,6 +153,7 @@ static void sortRegexps()
     // order (special case before the general case).
     QString toInsert;
     QString original;
+
     while (!mimeToRegexp.isEmpty()) {
         // Take any regexp
         toInsert = mimeToRegexp.begin().key();
@@ -168,11 +169,15 @@ static void sortRegexps()
                 break;
             }
         }
-        // Insert, and also remove from mimeToRegexp to note it has been
-        // inserted.
-        Highlighter_cfg.prepend(
-            qMakePair(QString(HighlighterMimeClass) + toInsert,
-                      QRegularExpression(mimeToRegexp.take(toInsert))));
+        // Insert, and also remove from mimeToRegexp to note it has been inserted
+        QString rule = mimeToRegexp.take(toInsert);
+        QRegularExpression expression(rule);
+
+        if (expression.isValid()) {
+            Highlighter_cfg.prepend(qMakePair(QString(HighlighterMimeClass) + toInsert, expression));
+        } else {
+            qWarning() << "Invalid highlight rule:" << rule << "-- " << expression.errorString();
+        }
     }
 }
 
@@ -204,7 +209,7 @@ static void readConfig()
         }
     }
 
-    // Sort the regexps topologially: each regexp (e.g., a specialized url)
+    // Sort the regexps topologically: each regexp (e.g., a specialized url)
     // before its parent (e.g., a more general url)
     sortRegexps();
     mimeToRegexp.clear();

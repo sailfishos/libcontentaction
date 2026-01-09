@@ -551,13 +551,15 @@ QStringList Internal::mimeForString(const QString& param)
 {
     QStringList mimes;
     const QList<QPair<QString, QRegularExpression> >& cfgList = highlighterConfig();
+
     for (int i = 0; i < cfgList.size(); ++i) {
-        if (cfgList[i].second
-                .match(param).hasMatch()
-            ) {
+        QRegularExpressionMatch match = cfgList[i].second.match(param);
+        // require exact match
+        if (match.hasMatch() && match.capturedLength() == param.length()) {
             mimes << cfgList[i].first;
         }
     }
+
     return mimes;
 }
 

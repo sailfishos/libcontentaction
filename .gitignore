@@ -68,6 +68,7 @@ Makefile.in
 *.o
 *.pyc
 *.moc
+moc_*.cpp
 *.gcda
 *.gcno
 *.cov
@@ -81,10 +82,8 @@ TAGS
 
 /coverage/*
 
-src/libcontentaction5.so
-src/libcontentaction5.so.0
-src/libcontentaction5.so.0.0
-src/libcontentaction5.so.0.0.75
+*.so
+*.so.*
 src/moc_service.cpp
 tests/Makefile.*
 tests/applications/other.desktop

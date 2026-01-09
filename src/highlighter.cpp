@@ -31,8 +31,8 @@ namespace ContentAction {
 
 using namespace ContentAction::Internal;
 
-/// Highlights fragments of \a text which have applicable actions.  Returns a
-/// list of Match objects.  \deprecated Use
+/// Highlights fragments of \a text which have applicable actions.
+/// Returns a list of Match objects.  \deprecated Use
 /// ContentAction::Action::findHighlights() instead.
 QList<Match> Action::highlight(const QString& text)
 {
@@ -65,8 +65,8 @@ QList<Match> Action::highlight(const QString& text)
 
 bool Match::operator<(const Match& other) const
 {
-    return (this->start < other.start) ||
-        ((this->start == other.start) && (this->end < other.end));
+    return (this->start < other.start)
+            || ((this->start == other.start) && (this->end < other.end));
 }
 
 /// Finds fragments of \a text which have applicable actions.  Returns a list of

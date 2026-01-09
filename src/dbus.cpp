@@ -23,7 +23,6 @@
 
 #include <MDesktopEntry>
 #include <MRemoteAction>
-#include <QProcess>
 
 #include <QVariantList>
 
