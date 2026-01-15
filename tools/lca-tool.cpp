@@ -228,6 +228,7 @@ int main(int argc, char **argv)
             newmode = SchemeMode;
         else if (arg == "--string")
             newmode = StringMode;
+
         if (newmode != NoMode) {
             if (mode != NoMode) {
                 err << "only a single MODE may be specified" << endl;
@@ -358,7 +359,7 @@ int main(int argc, char **argv)
         } else {
             QString mimeType;
             if (uris.size() > 0)
-                mimeType = mimeForFile (uris[0]);
+                mimeType = mimeForFile(uris[0]);
             defAction = Action::defaultActionForFile(uris, mimeType);
             actions = Action::actionsForFile(uris, mimeType);
         }
@@ -406,8 +407,17 @@ int main(int argc, char **argv)
     {
         switch (mode) {
         case FileMode:
-            out << mimeForFile(args[0]) << endl;
+        {
+            QUrl url;
+            if (args[0].startsWith ("file:")) {
+                url = QUrl::fromEncoded(args[0].toLocal8Bit());
+            } else {
+                url = QUrl::fromLocalFile(QFileInfo(args[0]).absoluteFilePath());
+            }
+
+            out << mimeForFile(url) << endl;
             break;
+        }
         case SchemeMode:
             out << mimeForScheme(args[0]) << endl;
             break;
