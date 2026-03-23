@@ -23,10 +23,10 @@
 #include <stdlib.h>
 
 #include <QDebug>
-#include <QXmlDefaultHandler>
 #include <QRegularExpression>
 #include <QDir>
 #include <QStringList>
+#include <QXmlStreamReader>
 
 const QString ContentAction::HighlighterMimeClass("x-maemo-highlight/");
 
@@ -51,98 +51,61 @@ static QString actionPath()
     return QString(path);
 }
 
-struct ConfigReader: public QXmlDefaultHandler
+struct ConfigReader
 {
-    ConfigReader() : state(inLimbo) {}
-
-    bool startElement(const QString& ns, const QString& name, const QString& qname, const QXmlAttributes &atts);
-    bool endElement(const QString& nsuri, const QString& name, const QString& qname);
-    QString errorString() const { return error; }
-
-    bool fatalError(const QXmlParseException &exception)
-    {
-        LCA_WARNING << QString("parse error at line %1 column %2: %3")
-            .arg(exception.lineNumber())
-            .arg(exception.columnNumber())
-            .arg(exception.message())
-            .toLocal8Bit().constData();
-        return false;
-    }
-
-    enum {
-        inLimbo, inActions, inHighlight,
-    } state;
-
-    QString condName;
-    QString sparqlSnippet;
     QString error;
-};
 
-#define fail(msg)     \
-    do {              \
-        error = msg;  \
-        return false; \
-    } while (0)
+    bool parse(QIODevice *device)
+    {
+        QXmlStreamReader xml(device);
 
-bool ConfigReader::startElement(const QString& ns, const QString& name,
-                                const QString& qname,
-                                const QXmlAttributes &atts)
-{
-    Q_UNUSED(ns);
-    Q_UNUSED(name);
+        while (!xml.atEnd()) {
+            xml.readNext();
 
-    switch (state) {
-    case inLimbo:
-        if (qname != "actions")
-            fail("expected tag: actions");
-        state = inActions;
-        break;
-    case inActions:
-        if (qname == "highlight") {
-            state = inHighlight;
-            QString regexp = atts.value("regexp");
-            if (regexp.isEmpty())
-                fail("expected a nonempty regexp");
-            QString mime = atts.value("name").trimmed();
-            if (mime.isEmpty())
-                fail("expected a nonempy mimetype");
-            mimeToRegexp.insert(mime, regexp);
-            QString parentRegexp = atts.value("specialCaseOf");
-            if (!parentRegexp.isEmpty())
-                mimeToParent.insert(mime, parentRegexp);
-        } else {
-            fail("unexpected tag");
+            if (xml.isStartElement()) {
+                if (xml.name() == "actions") {
+                    continue;
+                } else if (xml.name() == "highlight") {
+                    parseHighlight(xml);
+                } else {
+                    error = "unexpected tag: " + xml.name().toString();
+                    return false;
+                }
+            }
         }
-        break;
-    case inHighlight:
-        fail("unexpected tag");
-        break;
+
+        if (xml.hasError()) {
+            error = xml.errorString();
+            return false;
+        }
+
+        return true;
     }
-    return true;
-}
 
-bool ConfigReader::endElement(const QString& nsuri, const QString& name,
-                              const QString& qname)
-{
-    Q_UNUSED(nsuri)
-    Q_UNUSED(name)
+    void parseHighlight(QXmlStreamReader &xml)
+    {
+        auto atts = xml.attributes();
 
-    switch (state) {
-    case inActions:
-        if (qname == "actions")
-            state = inLimbo;
-        break;
-    case inHighlight:
-        if (qname == "highlight")
-            state = inActions;
-        break;
-    default:
-        break;
+        QString regexp = atts.value("regexp").toString();
+        if (regexp.isEmpty()) {
+            error = "expected a nonempty regexp";
+            return;
+        }
+
+        QString mime = atts.value("name").toString().trimmed();
+        if (mime.isEmpty()) {
+            error = "expected a nonempty mimetype";
+            return;
+        }
+
+        mimeToRegexp.insert(mime, regexp);
+
+        QString parent = atts.value("specialCaseOf").toString();
+        if (!parent.isEmpty()) {
+            mimeToParent.insert(mime, parent);
+        }
     }
-    return true;
-}
-
-#undef fail
+};
 
 // Constructs Highlighter_cfg from mimeToRegexp and mimeToParent.
 // Sorts the regexps topologically so that the special cases appear before the general cases.
@@ -200,11 +163,14 @@ static void readConfig()
         QFile file(dir.filePath(confFile));
 
         ConfigReader handler;
-        QXmlSimpleReader reader;
-        reader.setContentHandler(&handler);
-        reader.setErrorHandler(&handler);
-        if (!reader.parse(QXmlInputSource(&file))) {
-            LCA_WARNING << "failed to parse" << file.fileName();
+
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            LCA_WARNING << "cannot open" << file.fileName();
+            continue;
+        }
+
+        if (!handler.parse(&file)) {
+            LCA_WARNING << "failed to parse" << file.fileName() << ":" << handler.error;
             continue;
         }
     }
