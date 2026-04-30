@@ -24,7 +24,7 @@
 #include "service.h"
 
 #include <MDesktopEntry>
-#include <MGConfItem>
+#include <MDConfItem>
 #include <QFileInfo>
 
 /*!
@@ -72,7 +72,7 @@ namespace {
 QStringList applicationDesktopPaths()
 {
     QStringList desktopPaths;
-    const QVariant configuration = MGConfItem(
+    const QVariant configuration = MDConfItem(
                 QLatin1String("/desktop/sailfish/application_desktop_paths")).value();
 
     if (configuration.isValid()) {
